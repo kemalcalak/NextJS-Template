@@ -1,0 +1,9 @@
+node_modules
+dist
+build
+coverage
+.next
+pnpm-lock.yaml
+playwright-report
+test-results
+.pytest_cache
