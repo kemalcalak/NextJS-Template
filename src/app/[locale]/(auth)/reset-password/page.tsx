@@ -3,24 +3,18 @@
 import { Suspense, useState, useEffect } from "react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2, ShieldCheck, XCircle, Eye, EyeOff, Lock } from "lucide-react";
+import { Loader2, ShieldCheck, XCircle } from "lucide-react";
 import { motion } from "motion/react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
+import { AuthHeader } from "@/components/auth/AuthHeader";
+import { AuthPasswordField } from "@/components/auth/AuthPasswordField";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+import { Form } from "@/components/ui/form";
 import { useResetPasswordMutation } from "@/hooks/api/use-auth";
 import { getResetSchema, type ResetFormValues } from "@/schemas/auth";
 
@@ -49,21 +43,6 @@ const InvalidLinkState = ({ t }: { t: (key: string) => string }) => (
         <Link href="/login">{t("login.login")}</Link>
       </Button>
     </div>
-  </div>
-);
-
-const ResetHeader = ({ t }: { t: (key: string) => string }) => (
-  <div className="mb-8 text-center">
-    <motion.div
-      initial={{ scale: 0.5, opacity: 0 }}
-      animate={{ scale: 1, opacity: 1 }}
-      transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-      className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-primary text-primary-foreground"
-    >
-      <ShieldCheck className="h-6 w-6" />
-    </motion.div>
-    <h1 className="text-3xl font-bold tracking-tight">{t("resetPassword.title")}</h1>
-    <p className="text-muted-foreground mt-2">{t("resetPassword.subtitle")}</p>
   </div>
 );
 
@@ -120,7 +99,12 @@ function ResetPasswordForm() {
         transition={{ duration: 0.5 }}
         className="w-full max-w-md"
       >
-        <ResetHeader t={t} />
+        <AuthHeader
+          t={t}
+          titleKey="resetPassword.title"
+          subtitleKey="resetPassword.subtitle"
+          icon={ShieldCheck}
+        />
 
         {error && (
           <Alert variant="destructive">
@@ -130,79 +114,23 @@ function ResetPasswordForm() {
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4" noValidate>
-            <FormField
-              control={form.control}
+            <AuthPasswordField
+              form={form}
+              isLoading={isPending}
+              showPassword={showPassword}
+              setShowPassword={setShowPassword}
+              t={t}
+              labelKey="resetPassword.newPassword"
               name="password"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t("resetPassword.newPassword")}</FormLabel>
-                  <div className="relative">
-                    <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                    <FormControl>
-                      <Input
-                        type={showPassword ? "text" : "password"}
-                        className="pl-10 pr-10"
-                        disabled={isPending}
-                        {...field}
-                      />
-                    </FormControl>
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="sm"
-                      className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-                      onClick={() => {
-                        setShowPassword(!showPassword);
-                      }}
-                      disabled={isPending}
-                    >
-                      {showPassword ? (
-                        <EyeOff className="h-4 w-4 text-muted-foreground" />
-                      ) : (
-                        <Eye className="h-4 w-4 text-muted-foreground" />
-                      )}
-                    </Button>
-                  </div>
-                  <FormMessage />
-                </FormItem>
-              )}
             />
-            <FormField
-              control={form.control}
+            <AuthPasswordField
+              form={form}
+              isLoading={isPending}
+              showPassword={showConfirmPassword}
+              setShowPassword={setShowConfirmPassword}
+              t={t}
+              labelKey="resetPassword.confirmNewPassword"
               name="confirmPassword"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t("resetPassword.confirmNewPassword")}</FormLabel>
-                  <div className="relative">
-                    <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                    <FormControl>
-                      <Input
-                        type={showConfirmPassword ? "text" : "password"}
-                        className="pl-10 pr-10"
-                        disabled={isPending}
-                        {...field}
-                      />
-                    </FormControl>
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="sm"
-                      className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-                      onClick={() => {
-                        setShowConfirmPassword(!showConfirmPassword);
-                      }}
-                      disabled={isPending}
-                    >
-                      {showConfirmPassword ? (
-                        <EyeOff className="h-4 w-4 text-muted-foreground" />
-                      ) : (
-                        <Eye className="h-4 w-4 text-muted-foreground" />
-                      )}
-                    </Button>
-                  </div>
-                  <FormMessage />
-                </FormItem>
-              )}
             />
             <Button className="w-full" type="submit" disabled={isPending}>
               {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}

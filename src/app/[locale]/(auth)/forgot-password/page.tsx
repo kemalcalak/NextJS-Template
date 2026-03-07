@@ -9,17 +9,11 @@ import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
+import { AuthEmailField } from "@/components/auth/AuthEmailField";
+import { AuthHeader } from "@/components/auth/AuthHeader";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+import { Form } from "@/components/ui/form";
 import { useForgotPasswordMutation } from "@/hooks/api/use-auth";
 import { getForgotSchema, type ForgotFormValues } from "@/schemas/auth";
 
@@ -83,18 +77,12 @@ export default function ForgotPassword() {
         transition={{ duration: 0.5 }}
         className="w-full max-w-md"
       >
-        <div className="mb-8 text-center">
-          <motion.div
-            initial={{ scale: 0.5, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-            className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-primary text-primary-foreground"
-          >
-            <MailCheck className="h-6 w-6" />
-          </motion.div>
-          <h1 className="text-3xl font-bold tracking-tight">{t("forgotPassword.title")}</h1>
-          <p className="text-muted-foreground mt-2">{t("forgotPassword.subtitle")}</p>
-        </div>
+        <AuthHeader
+          t={t}
+          titleKey="forgotPassword.title"
+          subtitleKey="forgotPassword.subtitle"
+          icon={MailCheck}
+        />
 
         {error && (
           <Alert variant="destructive">
@@ -104,23 +92,12 @@ export default function ForgotPassword() {
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4" noValidate>
-            <FormField
-              control={form.control}
+            <AuthEmailField
+              form={form}
+              isLoading={isPending}
+              t={t}
+              labelKey="forgotPassword.emailLabel"
               name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t("forgotPassword.emailLabel")}</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="name@example.com"
-                      type="text"
-                      disabled={isPending}
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
             />
             <div className="flex gap-3 pt-2">
               <Button asChild variant="outline" className="flex-1" disabled={isPending}>

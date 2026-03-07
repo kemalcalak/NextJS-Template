@@ -10,6 +10,8 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
+import { AuthEmailField } from "@/components/auth/AuthEmailField";
+import { AuthHeader } from "@/components/auth/AuthHeader";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -19,18 +21,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-  FormDescription,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+import { Form, FormDescription } from "@/components/ui/form";
 import { useResendVerificationMutation } from "@/hooks/api/use-auth";
-import { getResendVerificationSchema, type ResendVerificationFormValues } from "@/schemas/auth";
+import { getForgotSchema, type ForgotFormValues } from "@/schemas/auth";
 
 function VerifyEmailNoticeContent() {
   const { t } = useTranslation(["auth", "errors"]);
@@ -41,8 +34,8 @@ function VerifyEmailNoticeContent() {
 
   const { mutate: resendEmail, isPending: isLoading, isSuccess } = useResendVerificationMutation();
 
-  const form = useForm<ResendVerificationFormValues>({
-    resolver: zodResolver(getResendVerificationSchema(tv)),
+  const form = useForm<ForgotFormValues>({
+    resolver: zodResolver(getForgotSchema(tv)),
     defaultValues: {
       email: emailParam || "",
     },
@@ -58,7 +51,7 @@ function VerifyEmailNoticeContent() {
     return null;
   }
 
-  const onSubmit = (values: ResendVerificationFormValues) => {
+  const onSubmit = (values: ForgotFormValues) => {
     resendEmail({ email: values.email });
   };
 
@@ -70,60 +63,34 @@ function VerifyEmailNoticeContent() {
         transition={{ duration: 0.5 }}
         className="w-full max-w-md"
       >
-        <div className="mb-8 text-center">
-          <motion.div
-            initial={{ scale: 0.5, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-            className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-primary text-primary-foreground"
-          >
-            <Mail className="h-6 w-6" />
-          </motion.div>
-          <h1 className="text-3xl font-bold tracking-tight">
-            {t("verifyEmail.noticeTitle") || "Verify your email"}
-          </h1>
-          <p className="text-muted-foreground mt-2">
-            {t("verifyEmail.noticeSubtitle") || "You need to verify your email address to log in."}
-          </p>
-        </div>
+        <AuthHeader
+          t={t}
+          titleKey="verifyEmail.noticeTitle"
+          subtitleKey="verifyEmail.noticeSubtitle"
+          icon={Mail}
+        />
 
         <Card className="border-border/50 bg-card/50 backdrop-blur-sm">
           <CardHeader>
-            <CardTitle>{t("verifyEmail.cardTitle") || "Verification Required"}</CardTitle>
-            <CardDescription>
-              {t("verifyEmail.cardDescription") ||
-                "We sent a verification link to your email address."}
-            </CardDescription>
+            <CardTitle>{t("verifyEmail.cardTitle")}</CardTitle>
+            <CardDescription>{t("verifyEmail.cardDescription")}</CardDescription>
           </CardHeader>
 
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
               <CardContent className="space-y-4">
-                <FormField
-                  control={form.control}
-                  name="email"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>{t("login.emailLabel")}</FormLabel>
-                      <div className="relative">
-                        <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                        <FormControl>
-                          <Input
-                            type="email"
-                            readOnly
-                            className="pl-10 bg-muted/50 cursor-not-allowed"
-                            {...field}
-                          />
-                        </FormControl>
-                      </div>
-                      <FormDescription className="text-xs">
-                        {t("verifyEmail.emailNote") ||
-                          "This email address is associated with your account and cannot be changed here."}
-                      </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                <AuthEmailField
+                  form={form}
+                  isLoading={isLoading}
+                  t={t}
+                  labelKey="login.emailLabel"
+                  readOnly
+                  className="bg-muted/50 cursor-not-allowed text-muted-foreground"
+                >
+                  <FormDescription className="text-xs text-right opacity-70">
+                    {t("verifyEmail.emailNote")}
+                  </FormDescription>
+                </AuthEmailField>
 
                 {isSuccess && (
                   <motion.div
@@ -132,16 +99,14 @@ function VerifyEmailNoticeContent() {
                     className="flex items-center gap-2 rounded-lg bg-green-500/10 p-3 text-sm text-green-500"
                   >
                     <CheckCircle2 className="h-4 w-4" />
-                    <p>
-                      {t("verifyEmail.resendSuccess") || "Verification email resent successfully!"}
-                    </p>
+                    <p>{t("verifyEmail.resendSuccess")}</p>
                   </motion.div>
                 )}
               </CardContent>
 
               <CardFooter className="flex gap-3">
                 <Button asChild variant="outline" className="flex-1" type="button">
-                  <Link href="/login">{t("verifyEmail.backToLogin") || "Back to login"}</Link>
+                  <Link href="/login">{t("verifyEmail.backToLogin")}</Link>
                 </Button>
                 <Button className="flex-1" type="submit" disabled={isLoading || isSuccess}>
                   {isLoading ? (
@@ -150,7 +115,7 @@ function VerifyEmailNoticeContent() {
                       {t("login.submitting")}
                     </>
                   ) : (
-                    t("verifyEmail.resendButton") || "Resend"
+                    t("verifyEmail.resendButton")
                   )}
                 </Button>
               </CardFooter>

@@ -61,10 +61,3 @@ export const getResetSchema = (t: TFunction) =>
     });
 
 export type ResetFormValues = z.infer<ReturnType<typeof getResetSchema>>;
-
-export const getResendVerificationSchema = (t: TFunction) =>
-  z.object({
-    email: getEmailSchema(t),
-  });
-
-export type ResendVerificationFormValues = z.infer<ReturnType<typeof getResendVerificationSchema>>;
