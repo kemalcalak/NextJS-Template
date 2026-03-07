@@ -1,7 +1,6 @@
 import { Geist, Geist_Mono } from "next/font/google";
 
-import "@/i18n/config";
-import { QueryProvider } from "@/providers/QueryProvider";
+import { ClientSideProviders } from "@/providers/ClientSideProviders";
 
 import type { Metadata } from "next";
 
@@ -30,7 +29,7 @@ export default function RootLayout({
   return (
     <html lang="tr">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <QueryProvider>{children}</QueryProvider>
+        <ClientSideProviders>{children}</ClientSideProviders>
       </body>
     </html>
   );
