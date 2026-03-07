@@ -15,13 +15,7 @@ import { NameFields } from "@/components/register/NameFields";
 import { PasswordField } from "@/components/register/PasswordField";
 import { RegisterHeader } from "@/components/register/RegisterHeader";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form } from "@/components/ui/form";
 import { useRegisterMutation } from "@/hooks/api/use-auth";
 import { getRegisterSchema, type RegisterFormValues } from "@/schemas/auth";
