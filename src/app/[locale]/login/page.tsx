@@ -3,7 +3,7 @@
 import { useState, useMemo } from "react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2, UserPlus } from "lucide-react";
+import { Loader2, Lock } from "lucide-react";
 import { motion } from "motion/react";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
@@ -11,37 +11,40 @@ import { useTranslation } from "react-i18next";
 
 import { AuthEmailField } from "@/components/auth/AuthEmailField";
 import { AuthHeader } from "@/components/auth/AuthHeader";
-import { AuthNameFields } from "@/components/auth/AuthNameFields";
 import { AuthPasswordField } from "@/components/auth/AuthPasswordField";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Form } from "@/components/ui/form";
-import { useRegisterMutation } from "@/hooks/api/use-auth";
-import { getRegisterSchema, type RegisterFormValues } from "@/schemas/auth";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { useLoginMutation } from "@/hooks/api/use-auth";
+import { getLoginSchema, type LoginFormValues } from "@/schemas/auth";
 
-export default function Register() {
+export default function Login() {
   const { t } = useTranslation(["auth", "validation"]);
   const { t: tv } = useTranslation("validation");
-  const { mutate: registerUser, isPending: isLoading } = useRegisterMutation();
+  const { mutate: login, isPending: isLoading } = useLoginMutation();
   const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  const schema = useMemo(() => getRegisterSchema(tv), [tv]);
+  const schema = useMemo(() => getLoginSchema(tv), [tv]);
 
-  const form = useForm<RegisterFormValues>({
+  const form = useForm<LoginFormValues>({
     resolver: zodResolver(schema),
     defaultValues: {
-      first_name: "",
-      last_name: "",
       email: "",
       password: "",
-      confirmPassword: "",
+      rememberMe: false,
     },
   });
 
-  const onSubmit = (data: RegisterFormValues) => {
-    const { confirmPassword: _, ...payload } = data;
-    registerUser(payload);
+  const onSubmit = (data: LoginFormValues) => {
+    login(data);
   };
 
   return (
@@ -52,34 +55,21 @@ export default function Register() {
         transition={{ duration: 0.5 }}
         className="w-full max-w-md"
       >
-        <AuthHeader
-          t={t}
-          titleKey="register.title"
-          subtitleKey="register.subtitle"
-          icon={UserPlus}
-        />
+        <AuthHeader t={t} titleKey="login.title" subtitleKey="login.subtitle" icon={Lock} />
 
         <Card className="border-border/50 bg-card/50 backdrop-blur-sm">
           <CardHeader className="space-y-1">
-            <CardTitle className="text-2xl">{t("register.cardTitle")}</CardTitle>
-            <CardDescription>{t("register.cardDescription")}</CardDescription>
+            <CardTitle className="text-2xl">{t("login.cardTitle")}</CardTitle>
+            <CardDescription>{t("login.cardDescription")}</CardDescription>
           </CardHeader>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} noValidate>
               <CardContent className="grid gap-4">
-                <AuthNameFields
-                  form={form}
-                  isLoading={isLoading}
-                  t={t}
-                  firstNameLabelKey="register.firstNameLabel"
-                  lastNameLabelKey="register.lastNameLabel"
-                />
-
                 <AuthEmailField
                   form={form}
                   isLoading={isLoading}
                   t={t}
-                  labelKey="register.emailLabel"
+                  labelKey="login.emailLabel"
                 />
 
                 <AuthPasswordField
@@ -88,17 +78,39 @@ export default function Register() {
                   showPassword={showPassword}
                   setShowPassword={setShowPassword}
                   t={t}
-                  labelKey="register.passwordLabel"
-                />
+                  labelKey="login.passwordLabel"
+                >
+                  <Link
+                    href="/forgot-password"
+                    className="text-sm font-medium text-primary hover:underline transition-all"
+                  >
+                    {t("login.forgotPassword")}
+                  </Link>
+                </AuthPasswordField>
 
-                <AuthPasswordField
-                  form={form}
-                  isLoading={isLoading}
-                  showPassword={showConfirmPassword}
-                  setShowPassword={setShowConfirmPassword}
-                  t={t}
-                  labelKey="register.confirmPasswordLabel"
-                  name="confirmPassword"
+                <FormField
+                  control={form.control}
+                  name="rememberMe"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-row items-center space-x-2 space-y-0 py-2">
+                      <FormControl>
+                        <Checkbox
+                          id="rememberMe"
+                          checked={field.value}
+                          onCheckedChange={(checked) => {
+                            field.onChange(checked === true);
+                          }}
+                        />
+                      </FormControl>
+                      <FormLabel
+                        htmlFor="rememberMe"
+                        className="text-sm font-medium cursor-pointer leading-none"
+                      >
+                        {t("login.rememberMe")}
+                      </FormLabel>
+                      <FormMessage />
+                    </FormItem>
+                  )}
                 />
 
                 <div className="flex flex-col gap-4 mt-4">
@@ -106,19 +118,19 @@ export default function Register() {
                     {isLoading ? (
                       <>
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        {t("register.submitting")}
+                        {t("login.submitting")}
                       </>
                     ) : (
-                      t("register.submitButton")
+                      t("login.submitButton")
                     )}
                   </Button>
                   <div className="text-center text-sm">
-                    {t("register.hasAccount")}{" "}
+                    {t("login.noAccount")}{" "}
                     <Link
-                      href="/login"
+                      href="/register"
                       className="font-medium text-primary hover:underline transition-all"
                     >
-                      {t("register.login")}
+                      {t("login.register")}
                     </Link>
                   </div>
                 </div>

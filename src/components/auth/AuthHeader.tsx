@@ -1,11 +1,14 @@
-import { UserPlus } from "lucide-react";
+import { type LucideIcon } from "lucide-react";
 import { motion } from "motion/react";
 
-interface RegisterHeaderProps {
+interface AuthHeaderProps {
   t: (key: string) => string;
+  titleKey: string;
+  subtitleKey: string;
+  icon: LucideIcon;
 }
 
-export function RegisterHeader({ t }: RegisterHeaderProps) {
+export function AuthHeader({ t, titleKey, subtitleKey, icon: Icon }: AuthHeaderProps) {
   return (
     <div className="mb-8 text-center">
       <motion.div
@@ -14,10 +17,10 @@ export function RegisterHeader({ t }: RegisterHeaderProps) {
         transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
         className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-primary text-primary-foreground"
       >
-        <UserPlus className="h-6 w-6" />
+        <Icon className="h-6 w-6" />
       </motion.div>
-      <h1 className="text-3xl font-bold tracking-tight">{t("register.title")}</h1>
-      <p className="text-muted-foreground mt-2">{t("register.subtitle")}</p>
+      <h1 className="text-3xl font-bold tracking-tight">{t(titleKey)}</h1>
+      <p className="text-muted-foreground mt-2">{t(subtitleKey)}</p>
     </div>
   );
 }
