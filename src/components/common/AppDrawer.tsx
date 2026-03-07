@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+
 import { Moon, Sun, Menu, User as UserIcon, LogOut, Globe, LayoutDashboard } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
@@ -36,7 +37,12 @@ const SettingsSection = ({
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
+    const timer = setTimeout(() => {
+      setMounted(true);
+    }, 0);
+    return () => {
+      clearTimeout(timer);
+    };
   }, []);
 
   return (
@@ -51,7 +57,9 @@ const SettingsSection = ({
           variant="ghost"
           onClick={toggleTheme}
           aria-label={
-            mounted && theme === "dark" ? t("common:ui.light", "Light") : t("common:ui.dark", "Dark")
+            mounted && theme === "dark"
+              ? t("common:ui.light", "Light")
+              : t("common:ui.dark", "Dark")
           }
           className="flex h-auto items-center justify-start gap-2.5 p-2.5 rounded-xl bg-muted/40 border border-border/40 hover:bg-muted/60 hover:border-border/60 transition-all text-left"
         >
@@ -67,7 +75,9 @@ const SettingsSection = ({
               {t("common:ui.theme", "Theme")}
             </span>
             <span className="text-xs font-bold truncate">
-              {mounted && theme === "dark" ? t("common:ui.light", "Light") : t("common:ui.dark", "Dark")}
+              {mounted && theme === "dark"
+                ? t("common:ui.light", "Light")
+                : t("common:ui.dark", "Dark")}
             </span>
           </div>
         </Button>
@@ -121,7 +131,7 @@ export const AppDrawer = ({
 
     // Redirect to the new locale URL
     const currentPath = window.location.pathname;
-    let newPath = currentPath;
+    let newPath: string;
     if (currentPath.startsWith("/en/") || currentPath === "/en") {
       newPath = currentPath.replace(/^\/en/, `/${lng}`);
     } else if (currentPath.startsWith("/tr/") || currentPath === "/tr") {

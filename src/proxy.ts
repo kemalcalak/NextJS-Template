@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+
 import type { NextRequest } from "next/server";
 
 const locales = ["en", "tr"];
@@ -21,7 +22,7 @@ export function proxy(request: NextRequest) {
   if (!locale || !locales.includes(locale)) {
     // Check accept-language header
     const acceptLang = request.headers.get("accept-language");
-    if (acceptLang && acceptLang.includes("tr")) {
+    if (acceptLang?.includes("tr")) {
       locale = "tr";
     } else {
       locale = defaultLocale;

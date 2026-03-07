@@ -27,7 +27,12 @@ export const AppHeader = () => {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
+    const timer = setTimeout(() => {
+      setMounted(true);
+    }, 0);
+    return () => {
+      clearTimeout(timer);
+    };
   }, []);
 
   const toggleTheme = () => {
@@ -41,7 +46,7 @@ export const AppHeader = () => {
 
     // Redirect to the new locale URL
     const currentPath = window.location.pathname;
-    let newPath = currentPath;
+    let newPath: string;
     if (currentPath.startsWith("/en/") || currentPath === "/en") {
       newPath = currentPath.replace(/^\/en/, `/${lng}`);
     } else if (currentPath.startsWith("/tr/") || currentPath === "/tr") {
@@ -74,7 +79,11 @@ export const AppHeader = () => {
 
         <div className="hidden md:flex items-center gap-2">
           <Button variant="ghost" size="sm" className="w-9 px-0" onClick={toggleTheme}>
-            {mounted && resolvedTheme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+            {mounted && resolvedTheme === "dark" ? (
+              <Sun className="h-4 w-4" />
+            ) : (
+              <Moon className="h-4 w-4" />
+            )}
             <span className="sr-only">{t("common:ui.toggleTheme", "Toggle theme")}</span>
           </Button>
 

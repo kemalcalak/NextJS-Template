@@ -1,6 +1,5 @@
 "use client";
 
-import "@/i18n/config";
 import i18n from "@/i18n/config";
 
 import { QueryProvider } from "./QueryProvider";
@@ -14,9 +13,9 @@ export function ClientSideProviders({
   locale: string;
 }) {
   if (i18n.language !== locale && i18n.isInitialized) {
-    i18n.changeLanguage(locale);
+    void i18n.changeLanguage(locale);
   } else if (!i18n.isInitialized) {
-    i18n.language = locale;
+    void i18n.changeLanguage(locale);
   }
 
   return (

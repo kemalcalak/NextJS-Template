@@ -9,7 +9,9 @@ export const useTheme = () => {
 
   return {
     theme: theme as Theme | undefined,
-    setTheme: (newTheme: Theme) => setTheme(newTheme),
+    setTheme: (newTheme: Theme) => {
+      setTheme(newTheme);
+    },
     resolvedTheme: resolvedTheme as Theme | undefined,
   };
 };
