@@ -15,6 +15,7 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
+import { useLanguage } from "@/hooks/use-language";
 import { useAuthStore } from "@/stores/auth.store";
 
 interface AppDrawerProps {
@@ -124,23 +125,10 @@ export const AppDrawer = ({
     router.push("/logout");
   };
 
-  const changeLanguage = (lng: string) => {
-    i18n.changeLanguage(lng);
-    document.cookie = `NEXT_LOCALE=${lng}; path=/; max-age=31536000; SameSite=Lax`;
-    setIsMobileMenuOpen(false);
+  const { changeLanguage } = useLanguage();
 
-    // Redirect to the new locale URL
-    const currentPath = window.location.pathname;
-    let newPath: string;
-    if (currentPath.startsWith("/en/") || currentPath === "/en") {
-      newPath = currentPath.replace(/^\/en/, `/${lng}`);
-    } else if (currentPath.startsWith("/tr/") || currentPath === "/tr") {
-      newPath = currentPath.replace(/^\/tr/, `/${lng}`);
-    } else {
-      newPath = `/${lng}${currentPath}`;
-    }
-
-    window.location.href = newPath || `/${lng}`;
+  const handleChangeLanguage = (lng: string) => {
+    changeLanguage(lng, () => setIsMobileMenuOpen(false));
   };
 
   return (
@@ -221,7 +209,7 @@ export const AppDrawer = ({
             <SettingsSection
               theme={theme}
               toggleTheme={toggleTheme}
-              changeLanguage={changeLanguage}
+              changeLanguage={handleChangeLanguage}
             />
 
             {!user ? (

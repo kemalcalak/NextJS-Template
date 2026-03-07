@@ -15,6 +15,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useLanguage } from "@/hooks/use-language";
 import { useTheme } from "@/hooks/use-theme";
 import { useAuthStore } from "@/stores/auth.store";
 
@@ -39,24 +40,10 @@ export const AppHeader = () => {
     setTheme(resolvedTheme === "dark" ? "light" : "dark");
   };
 
-  const changeLanguage = (lng: string) => {
-    i18n.changeLanguage(lng);
-    document.cookie = `NEXT_LOCALE=${lng}; path=/; max-age=31536000; SameSite=Lax`;
-    setIsMobileMenuOpen(false);
+  const { changeLanguage } = useLanguage();
 
-    // Redirect to the new locale URL
-    const currentPath = window.location.pathname;
-    let newPath: string;
-    if (currentPath.startsWith("/en/") || currentPath === "/en") {
-      newPath = currentPath.replace(/^\/en/, `/${lng}`);
-    } else if (currentPath.startsWith("/tr/") || currentPath === "/tr") {
-      newPath = currentPath.replace(/^\/tr/, `/${lng}`);
-    } else {
-      newPath = `/${lng}${currentPath}`;
-    }
-
-    // Fallback to exactly /lng
-    window.location.href = newPath || `/${lng}`;
+  const handleChangeLanguage = (lng: string) => {
+    changeLanguage(lng, () => setIsMobileMenuOpen(false));
   };
 
   return (
@@ -97,14 +84,14 @@ export const AppHeader = () => {
             <DropdownMenuContent align="end">
               <DropdownMenuItem
                 onClick={() => {
-                  changeLanguage("en");
+                  handleChangeLanguage("en");
                 }}
               >
                 English
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={() => {
-                  changeLanguage("tr");
+                  handleChangeLanguage("tr");
                 }}
               >
                 Türkçe
