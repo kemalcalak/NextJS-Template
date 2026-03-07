@@ -34,7 +34,9 @@ const Home = () => {
             {user ? (
               <Button
                 size="lg"
-                onClick={() => { router.push("/dashboard"); }}
+                onClick={() => {
+                  router.push("/dashboard");
+                }}
                 className="w-full sm:w-auto"
               >
                 {t("cta.dashboard", "Go to Dashboard")}
@@ -43,7 +45,9 @@ const Home = () => {
               <>
                 <Button
                   size="lg"
-                  onClick={() => { router.push("/login"); }}
+                  onClick={() => {
+                    router.push("/login");
+                  }}
                   className="w-full sm:w-auto"
                 >
                   {t("cta.login", "Login")}
@@ -51,7 +55,9 @@ const Home = () => {
                 <Button
                   size="lg"
                   variant="outline"
-                  onClick={() => { router.push("/register"); }}
+                  onClick={() => {
+                    router.push("/register");
+                  }}
                   className="w-full sm:w-auto"
                 >
                   {t("cta.register", "Register")}

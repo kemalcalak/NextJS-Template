@@ -43,7 +43,9 @@ export const AppHeader = () => {
   const { changeLanguage } = useLanguage();
 
   const handleChangeLanguage = (lng: string) => {
-    changeLanguage(lng, () => setIsMobileMenuOpen(false));
+    changeLanguage(lng, () => {
+      setIsMobileMenuOpen(false);
+    });
   };
 
   return (

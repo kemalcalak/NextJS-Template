@@ -14,7 +14,12 @@ export function NotFound() {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
+    const timer = setTimeout(() => {
+      setMounted(true);
+    }, 0);
+    return () => {
+      clearTimeout(timer);
+    };
   }, []);
 
   return (
@@ -23,7 +28,10 @@ export function NotFound() {
         <h1 className="text-8xl sm:text-9xl font-extrabold tracking-widest text-primary opacity-20 select-none">
           404
         </h1>
-        <div className="absolute rotate-12 rounded bg-destructive px-2 py-0.5 text-xs sm:text-sm font-medium text-destructive-foreground" suppressHydrationWarning>
+        <div
+          className="absolute rotate-12 rounded bg-destructive px-2 py-0.5 text-xs sm:text-sm font-medium text-destructive-foreground"
+          suppressHydrationWarning
+        >
           {mounted ? t("common:page_not_found") : "404"}
         </div>
       </div>
@@ -32,13 +40,20 @@ export function NotFound() {
         <p className="text-xl sm:text-2xl font-semibold md:text-3xl" suppressHydrationWarning>
           {mounted ? t("common:lost_in_space") : "Lost in Space"}
         </p>
-        <p className="text-sm sm:text-base text-muted-foreground w-full px-2" suppressHydrationWarning>
-          {mounted ? t("common:not_found_description") : "The page you are looking for might have been removed or is temporarily unavailable."}
+        <p
+          className="text-sm sm:text-base text-muted-foreground w-full px-2"
+          suppressHydrationWarning
+        >
+          {mounted
+            ? t("common:not_found_description")
+            : "The page you are looking for might have been removed or is temporarily unavailable."}
         </p>
 
         <div className="mt-6 flex flex-row items-center justify-center gap-3 w-full sm:w-auto px-4">
           <Button asChild variant="default" className="flex-1 sm:flex-none sm:w-32">
-            <Link href="/" suppressHydrationWarning>{mounted ? t("common:go_home") : "Go Home"}</Link>
+            <Link href="/" suppressHydrationWarning>
+              {mounted ? t("common:go_home") : "Go Home"}
+            </Link>
           </Button>
           <Button
             variant="outline"

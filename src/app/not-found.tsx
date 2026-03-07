@@ -1,4 +1,5 @@
 import { Geist, Geist_Mono } from "next/font/google";
+
 import { AppHeader } from "@/components/common/AppHeader";
 import { NotFound } from "@/components/common/NotFound";
 import { ClientSideProviders } from "@/providers/ClientSideProviders";

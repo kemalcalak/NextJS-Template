@@ -116,7 +116,7 @@ export const AppDrawer = ({
   isMobileMenuOpen,
   setIsMobileMenuOpen,
 }: AppDrawerProps) => {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const { user } = useAuthStore();
   const router = useRouter();
 
@@ -128,7 +128,9 @@ export const AppDrawer = ({
   const { changeLanguage } = useLanguage();
 
   const handleChangeLanguage = (lng: string) => {
-    changeLanguage(lng, () => setIsMobileMenuOpen(false));
+    changeLanguage(lng, () => {
+      setIsMobileMenuOpen(false);
+    });
   };
 
   return (
