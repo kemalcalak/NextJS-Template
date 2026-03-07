@@ -1,19 +1,21 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 
 export const useLanguage = () => {
   const { i18n } = useTranslation();
+  const router = useRouter();
 
   const changeLanguage = (lng: string, callback?: () => void) => {
-    i18n.changeLanguage(lng);
+    void i18n.changeLanguage(lng);
     document.cookie = `NEXT_LOCALE=${lng}; path=/; max-age=31536000; SameSite=Lax`;
 
     if (callback) {
       callback();
     }
 
-    // Redirect to the new locale URL
+    // Replace full reload with router.push
     const currentPath = window.location.pathname;
     let newPath: string;
 
@@ -25,8 +27,7 @@ export const useLanguage = () => {
       newPath = `/${lng}${currentPath}`;
     }
 
-    // Fallback to exactly /lng
-    window.location.href = newPath || `/${lng}`;
+    router.push(newPath || `/${lng}`);
   };
 
   return { language: i18n.language, changeLanguage };

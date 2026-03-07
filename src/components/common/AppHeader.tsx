@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 
-import { Moon, Sun, Search, X } from "lucide-react";
+import { Moon, Sun } from "lucide-react";
 import Link from "next/link";
 import { useTranslation } from "react-i18next";
 
@@ -15,8 +15,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
-import { useDebounce } from "@/hooks/use-debounce";
 import { useLanguage } from "@/hooks/use-language";
 import { useTheme } from "@/hooks/use-theme";
 import { useIsMobile } from "@/hooks/useMediaQuery";
@@ -29,8 +27,6 @@ export const AppHeader = () => {
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
-  const [searchValue, setSearchValue] = useState("");
-  const debouncedSearchValue = useDebounce(searchValue, 500);
   const isMobile = useIsMobile();
 
   useEffect(() => {
@@ -41,12 +37,6 @@ export const AppHeader = () => {
       clearTimeout(timer);
     };
   }, []);
-
-  useEffect(() => {
-    if (debouncedSearchValue && mounted) {
-      // Here you would typically call an API
-    }
-  }, [debouncedSearchValue, mounted]);
 
   const toggleTheme = () => {
     setTheme(resolvedTheme === "dark" ? "light" : "dark");
@@ -69,34 +59,7 @@ export const AppHeader = () => {
           </Link>
         </div>
 
-        <div className="flex-1 max-w-sm px-4 hidden sm:block">
-          <div className="relative">
-            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-            <Input
-              type="search"
-              placeholder={t("common:ui.search", "Search...")}
-              className="pl-9 h-9 w-full bg-muted/50 border-none focus-visible:ring-1 focus-visible:ring-primary/20"
-              value={searchValue}
-              onChange={(e) => {
-                setSearchValue(e.target.value);
-              }}
-            />
-            {searchValue && (
-              <Button
-                variant="ghost"
-                size="sm"
-                className="absolute right-1 top-1 h-7 w-7 p-0 hover:bg-transparent"
-                onClick={() => {
-                  setSearchValue("");
-                }}
-              >
-                <X className="h-4 w-4 text-muted-foreground" />
-              </Button>
-            )}
-          </div>
-        </div>
-
-        <div className="flex-1 sm:hidden" />
+        <div className="flex-1" />
 
         {mounted && isMobile && (
           <AppDrawer

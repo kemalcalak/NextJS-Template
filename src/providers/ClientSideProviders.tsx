@@ -20,13 +20,19 @@ export function ClientSideProviders({
 
   useEffect(() => {
     const initI18n = async () => {
-      if (!i18n.isInitialized || i18n.language !== locale) {
+      if (!i18n.isInitialized) {
         await i18n.changeLanguage(locale);
       }
       setMounted(true);
     };
     void initI18n();
-  }, [locale]);
+  }, []);
+
+  useEffect(() => {
+    if (mounted && i18n.language !== locale) {
+      void i18n.changeLanguage(locale);
+    }
+  }, [locale, mounted]);
 
   return (
     <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
