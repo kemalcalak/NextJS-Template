@@ -3,17 +3,16 @@
 import { useState, useMemo } from "react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2 } from "lucide-react";
+import { Loader2, UserPlus } from "lucide-react";
 import { motion } from "motion/react";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
-import { ConfirmPasswordField } from "@/components/register/ConfirmPasswordField";
-import { EmailField } from "@/components/register/EmailField";
-import { NameFields } from "@/components/register/NameFields";
-import { PasswordField } from "@/components/register/PasswordField";
-import { RegisterHeader } from "@/components/register/RegisterHeader";
+import { AuthEmailField } from "@/components/auth/AuthEmailField";
+import { AuthHeader } from "@/components/auth/AuthHeader";
+import { AuthNameFields } from "@/components/auth/AuthNameFields";
+import { AuthPasswordField } from "@/components/auth/AuthPasswordField";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form } from "@/components/ui/form";
@@ -53,7 +52,12 @@ export default function Register() {
         transition={{ duration: 0.5 }}
         className="w-full max-w-md"
       >
-        <RegisterHeader t={t} />
+        <AuthHeader
+          t={t}
+          titleKey="register.title"
+          subtitleKey="register.subtitle"
+          icon={UserPlus}
+        />
 
         <Card className="border-border/50 bg-card/50 backdrop-blur-sm">
           <CardHeader className="space-y-1">
@@ -63,22 +67,40 @@ export default function Register() {
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} noValidate>
               <CardContent className="grid gap-4">
-                <NameFields form={form} isLoading={isLoading} t={t} />
-                <EmailField form={form} isLoading={isLoading} t={t} />
-                <PasswordField
+                <AuthNameFields
+                  form={form}
+                  isLoading={isLoading}
+                  t={t}
+                  firstNameLabelKey="register.firstNameLabel"
+                  lastNameLabelKey="register.lastNameLabel"
+                />
+
+                <AuthEmailField
+                  form={form}
+                  isLoading={isLoading}
+                  t={t}
+                  labelKey="register.emailLabel"
+                />
+
+                <AuthPasswordField
                   form={form}
                   isLoading={isLoading}
                   showPassword={showPassword}
                   setShowPassword={setShowPassword}
                   t={t}
+                  labelKey="register.passwordLabel"
                 />
-                <ConfirmPasswordField
+
+                <AuthPasswordField
                   form={form}
                   isLoading={isLoading}
-                  showConfirmPassword={showConfirmPassword}
-                  setShowConfirmPassword={setShowConfirmPassword}
+                  showPassword={showConfirmPassword}
+                  setShowPassword={setShowConfirmPassword}
                   t={t}
+                  labelKey="register.confirmPasswordLabel"
+                  name="confirmPassword"
                 />
+
                 <div className="flex flex-col gap-4 mt-4">
                   <Button className="w-full" type="submit" disabled={isLoading}>
                     {isLoading ? (

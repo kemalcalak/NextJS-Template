@@ -3,26 +3,19 @@
 import { useState, useMemo } from "react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2 } from "lucide-react";
+import { Loader2, Lock } from "lucide-react";
 import { motion } from "motion/react";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
-import { EmailField } from "@/components/login/EmailField";
-import { LoginHeader } from "@/components/login/LoginHeader";
-import { PasswordField } from "@/components/login/PasswordField";
+import { AuthEmailField } from "@/components/auth/AuthEmailField";
+import { AuthHeader } from "@/components/auth/AuthHeader";
+import { AuthPasswordField } from "@/components/auth/AuthPasswordField";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useLoginMutation } from "@/hooks/api/use-auth";
 import { getLoginSchema, type LoginFormValues } from "@/schemas/auth";
 
@@ -55,7 +48,12 @@ export default function Login() {
         transition={{ duration: 0.5 }}
         className="w-full max-w-md"
       >
-        <LoginHeader t={t} />
+        <AuthHeader
+          t={t}
+          titleKey="login.title"
+          subtitleKey="login.subtitle"
+          icon={Lock}
+        />
 
         <Card className="border-border/50 bg-card/50 backdrop-blur-sm">
           <CardHeader className="space-y-1">
@@ -65,15 +63,28 @@ export default function Login() {
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} noValidate>
               <CardContent className="grid gap-4">
-                <EmailField form={form} isLoading={isLoading} t={t} />
+                <AuthEmailField
+                  form={form}
+                  isLoading={isLoading}
+                  t={t}
+                  labelKey="login.emailLabel"
+                />
 
-                <PasswordField
+                <AuthPasswordField
                   form={form}
                   isLoading={isLoading}
                   showPassword={showPassword}
                   setShowPassword={setShowPassword}
                   t={t}
-                />
+                  labelKey="login.passwordLabel"
+                >
+                  <Link
+                    href="/forgot-password"
+                    className="text-sm font-medium text-primary hover:underline transition-all"
+                  >
+                    {t("login.forgotPassword")}
+                  </Link>
+                </AuthPasswordField>
 
                 <FormField
                   control={form.control}
