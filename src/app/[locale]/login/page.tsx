@@ -15,7 +15,14 @@ import { AuthPasswordField } from "@/components/auth/AuthPasswordField";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { useLoginMutation } from "@/hooks/api/use-auth";
 import { getLoginSchema, type LoginFormValues } from "@/schemas/auth";
 
@@ -48,12 +55,7 @@ export default function Login() {
         transition={{ duration: 0.5 }}
         className="w-full max-w-md"
       >
-        <AuthHeader
-          t={t}
-          titleKey="login.title"
-          subtitleKey="login.subtitle"
-          icon={Lock}
-        />
+        <AuthHeader t={t} titleKey="login.title" subtitleKey="login.subtitle" icon={Lock} />
 
         <Card className="border-border/50 bg-card/50 backdrop-blur-sm">
           <CardHeader className="space-y-1">
