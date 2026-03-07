@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useState } from "react";
+import { Suspense, useState, useEffect } from "react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2, ShieldCheck, XCircle, Eye, EyeOff, Lock } from "lucide-react";
@@ -52,6 +52,21 @@ const InvalidLinkState = ({ t }: { t: (key: string) => string }) => (
   </div>
 );
 
+const ResetHeader = ({ t }: { t: (key: string) => string }) => (
+  <div className="mb-8 text-center">
+    <motion.div
+      initial={{ scale: 0.5, opacity: 0 }}
+      animate={{ scale: 1, opacity: 1 }}
+      transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
+      className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-primary text-primary-foreground"
+    >
+      <ShieldCheck className="h-6 w-6" />
+    </motion.div>
+    <h1 className="text-3xl font-bold tracking-tight">{t("resetPassword.title")}</h1>
+    <p className="text-muted-foreground mt-2">{t("resetPassword.subtitle")}</p>
+  </div>
+);
+
 function ResetPasswordForm() {
   const { t } = useTranslation("auth");
   const { t: tv } = useTranslation("validation");
@@ -65,13 +80,11 @@ function ResetPasswordForm() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const resetPasswordMutation = useResetPasswordMutation();
+  const isPending = resetPasswordMutation.isPending;
 
   const form = useForm<ResetFormValues>({
     resolver: zodResolver(getResetSchema(tv)),
-    defaultValues: {
-      password: "",
-      confirmPassword: "",
-    },
+    defaultValues: { password: "", confirmPassword: "" },
   });
 
   const onSubmit = async (values: ResetFormValues) => {
@@ -80,17 +93,21 @@ function ResetPasswordForm() {
     try {
       await resetPasswordMutation.mutateAsync({ token, new_password: values.password });
       setSuccess(true);
-      setTimeout(() => {
-        router.push("/login");
-      }, 3000);
     } catch (err: unknown) {
       const axiosError = err as AxiosError<{ detail?: string }>;
-      const msg = axiosError.response?.data?.detail || t("resetPassword.errorMsg");
-      setError(msg);
+      setError(axiosError.response?.data?.detail || t("resetPassword.errorMsg"));
     }
   };
 
-  const isPending = resetPasswordMutation.isPending;
+  useEffect(() => {
+    if (!success) return;
+    const timer = setTimeout(() => {
+      router.push("/login");
+    }, 3000);
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [success, router]);
 
   if (!token) return <InvalidLinkState t={t} />;
   if (success) return <SuccessState t={t} />;
@@ -103,18 +120,7 @@ function ResetPasswordForm() {
         transition={{ duration: 0.5 }}
         className="w-full max-w-md"
       >
-        <div className="mb-8 text-center">
-          <motion.div
-            initial={{ scale: 0.5, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-            className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-primary text-primary-foreground"
-          >
-            <ShieldCheck className="h-6 w-6" />
-          </motion.div>
-          <h1 className="text-3xl font-bold tracking-tight">{t("resetPassword.title")}</h1>
-          <p className="text-muted-foreground mt-2">{t("resetPassword.subtitle")}</p>
-        </div>
+        <ResetHeader t={t} />
 
         {error && (
           <Alert variant="destructive">

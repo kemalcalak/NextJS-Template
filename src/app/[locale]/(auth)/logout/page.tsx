@@ -9,7 +9,7 @@ import { useLogoutMutation } from "@/hooks/api/use-auth";
 
 export default function Logout() {
   const { t } = useTranslation("auth");
-  const logoutMutation = useLogoutMutation();
+  const { mutateAsync: logout } = useLogoutMutation();
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -17,7 +17,7 @@ export default function Logout() {
 
     const performLogout = async () => {
       try {
-        await logoutMutation.mutateAsync();
+        await logout();
       } catch (_err) {
         if (isMounted) setError(t("logout.errorMsg"));
       }
@@ -28,7 +28,8 @@ export default function Logout() {
     return () => {
       isMounted = false;
     };
-  }, [logoutMutation, t]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className="flex h-[calc(100vh-80px)] flex-col items-center justify-center p-4 gap-4">

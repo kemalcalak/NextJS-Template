@@ -10,12 +10,13 @@ import { useTranslation } from "react-i18next";
 
 import { LoadingScreen } from "@/components/common/LoadingScreen";
 import { Button } from "@/components/ui/button";
-import { authService } from "@/lib/api/endpoints/auth";
+import { useVerifyEmailMutation } from "@/hooks/api/use-auth";
 
 import type { AxiosError } from "axios";
 
 function VerifyEmailContent() {
   const { t } = useTranslation("auth");
+  const { mutateAsync: verifyEmail } = useVerifyEmailMutation();
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
 
@@ -31,7 +32,7 @@ function VerifyEmailContent() {
 
     const verify = async () => {
       try {
-        await authService.verifyEmail({ token });
+        await verifyEmail({ token });
         setStatus("success");
       } catch (error) {
         const axiosError = error as AxiosError<{ detail?: string }>;
@@ -41,7 +42,7 @@ function VerifyEmailContent() {
     };
 
     verify();
-  }, [token, t]);
+  }, [token, t, verifyEmail]);
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background p-4 sm:p-8">
