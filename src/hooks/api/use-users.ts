@@ -6,7 +6,7 @@ import type { User } from "@/lib/types/user";
 // Query keys
 export const userKeys = {
   all: ["users"] as const,
-  detail: (id: number) => ["users", id] as const,
+  detail: (id: string) => ["users", id] as const,
 };
 
 // Get all users
@@ -18,14 +18,14 @@ export const useUsers = () => {
 };
 
 // Get single user
-export const useUser = (id: number | undefined) => {
+export const useUser = (id: string | undefined) => {
   return useQuery({
     queryKey: id ? userKeys.detail(id) : ["users", "invalid"],
     queryFn: () => {
       if (!id) throw new Error("User ID is required");
       return usersApi.getById(id);
     },
-    enabled: typeof id === "number",
+    enabled: typeof id === "string",
   });
 };
 
@@ -43,7 +43,7 @@ export const useCreateUser = () => {
 
 // Update user mutation
 interface UpdateUserParams {
-  id: number;
+  id: string;
   data: Partial<Omit<User, "id">>;
 }
 
@@ -53,7 +53,7 @@ export const useUpdateUser = () => {
     mutationFn: ({ id, data }: UpdateUserParams) => usersApi.update(id, data),
     onSuccess: (data) => {
       // Update both detail and list cache
-      queryClient.invalidateQueries({ queryKey: userKeys.detail(Number(data.id)) });
+      queryClient.invalidateQueries({ queryKey: userKeys.detail(data.id) });
       queryClient.invalidateQueries({ queryKey: userKeys.all });
     },
   });
@@ -63,7 +63,7 @@ export const useUpdateUser = () => {
 export const useDeleteUser = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (id: number) => usersApi.delete(id),
+    mutationFn: (id: string) => usersApi.delete(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: userKeys.all });
     },
@@ -76,7 +76,7 @@ export const useUpdateMe = () => {
   return useMutation({
     mutationFn: (data: Partial<Omit<User, "id" | "role" | "email">>) => usersApi.updateMe(data),
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: userKeys.detail(Number(data.id)) });
+      queryClient.invalidateQueries({ queryKey: userKeys.detail(data.id) });
       queryClient.invalidateQueries({ queryKey: ["users", "me"] });
     },
   });
