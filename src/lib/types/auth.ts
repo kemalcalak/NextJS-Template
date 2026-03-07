@@ -6,7 +6,9 @@ export interface LoginPayload {
   rememberMe?: boolean;
 }
 
-export interface RegisterPayload extends LoginPayload {
+export interface RegisterPayload {
+  email: string;
+  password: string;
   first_name: string;
   last_name: string;
   lang?: string;

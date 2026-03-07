@@ -50,18 +50,31 @@ const handleNonAuthError = (error: AxiosError<ErrorResponse>) => {
   }
 };
 
+let refreshPromise: Promise<string> | null = null;
+
 const attemptTokenRefresh = async (
   originalRequest: InternalAxiosRequestConfig & { _retry?: boolean },
 ) => {
   try {
-    const response = await axios.post<RefreshResponse>(
-      `${API_URL}${API_PREFIX}/auth/refresh`,
-      {},
-      { withCredentials: true },
-    );
-    const { access_token: accessToken } = response.data;
-    useAuthStore.getState().setToken(accessToken);
-    originalRequest.headers.Authorization = `Bearer ${accessToken}`;
+    if (!refreshPromise) {
+      refreshPromise = (async () => {
+        try {
+          const response = await axios.post<RefreshResponse>(
+            `${API_URL}${API_PREFIX}/auth/refresh`,
+            {},
+            { withCredentials: true },
+          );
+          const { access_token: accessToken } = response.data;
+          useAuthStore.getState().setToken(accessToken);
+          return accessToken;
+        } finally {
+          refreshPromise = null;
+        }
+      })();
+    }
+
+    const newAccessToken = await refreshPromise;
+    originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
     return await api(originalRequest);
   } catch (refreshError) {
     useAuthStore.getState().logout();
