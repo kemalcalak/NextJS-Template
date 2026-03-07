@@ -10,6 +10,9 @@ interface AuthEmailFieldProps<TFieldValues extends FieldValues> {
   t: (key: string) => string;
   labelKey: string;
   name?: Path<TFieldValues>;
+  readOnly?: boolean;
+  className?: string;
+  children?: React.ReactNode;
 }
 
 export function AuthEmailField<TFieldValues extends FieldValues>({
@@ -18,6 +21,9 @@ export function AuthEmailField<TFieldValues extends FieldValues>({
   t,
   labelKey,
   name = "email" as Path<TFieldValues>,
+  readOnly = false,
+  className,
+  children,
 }: AuthEmailFieldProps<TFieldValues>) {
   return (
     <FormField
@@ -25,15 +31,19 @@ export function AuthEmailField<TFieldValues extends FieldValues>({
       name={name}
       render={({ field }) => (
         <FormItem className="grid gap-2 text-left">
-          <FormLabel>{t(labelKey)}</FormLabel>
+          <div className="flex items-center justify-between">
+            <FormLabel>{t(labelKey)}</FormLabel>
+            {children}
+          </div>
           <div className="relative">
             <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <FormControl>
               <Input
                 type="text"
                 placeholder="kemalcalak@gmail.com"
-                className="pl-10"
+                className={`pl-10 ${className || ""}`}
                 disabled={isLoading}
+                readOnly={readOnly}
                 {...field}
               />
             </FormControl>
