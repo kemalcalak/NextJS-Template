@@ -9,6 +9,11 @@ import i18n from "@/i18n/config";
 import { QueryProvider } from "./QueryProvider";
 import { ThemeProvider } from "./ThemeProvider";
 
+const loadingMessages: Record<string, string> = {
+  en: "Loading...",
+  tr: "Yükleniyor...",
+};
+
 export function ClientSideProviders({
   children,
   locale,
@@ -20,7 +25,7 @@ export function ClientSideProviders({
 
   useEffect(() => {
     const initI18n = async () => {
-      if (!i18n.isInitialized || i18n.language !== locale) {
+      if (!i18n.isInitialized) {
         await i18n.changeLanguage(locale);
       }
       setMounted(true);
@@ -28,10 +33,18 @@ export function ClientSideProviders({
     void initI18n();
   }, [locale]);
 
+  useEffect(() => {
+    if (mounted && i18n.language !== locale) {
+      void i18n.changeLanguage(locale);
+    }
+  }, [locale, mounted]);
+
+  const loadingMessage = loadingMessages[locale] || loadingMessages.en;
+
   return (
     <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
       {!mounted ? (
-        <LoadingScreen fullScreen />
+        <LoadingScreen fullScreen message={loadingMessage} />
       ) : (
         <QueryProvider>
           <ErrorBoundary>{children}</ErrorBoundary>
