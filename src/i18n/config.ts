@@ -50,6 +50,8 @@ i18n
     supportedLngs: ["en", "tr"],
 
     fallbackLng: "en",
+    defaultNS: "common",
+    ns: ["common", "auth", "validation", "errors", "success", "home", "dashboard", "profile"],
 
     interpolation: {
       escapeValue: false,

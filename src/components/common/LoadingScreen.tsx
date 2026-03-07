@@ -17,7 +17,7 @@ export function LoadingScreen({
   return (
     <div
       className={cn(
-        "flex flex-col items-center justify-center",
+        "flex flex-col items-center justify-center bg-background text-foreground transition-colors",
         fullScreen ? "h-screen w-full" : "py-10 w-full",
       )}
     >
