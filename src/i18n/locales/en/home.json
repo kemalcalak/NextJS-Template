@@ -1,0 +1,15 @@
+{
+  "title": "Welcome to My App",
+  "subtitle": "The best place to manage your daily tasks and projects",
+  "cta": {
+    "login": "Login to your account",
+    "register": "Create new account",
+    "dashboard": "Go to Dashboard"
+  },
+  "features": {
+    "title": "Features",
+    "item1": "Fast & Secure",
+    "item2": "Real-time sync",
+    "item3": "Beautiful Design"
+  }
+}

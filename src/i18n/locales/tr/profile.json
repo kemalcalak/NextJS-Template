@@ -1,0 +1,28 @@
+{
+  "title": "Profil Ayarları",
+  "subtitle": "Hesap ayarlarınızı ve tercihlerinizi yönetin",
+  "tabs": {
+    "info": "Profil Bilgileri",
+    "security": "Güvenlik"
+  },
+  "info": {
+    "title": "Kişisel Bilgiler",
+    "description": "Kimlik bilgileriniz",
+    "firstName": "Ad",
+    "lastName": "Soyad",
+    "titleLabel": "Ünvan",
+    "email": "E-posta Adresi",
+    "emailNotice": "E-posta adresi değiştirilemez",
+    "submit": "Değişiklikleri Kaydet",
+    "submitting": "Kaydediliyor..."
+  },
+  "security": {
+    "title": "Şifre Güncelle",
+    "description": "Güvende kalmak için hesabınızın uzun ve rastgele bir şifre kullandığından emin olun",
+    "currentPassword": "Mevcut Şifre",
+    "newPassword": "Yeni Şifre",
+    "confirmPassword": "Yeni Şifreyi Onayla",
+    "submit": "Şifreyi Güncelle",
+    "submitting": "Güncelleniyor..."
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "fillAllFields": "Lütfen tüm alanları doldurun.",
+  "loginFailed": "Giriş başarısız. Lütfen bilgilerinizi kontrol edin.",
+  "genericError": "Giriş yapılırken bir hata oluştu.",
+  "registrationFailed": "Kayıt işlemi başarısız. Lütfen tekrar deneyin.",
+  "VALIDATION_ERROR": "Doğrulama Hatası",
+  "INTERNAL_SERVER_ERROR": "Sunucu Hatası",
+  "RESOURCE_NOT_FOUND": "Kaynak Bulunamadı",
+  "INVALID_TOKEN": "Geçersiz veya süresi dolmuş token",
+  "INSUFFICIENT_PERMISSIONS": "Yetersiz İzin",
+  "RESOURCE_CONFLICT": "Kaynak Çakışması",
+  "RATE_LIMIT_EXCEEDED": "İstek Sınırı Aşıldı",
+  "error": {
+    "user": {
+      "role_invalid": "Belirtilen rol geçersiz.",
+      "not_found": "Kullanıcı bulunamadı.",
+      "email_exists": "Bu e-posta adresi zaten kullanımda.",
+      "invalid_credentials": "Geçersiz e-posta veya şifre.",
+      "invalid_password": "Geçersiz şifre.",
+      "user_inactive": "Kullanıcı hesabı aktif değil.",
+      "email_not_verified": "E-posta adresi doğrulanmadı.",
+      "invalid_verification_token": "Geçersiz doğrulama token'ı."
+    },
+    "auth": {
+      "refresh_token_missing": "Yenileme token'ı eksik.",
+      "invalid_current_password": "Mevcut şifre yanlış."
+    }
+  }
+}

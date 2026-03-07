@@ -1,0 +1,29 @@
+{
+  "fillAllFields": "Please fill in all fields.",
+  "loginFailed": "Login failed. Please check your credentials.",
+  "genericError": "An error occurred while logging in.",
+  "registrationFailed": "Registration failed. Please try again.",
+  "VALIDATION_ERROR": "Validation Error",
+  "INTERNAL_SERVER_ERROR": "Internal Server Error",
+  "RESOURCE_NOT_FOUND": "Resource Not Found",
+  "INVALID_TOKEN": "Invalid or expired token",
+  "INSUFFICIENT_PERMISSIONS": "Insufficient Permissions",
+  "RESOURCE_CONFLICT": "Resource Conflict",
+  "RATE_LIMIT_EXCEEDED": "Rate Limit Exceeded",
+  "error": {
+    "user": {
+      "role_invalid": "Invalid role specified.",
+      "not_found": "User not found.",
+      "email_exists": "Email already exists.",
+      "invalid_credentials": "Invalid email or password.",
+      "invalid_password": "Invalid password.",
+      "user_inactive": "User is inactive.",
+      "email_not_verified": "Email address is not verified.",
+      "invalid_verification_token": "Invalid verification token."
+    },
+    "auth": {
+      "refresh_token_missing": "Refresh token is missing.",
+      "invalid_current_password": "Current password is incorrect."
+    }
+  }
+}

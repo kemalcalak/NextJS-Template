@@ -1,0 +1,28 @@
+{
+  "title": "Profile Settings",
+  "subtitle": "Manage your account settings and preferences",
+  "tabs": {
+    "info": "Profile Information",
+    "security": "Security"
+  },
+  "info": {
+    "title": "Personal Information",
+    "description": "Information about your identity",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "titleLabel": "Title",
+    "email": "Email Address",
+    "emailNotice": "Email cannot be changed",
+    "submit": "Save Changes",
+    "submitting": "Saving..."
+  },
+  "security": {
+    "title": "Update Password",
+    "description": "Ensure your account is using a long, random password to stay secure",
+    "currentPassword": "Current Password",
+    "newPassword": "New Password",
+    "confirmPassword": "Confirm New Password",
+    "submit": "Update Password",
+    "submitting": "Updating..."
+  }
+}

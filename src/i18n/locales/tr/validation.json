@@ -1,0 +1,13 @@
+{
+  "emailRequired": "Email gereklidir",
+  "emailInvalid": "Geçerli bir email adresi girin",
+  "passwordMin": "Şifre en az {{count}} karakter olmalıdır",
+  "passwordUppercase": "Şifre en az bir büyük harf içermelidir",
+  "passwordLowercase": "Şifre en az bir küçük harf içermelidir",
+  "passwordNumber": "Şifre en az bir rakam içermelidir",
+  "passwordSpecial": "Şifre en az bir özel karakter içermelidir",
+  "passwordRequired": "Şifre gereklidir",
+  "confirmPasswordRequired": "Lütfen şifrenizi onaylayın",
+  "nameMin": "İsim en az {{count}} karakter olmalıdır",
+  "confirmPasswordMismatch": "Şifreler eşleşmiyor"
+}

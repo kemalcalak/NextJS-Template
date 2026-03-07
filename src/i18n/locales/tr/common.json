@@ -1,0 +1,42 @@
+{
+  "welcome": "Hoş geldiniz",
+  "greeting": "Merhaba, {{name}}!",
+  "buttons": {
+    "submit": "Gönder",
+    "cancel": "İptal",
+    "save": "Kaydet",
+    "delete": "Sil",
+    "edit": "Düzenle",
+    "back": "Geri"
+  },
+  "loading": "Yükleniyor...",
+  "error": "Bir hata oluştu",
+  "success": "İşlem başarılı",
+  "error_occurred": "Hata oluştu",
+  "something_went_wrong": "Bir şeyler ters gitti!",
+  "unexpected_error": "Beklenmeyen bir hata oluştu.",
+  "go_home": "Ana sayfaya dön",
+  "retry": "Yeniden dene",
+  "refresh_page": "Sayfayı yenile",
+  "go_back": "Geri git",
+  "page_not_found": "Sayfa bulunamadı",
+  "lost_in_space": "Kaybolmuş gibi görünüyorsun!",
+  "not_found_description": "Aradığınız sayfa mevcut değil veya taşınmış olabilir. Lütfen URL'yi kontrol edin veya ana sayfaya dönün.",
+  "ui": {
+    "theme": "Tema",
+    "language": "Dil",
+    "settings": "Ayarlar",
+    "lightMode": "Açık Tema",
+    "darkMode": "Koyu Tema",
+    "light": "Açık",
+    "dark": "Koyu",
+    "toggleMenu": "Menüyü Aç/Kapat",
+    "toggleTheme": "Temayı Değiştir",
+    "toggleLanguage": "Dili Değiştir",
+    "userFallback": "Kullanıcı"
+  },
+  "nav": {
+    "dashboard": "Panel",
+    "profile": "Profil"
+  }
+}

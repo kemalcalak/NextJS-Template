@@ -1,0 +1,15 @@
+{
+  "title": "My App'e Hoş Geldiniz",
+  "subtitle": "Günlük görevlerinizi ve projelerinizi yönetmek için en iyi yer",
+  "cta": {
+    "login": "Hesabınıza giriş yapın",
+    "register": "Yeni hesap oluştur",
+    "dashboard": "Dashboard'a git"
+  },
+  "features": {
+    "title": "Özellikler",
+    "item1": "Hızlı ve Güvenli",
+    "item2": "Gerçek zamanlı senkronizasyon",
+    "item3": "Harika Tasarım"
+  }
+}

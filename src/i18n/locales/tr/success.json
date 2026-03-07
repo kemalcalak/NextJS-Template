@@ -1,0 +1,19 @@
+{
+  "success": {
+    "user": {
+      "deleted": "Kullanıcı başarıyla silindi.",
+      "created": "Kullanıcı başarıyla oluşturuldu.",
+      "updated": "Kullanıcı başarıyla güncellendi.",
+      "email_verified": "E-posta başarıyla doğrulandı.",
+      "verification_email_sent": "Doğrulama e-postası gönderildi."
+    },
+    "auth": {
+      "login": "Başarıyla giriş yapıldı.",
+      "password_reset_sent": "Şifre sıfırlama bağlantısı gönderildi.",
+      "password_reset_success": "Şifre başarıyla sıfırlandı.",
+      "password_change_success": "Şifre başarıyla değiştirildi.",
+      "logout_success": "Başarıyla çıkış yapıldı.",
+      "register_success": "Başarıyla kayıt oldunuz. Lütfen e-postanızı doğrulayın."
+    }
+  }
+}

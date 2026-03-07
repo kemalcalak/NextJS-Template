@@ -1,0 +1,19 @@
+{
+  "success": {
+    "user": {
+      "deleted": "User deleted successfully.",
+      "created": "User created successfully.",
+      "updated": "User updated successfully.",
+      "email_verified": "Email verified successfully.",
+      "verification_email_sent": "Verification email sent."
+    },
+    "auth": {
+      "login": "Logged in successfully.",
+      "password_reset_sent": "Password reset link sent.",
+      "password_reset_success": "Password reset successfully.",
+      "password_change_success": "Password changed successfully.",
+      "logout_success": "Logged out successfully.",
+      "register_success": "Registered successfully. Please verify your email."
+    }
+  }
+}
