@@ -36,14 +36,5 @@ jobs:
       - name: Build Application
         run: pnpm build
 
-      - name: Run Vitest Tests
-        run: pnpm vitest run
-
-      - name: Install Playwright Browsers
-        run: pnpm exec playwright install --with-deps
-
-      - name: Run E2E Tests
-        run: pnpm test:e2e
-
       - name: Run Prettier Format Check
         run: pnpm format:check

@@ -211,6 +211,12 @@ export default defineConfig([
     },
   },
   {
+    files: ["**/components/ui/**/*.tsx"],
+    rules: {
+      "react-refresh/only-export-components": "off",
+    },
+  },
+  {
     files: ["**/components/**/*.tsx", "**/pages/**/*.tsx", "**/app/**/*.tsx"],
     rules: {
       "max-lines-per-function": ["warn", { max: 150, skipBlankLines: true, skipComments: true }],
