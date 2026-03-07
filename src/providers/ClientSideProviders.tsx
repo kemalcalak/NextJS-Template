@@ -26,7 +26,7 @@ export function ClientSideProviders({
       setMounted(true);
     };
     void initI18n();
-  }, []);
+  }, [locale]);
 
   useEffect(() => {
     if (mounted && i18n.language !== locale) {
