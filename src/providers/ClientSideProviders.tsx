@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import { ErrorBoundary } from "@/components/common/ErrorBoundary";
+import { LoadingScreen } from "@/components/common/LoadingScreen";
 import i18n from "@/i18n/config";
 
 import { QueryProvider } from "./QueryProvider";
@@ -15,17 +16,27 @@ export function ClientSideProviders({
   children: React.ReactNode;
   locale: string;
 }) {
+  const [mounted, setMounted] = useState(false);
+
   useEffect(() => {
-    if (!i18n.isInitialized || i18n.language !== locale) {
-      void i18n.changeLanguage(locale);
-    }
+    const initI18n = async () => {
+      if (!i18n.isInitialized || i18n.language !== locale) {
+        await i18n.changeLanguage(locale);
+      }
+      setMounted(true);
+    };
+    void initI18n();
   }, [locale]);
 
   return (
     <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-      <QueryProvider>
-        <ErrorBoundary>{children}</ErrorBoundary>
-      </QueryProvider>
+      {!mounted ? (
+        <LoadingScreen fullScreen />
+      ) : (
+        <QueryProvider>
+          <ErrorBoundary>{children}</ErrorBoundary>
+        </QueryProvider>
+      )}
     </ThemeProvider>
   );
 }
