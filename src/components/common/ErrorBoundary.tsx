@@ -25,13 +25,12 @@ class ErrorBoundaryBase extends Component<ErrorBoundaryProps, ErrorBoundaryState
     this.state = { hasError: false };
   }
 
-  static getDerivedStateFromError(): Partial<ErrorBoundaryState> {
-    return { hasError: true };
+  static getDerivedStateFromError(error: Error): Partial<ErrorBoundaryState> {
+    return { hasError: true, error };
   }
 
   componentDidCatch(error: Error, info: React.ErrorInfo): void {
     this.setState({
-      error,
       componentStack: info.componentStack ?? undefined,
     });
   }

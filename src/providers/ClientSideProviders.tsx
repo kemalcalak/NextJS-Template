@@ -1,5 +1,8 @@
 "use client";
 
+import { useEffect } from "react";
+
+import { ErrorBoundary } from "@/components/common/ErrorBoundary";
 import i18n from "@/i18n/config";
 
 import { QueryProvider } from "./QueryProvider";
@@ -12,15 +15,17 @@ export function ClientSideProviders({
   children: React.ReactNode;
   locale: string;
 }) {
-  if (i18n.language !== locale && i18n.isInitialized) {
-    void i18n.changeLanguage(locale);
-  } else if (!i18n.isInitialized) {
-    void i18n.changeLanguage(locale);
-  }
+  useEffect(() => {
+    if (!i18n.isInitialized || i18n.language !== locale) {
+      void i18n.changeLanguage(locale);
+    }
+  }, [locale]);
 
   return (
     <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-      <QueryProvider>{children}</QueryProvider>
+      <QueryProvider>
+        <ErrorBoundary>{children}</ErrorBoundary>
+      </QueryProvider>
     </ThemeProvider>
   );
 }
