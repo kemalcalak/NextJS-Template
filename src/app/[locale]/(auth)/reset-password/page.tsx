@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2, ShieldCheck, XCircle } from "lucide-react";
 import { motion } from "motion/react";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
@@ -16,31 +16,32 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { useResetPasswordMutation } from "@/hooks/api/use-auth";
+import { getLocaleFromPath } from "@/lib/config/routes";
 import { getResetSchema, type ResetFormValues } from "@/schemas/auth";
 
 import type { AxiosError } from "axios";
 
-const SuccessState = ({ t }: { t: (key: string) => string }) => (
+const SuccessState = ({ t, locale }: { t: (key: string) => string; locale: string }) => (
   <div className="flex min-h-screen items-center justify-center bg-background p-4 sm:p-8">
     <div className="mx-auto w-full max-w-md space-y-6 text-center animate-in fade-in duration-500">
       <ShieldCheck className="mx-auto h-12 w-12 text-green-500" />
       <h1 className="text-2xl font-bold tracking-tight">{t("resetPassword.successTitle")}</h1>
       <p className="text-muted-foreground">{t("resetPassword.successDesc")}</p>
       <Button asChild className="w-full mt-4">
-        <Link href="/login">{t("resetPassword.loginNow")}</Link>
+        <Link href={`/${locale}/login`}>{t("resetPassword.loginNow")}</Link>
       </Button>
     </div>
   </div>
 );
 
-const InvalidLinkState = ({ t }: { t: (key: string) => string }) => (
+const InvalidLinkState = ({ t, locale }: { t: (key: string) => string; locale: string }) => (
   <div className="flex min-h-screen items-center justify-center bg-background p-4 sm:p-8">
     <div className="mx-auto w-full max-w-md space-y-6 text-center">
       <XCircle className="mx-auto h-12 w-12 text-destructive" />
       <h1 className="text-2xl font-bold tracking-tight">{t("resetPassword.invalidLinkTitle")}</h1>
       <p className="text-muted-foreground">{t("resetPassword.invalidLinkDesc")}</p>
       <Button asChild className="mt-4">
-        <Link href="/login">{t("login.login")}</Link>
+        <Link href={`/${locale}/login`}>{t("login.login")}</Link>
       </Button>
     </div>
   </div>
@@ -49,6 +50,8 @@ const InvalidLinkState = ({ t }: { t: (key: string) => string }) => (
 function ResetPasswordForm() {
   const { t } = useTranslation("auth");
   const { t: tv } = useTranslation("validation");
+  const pathname = usePathname();
+  const currentLocale = getLocaleFromPath(pathname);
   const router = useRouter();
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
@@ -81,15 +84,15 @@ function ResetPasswordForm() {
   useEffect(() => {
     if (!success) return;
     const timer = setTimeout(() => {
-      router.push("/login");
+      router.push(`/${currentLocale}/login`);
     }, 3000);
     return () => {
       clearTimeout(timer);
     };
-  }, [success, router]);
+  }, [success, router, currentLocale]);
 
-  if (!token) return <InvalidLinkState t={t} />;
-  if (success) return <SuccessState t={t} />;
+  if (!token) return <InvalidLinkState t={t} locale={currentLocale} />;
+  if (success) return <SuccessState t={t} locale={currentLocale} />;
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background p-4 sm:p-8">

@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { ChevronLeft, Loader2, MailCheck } from "lucide-react";
 import { motion } from "motion/react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
@@ -15,6 +16,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { useForgotPasswordMutation } from "@/hooks/api/use-auth";
+import { getLocaleFromPath } from "@/lib/config/routes";
 import { getForgotSchema, type ForgotFormValues } from "@/schemas/auth";
 
 import type { AxiosError } from "axios";
@@ -22,6 +24,8 @@ import type { AxiosError } from "axios";
 export default function ForgotPassword() {
   const { t } = useTranslation("auth");
   const { t: tv } = useTranslation("validation");
+  const pathname = usePathname();
+  const currentLocale = getLocaleFromPath(pathname);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -59,7 +63,7 @@ export default function ForgotPassword() {
             <span className="font-medium text-foreground">{form.getValues().email}</span>.
           </p>
           <Button asChild className="w-full mt-4" variant="outline">
-            <Link href="/login">
+            <Link href={`/${currentLocale}/login`}>
               <ChevronLeft className="mr-2 h-4 w-4" />
               {t("forgotPassword.backToLogin")}
             </Link>
@@ -101,7 +105,7 @@ export default function ForgotPassword() {
             />
             <div className="flex gap-3 pt-2">
               <Button asChild variant="outline" className="flex-1" disabled={isPending}>
-                <Link href="/login">{t("forgotPassword.backToLogin")}</Link>
+                <Link href={`/${currentLocale}/login`}>{t("forgotPassword.backToLogin")}</Link>
               </Button>
               <Button className="flex-1" type="submit" disabled={isPending}>
                 {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}

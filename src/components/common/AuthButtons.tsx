@@ -1,7 +1,7 @@
 "use client";
 
 import { LayoutDashboard, LogOut, User as UserIcon } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -14,6 +14,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { getLocaleFromPath } from "@/lib/config/routes";
 import type { User } from "@/stores/auth.store";
 
 interface AuthButtonsProps {
@@ -23,16 +24,18 @@ interface AuthButtonsProps {
 
 export const AuthButtons = ({ user, onNavigate }: AuthButtonsProps) => {
   const { t } = useTranslation();
+  const pathname = usePathname();
+  const currentLocale = getLocaleFromPath(pathname);
   const router = useRouter();
 
   const handleNavigate = (path: string) => {
     onNavigate?.();
-    router.push(path);
+    router.push(`/${currentLocale}${path}`);
   };
 
   const handleLogout = () => {
     onNavigate?.();
-    router.push("/logout");
+    router.push(`/${currentLocale}/logout`);
   };
 
   if (!user) {

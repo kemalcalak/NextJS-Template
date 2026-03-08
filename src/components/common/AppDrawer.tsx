@@ -15,7 +15,7 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 import { useLanguage } from "@/hooks/use-language";
-import { getPathWithoutLocale } from "@/lib/config/routes";
+import { getLocaleFromPath, getPathWithoutLocale } from "@/lib/config/routes";
 import { cn } from "@/lib/utils";
 import { useAuthStore, type User } from "@/stores/auth.store";
 
@@ -94,7 +94,10 @@ export const AppDrawer = ({
 
   const navigate = (href: string) => {
     setIsMobileMenuOpen(false);
-    router.push(href);
+    const currentLocale = getLocaleFromPath(pathname);
+    // Ensure absolute path with locale
+    const targetPath = href.startsWith("/") ? `/${currentLocale}${href}` : href;
+    router.push(targetPath);
   };
 
   const handleLanguageChange = (lng: string) => {

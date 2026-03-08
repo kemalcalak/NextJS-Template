@@ -11,7 +11,8 @@ interface ErrorPageProps {
 }
 
 export function ErrorPage({ error, reset }: ErrorPageProps) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const currentLocale = i18n.language.startsWith("tr") ? "tr" : "en";
 
   return (
     <div className="flex h-screen w-full flex-col items-center justify-center bg-background px-4 text-center">
@@ -31,7 +32,7 @@ export function ErrorPage({ error, reset }: ErrorPageProps) {
 
         <div className="mt-6 flex flex-row items-center justify-center gap-3 w-full sm:w-auto">
           <Button asChild variant="default" className="flex-1 sm:flex-none sm:w-32">
-            <Link href="/">{t("common:go_home")}</Link>
+            <Link href={`/${currentLocale}`}>{t("common:go_home")}</Link>
           </Button>
           <Button
             variant="outline"

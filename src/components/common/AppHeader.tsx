@@ -54,7 +54,10 @@ export const AppHeader = () => {
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4 sm:px-6">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between">
         <div className="flex items-center gap-2">
-          <Link href="/" className="hover:opacity-80 transition-opacity">
+          <Link
+            href={`/${i18n.language.startsWith("tr") ? "tr" : "en"}`}
+            className="hover:opacity-80 transition-opacity"
+          >
             <h2 className="text-lg font-semibold tracking-tight cursor-pointer">
               {process.env.NEXT_PUBLIC_APP_NAME || "NextJS Template"}
             </h2>

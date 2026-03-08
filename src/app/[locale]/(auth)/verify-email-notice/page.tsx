@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Mail, Loader2, CheckCircle2 } from "lucide-react";
 import { motion } from "motion/react";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
@@ -16,12 +16,15 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormDescription } from "@/components/ui/form";
 import { useResendVerificationMutation } from "@/hooks/api/use-auth";
+import { getLocaleFromPath } from "@/lib/config/routes";
 import { getForgotSchema, type ForgotFormValues } from "@/schemas/auth";
 
 function VerifyEmailNoticeContent() {
   const { t } = useTranslation(["auth", "errors"]);
   const { t: tv } = useTranslation("validation");
   const searchParams = useSearchParams();
+  const pathname = usePathname();
+  const currentLocale = getLocaleFromPath(pathname);
   const router = useRouter();
   const emailParam = searchParams.get("email");
 
@@ -36,9 +39,9 @@ function VerifyEmailNoticeContent() {
 
   useEffect(() => {
     if (!emailParam) {
-      router.replace("./login");
+      router.replace(`/${currentLocale}/login`);
     }
-  }, [emailParam, router]);
+  }, [emailParam, router, currentLocale]);
 
   if (!emailParam) {
     return null;
@@ -104,7 +107,7 @@ function VerifyEmailNoticeContent() {
                     type="button"
                     disabled={isLoading}
                   >
-                    <Link href="/login">{t("verifyEmail.backToLogin")}</Link>
+                    <Link href={`/${currentLocale}/login`}>{t("verifyEmail.backToLogin")}</Link>
                   </Button>
                   <Button className="flex-1" type="submit" disabled={isLoading || isSuccess}>
                     {isLoading ? (

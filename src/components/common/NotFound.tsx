@@ -9,9 +9,11 @@ import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 
 export function NotFound() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const router = useRouter();
   const [mounted, setMounted] = useState(false);
+
+  const currentLocale = i18n.language.startsWith("tr") ? "tr" : "en";
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -51,7 +53,7 @@ export function NotFound() {
 
         <div className="mt-6 flex flex-row items-center justify-center gap-3 w-full sm:w-auto px-4">
           <Button asChild variant="default" className="flex-1 sm:flex-none sm:w-32">
-            <Link href="/" suppressHydrationWarning>
+            <Link href={`/${currentLocale}`} suppressHydrationWarning>
               {mounted ? t("common:go_home") : "Go Home"}
             </Link>
           </Button>
