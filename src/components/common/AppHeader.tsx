@@ -18,8 +18,8 @@ import {
 import { useLanguage } from "@/hooks/use-language";
 import { useTheme } from "@/hooks/use-theme";
 import { useIsMobile } from "@/hooks/useMediaQuery";
-import { useAuthStore } from "@/stores/auth.store";
 import { ROUTES, getLocalizedPath } from "@/lib/config/routes";
+import { useAuthStore } from "@/stores/auth.store";
 
 export const AppHeader = () => {
   const { t, i18n } = useTranslation();

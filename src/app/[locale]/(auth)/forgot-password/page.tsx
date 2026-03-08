@@ -105,7 +105,9 @@ export default function ForgotPassword() {
             />
             <div className="flex gap-3 pt-2">
               <Button asChild variant="outline" className="flex-1" disabled={isPending}>
-                <Link href={getLocalizedPath(ROUTES.login, currentLocale)}>{t("forgotPassword.backToLogin")}</Link>
+                <Link href={getLocalizedPath(ROUTES.login, currentLocale)}>
+                  {t("forgotPassword.backToLogin")}
+                </Link>
               </Button>
               <Button className="flex-1" type="submit" disabled={isPending}>
                 {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}

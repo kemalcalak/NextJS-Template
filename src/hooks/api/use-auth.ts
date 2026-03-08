@@ -1,5 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
+import { useRouter , usePathname } from "next/navigation";
 import { useTranslation } from "react-i18next";
 
 import { authService } from "@/lib/api/endpoints/auth";
@@ -13,7 +13,6 @@ import type {
   ChangePasswordPayload,
 } from "@/lib/types/auth";
 import { useAuthStore } from "@/stores/auth.store";
-import { usePathname } from "next/navigation";
 
 import type { AxiosError } from "axios";
 

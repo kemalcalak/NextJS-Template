@@ -89,7 +89,9 @@ function VerifyEmailContent() {
             <h1 className="text-3xl font-bold tracking-tight">{t("verifyEmail.successTitle")}</h1>
             <p className="text-muted-foreground">{t("verifyEmail.successDesc")}</p>
             <Button asChild className="mt-4 w-full">
-              <Link href={getLocalizedPath(ROUTES.login, currentLocale)}>{t("verifyEmail.loginNow")}</Link>
+              <Link href={getLocalizedPath(ROUTES.login, currentLocale)}>
+                {t("verifyEmail.loginNow")}
+              </Link>
             </Button>
           </div>
         )}
