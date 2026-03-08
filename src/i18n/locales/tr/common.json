@@ -33,9 +33,11 @@
     "toggleMenu": "Menüyü Aç/Kapat",
     "toggleTheme": "Temayı Değiştir",
     "toggleLanguage": "Dili Değiştir",
-    "userFallback": "Kullanıcı"
+    "userFallback": "Kullanıcı",
+    "drawerDescription": "Mobil cihazlar için navigasyon menüsü. Bağlantılar arasında gezinmek için tab tuşunu kullanın."
   },
   "nav": {
+    "home": "Ana Sayfa",
     "dashboard": "Panel",
     "profile": "Profil"
   }

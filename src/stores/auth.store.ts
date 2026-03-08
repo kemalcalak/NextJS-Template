@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
+import { setCookie, eraseCookie } from "@/lib/cookies";
 import type { User as UserType } from "@/lib/types/user";
 
 export type User = UserType | null;
@@ -52,6 +53,7 @@ export const useAuthStore = create<AuthState>()(
       setToken: (token) => set({ token }),
 
       login: ({ token, user }) => {
+        setCookie("access_token", token, 30); // 30 days
         set({
           token,
           user: user ?? get().user,
@@ -60,6 +62,7 @@ export const useAuthStore = create<AuthState>()(
       },
 
       logout: () => {
+        eraseCookie("access_token");
         set({ user: null, token: null, isLoading: false });
         if (typeof window !== "undefined") {
           localStorage.removeItem("auth-storage");

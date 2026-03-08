@@ -30,13 +30,14 @@ export function useLoginMutation() {
       login({ token: data.access_token, user: data.user });
       router.push("/dashboard");
     },
-    onError: (error: AxiosError<{ error?: string; detail?: string }>, variables: LoginPayload) => {
+    onError: (
+      error: AxiosError<{ error?: string; detail?: string; success?: boolean }>,
+      variables: LoginPayload,
+    ) => {
       const errorData = error.response?.data;
-      if (
-        error.response?.status === 403 &&
-        (errorData?.error === "error.user.email_not_verified" ||
-          errorData?.detail === "error.user.email_not_verified")
-      ) {
+      const errorCode = errorData?.error || errorData?.detail;
+
+      if (errorCode === "error.user.email_not_verified" || errorCode === "error.user.not_active") {
         // We'll use a search param or similar since Next.js doesn't have route state like react-router
         router.push(`/verify-email-notice?email=${encodeURIComponent(variables.email)}`);
       }

@@ -55,7 +55,9 @@ export const AppHeader = () => {
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between">
         <div className="flex items-center gap-2">
           <Link href="/" className="hover:opacity-80 transition-opacity">
-            <h2 className="text-lg font-semibold tracking-tight cursor-pointer">NextJS Template</h2>
+            <h2 className="text-lg font-semibold tracking-tight cursor-pointer">
+              {process.env.NEXT_PUBLIC_APP_NAME || "NextJS Template"}
+            </h2>
           </Link>
         </div>
 

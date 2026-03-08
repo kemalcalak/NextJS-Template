@@ -43,7 +43,11 @@ const translateAndToast = (key: string, type: "success" | "error", id?: string) 
 const handleNonAuthError = (error: AxiosError<ErrorResponse>) => {
   const rawError =
     error.response?.data?.error || error.response?.data?.detail || error.response?.data?.message;
-  if (rawError) {
+
+  // Skip errors that are handled by redirections in hooks
+  const skipToastErrors = ["error.user.email_not_verified", "error.user.not_active"];
+
+  if (rawError && !skipToastErrors.includes(rawError)) {
     translateAndToast(rawError, "error");
   } else if (!error.response) {
     translateAndToast("INTERNAL_SERVER_ERROR", "error", "INTERNAL_SERVER_ERROR");
