@@ -5,7 +5,12 @@ import { useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
 
 import { authService } from "@/lib/api/endpoints/auth";
-import { getPathWithoutLocale, matchesRoute, protectedRoutes } from "@/lib/config/routes";
+import {
+  getLocaleFromPath,
+  getPathWithoutLocale,
+  matchesRoute,
+  protectedRoutes,
+} from "@/lib/config/routes";
 import { useAuthStore } from "@/stores/auth.store";
 
 export function AuthHydrator({ children }: { children: React.ReactNode }) {
@@ -40,7 +45,7 @@ export function AuthHydrator({ children }: { children: React.ReactNode }) {
       );
 
       if (isProtectedRoute) {
-        const currentLocale = pathname.split("/")[1] || "en";
+        const currentLocale = getLocaleFromPath(pathname);
         router.replace(`/${currentLocale}/login`);
       }
     }

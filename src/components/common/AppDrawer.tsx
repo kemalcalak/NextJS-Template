@@ -15,8 +15,8 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 import { useLanguage } from "@/hooks/use-language";
-import { cn } from "@/lib/utils";
 import { getPathWithoutLocale } from "@/lib/config/routes";
+import { cn } from "@/lib/utils";
 import { useAuthStore, type User } from "@/stores/auth.store";
 
 import { SettingsSection } from "./AppDrawerSettings";

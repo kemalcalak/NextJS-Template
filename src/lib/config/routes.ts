@@ -30,3 +30,12 @@ export const getPathWithoutLocale = (path: string): string => {
   const localePattern = new RegExp(`^/(${locales.join("|")})($|/)`);
   return path.replace(localePattern, "$2") || "/";
 };
+
+/**
+ * Extracts the locale from a path if it exists, otherwise returns the default locale.
+ */
+export const getLocaleFromPath = (path: string): string => {
+  const localePattern = new RegExp(`^/(${locales.join("|")})($|/)`);
+  const match = localePattern.exec(path);
+  return match ? match[1] : defaultLocale;
+};

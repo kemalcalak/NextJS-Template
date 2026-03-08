@@ -7,6 +7,8 @@ import {
   authRoutes,
   publicAuthRoutes,
   matchesRoute,
+  getLocaleFromPath,
+  getPathWithoutLocale,
 } from "@/lib/config/routes";
 
 import type { NextRequest } from "next/server";
@@ -24,9 +26,8 @@ function handleLocaleRedirect(request: NextRequest, pathname: string, search: st
 }
 
 function handleAuthGuard(request: NextRequest, pathname: string, token: string | undefined) {
-  const localePrefixMatch = /^\/(en|tr)(\/|$)/.exec(pathname);
-  const currentLocale = localePrefixMatch ? localePrefixMatch[1] : defaultLocale;
-  const pathWithoutLocale = pathname.replace(/^\/(en|tr)/, "") || "/";
+  const currentLocale = getLocaleFromPath(pathname);
+  const pathWithoutLocale = getPathWithoutLocale(pathname);
 
   const isProtectedRoute = protectedRoutes.some((route) => matchesRoute(pathWithoutLocale, route));
   const isAuthRoute = authRoutes.some((route) => matchesRoute(pathWithoutLocale, route));
