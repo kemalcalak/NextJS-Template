@@ -1,5 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
-import { useRouter , usePathname } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useTranslation } from "react-i18next";
 
 import { authService } from "@/lib/api/endpoints/auth";
