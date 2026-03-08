@@ -81,7 +81,8 @@ export const SecurityTab = () => {
   });
 
   const onSubmit = (data: ChangePasswordFormValues) => {
-    changePassword(data, {
+    const { confirmPassword: _, ...payload } = data;
+    changePassword(payload, {
       onSuccess: () => {
         form.reset();
       },
