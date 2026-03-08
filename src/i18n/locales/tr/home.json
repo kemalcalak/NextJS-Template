@@ -1,5 +1,5 @@
 {
-  "title": "My App'e Hoş Geldiniz",
+  "title": "{{appName}}'e Hoş Geldiniz",
   "subtitle": "Günlük görevlerinizi ve projelerinizi yönetmek için en iyi yer",
   "cta": {
     "login": "Hesabınıza giriş yapın",
