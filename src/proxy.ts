@@ -1,16 +1,14 @@
+import {
+  locales,
+  defaultLocale,
+  protectedRoutes,
+  authRoutes,
+  publicAuthRoutes,
+  matchesRoute,
+} from "@/lib/config/routes";
 import { NextResponse } from "next/server";
 
 import type { NextRequest } from "next/server";
-
-const locales = ["en", "tr"];
-const defaultLocale = "en";
-
-// Routes that require authentication (without locale prefix)
-const protectedRoutes = ["/dashboard", "/profile", "/settings"];
-// Routes that should NOT be accessible when logged in (without locale prefix)
-const authRoutes = ["/login", "/register", "/forgot-password", "/reset-password", "/verify-email"];
-// Public routes that should always be accessible (without locale prefix)
-const publicAuthRoutes = ["/verify-email-notice"];
 
 function handleLocaleRedirect(request: NextRequest, pathname: string, search: string) {
   let locale = request.cookies.get("NEXT_LOCALE")?.value;
@@ -28,9 +26,6 @@ function handleAuthGuard(request: NextRequest, pathname: string, token: string |
   const localePrefixMatch = /^\/(en|tr)(\/|$)/.exec(pathname);
   const currentLocale = localePrefixMatch ? localePrefixMatch[1] : defaultLocale;
   const pathWithoutLocale = pathname.replace(/^\/(en|tr)/, "") || "/";
-
-  const matchesRoute = (path: string, route: string) =>
-    path === route || path.startsWith(`${route}/`);
 
   const isProtectedRoute = protectedRoutes.some((route) => matchesRoute(pathWithoutLocale, route));
   const isAuthRoute = authRoutes.some((route) => matchesRoute(pathWithoutLocale, route));

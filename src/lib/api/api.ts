@@ -71,6 +71,12 @@ const attemptTokenRefresh = async (
     return await api(originalRequest);
   } catch (refreshError) {
     useAuthStore.getState().logout();
+    // Clear cookies on backend via best-effort logout
+    try {
+      await axios.post(`${API_URL}${API_PREFIX}/auth/logout`, {}, { withCredentials: true });
+    } catch {
+      // Ignore logout failure
+    }
     return Promise.reject(
       refreshError instanceof Error ? refreshError : new Error(String(refreshError)),
     );
@@ -89,6 +95,9 @@ const handleUnauthorized = (error: AxiosError<ErrorResponse>, isAuthRequest: boo
 
   if (!isAuthRequest) {
     useAuthStore.getState().logout();
+    void axios
+      .post(`${API_URL}${API_PREFIX}/auth/logout`, {}, { withCredentials: true })
+      .catch(() => {});
   }
 };
 
