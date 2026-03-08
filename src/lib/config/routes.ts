@@ -24,7 +24,7 @@ export const getLocalizedPath = (path: string, locale: string): string => {
 };
 
 // Routes that require authentication (without locale prefix)
-export const protectedRoutes = [ROUTES.dashboard, ROUTES.profile, "/settings"];
+export const protectedRoutes = [ROUTES.dashboard, ROUTES.profile];
 
 // Routes that should NOT be accessible when logged in (without locale prefix)
 export const authRoutes = [
