@@ -10,12 +10,14 @@ interface AuthState {
   isAuthenticated: boolean;
   isLoading: boolean;
   isHydrated: boolean;
+  isSessionInitialized: boolean;
 
   // actions
   setUser: (user: User) => void;
   login: (user: NonNullable<User>) => void;
   logout: () => void;
   setHydrated: (val: boolean) => void;
+  setSessionInitialized: (val: boolean) => void;
 }
 
 interface StoredAuth {
@@ -50,20 +52,23 @@ export const useAuthStore = create<AuthState>()(
       ...initialData,
       isLoading: false,
       isHydrated: false,
+      isSessionInitialized: false,
 
       setUser: (user) => set({ user, isAuthenticated: !!user }),
       setHydrated: (val) => set({ isHydrated: val }),
+      setSessionInitialized: (val) => set({ isSessionInitialized: val }),
 
       login: (user) => {
         set({
           user,
           isAuthenticated: true,
           isLoading: false,
+          isSessionInitialized: true,
         });
       },
 
       logout: () => {
-        set({ user: null, isAuthenticated: false, isLoading: false });
+        set({ user: null, isAuthenticated: false, isLoading: false, isSessionInitialized: true });
         if (typeof window !== "undefined") {
           localStorage.removeItem("auth-storage");
         }

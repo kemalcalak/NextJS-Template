@@ -71,9 +71,6 @@ const attemptTokenRefresh = async (
     return await api(originalRequest);
   } catch (refreshError) {
     useAuthStore.getState().logout();
-    if (typeof window !== "undefined") {
-      window.location.href = "/login";
-    }
     return Promise.reject(
       refreshError instanceof Error ? refreshError : new Error(String(refreshError)),
     );
@@ -92,9 +89,6 @@ const handleUnauthorized = (error: AxiosError<ErrorResponse>, isAuthRequest: boo
 
   if (!isAuthRequest) {
     useAuthStore.getState().logout();
-    if (typeof window !== "undefined") {
-      window.location.href = "/login";
-    }
   }
 };
 
