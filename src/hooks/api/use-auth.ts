@@ -37,8 +37,7 @@ export function useLoginMutation() {
       const errorData = error.response?.data;
       const errorCode = errorData?.error || errorData?.detail;
 
-      if (errorCode === "error.user.email_not_verified" || errorCode === "error.user.not_active") {
-        // We'll use a search param or similar since Next.js doesn't have route state like react-router
+      if (error.response?.status === 403 && errorCode === "error.user.email_not_verified") {
         router.push(`/verify-email-notice?email=${encodeURIComponent(variables.email)}`);
       }
     },

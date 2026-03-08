@@ -50,7 +50,14 @@ export const useAuthStore = create<AuthState>()(
       isLoading: false, // Start as false since we read sync from localStorage
 
       setUser: (user) => set({ user }),
-      setToken: (token) => set({ token }),
+      setToken: (token) => {
+        if (token) {
+          setCookie("access_token", token, 30);
+        } else {
+          eraseCookie("access_token");
+        }
+        set({ token });
+      },
 
       login: ({ token, user }) => {
         setCookie("access_token", token, 30); // 30 days

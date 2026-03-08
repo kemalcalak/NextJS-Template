@@ -45,7 +45,7 @@ const handleNonAuthError = (error: AxiosError<ErrorResponse>) => {
     error.response?.data?.error || error.response?.data?.detail || error.response?.data?.message;
 
   // Skip errors that are handled by redirections in hooks
-  const skipToastErrors = ["error.user.email_not_verified", "error.user.not_active"];
+  const skipToastErrors = ["error.user.email_not_verified"];
 
   if (rawError && !skipToastErrors.includes(rawError)) {
     translateAndToast(rawError, "error");
