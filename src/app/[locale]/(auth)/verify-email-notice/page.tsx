@@ -6,29 +6,25 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Mail, Loader2, CheckCircle2 } from "lucide-react";
 import { motion } from "motion/react";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
 import { AuthEmailField } from "@/components/auth/AuthEmailField";
 import { AuthHeader } from "@/components/auth/AuthHeader";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormDescription } from "@/components/ui/form";
 import { useResendVerificationMutation } from "@/hooks/api/use-auth";
+import { getLocaleFromPath, ROUTES, getLocalizedPath } from "@/lib/config/routes";
 import { getForgotSchema, type ForgotFormValues } from "@/schemas/auth";
 
 function VerifyEmailNoticeContent() {
   const { t } = useTranslation(["auth", "errors"]);
   const { t: tv } = useTranslation("validation");
   const searchParams = useSearchParams();
+  const pathname = usePathname();
+  const currentLocale = getLocaleFromPath(pathname);
   const router = useRouter();
   const emailParam = searchParams.get("email");
 
@@ -43,9 +39,9 @@ function VerifyEmailNoticeContent() {
 
   useEffect(() => {
     if (!emailParam) {
-      router.replace("/login");
+      router.replace(getLocalizedPath(ROUTES.login, currentLocale));
     }
-  }, [emailParam, router]);
+  }, [emailParam, router, currentLocale]);
 
   if (!emailParam) {
     return null;
@@ -71,14 +67,14 @@ function VerifyEmailNoticeContent() {
         />
 
         <Card className="border-border/50 bg-card/50 backdrop-blur-sm">
-          <CardHeader>
-            <CardTitle>{t("verifyEmail.cardTitle")}</CardTitle>
+          <CardHeader className="space-y-1">
+            <CardTitle className="text-2xl">{t("verifyEmail.cardTitle")}</CardTitle>
             <CardDescription>{t("verifyEmail.cardDescription")}</CardDescription>
           </CardHeader>
 
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
-              <CardContent className="space-y-4">
+              <CardContent className="grid gap-4">
                 <AuthEmailField
                   form={form}
                   isLoading={isLoading}
@@ -102,23 +98,31 @@ function VerifyEmailNoticeContent() {
                     <p>{t("verifyEmail.resendSuccess")}</p>
                   </motion.div>
                 )}
-              </CardContent>
 
-              <CardFooter className="flex gap-3">
-                <Button asChild variant="outline" className="flex-1" type="button">
-                  <Link href="/login">{t("verifyEmail.backToLogin")}</Link>
-                </Button>
-                <Button className="flex-1" type="submit" disabled={isLoading || isSuccess}>
-                  {isLoading ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      {t("login.submitting")}
-                    </>
-                  ) : (
-                    t("verifyEmail.resendButton")
-                  )}
-                </Button>
-              </CardFooter>
+                <div className="flex flex-row gap-3 mt-6">
+                  <Button
+                    asChild
+                    variant="outline"
+                    className="flex-1"
+                    type="button"
+                    disabled={isLoading}
+                  >
+                    <Link href={getLocalizedPath(ROUTES.login, currentLocale)}>
+                      {t("verifyEmail.backToLogin")}
+                    </Link>
+                  </Button>
+                  <Button className="flex-1" type="submit" disabled={isLoading || isSuccess}>
+                    {isLoading ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        {t("login.submitting")}
+                      </>
+                    ) : (
+                      t("verifyEmail.resendButton")
+                    )}
+                  </Button>
+                </div>
+              </CardContent>
             </form>
           </Form>
         </Card>

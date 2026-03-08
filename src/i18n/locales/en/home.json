@@ -1,5 +1,5 @@
 {
-  "title": "Welcome to My App",
+  "title": "Welcome to {{appName}}",
   "subtitle": "The best place to manage your daily tasks and projects",
   "cta": {
     "login": "Login to your account",

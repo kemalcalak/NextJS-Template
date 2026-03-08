@@ -1,16 +1,19 @@
 "use client";
 
 import { motion } from "motion/react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 
 import { Button } from "@/components/ui/button";
+import { getLocaleFromPath, ROUTES, getLocalizedPath } from "@/lib/config/routes";
 import { useAuthStore } from "@/stores/auth.store";
 
 const Home = () => {
   // Specify the 'home' namespace instead of relying on default
   const { t } = useTranslation("home");
   const { user } = useAuthStore();
+  const pathname = usePathname();
+  const currentLocale = getLocaleFromPath(pathname);
   const router = useRouter();
 
   return (
@@ -35,7 +38,7 @@ const Home = () => {
               <Button
                 size="lg"
                 onClick={() => {
-                  router.push("/dashboard");
+                  router.push(getLocalizedPath(ROUTES.dashboard, currentLocale));
                 }}
                 className="w-full sm:w-auto"
               >
@@ -46,7 +49,7 @@ const Home = () => {
                 <Button
                   size="lg"
                   onClick={() => {
-                    router.push("/login");
+                    router.push(getLocalizedPath(ROUTES.login, currentLocale));
                   }}
                   className="w-full sm:w-auto"
                 >
@@ -56,7 +59,7 @@ const Home = () => {
                   size="lg"
                   variant="outline"
                   onClick={() => {
-                    router.push("/register");
+                    router.push(getLocalizedPath(ROUTES.register, currentLocale));
                   }}
                   className="w-full sm:w-auto"
                 >

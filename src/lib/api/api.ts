@@ -2,13 +2,10 @@ import axios from "axios";
 import { toast } from "sonner";
 
 import i18n from "@/i18n/config";
+import { ROUTES, getLocaleFromPath, getLocalizedPath } from "@/lib/config/routes";
 import { useAuthStore } from "@/stores/auth.store";
 
 import type { AxiosInstance, AxiosError, AxiosResponse, InternalAxiosRequestConfig } from "axios";
-
-interface RefreshResponse {
-  access_token: string;
-}
 
 interface ErrorResponse {
   detail?: string;
@@ -40,10 +37,40 @@ const translateAndToast = (key: string, type: "success" | "error", id?: string) 
   }
 };
 
+const performLogout = async () => {
+  const { isAuthenticated, logout } = useAuthStore.getState();
+
+  // Always clear client state first
+  logout();
+
+  if (isAuthenticated) {
+    try {
+      await axios.post(`${API_URL}${API_PREFIX}/auth/logout`, {}, { withCredentials: true });
+    } catch {
+      // Ignore background logout failure
+    }
+  }
+
+  // Restore hard redirect to clear React Query cache and other stale state
+  if (typeof window !== "undefined") {
+    const locale = getLocaleFromPath(window.location.pathname);
+    const loginPath = getLocalizedPath(ROUTES.login, locale);
+
+    // Only redirect if we are not already going to the login page to avoid loops
+    if (window.location.pathname !== loginPath) {
+      window.location.href = loginPath;
+    }
+  }
+};
+
 const handleNonAuthError = (error: AxiosError<ErrorResponse>) => {
   const rawError =
     error.response?.data?.error || error.response?.data?.detail || error.response?.data?.message;
-  if (rawError) {
+
+  // Skip errors that are handled by redirections in hooks
+  const skipToastErrors = ["error.user.email_not_verified"];
+
+  if (rawError && !skipToastErrors.includes(rawError)) {
     translateAndToast(rawError, "error");
   } else if (!error.response) {
     translateAndToast("INTERNAL_SERVER_ERROR", "error", "INTERNAL_SERVER_ERROR");
@@ -59,28 +86,18 @@ const attemptTokenRefresh = async (
     if (!refreshPromise) {
       refreshPromise = (async () => {
         try {
-          const response = await axios.post<RefreshResponse>(
-            `${API_URL}${API_PREFIX}/auth/refresh`,
-            {},
-            { withCredentials: true },
-          );
-          const { access_token: accessToken } = response.data;
-          useAuthStore.getState().setToken(accessToken);
-          return accessToken;
+          await axios.post(`${API_URL}${API_PREFIX}/auth/refresh`, {}, { withCredentials: true });
+          return "refreshed";
         } finally {
           refreshPromise = null;
         }
       })();
     }
 
-    const newAccessToken = await refreshPromise;
-    originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+    await refreshPromise;
     return await api(originalRequest);
   } catch (refreshError) {
-    useAuthStore.getState().logout();
-    if (typeof window !== "undefined") {
-      window.location.href = "/login";
-    }
+    void performLogout();
     return Promise.reject(
       refreshError instanceof Error ? refreshError : new Error(String(refreshError)),
     );
@@ -98,20 +115,13 @@ const handleUnauthorized = (error: AxiosError<ErrorResponse>, isAuthRequest: boo
   }
 
   if (!isAuthRequest) {
-    useAuthStore.getState().logout();
-    if (typeof window !== "undefined") {
-      window.location.href = "/login";
-    }
+    void performLogout();
   }
 };
 
 // Request interceptor
 api.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
-    const token = useAuthStore.getState().token;
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
     return config;
   },
   (error: AxiosError) => Promise.reject(error),

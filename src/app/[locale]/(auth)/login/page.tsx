@@ -1,11 +1,12 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useMemo, useState } from "react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2, Lock } from "lucide-react";
 import { motion } from "motion/react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
@@ -24,11 +25,14 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { useLoginMutation } from "@/hooks/api/use-auth";
+import { getLocaleFromPath, ROUTES, getLocalizedPath } from "@/lib/config/routes";
 import { getLoginSchema, type LoginFormValues } from "@/schemas/auth";
 
 export default function Login() {
   const { t } = useTranslation(["auth", "validation"]);
   const { t: tv } = useTranslation("validation");
+  const pathname = usePathname();
+  const currentLocale = getLocaleFromPath(pathname);
   const { mutate: login, isPending: isLoading } = useLoginMutation();
   const [showPassword, setShowPassword] = useState(false);
 
@@ -81,7 +85,7 @@ export default function Login() {
                   labelKey="login.passwordLabel"
                 >
                   <Link
-                    href="/forgot-password"
+                    href={getLocalizedPath(ROUTES.forgotPassword, currentLocale)}
                     className="text-sm font-medium text-primary hover:underline transition-all"
                   >
                     {t("login.forgotPassword")}
@@ -127,7 +131,7 @@ export default function Login() {
                   <div className="text-center text-sm">
                     {t("login.noAccount")}{" "}
                     <Link
-                      href="/register"
+                      href={getLocalizedPath(ROUTES.register, currentLocale)}
                       className="font-medium text-primary hover:underline transition-all"
                     >
                       {t("login.register")}

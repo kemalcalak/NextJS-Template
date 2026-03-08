@@ -33,9 +33,11 @@
     "toggleMenu": "Toggle Menu",
     "toggleTheme": "Toggle Theme",
     "toggleLanguage": "Toggle Language",
-    "userFallback": "User"
+    "userFallback": "User",
+    "drawerDescription": "Navigation menu for mobile devices. Use tab key to navigate through links."
   },
   "nav": {
+    "home": "Home",
     "dashboard": "Dashboard",
     "profile": "Profile"
   }

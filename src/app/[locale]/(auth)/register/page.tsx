@@ -1,11 +1,12 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useMemo, useState } from "react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2, UserPlus } from "lucide-react";
 import { motion } from "motion/react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
@@ -17,11 +18,14 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form } from "@/components/ui/form";
 import { useRegisterMutation } from "@/hooks/api/use-auth";
+import { getLocaleFromPath, ROUTES, getLocalizedPath } from "@/lib/config/routes";
 import { getRegisterSchema, type RegisterFormValues } from "@/schemas/auth";
 
 export default function Register() {
   const { t } = useTranslation(["auth", "validation"]);
   const { t: tv } = useTranslation("validation");
+  const pathname = usePathname();
+  const currentLocale = getLocaleFromPath(pathname);
   const { mutate: registerUser, isPending: isLoading } = useRegisterMutation();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -115,7 +119,7 @@ export default function Register() {
                   <div className="text-center text-sm">
                     {t("register.hasAccount")}{" "}
                     <Link
-                      href="/login"
+                      href={getLocalizedPath(ROUTES.login, currentLocale)}
                       className="font-medium text-primary hover:underline transition-all"
                     >
                       {t("register.login")}

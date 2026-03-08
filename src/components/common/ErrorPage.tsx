@@ -1,9 +1,11 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useTranslation } from "react-i18next";
 
 import { Button } from "@/components/ui/button";
+import { ROUTES, getLocalizedPath, getLocaleFromPath } from "@/lib/config/routes";
 
 interface ErrorPageProps {
   error?: Error & { digest?: string };
@@ -12,6 +14,8 @@ interface ErrorPageProps {
 
 export function ErrorPage({ error, reset }: ErrorPageProps) {
   const { t } = useTranslation();
+  const pathname = usePathname();
+  const currentLocale = getLocaleFromPath(pathname);
 
   return (
     <div className="flex h-screen w-full flex-col items-center justify-center bg-background px-4 text-center">
@@ -31,7 +35,7 @@ export function ErrorPage({ error, reset }: ErrorPageProps) {
 
         <div className="mt-6 flex flex-row items-center justify-center gap-3 w-full sm:w-auto">
           <Button asChild variant="default" className="flex-1 sm:flex-none sm:w-32">
-            <Link href="/">{t("common:go_home")}</Link>
+            <Link href={getLocalizedPath(ROUTES.home, currentLocale)}>{t("common:go_home")}</Link>
           </Button>
           <Button
             variant="outline"

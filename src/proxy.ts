@@ -1,41 +1,91 @@
 import { NextResponse } from "next/server";
 
+import {
+  locales,
+  defaultLocale,
+  protectedRoutes,
+  authRoutes,
+  publicAuthRoutes,
+  matchesRoute,
+  getLocaleFromPath,
+  getPathWithoutLocale,
+  ROUTES,
+  getLocalizedPath,
+} from "@/lib/config/routes";
+
 import type { NextRequest } from "next/server";
 
-const locales = ["en", "tr"];
-const defaultLocale = "en";
+function handleLocaleRedirect(request: NextRequest, pathname: string, search: string) {
+  let locale = request.cookies.get("NEXT_LOCALE")?.value;
+  if (!locale || !locales.includes(locale)) {
+    const acceptLang = request.headers.get("accept-language");
+    locale = acceptLang?.includes("tr") ? "tr" : defaultLocale;
+  }
+
+  // IMPORTANT: Preserve search parameters (query string)
+  const targetPath = `/${locale}${pathname === "/" ? "" : pathname}${search}`;
+  return NextResponse.redirect(new URL(targetPath, request.url));
+}
+
+function handleAuthGuard(request: NextRequest, pathname: string, token: string | undefined) {
+  const currentLocale = getLocaleFromPath(pathname);
+  const pathWithoutLocale = getPathWithoutLocale(pathname);
+
+  const isProtectedRoute = protectedRoutes.some((route) => matchesRoute(pathWithoutLocale, route));
+  const isAuthRoute = authRoutes.some((route) => matchesRoute(pathWithoutLocale, route));
+  const isPublicAuthRoute = publicAuthRoutes.some((route) =>
+    matchesRoute(pathWithoutLocale, route),
+  );
+
+  // If it's a public auth route like verify-email-notice, always allow
+  if (isPublicAuthRoute) {
+    return NextResponse.next();
+  }
+
+  // If not logged in and onto a protected route -> redirect to login
+  if (isProtectedRoute && !token) {
+    const loginUrl = new URL(getLocalizedPath(ROUTES.login, currentLocale), request.url);
+    return NextResponse.redirect(loginUrl);
+  }
+
+  // If logged in and onto an auth route -> redirect to dashboard
+  if (isAuthRoute && token) {
+    // We allow navigation but we could also redirect to dashboard
+    // To avoid loops where token is invalid but still in cookie, we'll keep it simple
+    return NextResponse.next();
+  }
+
+  return NextResponse.next();
+}
 
 export function proxy(request: NextRequest) {
-  const { pathname } = request.nextUrl;
+  const { pathname, search } = request.nextUrl;
+  const token = request.cookies.get("access_token")?.value;
 
-  // Skip if it's already a localized path
+  // 1. Locale Routing Logic
   const pathnameHasLocale = locales.some(
     (locale) => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`,
   );
 
-  if (pathnameHasLocale) {
-    return NextResponse.next();
+  // Redirect to localized path if needed
+  if (!pathnameHasLocale) {
+    return handleLocaleRedirect(request, pathname, search);
   }
 
-  // Check cookie
-  let locale = request.cookies.get("NEXT_LOCALE")?.value;
-  if (!locale || !locales.includes(locale)) {
-    // Check accept-language header
-    const acceptLang = request.headers.get("accept-language");
-    if (acceptLang?.includes("tr")) {
-      locale = "tr";
-    } else {
-      locale = defaultLocale;
-    }
-  }
-
-  request.nextUrl.pathname = `/${locale}${pathname}`;
-  return NextResponse.redirect(request.nextUrl);
+  // 2. Auth Guard Logic
+  return handleAuthGuard(request, pathname, token);
 }
 
 export const config = {
   matcher: [
-    // Skip static files, api routes, Next.js internals
+    /*
+     * Match all request paths except for the ones starting with:
+     * - api (API routes)
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - assets (public folders like images)
+     * - favicon.ico (favicon file)
+     */
     "/((?!api|_next/static|_next/image|assets|favicon.ico).*)",
   ],
 };

@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 
 import { Moon, Sun } from "lucide-react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useTranslation } from "react-i18next";
 
 import { AppDrawer } from "@/components/common/AppDrawer";
@@ -18,12 +19,15 @@ import {
 import { useLanguage } from "@/hooks/use-language";
 import { useTheme } from "@/hooks/use-theme";
 import { useIsMobile } from "@/hooks/useMediaQuery";
+import { ROUTES, getLocalizedPath, getLocaleFromPath } from "@/lib/config/routes";
 import { useAuthStore } from "@/stores/auth.store";
 
 export const AppHeader = () => {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const { user } = useAuthStore();
   const { theme, setTheme, resolvedTheme } = useTheme();
+  const pathname = usePathname();
+  const currentLocale = getLocaleFromPath(pathname);
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -54,8 +58,13 @@ export const AppHeader = () => {
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4 sm:px-6">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between">
         <div className="flex items-center gap-2">
-          <Link href="/" className="hover:opacity-80 transition-opacity">
-            <h2 className="text-lg font-semibold tracking-tight cursor-pointer">NextJS Template</h2>
+          <Link
+            href={getLocalizedPath(ROUTES.home, currentLocale)}
+            className="hover:opacity-80 transition-opacity"
+          >
+            <h2 className="text-lg font-semibold tracking-tight cursor-pointer">
+              {process.env.NEXT_PUBLIC_APP_NAME || "NextJS Template"}
+            </h2>
           </Link>
         </div>
 
@@ -83,7 +92,7 @@ export const AppHeader = () => {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="sm" className="w-9 px-0">
-                {i18n.language.startsWith("tr") ? "TR" : "EN"}
+                {currentLocale.toUpperCase()}
                 <span className="sr-only">{t("common:ui.toggleLanguage", "Toggle language")}</span>
               </Button>
             </DropdownMenuTrigger>

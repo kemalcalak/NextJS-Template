@@ -1,7 +1,7 @@
 "use client";
 
 import { LayoutDashboard, LogOut, User as UserIcon } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -14,6 +14,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { getLocaleFromPath, ROUTES, getLocalizedPath } from "@/lib/config/routes";
 import type { User } from "@/stores/auth.store";
 
 interface AuthButtonsProps {
@@ -23,16 +24,18 @@ interface AuthButtonsProps {
 
 export const AuthButtons = ({ user, onNavigate }: AuthButtonsProps) => {
   const { t } = useTranslation();
+  const pathname = usePathname();
+  const currentLocale = getLocaleFromPath(pathname);
   const router = useRouter();
 
   const handleNavigate = (path: string) => {
     onNavigate?.();
-    router.push(path);
+    router.push(getLocalizedPath(path, currentLocale));
   };
 
   const handleLogout = () => {
     onNavigate?.();
-    router.push("/logout");
+    router.push(getLocalizedPath(ROUTES.logout, currentLocale));
   };
 
   if (!user) {
@@ -41,14 +44,14 @@ export const AuthButtons = ({ user, onNavigate }: AuthButtonsProps) => {
         <Button
           variant="ghost"
           onClick={() => {
-            handleNavigate("/login");
+            handleNavigate(ROUTES.login);
           }}
         >
           {t("auth:login.submitButton", "Login")}
         </Button>
         <Button
           onClick={() => {
-            handleNavigate("/register");
+            handleNavigate(ROUTES.register);
           }}
         >
           {t("auth:register.submitButton", "Register")}
@@ -75,18 +78,17 @@ export const AuthButtons = ({ user, onNavigate }: AuthButtonsProps) => {
       <DropdownMenuContent className="w-56" align="end" forceMount>
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
-            <p className="text-sm font-medium leading-none">
+            <p className="text-base font-semibold leading-none">
               {user.first_name || user.last_name
                 ? `${user.first_name || ""} ${user.last_name || ""}`.trim()
                 : t("common:ui.userFallback", "User")}
             </p>
-            <p className="text-xs leading-none text-muted-foreground">{user.email}</p>
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem
           onClick={() => {
-            handleNavigate("/dashboard");
+            handleNavigate(ROUTES.dashboard);
           }}
         >
           <LayoutDashboard className="mr-2 h-4 w-4" />
@@ -94,7 +96,7 @@ export const AuthButtons = ({ user, onNavigate }: AuthButtonsProps) => {
         </DropdownMenuItem>
         <DropdownMenuItem
           onClick={() => {
-            handleNavigate("/profile");
+            handleNavigate(ROUTES.profile);
           }}
         >
           <UserIcon className="mr-2 h-4 w-4" />

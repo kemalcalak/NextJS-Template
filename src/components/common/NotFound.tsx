@@ -3,14 +3,17 @@
 import { useEffect, useState } from "react";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useTranslation } from "react-i18next";
 
 import { Button } from "@/components/ui/button";
+import { ROUTES, getLocalizedPath, getLocaleFromPath } from "@/lib/config/routes";
 
 export function NotFound() {
   const { t } = useTranslation();
   const router = useRouter();
+  const pathname = usePathname();
+  const currentLocale = getLocaleFromPath(pathname);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -51,7 +54,7 @@ export function NotFound() {
 
         <div className="mt-6 flex flex-row items-center justify-center gap-3 w-full sm:w-auto px-4">
           <Button asChild variant="default" className="flex-1 sm:flex-none sm:w-32">
-            <Link href="/" suppressHydrationWarning>
+            <Link href={getLocalizedPath(ROUTES.home, currentLocale)} suppressHydrationWarning>
               {mounted ? t("common:go_home") : "Go Home"}
             </Link>
           </Button>

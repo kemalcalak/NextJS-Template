@@ -7,60 +7,64 @@ export type User = UserType | null;
 
 interface AuthState {
   user: User;
-  token: string | null;
+  isAuthenticated: boolean;
   isLoading: boolean;
+  isSessionInitialized: boolean;
 
   // actions
   setUser: (user: User) => void;
-  setToken: (token: string | null) => void;
-  login: (payload: { token: string; user?: NonNullable<User> }) => void;
+  login: (user: NonNullable<User>) => void;
   logout: () => void;
+  setSessionInitialized: (val: boolean) => void;
 }
 
 interface StoredAuth {
   state?: {
     user?: User;
-    token?: string | null;
+    isAuthenticated?: boolean;
   };
 }
 
 // Helper to get initial state from localStorage for synchronous access
 const getStoredAuth = () => {
   try {
-    if (typeof window === "undefined") return { user: null, token: null };
+    if (typeof window === "undefined") return { user: null, isAuthenticated: false };
     const raw = localStorage.getItem("auth-storage");
-    if (!raw) return { user: null, token: null };
+    if (!raw) return { user: null, isAuthenticated: false };
     const parsed = JSON.parse(raw) as unknown as StoredAuth;
     return {
       user: parsed.state?.user || null,
-      token: parsed.state?.token || null,
+      isAuthenticated: parsed.state?.isAuthenticated || false,
     };
   } catch {
-    return { user: null, token: null };
+    return { user: null, isAuthenticated: false };
   }
 };
 
-const initialData = typeof window !== "undefined" ? getStoredAuth() : { user: null, token: null };
+const initialData =
+  typeof window !== "undefined" ? getStoredAuth() : { user: null, isAuthenticated: false };
 
 export const useAuthStore = create<AuthState>()(
   persist(
-    (set, get) => ({
+    (set) => ({
       ...initialData,
-      isLoading: false, // Start as false since we read sync from localStorage
+      isLoading: false,
+      isSessionInitialized: false,
 
-      setUser: (user) => set({ user }),
-      setToken: (token) => set({ token }),
+      setUser: (user) => set({ user, isAuthenticated: !!user }),
+      setSessionInitialized: (val) => set({ isSessionInitialized: val }),
 
-      login: ({ token, user }) => {
+      login: (user) => {
         set({
-          token,
-          user: user ?? get().user,
+          user,
+          isAuthenticated: true,
           isLoading: false,
+          isSessionInitialized: true,
         });
       },
 
       logout: () => {
-        set({ user: null, token: null, isLoading: false });
+        set({ user: null, isAuthenticated: false, isLoading: false, isSessionInitialized: true });
         if (typeof window !== "undefined") {
           localStorage.removeItem("auth-storage");
         }
@@ -68,7 +72,7 @@ export const useAuthStore = create<AuthState>()(
     }),
     {
       name: "auth-storage",
-      partialize: (s) => ({ user: s.user, token: s.token }),
+      partialize: (s) => ({ user: s.user, isAuthenticated: s.isAuthenticated }),
     },
   ),
 );

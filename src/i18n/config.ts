@@ -55,6 +55,9 @@ i18n
 
     interpolation: {
       escapeValue: false,
+      defaultVariables: {
+        appName: process.env.NEXT_PUBLIC_APP_NAME || "NextJS Template",
+      },
     },
 
     react: {

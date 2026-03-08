@@ -1,8 +1,9 @@
 import { useMutation } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useTranslation } from "react-i18next";
 
 import { authService } from "@/lib/api/endpoints/auth";
+import { getLocaleFromPath, ROUTES, getLocalizedPath } from "@/lib/config/routes";
 import type {
   LoginPayload,
   RegisterPayload,
@@ -22,23 +23,26 @@ import type { AxiosError } from "axios";
 
 export function useLoginMutation() {
   const router = useRouter();
+  const pathname = usePathname();
+  const currentLocale = getLocaleFromPath(pathname);
   const { login } = useAuthStore();
 
   return useMutation({
     mutationFn: (payload: LoginPayload) => authService.login(payload),
     onSuccess: (data) => {
-      login({ token: data.access_token, user: data.user });
-      router.push("/dashboard");
+      login(data.user);
+      router.push(getLocalizedPath(ROUTES.dashboard, currentLocale));
     },
-    onError: (error: AxiosError<{ error?: string; detail?: string }>, variables: LoginPayload) => {
+    onError: (
+      error: AxiosError<{ error?: string; detail?: string; success?: boolean }>,
+      variables: LoginPayload,
+    ) => {
       const errorData = error.response?.data;
-      if (
-        error.response?.status === 403 &&
-        (errorData?.error === "error.user.email_not_verified" ||
-          errorData?.detail === "error.user.email_not_verified")
-      ) {
-        // We'll use a search param or similar since Next.js doesn't have route state like react-router
-        router.push(`/verify-email-notice?email=${encodeURIComponent(variables.email)}`);
+      const errorCode = errorData?.error || errorData?.detail;
+
+      if (error.response?.status === 403 && errorCode === "error.user.email_not_verified") {
+        const path = `${ROUTES.verifyEmailNotice}?email=${encodeURIComponent(variables.email)}`;
+        router.push(getLocalizedPath(path, currentLocale));
       }
     },
   });
@@ -46,13 +50,16 @@ export function useLoginMutation() {
 
 export function useRegisterMutation() {
   const router = useRouter();
+  const pathname = usePathname();
+  const currentLocale = getLocaleFromPath(pathname);
   const { i18n } = useTranslation();
 
   return useMutation({
     mutationFn: (payload: RegisterPayload) =>
       authService.register({ lang: i18n.language, ...payload }),
     onSuccess: (_, variables) => {
-      router.push(`/verify-email-notice?email=${encodeURIComponent(variables.email)}`);
+      const path = `${ROUTES.verifyEmailNotice}?email=${encodeURIComponent(variables.email)}`;
+      router.push(getLocalizedPath(path, currentLocale));
     },
     onError: () => {
       // Handled globally by api interceptor
@@ -62,17 +69,19 @@ export function useRegisterMutation() {
 
 export function useLogoutMutation() {
   const router = useRouter();
+  const pathname = usePathname();
+  const currentLocale = getLocaleFromPath(pathname);
   const { logout } = useAuthStore();
 
   return useMutation({
     mutationFn: () => authService.logout(),
     onSuccess: () => {
       logout();
-      router.push("/login");
+      router.push(getLocalizedPath(ROUTES.login, currentLocale));
     },
     onError: () => {
       logout();
-      router.push("/login");
+      router.push(getLocalizedPath(ROUTES.login, currentLocale));
     },
   });
 }
