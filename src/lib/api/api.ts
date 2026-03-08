@@ -36,6 +36,18 @@ const translateAndToast = (key: string, type: "success" | "error", id?: string) 
   }
 };
 
+const performLogout = async () => {
+  const { isAuthenticated, logout } = useAuthStore.getState();
+  if (!isAuthenticated) return;
+
+  logout();
+  try {
+    await axios.post(`${API_URL}${API_PREFIX}/auth/logout`, {}, { withCredentials: true });
+  } catch {
+    // Ignore logout failure
+  }
+};
+
 const handleNonAuthError = (error: AxiosError<ErrorResponse>) => {
   const rawError =
     error.response?.data?.error || error.response?.data?.detail || error.response?.data?.message;
@@ -70,13 +82,7 @@ const attemptTokenRefresh = async (
     await refreshPromise;
     return await api(originalRequest);
   } catch (refreshError) {
-    useAuthStore.getState().logout();
-    // Clear cookies on backend via best-effort logout
-    try {
-      await axios.post(`${API_URL}${API_PREFIX}/auth/logout`, {}, { withCredentials: true });
-    } catch {
-      // Ignore logout failure
-    }
+    void performLogout();
     return Promise.reject(
       refreshError instanceof Error ? refreshError : new Error(String(refreshError)),
     );
@@ -94,12 +100,7 @@ const handleUnauthorized = (error: AxiosError<ErrorResponse>, isAuthRequest: boo
   }
 
   if (!isAuthRequest) {
-    useAuthStore.getState().logout();
-    void axios
-      .post(`${API_URL}${API_PREFIX}/auth/logout`, {}, { withCredentials: true })
-      .catch(() => {
-        // Ignore logout failure on unauthorized
-      });
+    void performLogout();
   }
 };
 

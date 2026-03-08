@@ -4,7 +4,7 @@ import { useEffect } from "react";
 
 import { usePathname, useRouter } from "next/navigation";
 
-import { usersApi } from "@/lib/api/endpoints/users";
+import { authService } from "@/lib/api/endpoints/auth";
 import { matchesRoute, protectedRoutes } from "@/lib/config/routes";
 import { useAuthStore } from "@/stores/auth.store";
 
@@ -16,7 +16,7 @@ export function AuthHydrator({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const hydrate = async () => {
       try {
-        const user = await usersApi.getMe();
+        const user = await authService.getMe();
         setUser(user);
       } catch {
         // Not logged in or error
