@@ -29,9 +29,14 @@ function handleAuthGuard(request: NextRequest, pathname: string, token: string |
   const currentLocale = localePrefixMatch ? localePrefixMatch[1] : defaultLocale;
   const pathWithoutLocale = pathname.replace(/^\/(en|tr)/, "") || "/";
 
-  const isProtectedRoute = protectedRoutes.some((route) => pathWithoutLocale.startsWith(route));
-  const isAuthRoute = authRoutes.some((route) => pathWithoutLocale.startsWith(route));
-  const isPublicAuthRoute = publicAuthRoutes.some((route) => pathWithoutLocale.startsWith(route));
+  const matchesRoute = (path: string, route: string) =>
+    path === route || path.startsWith(`${route}/`);
+
+  const isProtectedRoute = protectedRoutes.some((route) => matchesRoute(pathWithoutLocale, route));
+  const isAuthRoute = authRoutes.some((route) => matchesRoute(pathWithoutLocale, route));
+  const isPublicAuthRoute = publicAuthRoutes.some((route) =>
+    matchesRoute(pathWithoutLocale, route),
+  );
 
   // If it's a public auth route like verify-email-notice, always allow
   if (isPublicAuthRoute) {

@@ -79,6 +79,15 @@ export const useAuthStore = create<AuthState>()(
     {
       name: "auth-storage",
       partialize: (s) => ({ user: s.user, token: s.token }),
+      onRehydrateStorage: () => (state, error) => {
+        if (!error) {
+          if (state?.token) {
+            setCookie("access_token", state.token, 30);
+          } else {
+            eraseCookie("access_token");
+          }
+        }
+      },
     },
   ),
 );
