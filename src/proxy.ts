@@ -1,3 +1,5 @@
+import { NextResponse } from "next/server";
+
 import {
   locales,
   defaultLocale,
@@ -6,7 +8,6 @@ import {
   publicAuthRoutes,
   matchesRoute,
 } from "@/lib/config/routes";
-import { NextResponse } from "next/server";
 
 import type { NextRequest } from "next/server";
 

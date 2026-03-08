@@ -1,7 +1,8 @@
 "use client";
 
-import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
+
+import { usePathname, useRouter } from "next/navigation";
 
 import { usersApi } from "@/lib/api/endpoints/users";
 import { matchesRoute, protectedRoutes } from "@/lib/config/routes";
@@ -34,7 +35,9 @@ export function AuthHydrator({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (isSessionInitialized && !isAuthenticated) {
       const pathWithoutLocale = pathname.replace(/^\/(en|tr)/, "") || "/";
-      const isProtectedRoute = protectedRoutes.some((route) => matchesRoute(pathWithoutLocale, route));
+      const isProtectedRoute = protectedRoutes.some((route) =>
+        matchesRoute(pathWithoutLocale, route),
+      );
 
       if (isProtectedRoute) {
         const currentLocale = pathname.split("/")[1] || "en";

@@ -97,7 +97,9 @@ const handleUnauthorized = (error: AxiosError<ErrorResponse>, isAuthRequest: boo
     useAuthStore.getState().logout();
     void axios
       .post(`${API_URL}${API_PREFIX}/auth/logout`, {}, { withCredentials: true })
-      .catch(() => {});
+      .catch(() => {
+        // Ignore logout failure on unauthorized
+      });
   }
 };
 
