@@ -2,6 +2,7 @@ import axios from "axios";
 import { toast } from "sonner";
 
 import i18n from "@/i18n/config";
+import { ROUTES, getLocaleFromPath, getLocalizedPath } from "@/lib/config/routes";
 import { useAuthStore } from "@/stores/auth.store";
 
 import type { AxiosInstance, AxiosError, AxiosResponse, InternalAxiosRequestConfig } from "axios";
@@ -38,13 +39,27 @@ const translateAndToast = (key: string, type: "success" | "error", id?: string) 
 
 const performLogout = async () => {
   const { isAuthenticated, logout } = useAuthStore.getState();
-  if (!isAuthenticated) return;
 
+  // Always clear client state first
   logout();
-  try {
-    await axios.post(`${API_URL}${API_PREFIX}/auth/logout`, {}, { withCredentials: true });
-  } catch {
-    // Ignore logout failure
+
+  if (isAuthenticated) {
+    try {
+      await axios.post(`${API_URL}${API_PREFIX}/auth/logout`, {}, { withCredentials: true });
+    } catch {
+      // Ignore background logout failure
+    }
+  }
+
+  // Restore hard redirect to clear React Query cache and other stale state
+  if (typeof window !== "undefined") {
+    const locale = getLocaleFromPath(window.location.pathname);
+    const loginPath = getLocalizedPath(ROUTES.login, locale);
+
+    // Only redirect if we are not already going to the login page to avoid loops
+    if (window.location.pathname !== loginPath) {
+      window.location.href = loginPath;
+    }
   }
 };
 

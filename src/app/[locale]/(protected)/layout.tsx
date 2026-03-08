@@ -1,6 +1,8 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
+import { ROUTES, getLocalizedPath } from "@/lib/config/routes";
+
 interface ProtectedLayoutProps {
   children: React.ReactNode;
   params: Promise<{ locale: string }>;
@@ -19,7 +21,7 @@ export default async function ProtectedLayout({ children, params }: ProtectedLay
   const token = cookieStore.get("access_token")?.value;
 
   if (!token) {
-    redirect(`/${locale}/login`);
+    redirect(getLocalizedPath(ROUTES.login, locale));
   }
 
   return <>{children}</>;
