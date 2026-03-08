@@ -5,7 +5,7 @@ import { useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
 
 import { authService } from "@/lib/api/endpoints/auth";
-import { matchesRoute, protectedRoutes } from "@/lib/config/routes";
+import { getPathWithoutLocale, matchesRoute, protectedRoutes } from "@/lib/config/routes";
 import { useAuthStore } from "@/stores/auth.store";
 
 export function AuthHydrator({ children }: { children: React.ReactNode }) {
@@ -34,7 +34,7 @@ export function AuthHydrator({ children }: { children: React.ReactNode }) {
   // Check for redirects after initialization
   useEffect(() => {
     if (isSessionInitialized && !isAuthenticated) {
-      const pathWithoutLocale = pathname.replace(/^\/(en|tr)/, "") || "/";
+      const pathWithoutLocale = getPathWithoutLocale(pathname);
       const isProtectedRoute = protectedRoutes.some((route) =>
         matchesRoute(pathWithoutLocale, route),
       );

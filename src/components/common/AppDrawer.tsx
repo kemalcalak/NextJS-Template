@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/drawer";
 import { useLanguage } from "@/hooks/use-language";
 import { cn } from "@/lib/utils";
+import { getPathWithoutLocale } from "@/lib/config/routes";
 import { useAuthStore, type User } from "@/stores/auth.store";
 
 import { SettingsSection } from "./AppDrawerSettings";
@@ -39,10 +40,9 @@ const UserProfile = ({ user }: { user: NonNullable<User> }) => (
       </AvatarFallback>
     </Avatar>
     <div className="flex flex-col flex-1 overflow-hidden">
-      <p className="text-sm font-semibold truncate">
+      <p className="text-base font-bold truncate">
         {user.first_name} {user.last_name}
       </p>
-      <p className="text-xs text-muted-foreground truncate">{user.email}</p>
     </div>
   </div>
 );
@@ -88,7 +88,7 @@ export const AppDrawer = ({
   const { changeLanguage } = useLanguage();
 
   const isActive = (path: string) => {
-    const currentPath = pathname.replace(/^\/(en|tr)/, "") || "/";
+    const currentPath = getPathWithoutLocale(pathname);
     return path === "/" ? currentPath === "/" : currentPath.startsWith(path);
   };
 

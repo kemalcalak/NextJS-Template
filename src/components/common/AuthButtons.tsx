@@ -75,12 +75,11 @@ export const AuthButtons = ({ user, onNavigate }: AuthButtonsProps) => {
       <DropdownMenuContent className="w-56" align="end" forceMount>
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
-            <p className="text-sm font-medium leading-none">
+            <p className="text-base font-semibold leading-none">
               {user.first_name || user.last_name
                 ? `${user.first_name || ""} ${user.last_name || ""}`.trim()
                 : t("common:ui.userFallback", "User")}
             </p>
-            <p className="text-xs leading-none text-muted-foreground">{user.email}</p>
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
