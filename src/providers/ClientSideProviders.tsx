@@ -8,6 +8,7 @@ import i18n from "@/i18n/config";
 
 import { QueryProvider } from "./QueryProvider";
 import { ThemeProvider } from "./ThemeProvider";
+import { AuthHydrator } from "@/components/auth/AuthHydrator";
 
 const loadingMessages: Record<string, string> = {
   en: "Loading...",
@@ -47,7 +48,9 @@ export function ClientSideProviders({
         <LoadingScreen fullScreen message={loadingMessage} />
       ) : (
         <QueryProvider>
-          <ErrorBoundary>{children}</ErrorBoundary>
+          <AuthHydrator>
+            <ErrorBoundary>{children}</ErrorBoundary>
+          </AuthHydrator>
         </QueryProvider>
       )}
     </ThemeProvider>

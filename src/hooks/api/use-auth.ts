@@ -27,7 +27,7 @@ export function useLoginMutation() {
   return useMutation({
     mutationFn: (payload: LoginPayload) => authService.login(payload),
     onSuccess: (data) => {
-      login({ token: data.access_token, user: data.user });
+      login(data.user);
       router.push("/dashboard");
     },
     onError: (

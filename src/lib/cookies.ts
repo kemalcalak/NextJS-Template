@@ -1,5 +1,6 @@
 /**
  * Simple cookie helper functions
+ * (Currently not used for authentication as we shifted to HttpOnly cookies)
  */
 
 export const setCookie = (name: string, value: string, days?: number) => {
@@ -12,11 +13,12 @@ export const setCookie = (name: string, value: string, days?: number) => {
     expires = `; expires=${date.toUTCString()}`;
   }
 
-  // path=/ ensures cookie is valid for all routes
-  document.cookie = `${name}=${value || ""}${expires}; path=/; SameSite=Lax`;
+  const isSecure = typeof window !== "undefined" && window.location.protocol === "https:";
+  document.cookie = `${name}=${value || ""}${expires}; path=/; SameSite=Lax${isSecure ? "; Secure" : ""}`;
 };
 
 export const eraseCookie = (name: string) => {
   if (typeof window === "undefined") return;
-  document.cookie = `${name}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC; SameSite=Lax`;
+  const isSecure = typeof window !== "undefined" && window.location.protocol === "https:";
+  document.cookie = `${name}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC; SameSite=Lax${isSecure ? "; Secure" : ""}`;
 };

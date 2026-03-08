@@ -4,6 +4,7 @@ import type { User, UserUpdateResponse } from "../../types/user";
 
 export const usersApi = {
   getAll: (): Promise<User[]> => api.get<User[], User[]>("/users"),
+  getMe: (): Promise<User> => api.get<User, User>("/users/me"),
   getById: (id: string): Promise<User> => api.get<User, User>(`/users/${id}`),
   create: (data: Omit<User, "id">): Promise<User> => api.post<User, User>("/users", data),
   update: (id: string, data: Partial<Omit<User, "id">>): Promise<User> =>

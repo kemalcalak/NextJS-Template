@@ -1,76 +1,69 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-import { setCookie, eraseCookie } from "@/lib/cookies";
 import type { User as UserType } from "@/lib/types/user";
 
 export type User = UserType | null;
 
 interface AuthState {
   user: User;
-  token: string | null;
+  isAuthenticated: boolean;
   isLoading: boolean;
+  isHydrated: boolean;
 
   // actions
   setUser: (user: User) => void;
-  setToken: (token: string | null) => void;
-  login: (payload: { token: string; user?: NonNullable<User> }) => void;
+  login: (user: NonNullable<User>) => void;
   logout: () => void;
+  setHydrated: (val: boolean) => void;
 }
 
 interface StoredAuth {
   state?: {
     user?: User;
-    token?: string | null;
+    isAuthenticated?: boolean;
   };
 }
 
 // Helper to get initial state from localStorage for synchronous access
 const getStoredAuth = () => {
   try {
-    if (typeof window === "undefined") return { user: null, token: null };
+    if (typeof window === "undefined") return { user: null, isAuthenticated: false };
     const raw = localStorage.getItem("auth-storage");
-    if (!raw) return { user: null, token: null };
+    if (!raw) return { user: null, isAuthenticated: false };
     const parsed = JSON.parse(raw) as unknown as StoredAuth;
     return {
       user: parsed.state?.user || null,
-      token: parsed.state?.token || null,
+      isAuthenticated: parsed.state?.isAuthenticated || false,
     };
   } catch {
-    return { user: null, token: null };
+    return { user: null, isAuthenticated: false };
   }
 };
 
-const initialData = typeof window !== "undefined" ? getStoredAuth() : { user: null, token: null };
+const initialData =
+  typeof window !== "undefined" ? getStoredAuth() : { user: null, isAuthenticated: false };
 
 export const useAuthStore = create<AuthState>()(
   persist(
-    (set, get) => ({
+    (set) => ({
       ...initialData,
-      isLoading: false, // Start as false since we read sync from localStorage
+      isLoading: false,
+      isHydrated: false,
 
-      setUser: (user) => set({ user }),
-      setToken: (token) => {
-        if (token) {
-          setCookie("access_token", token, 30);
-        } else {
-          eraseCookie("access_token");
-        }
-        set({ token });
-      },
+      setUser: (user) => set({ user, isAuthenticated: !!user }),
+      setHydrated: (val) => set({ isHydrated: val }),
 
-      login: ({ token, user }) => {
-        setCookie("access_token", token, 30); // 30 days
+      login: (user) => {
         set({
-          token,
-          user: user ?? get().user,
+          user,
+          isAuthenticated: true,
           isLoading: false,
         });
       },
 
       logout: () => {
-        eraseCookie("access_token");
-        set({ user: null, token: null, isLoading: false });
+        set({ user: null, isAuthenticated: false, isLoading: false });
         if (typeof window !== "undefined") {
           localStorage.removeItem("auth-storage");
         }
@@ -78,15 +71,9 @@ export const useAuthStore = create<AuthState>()(
     }),
     {
       name: "auth-storage",
-      partialize: (s) => ({ user: s.user, token: s.token }),
-      onRehydrateStorage: () => (state, error) => {
-        if (!error) {
-          if (state?.token) {
-            setCookie("access_token", state.token, 30);
-          } else {
-            eraseCookie("access_token");
-          }
-        }
+      partialize: (s) => ({ user: s.user, isAuthenticated: s.isAuthenticated }),
+      onRehydrateStorage: () => (state) => {
+        state?.setHydrated(true);
       },
     },
   ),

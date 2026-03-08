@@ -63,22 +63,15 @@ const attemptTokenRefresh = async (
     if (!refreshPromise) {
       refreshPromise = (async () => {
         try {
-          const response = await axios.post<RefreshResponse>(
-            `${API_URL}${API_PREFIX}/auth/refresh`,
-            {},
-            { withCredentials: true },
-          );
-          const { access_token: accessToken } = response.data;
-          useAuthStore.getState().setToken(accessToken);
-          return accessToken;
+          await axios.post(`${API_URL}${API_PREFIX}/auth/refresh`, {}, { withCredentials: true });
+          return "refreshed";
         } finally {
           refreshPromise = null;
         }
       })();
     }
 
-    const newAccessToken = await refreshPromise;
-    originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+    await refreshPromise;
     return await api(originalRequest);
   } catch (refreshError) {
     useAuthStore.getState().logout();
@@ -112,10 +105,6 @@ const handleUnauthorized = (error: AxiosError<ErrorResponse>, isAuthRequest: boo
 // Request interceptor
 api.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
-    const token = useAuthStore.getState().token;
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
     return config;
   },
   (error: AxiosError) => Promise.reject(error),
