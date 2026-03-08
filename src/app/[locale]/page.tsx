@@ -5,7 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 
 import { Button } from "@/components/ui/button";
-import { getLocaleFromPath } from "@/lib/config/routes";
+import { getLocaleFromPath, ROUTES, getLocalizedPath } from "@/lib/config/routes";
 import { useAuthStore } from "@/stores/auth.store";
 
 const Home = () => {
@@ -38,7 +38,7 @@ const Home = () => {
               <Button
                 size="lg"
                 onClick={() => {
-                  router.push(`/${currentLocale}/dashboard`);
+                  router.push(getLocalizedPath(ROUTES.dashboard, currentLocale));
                 }}
                 className="w-full sm:w-auto"
               >
@@ -49,7 +49,7 @@ const Home = () => {
                 <Button
                   size="lg"
                   onClick={() => {
-                    router.push(`/${currentLocale}/login`);
+                    router.push(getLocalizedPath(ROUTES.login, currentLocale));
                   }}
                   className="w-full sm:w-auto"
                 >
@@ -59,7 +59,7 @@ const Home = () => {
                   size="lg"
                   variant="outline"
                   onClick={() => {
-                    router.push(`/${currentLocale}/register`);
+                    router.push(getLocalizedPath(ROUTES.register, currentLocale));
                   }}
                   className="w-full sm:w-auto"
                 >

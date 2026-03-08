@@ -16,7 +16,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormDescription } from "@/components/ui/form";
 import { useResendVerificationMutation } from "@/hooks/api/use-auth";
-import { getLocaleFromPath } from "@/lib/config/routes";
+import { getLocaleFromPath, ROUTES, getLocalizedPath } from "@/lib/config/routes";
 import { getForgotSchema, type ForgotFormValues } from "@/schemas/auth";
 
 function VerifyEmailNoticeContent() {
@@ -39,7 +39,7 @@ function VerifyEmailNoticeContent() {
 
   useEffect(() => {
     if (!emailParam) {
-      router.replace(`/${currentLocale}/login`);
+      router.replace(getLocalizedPath(ROUTES.login, currentLocale));
     }
   }, [emailParam, router, currentLocale]);
 
@@ -107,7 +107,9 @@ function VerifyEmailNoticeContent() {
                     type="button"
                     disabled={isLoading}
                   >
-                    <Link href={`/${currentLocale}/login`}>{t("verifyEmail.backToLogin")}</Link>
+                    <Link href={getLocalizedPath(ROUTES.login, currentLocale)}>
+                      {t("verifyEmail.backToLogin")}
+                    </Link>
                   </Button>
                   <Button className="flex-1" type="submit" disabled={isLoading || isSuccess}>
                     {isLoading ? (

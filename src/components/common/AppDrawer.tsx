@@ -15,7 +15,7 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 import { useLanguage } from "@/hooks/use-language";
-import { getLocaleFromPath, getPathWithoutLocale } from "@/lib/config/routes";
+import { getLocaleFromPath, getPathWithoutLocale, ROUTES, getLocalizedPath } from "@/lib/config/routes";
 import { cn } from "@/lib/utils";
 import { useAuthStore, type User } from "@/stores/auth.store";
 
@@ -95,9 +95,7 @@ export const AppDrawer = ({
   const navigate = (href: string) => {
     setIsMobileMenuOpen(false);
     const currentLocale = getLocaleFromPath(pathname);
-    // Ensure absolute path with locale
-    const targetPath = href.startsWith("/") ? `/${currentLocale}${href}` : href;
-    router.push(targetPath);
+    router.push(getLocalizedPath(href, currentLocale));
   };
 
   const handleLanguageChange = (lng: string) => {
@@ -140,26 +138,26 @@ export const AppDrawer = ({
 
           <div className="flex flex-col gap-3">
             <NavLink
-              href="/"
+              href={ROUTES.home}
               icon={Home}
               label={t("common:nav.home")}
-              active={isActive("/")}
+              active={isActive(ROUTES.home)}
               onClick={navigate}
             />
             {user && (
               <>
                 <NavLink
-                  href="/dashboard"
+                  href={ROUTES.dashboard}
                   icon={LayoutDashboard}
                   label={t("common:nav.dashboard")}
-                  active={isActive("/dashboard")}
+                  active={isActive(ROUTES.dashboard)}
                   onClick={navigate}
                 />
                 <NavLink
-                  href="/profile"
+                  href={ROUTES.profile}
                   icon={UserIcon}
                   label={t("common:nav.profile")}
-                  active={isActive("/profile")}
+                  active={isActive(ROUTES.profile)}
                   onClick={navigate}
                 />
               </>
@@ -177,7 +175,7 @@ export const AppDrawer = ({
                 <Button
                   className="flex-1 h-11 text-base rounded-xl"
                   onClick={() => {
-                    navigate("/login");
+                    navigate(ROUTES.login);
                   }}
                 >
                   {t("auth:login.submitButton")}
@@ -186,7 +184,7 @@ export const AppDrawer = ({
                   variant="outline"
                   className="flex-1 h-11 text-base rounded-xl"
                   onClick={() => {
-                    navigate("/register");
+                    navigate(ROUTES.register);
                   }}
                 >
                   {t("auth:register.submitButton")}
@@ -197,7 +195,7 @@ export const AppDrawer = ({
                 variant="destructive"
                 className="w-full justify-start h-11 rounded-xl bg-red-50 text-red-600 hover:bg-red-100 font-medium px-3 dark:bg-red-950/30 dark:text-red-400"
                 onClick={() => {
-                  navigate("/logout");
+                  navigate(ROUTES.logout);
                 }}
               >
                 <LogOut className="mr-3 h-4 w-4" />

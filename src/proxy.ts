@@ -9,6 +9,8 @@ import {
   matchesRoute,
   getLocaleFromPath,
   getPathWithoutLocale,
+  ROUTES,
+  getLocalizedPath,
 } from "@/lib/config/routes";
 
 import type { NextRequest } from "next/server";
@@ -42,7 +44,7 @@ function handleAuthGuard(request: NextRequest, pathname: string, token: string |
 
   // If not logged in and onto a protected route -> redirect to login
   if (isProtectedRoute && !token) {
-    const loginUrl = new URL(`/${currentLocale}/login`, request.url);
+    const loginUrl = new URL(getLocalizedPath(ROUTES.login, currentLocale), request.url);
     return NextResponse.redirect(loginUrl);
   }
 

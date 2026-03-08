@@ -14,7 +14,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { getLocaleFromPath } from "@/lib/config/routes";
+import { getLocaleFromPath, ROUTES, getLocalizedPath } from "@/lib/config/routes";
 import type { User } from "@/stores/auth.store";
 
 interface AuthButtonsProps {
@@ -30,12 +30,12 @@ export const AuthButtons = ({ user, onNavigate }: AuthButtonsProps) => {
 
   const handleNavigate = (path: string) => {
     onNavigate?.();
-    router.push(`/${currentLocale}${path}`);
+    router.push(getLocalizedPath(path, currentLocale));
   };
 
   const handleLogout = () => {
     onNavigate?.();
-    router.push(`/${currentLocale}/logout`);
+    router.push(getLocalizedPath(ROUTES.logout, currentLocale));
   };
 
   if (!user) {
@@ -44,14 +44,14 @@ export const AuthButtons = ({ user, onNavigate }: AuthButtonsProps) => {
         <Button
           variant="ghost"
           onClick={() => {
-            handleNavigate("/login");
+            handleNavigate(ROUTES.login);
           }}
         >
           {t("auth:login.submitButton", "Login")}
         </Button>
         <Button
           onClick={() => {
-            handleNavigate("/register");
+            handleNavigate(ROUTES.register);
           }}
         >
           {t("auth:register.submitButton", "Register")}
@@ -88,7 +88,7 @@ export const AuthButtons = ({ user, onNavigate }: AuthButtonsProps) => {
         <DropdownMenuSeparator />
         <DropdownMenuItem
           onClick={() => {
-            handleNavigate("/dashboard");
+            handleNavigate(ROUTES.dashboard);
           }}
         >
           <LayoutDashboard className="mr-2 h-4 w-4" />
@@ -96,7 +96,7 @@ export const AuthButtons = ({ user, onNavigate }: AuthButtonsProps) => {
         </DropdownMenuItem>
         <DropdownMenuItem
           onClick={() => {
-            handleNavigate("/profile");
+            handleNavigate(ROUTES.profile);
           }}
         >
           <UserIcon className="mr-2 h-4 w-4" />

@@ -18,7 +18,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form } from "@/components/ui/form";
 import { useRegisterMutation } from "@/hooks/api/use-auth";
-import { getLocaleFromPath } from "@/lib/config/routes";
+import { getLocaleFromPath, ROUTES, getLocalizedPath } from "@/lib/config/routes";
 import { getRegisterSchema, type RegisterFormValues } from "@/schemas/auth";
 
 export default function Register() {
@@ -119,7 +119,7 @@ export default function Register() {
                   <div className="text-center text-sm">
                     {t("register.hasAccount")}{" "}
                     <Link
-                      href={`/${currentLocale}/login`}
+                      href={getLocalizedPath(ROUTES.login, currentLocale)}
                       className="font-medium text-primary hover:underline transition-all"
                     >
                       {t("register.login")}

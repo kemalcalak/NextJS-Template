@@ -25,7 +25,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { useLoginMutation } from "@/hooks/api/use-auth";
-import { getLocaleFromPath } from "@/lib/config/routes";
+import { getLocaleFromPath, ROUTES, getLocalizedPath } from "@/lib/config/routes";
 import { getLoginSchema, type LoginFormValues } from "@/schemas/auth";
 
 export default function Login() {
@@ -85,7 +85,7 @@ export default function Login() {
                   labelKey="login.passwordLabel"
                 >
                   <Link
-                    href={`/${currentLocale}/forgot-password`}
+                    href={getLocalizedPath(ROUTES.forgotPassword, currentLocale)}
                     className="text-sm font-medium text-primary hover:underline transition-all"
                   >
                     {t("login.forgotPassword")}
@@ -131,7 +131,7 @@ export default function Login() {
                   <div className="text-center text-sm">
                     {t("login.noAccount")}{" "}
                     <Link
-                      href={`/${currentLocale}/register`}
+                      href={getLocalizedPath(ROUTES.register, currentLocale)}
                       className="font-medium text-primary hover:underline transition-all"
                     >
                       {t("login.register")}

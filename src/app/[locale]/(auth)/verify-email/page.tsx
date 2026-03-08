@@ -11,7 +11,7 @@ import { useTranslation } from "react-i18next";
 import { LoadingScreen } from "@/components/common/LoadingScreen";
 import { Button } from "@/components/ui/button";
 import { useVerifyEmailMutation } from "@/hooks/api/use-auth";
-import { getLocaleFromPath } from "@/lib/config/routes";
+import { getLocaleFromPath, ROUTES, getLocalizedPath } from "@/lib/config/routes";
 
 import type { AxiosError } from "axios";
 
@@ -77,7 +77,9 @@ function VerifyEmailContent() {
             </h1>
             <p className="text-muted-foreground">{t("verifyEmail.invalidLinkDesc")}</p>
             <Button asChild className="mt-4">
-              <Link href={`/${currentLocale}/login`}>{t("verifyEmail.backToLogin")}</Link>
+              <Link href={getLocalizedPath(ROUTES.login, currentLocale)}>
+                {t("verifyEmail.backToLogin")}
+              </Link>
             </Button>
           </div>
         )}
@@ -87,7 +89,7 @@ function VerifyEmailContent() {
             <h1 className="text-3xl font-bold tracking-tight">{t("verifyEmail.successTitle")}</h1>
             <p className="text-muted-foreground">{t("verifyEmail.successDesc")}</p>
             <Button asChild className="mt-4 w-full">
-              <Link href={`/${currentLocale}/login`}>{t("verifyEmail.loginNow")}</Link>
+              <Link href={getLocalizedPath(ROUTES.login, currentLocale)}>{t("verifyEmail.loginNow")}</Link>
             </Button>
           </div>
         )}
@@ -97,7 +99,9 @@ function VerifyEmailContent() {
             <h1 className="text-3xl font-bold tracking-tight">{t("verifyEmail.failedTitle")}</h1>
             <p className="text-muted-foreground">{errorMessage}</p>
             <Button asChild className="mt-4 w-full" variant="outline">
-              <Link href={`/${currentLocale}/login`}>{t("verifyEmail.backToLogin")}</Link>
+              <Link href={getLocalizedPath(ROUTES.login, currentLocale)}>
+                {t("verifyEmail.backToLogin")}
+              </Link>
             </Button>
           </div>
         )}

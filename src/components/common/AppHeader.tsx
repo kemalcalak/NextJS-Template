@@ -19,6 +19,7 @@ import { useLanguage } from "@/hooks/use-language";
 import { useTheme } from "@/hooks/use-theme";
 import { useIsMobile } from "@/hooks/useMediaQuery";
 import { useAuthStore } from "@/stores/auth.store";
+import { ROUTES, getLocalizedPath } from "@/lib/config/routes";
 
 export const AppHeader = () => {
   const { t, i18n } = useTranslation();
@@ -55,7 +56,7 @@ export const AppHeader = () => {
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between">
         <div className="flex items-center gap-2">
           <Link
-            href={`/${i18n.language.startsWith("tr") ? "tr" : "en"}`}
+            href={getLocalizedPath(ROUTES.home, i18n.language.startsWith("tr") ? "tr" : "en")}
             className="hover:opacity-80 transition-opacity"
           >
             <h2 className="text-lg font-semibold tracking-tight cursor-pointer">

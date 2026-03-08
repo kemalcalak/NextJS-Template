@@ -16,7 +16,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { useResetPasswordMutation } from "@/hooks/api/use-auth";
-import { getLocaleFromPath } from "@/lib/config/routes";
+import { getLocaleFromPath, ROUTES, getLocalizedPath } from "@/lib/config/routes";
 import { getResetSchema, type ResetFormValues } from "@/schemas/auth";
 
 import type { AxiosError } from "axios";
@@ -28,7 +28,7 @@ const SuccessState = ({ t, locale }: { t: (key: string) => string; locale: strin
       <h1 className="text-2xl font-bold tracking-tight">{t("resetPassword.successTitle")}</h1>
       <p className="text-muted-foreground">{t("resetPassword.successDesc")}</p>
       <Button asChild className="w-full mt-4">
-        <Link href={`/${locale}/login`}>{t("resetPassword.loginNow")}</Link>
+        <Link href={getLocalizedPath(ROUTES.login, locale)}>{t("resetPassword.loginNow")}</Link>
       </Button>
     </div>
   </div>
@@ -41,7 +41,7 @@ const InvalidLinkState = ({ t, locale }: { t: (key: string) => string; locale: s
       <h1 className="text-2xl font-bold tracking-tight">{t("resetPassword.invalidLinkTitle")}</h1>
       <p className="text-muted-foreground">{t("resetPassword.invalidLinkDesc")}</p>
       <Button asChild className="mt-4">
-        <Link href={`/${locale}/login`}>{t("login.login")}</Link>
+        <Link href={getLocalizedPath(ROUTES.login, locale)}>{t("login.login")}</Link>
       </Button>
     </div>
   </div>
@@ -84,7 +84,7 @@ function ResetPasswordForm() {
   useEffect(() => {
     if (!success) return;
     const timer = setTimeout(() => {
-      router.push(`/${currentLocale}/login`);
+      router.push(getLocalizedPath(ROUTES.login, currentLocale));
     }, 3000);
     return () => {
       clearTimeout(timer);

@@ -3,6 +3,7 @@ import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 
 import { authService } from "@/lib/api/endpoints/auth";
+import { getLocaleFromPath, ROUTES, getLocalizedPath } from "@/lib/config/routes";
 import type {
   LoginPayload,
   RegisterPayload,
@@ -12,6 +13,7 @@ import type {
   ChangePasswordPayload,
 } from "@/lib/types/auth";
 import { useAuthStore } from "@/stores/auth.store";
+import { usePathname } from "next/navigation";
 
 import type { AxiosError } from "axios";
 
@@ -22,13 +24,15 @@ import type { AxiosError } from "axios";
 
 export function useLoginMutation() {
   const router = useRouter();
+  const pathname = usePathname();
+  const currentLocale = getLocaleFromPath(pathname);
   const { login } = useAuthStore();
 
   return useMutation({
     mutationFn: (payload: LoginPayload) => authService.login(payload),
     onSuccess: (data) => {
       login(data.user);
-      router.push("/dashboard");
+      router.push(getLocalizedPath(ROUTES.dashboard, currentLocale));
     },
     onError: (
       error: AxiosError<{ error?: string; detail?: string; success?: boolean }>,
@@ -38,7 +42,8 @@ export function useLoginMutation() {
       const errorCode = errorData?.error || errorData?.detail;
 
       if (error.response?.status === 403 && errorCode === "error.user.email_not_verified") {
-        router.push(`/verify-email-notice?email=${encodeURIComponent(variables.email)}`);
+        const path = `${ROUTES.verifyEmailNotice}?email=${encodeURIComponent(variables.email)}`;
+        router.push(getLocalizedPath(path, currentLocale));
       }
     },
   });
@@ -46,13 +51,16 @@ export function useLoginMutation() {
 
 export function useRegisterMutation() {
   const router = useRouter();
+  const pathname = usePathname();
+  const currentLocale = getLocaleFromPath(pathname);
   const { i18n } = useTranslation();
 
   return useMutation({
     mutationFn: (payload: RegisterPayload) =>
       authService.register({ lang: i18n.language, ...payload }),
     onSuccess: (_, variables) => {
-      router.push(`/verify-email-notice?email=${encodeURIComponent(variables.email)}`);
+      const path = `${ROUTES.verifyEmailNotice}?email=${encodeURIComponent(variables.email)}`;
+      router.push(getLocalizedPath(path, currentLocale));
     },
     onError: () => {
       // Handled globally by api interceptor
@@ -62,17 +70,19 @@ export function useRegisterMutation() {
 
 export function useLogoutMutation() {
   const router = useRouter();
+  const pathname = usePathname();
+  const currentLocale = getLocaleFromPath(pathname);
   const { logout } = useAuthStore();
 
   return useMutation({
     mutationFn: () => authService.logout(),
     onSuccess: () => {
       logout();
-      router.push("/login");
+      router.push(getLocalizedPath(ROUTES.login, currentLocale));
     },
     onError: () => {
       logout();
-      router.push("/login");
+      router.push(getLocalizedPath(ROUTES.login, currentLocale));
     },
   });
 }

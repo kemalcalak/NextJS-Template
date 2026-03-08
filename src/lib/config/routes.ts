@@ -1,20 +1,42 @@
 export const locales = ["en", "tr"];
 export const defaultLocale = "en";
 
+export const ROUTES = {
+  home: "/",
+  login: "/login",
+  register: "/register",
+  forgotPassword: "/forgot-password",
+  resetPassword: "/reset-password",
+  verifyEmail: "/verify-email",
+  verifyEmailNotice: "/verify-email-notice",
+  dashboard: "/dashboard",
+  profile: "/profile",
+  logout: "/logout",
+} as const;
+
+/**
+ * Returns a localized path for a given route.
+ * Example: getLocalizedPath(ROUTES.login, "tr") -> "/tr/login"
+ */
+export const getLocalizedPath = (path: string, locale: string): string => {
+  const cleanPath = path.startsWith("/") ? path : `/${path}`;
+  return `/${locale}${cleanPath === "/" ? "" : cleanPath}`;
+};
+
 // Routes that require authentication (without locale prefix)
-export const protectedRoutes = ["/dashboard", "/profile", "/settings"];
+export const protectedRoutes = [ROUTES.dashboard, ROUTES.profile, "/settings"];
 
 // Routes that should NOT be accessible when logged in (without locale prefix)
 export const authRoutes = [
-  "/login",
-  "/register",
-  "/forgot-password",
-  "/reset-password",
-  "/verify-email",
+  ROUTES.login,
+  ROUTES.register,
+  ROUTES.forgotPassword,
+  ROUTES.resetPassword,
+  ROUTES.verifyEmail,
 ];
 
 // Public routes that should always be accessible (without locale prefix)
-export const publicAuthRoutes = ["/verify-email-notice"];
+export const publicAuthRoutes = [ROUTES.verifyEmailNotice];
 
 /**
  * Checks if a given path matches any of the routes in the list.

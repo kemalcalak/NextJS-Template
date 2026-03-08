@@ -10,6 +10,8 @@ import {
   getPathWithoutLocale,
   matchesRoute,
   protectedRoutes,
+  ROUTES,
+  getLocalizedPath,
 } from "@/lib/config/routes";
 import { useAuthStore } from "@/stores/auth.store";
 
@@ -46,7 +48,7 @@ export function AuthHydrator({ children }: { children: React.ReactNode }) {
 
       if (isProtectedRoute) {
         const currentLocale = getLocaleFromPath(pathname);
-        router.replace(`/${currentLocale}/login`);
+        router.replace(getLocalizedPath(ROUTES.login, currentLocale));
       }
     }
   }, [isSessionInitialized, isAuthenticated, pathname, router]);
