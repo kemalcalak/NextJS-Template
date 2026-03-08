@@ -20,6 +20,7 @@ import {
   getPathWithoutLocale,
   ROUTES,
   getLocalizedPath,
+  matchesRoute,
 } from "@/lib/config/routes";
 import { cn } from "@/lib/utils";
 import { useAuthStore, type User } from "@/stores/auth.store";
@@ -94,7 +95,7 @@ export const AppDrawer = ({
 
   const isActive = (path: string) => {
     const currentPath = getPathWithoutLocale(pathname);
-    return path === "/" ? currentPath === "/" : currentPath.startsWith(path);
+    return matchesRoute(currentPath, path);
   };
 
   const navigate = (href: string) => {

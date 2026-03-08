@@ -4,6 +4,7 @@ import { useEffect } from "react";
 
 import { usePathname, useRouter } from "next/navigation";
 
+import { LoadingScreen } from "@/components/common/LoadingScreen";
 import { authService } from "@/lib/api/endpoints/auth";
 import {
   getLocaleFromPath,
@@ -52,6 +53,14 @@ export function AuthHydrator({ children }: { children: React.ReactNode }) {
       }
     }
   }, [isSessionInitialized, isAuthenticated, pathname, router]);
+
+  // While hydrating, don't show children for protected routes
+  const pathWithoutLocale = getPathWithoutLocale(pathname);
+  const isProtectedRoute = protectedRoutes.some((route) => matchesRoute(pathWithoutLocale, route));
+
+  if (isProtectedRoute && (!isSessionInitialized || !isAuthenticated)) {
+    return <LoadingScreen />;
+  }
 
   return <>{children}</>;
 }

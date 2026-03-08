@@ -3,18 +3,18 @@
 import { useEffect, useState } from "react";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useTranslation } from "react-i18next";
 
 import { Button } from "@/components/ui/button";
-import { ROUTES, getLocalizedPath } from "@/lib/config/routes";
+import { ROUTES, getLocalizedPath, getLocaleFromPath } from "@/lib/config/routes";
 
 export function NotFound() {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const router = useRouter();
+  const pathname = usePathname();
+  const currentLocale = getLocaleFromPath(pathname);
   const [mounted, setMounted] = useState(false);
-
-  const currentLocale = i18n.language.startsWith("tr") ? "tr" : "en";
 
   useEffect(() => {
     const timer = setTimeout(() => {

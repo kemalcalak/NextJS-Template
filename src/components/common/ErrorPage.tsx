@@ -1,10 +1,11 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useTranslation } from "react-i18next";
 
 import { Button } from "@/components/ui/button";
-import { ROUTES, getLocalizedPath } from "@/lib/config/routes";
+import { ROUTES, getLocalizedPath, getLocaleFromPath } from "@/lib/config/routes";
 
 interface ErrorPageProps {
   error?: Error & { digest?: string };
@@ -12,8 +13,9 @@ interface ErrorPageProps {
 }
 
 export function ErrorPage({ error, reset }: ErrorPageProps) {
-  const { t, i18n } = useTranslation();
-  const currentLocale = i18n.language.startsWith("tr") ? "tr" : "en";
+  const { t } = useTranslation();
+  const pathname = usePathname();
+  const currentLocale = getLocaleFromPath(pathname);
 
   return (
     <div className="flex h-screen w-full flex-col items-center justify-center bg-background px-4 text-center">
