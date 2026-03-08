@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+
 import { usersApi } from "@/lib/api/endpoints/users";
 import { useAuthStore } from "@/stores/auth.store";
 
@@ -12,7 +13,7 @@ export function AuthHydrator({ children }: { children: React.ReactNode }) {
             try {
                 const user = await usersApi.getMe();
                 setUser(user);
-            } catch (error) {
+            } catch {
                 // Not logged in or error
                 setUser(null);
             } finally {

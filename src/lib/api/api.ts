@@ -6,10 +6,6 @@ import { useAuthStore } from "@/stores/auth.store";
 
 import type { AxiosInstance, AxiosError, AxiosResponse, InternalAxiosRequestConfig } from "axios";
 
-interface RefreshResponse {
-  access_token: string;
-}
-
 interface ErrorResponse {
   detail?: string;
   message?: string;
