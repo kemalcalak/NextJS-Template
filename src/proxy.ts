@@ -18,18 +18,33 @@ import type { NextRequest } from "next/server";
 function handleLocaleRedirect(request: NextRequest, pathname: string, search: string) {
   let locale = request.cookies.get("NEXT_LOCALE")?.value;
   if (!locale || !locales.includes(locale)) {
-    const acceptLang = request.headers.get("accept-language");
-    locale = acceptLang?.includes("tr") ? "tr" : defaultLocale;
+    // Priority: Cookie > Default Locale
+    // We skip accept-language to ensure predictable behavior for first-time visitors and tests
+    locale = defaultLocale;
   }
 
   // IMPORTANT: Preserve search parameters (query string)
   const targetPath = `/${locale}${pathname === "/" ? "" : pathname}${search}`;
-  return NextResponse.redirect(new URL(targetPath, request.url));
+  const response = NextResponse.redirect(new URL(targetPath, request.url));
+
+  // Save the locale to cookie for future requests
+  response.cookies.set("NEXT_LOCALE", locale, { path: "/", maxAge: 31536000 }); // 1 year
+  return response;
 }
 
 function handleAuthGuard(request: NextRequest, pathname: string, token: string | undefined) {
   const currentLocale = getLocaleFromPath(pathname);
   const pathWithoutLocale = getPathWithoutLocale(pathname);
+
+  // Home path is always public - explicit early return to avoid any redirect logic
+  if (pathWithoutLocale === "/") {
+    const localeFromCookie = request.cookies.get("NEXT_LOCALE")?.value;
+    const response = NextResponse.next();
+    if (localeFromCookie !== currentLocale) {
+      response.cookies.set("NEXT_LOCALE", currentLocale, { path: "/", maxAge: 31536000 });
+    }
+    return response;
+  }
 
   const isProtectedRoute = protectedRoutes.some((route) => matchesRoute(pathWithoutLocale, route));
   const isAuthRoute = authRoutes.some((route) => matchesRoute(pathWithoutLocale, route));
@@ -37,28 +52,47 @@ function handleAuthGuard(request: NextRequest, pathname: string, token: string |
     matchesRoute(pathWithoutLocale, route),
   );
 
-  // If it's a public auth route like verify-email-notice, always allow
+  // If it's a public auth route, always allow
   if (isPublicAuthRoute) {
-    return NextResponse.next();
+    const localeFromCookie = request.cookies.get("NEXT_LOCALE")?.value;
+    const response = NextResponse.next();
+    if (localeFromCookie !== currentLocale) {
+      response.cookies.set("NEXT_LOCALE", currentLocale, { path: "/", maxAge: 31536000 });
+    }
+    return response;
   }
+
+  const sessionExpired = request.nextUrl.searchParams.get("session_expired") === "true";
+  let response: NextResponse | null = null;
 
   // If not logged in and onto a protected route -> redirect to login
   if (isProtectedRoute && !token) {
     const loginUrl = new URL(getLocalizedPath(ROUTES.login, currentLocale), request.url);
-    return NextResponse.redirect(loginUrl);
+    response = NextResponse.redirect(loginUrl);
   }
 
   // If logged in and onto an auth route -> redirect to dashboard
-  if (isAuthRoute && token) {
-    // We allow navigation but we could also redirect to dashboard
-    // To avoid loops where token is invalid but still in cookie, we'll keep it simple
-    return NextResponse.next();
+  // Note: We skip this redirect if session_expired=true is present to break potential loops
+  else if (isAuthRoute && token && !sessionExpired) {
+    const dashboardUrl = new URL(getLocalizedPath(ROUTES.dashboard, currentLocale), request.url);
+    response = NextResponse.redirect(dashboardUrl);
   }
 
-  return NextResponse.next();
+  // Default: proceed to the page
+  if (!response) {
+    response = NextResponse.next();
+  }
+
+  // Ensure cookie is set correctly to persist locale choice
+  const localeFromCookie = request.cookies.get("NEXT_LOCALE")?.value;
+  if (localeFromCookie !== currentLocale) {
+    response.cookies.set("NEXT_LOCALE", currentLocale, { path: "/", maxAge: 31536000 });
+  }
+
+  return response;
 }
 
-export function proxy(request: NextRequest) {
+export default function proxy(request: NextRequest) {
   const { pathname, search } = request.nextUrl;
   const token = request.cookies.get("access_token")?.value;
 

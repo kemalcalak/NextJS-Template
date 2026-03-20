@@ -83,7 +83,9 @@ export const SettingsSection = ({ theme, toggleTheme, changeLanguage }: Settings
             <span className="text-[10px] font-medium text-muted-foreground leading-none mb-1">
               {t("common:ui.language", "Language")}
             </span>
-            <span className="text-xs font-bold truncate uppercase">{currentLang}</span>
+            <span className="text-xs font-bold truncate">
+              {currentLang === "en" ? "English" : "Türkçe"}
+            </span>
           </div>
         </Button>
       </div>

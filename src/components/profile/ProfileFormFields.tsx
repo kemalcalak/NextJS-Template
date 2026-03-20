@@ -100,7 +100,7 @@ export const ProfileFormFields = ({
       <Label>{t("info.email")}</Label>
       <div className="relative opacity-60">
         <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-        <Input value={user?.email || ""} className="pl-10" readOnly disabled />
+        <Input name="email" value={user?.email || ""} className="pl-10" readOnly disabled />
       </div>
       <p className="text-xs text-muted-foreground italic">{t("info.emailNotice")}</p>
     </div>
