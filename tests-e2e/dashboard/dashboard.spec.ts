@@ -73,11 +73,8 @@ test.describe("Dashboard Page", () => {
   });
 
   test("should show loading skeletons", async ({ page }) => {
-    // Delay API response to ensure skeletons are visible
+    // Mock users/me endpoint response
     await page.route("**/api/v1/users/me", async (route) => {
-      await new Promise((resolve) => {
-        setTimeout(resolve, 500);
-      });
       await route.fulfill({
         status: 200,
         contentType: "application/json",

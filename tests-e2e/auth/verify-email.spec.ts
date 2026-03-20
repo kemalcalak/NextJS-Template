@@ -14,11 +14,8 @@ test.describe("Verify Email", () => {
   });
 
   test("should display verifying state initially", async ({ page }) => {
-    // Delay API response to ensure verifying state is visible
+    // Mock successful verification (no artificial delay needed)
     await page.route("**/api/v1/auth/verify-email*", async (route) => {
-      await new Promise((resolve) => {
-        setTimeout(resolve, 500);
-      });
       await route.fulfill({
         status: 200,
         contentType: "application/json",
