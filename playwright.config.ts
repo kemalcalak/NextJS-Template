@@ -46,9 +46,6 @@ export default defineConfig({
       use: { ...devices["Desktop Chrome"] },
     },
 
-    // Firefox and WebKit disabled for faster test execution during development
-    // Re-enable before CI/CD by uncommenting:
-    /*
     {
       name: "firefox",
       use: { ...devices["Desktop Firefox"] },
@@ -58,7 +55,6 @@ export default defineConfig({
       name: "webkit",
       use: { ...devices["Desktop Safari"] },
     },
-    */
   ],
 
   /* Run your local dev server before starting the tests */
