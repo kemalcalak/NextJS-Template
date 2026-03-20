@@ -1,0 +1,46 @@
+{
+  "home": {
+    "title": "NextJS Template — Günlük Görevlerinizi Yönetin",
+    "description": "Günlük görevlerinizi ve projelerinizi yönetmek için en iyi platform. Hızlı, güvenli ve şık."
+  },
+  "login": {
+    "title": "Giriş Yap — NextJS Template",
+    "description": "Dashboard'unuza ve projelerinize erişmek için NextJS Template hesabınıza giriş yapın."
+  },
+  "register": {
+    "title": "Hesap Oluştur — NextJS Template",
+    "description": "Üye olun ve projelerinizi ücretsiz yönetmeye başlayın. Hızlı kayıt, kredi kartı gerekmez."
+  },
+  "forgotPassword": {
+    "title": "Şifremi Unuttum — NextJS Template",
+    "description": "E-posta adresinizi girin, şifrenizi sıfırlamanız için bir bağlantı gönderelim."
+  },
+  "resetPassword": {
+    "title": "Şifre Sıfırla — NextJS Template",
+    "description": "NextJS Template hesabınız için yeni ve güvenli bir şifre belirleyin."
+  },
+  "verifyEmail": {
+    "title": "E-postayı Doğrula — NextJS Template",
+    "description": "Kaydınızı tamamlamak için lütfen e-posta adresinizi doğrulayın."
+  },
+  "verifyEmailNotice": {
+    "title": "E-postanızı Kontrol Edin — NextJS Template",
+    "description": "Size bir doğrulama bağlantısı gönderdik. Lütfen gelen kutunuzu ve spam klasörünü kontrol edin."
+  },
+  "dashboard": {
+    "title": "Dashboard — NextJS Template",
+    "description": "Kişisel dashboard'unuzdan projelerinizi, görevlerinizi ve ekibinizi yönetin."
+  },
+  "profile": {
+    "title": "Profil — NextJS Template",
+    "description": "Kişisel profilinizi, tercihlerinizi ve hesap ayarlarınızı görüntüleyin ve düzenleyin."
+  },
+  "notFound": {
+    "title": "Sayfa Bulunamadı — NextJS Template",
+    "description": "Aradığınız sayfa mevcut değil veya taşınmış olabilir."
+  },
+  "error": {
+    "title": "Bir Hata Oluştu — NextJS Template",
+    "description": "Beklenmedik bir hata oluştu. Lütfen tekrar deneyin veya destek ile iletişime geçin."
+  }
+}

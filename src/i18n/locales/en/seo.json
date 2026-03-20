@@ -1,0 +1,46 @@
+{
+  "home": {
+    "title": "NextJS Template — Manage Your Daily Tasks",
+    "description": "The best place to manage your daily tasks and projects. Fast, secure and beautiful."
+  },
+  "login": {
+    "title": "Login — NextJS Template",
+    "description": "Sign in to your NextJS Template account to access your dashboard and projects."
+  },
+  "register": {
+    "title": "Create Account — NextJS Template",
+    "description": "Sign up and start managing your projects for free. Fast registration, no credit card required."
+  },
+  "forgotPassword": {
+    "title": "Forgot Password — NextJS Template",
+    "description": "Enter your email address and we will send you a link to reset your password."
+  },
+  "resetPassword": {
+    "title": "Reset Password — NextJS Template",
+    "description": "Set a new secure password for your NextJS Template account."
+  },
+  "verifyEmail": {
+    "title": "Verify Email — NextJS Template",
+    "description": "Please verify your email address to complete your registration."
+  },
+  "verifyEmailNotice": {
+    "title": "Check Your Email — NextJS Template",
+    "description": "We sent you a verification link. Please check your inbox and spam folder."
+  },
+  "dashboard": {
+    "title": "Dashboard — NextJS Template",
+    "description": "Manage your projects, tasks and team from your personal dashboard."
+  },
+  "profile": {
+    "title": "Profile — NextJS Template",
+    "description": "View and update your personal profile, preferences and account settings."
+  },
+  "notFound": {
+    "title": "Page Not Found — NextJS Template",
+    "description": "The page you are looking for does not exist or has been moved."
+  },
+  "error": {
+    "title": "Something Went Wrong — NextJS Template",
+    "description": "An unexpected error occurred. Please try again or contact support."
+  }
+}

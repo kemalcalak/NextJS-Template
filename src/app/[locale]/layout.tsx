@@ -2,6 +2,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 
 import { AppHeader } from "@/components/common/AppHeader";
 import { Toaster } from "@/components/ui/sonner";
+import { buildMetadata, validateLocale } from "@/lib/seo/metadata";
 import { ClientSideProviders } from "@/providers/ClientSideProviders";
 
 import type { Metadata } from "next";
@@ -18,10 +19,20 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-  title: "NextJS Template",
-  description: "Next.js + i18n Boilerplate",
-};
+// Generate locale-aware metadata for the root layout of each locale
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+
+  return buildMetadata({
+    locale: validateLocale(locale),
+    pageKey: "home",
+    pathname: "",
+  });
+}
 
 export default async function RootLayout({
   children,
