@@ -1,5 +1,4 @@
-import { buildMetadata } from "@/lib/seo/metadata";
-import type { SeoLocale } from "@/lib/seo/types";
+import { buildMetadata, validateLocale } from "@/lib/seo/metadata";
 
 import { HomeContent } from "./HomeContent";
 
@@ -12,7 +11,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params;
   return buildMetadata({
-    locale: locale as SeoLocale,
+    locale: validateLocale(locale),
     pageKey: "home",
     pathname: "/",
   });

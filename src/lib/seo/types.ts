@@ -23,8 +23,8 @@ export type SeoTranslations = Record<string, SeoPageMeta>;
 export interface BuildMetadataOptions {
   locale: SeoLocale;
   pageKey: SeoPageKey;
-  /** Sayfa URL yolu, örn: "/dashboard" */
+  /** Page URL path, e.g., "/dashboard" */
   pathname?: string;
-  /** Metadata'yı override etmek için */
+  /** Optional overrides for metadata */
   overrides?: Partial<SeoPageMeta>;
 }

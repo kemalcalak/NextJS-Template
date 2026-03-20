@@ -1,7 +1,6 @@
 import { Suspense } from "react";
 
-import { buildMetadata } from "@/lib/seo/metadata";
-import type { SeoLocale } from "@/lib/seo/types";
+import { buildMetadata, validateLocale } from "@/lib/seo/metadata";
 
 import { VerifyEmailNoticeContent } from "./VerifyEmailNoticeContent";
 
@@ -14,7 +13,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params;
   return buildMetadata({
-    locale: locale as SeoLocale,
+    locale: validateLocale(locale),
     pageKey: "verifyEmailNotice",
     pathname: "/auth/verify-email-notice",
   });

@@ -5,7 +5,9 @@ import type { MetadataRoute } from "next";
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
 
-  // Static routes that should be in sitemap
+  // Only include public, crawlable routes
+  // Excluded: token-based auth flows (reset-password, verify-email, verify-email-notice)
+  // Excluded: protected pages (dashboard, profile) - handled by robots.txt
   const staticRoutes = ["", "/auth/login", "/auth/register", "/auth/forgot-password"];
 
   const locales = LANGUAGES; // ["en", "tr"]

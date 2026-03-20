@@ -2,8 +2,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 
 import { AppHeader } from "@/components/common/AppHeader";
 import { Toaster } from "@/components/ui/sonner";
-import { buildMetadata } from "@/lib/seo/metadata";
-import type { SeoLocale } from "@/lib/seo/types";
+import { buildMetadata, validateLocale } from "@/lib/seo/metadata";
 import { ClientSideProviders } from "@/providers/ClientSideProviders";
 
 import type { Metadata } from "next";
@@ -27,10 +26,9 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = await params;
-  const safeLocale = (["en", "tr"].includes(locale) ? locale : "en") as SeoLocale;
 
   return buildMetadata({
-    locale: safeLocale,
+    locale: validateLocale(locale),
     pageKey: "home",
     pathname: "",
   });

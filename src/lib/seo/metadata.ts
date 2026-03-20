@@ -5,6 +5,14 @@ import trSeo from "@/i18n/locales/tr/seo.json";
 import type { BuildMetadataOptions, SeoLocale, SeoPageKey } from "./types";
 import type { Metadata } from "next";
 
+/**
+ * Validates and normalizes locale string to SeoLocale type.
+ * Falls back to "en" for unsupported locales.
+ */
+export function validateLocale(locale: string): SeoLocale {
+  return (["en", "tr"].includes(locale) ? locale : "en") as SeoLocale;
+}
+
 const seoTranslations: Record<SeoLocale, Record<string, { title: string; description: string }>> = {
   en: enSeo,
   tr: trSeo,
