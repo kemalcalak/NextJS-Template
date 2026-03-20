@@ -50,30 +50,30 @@ export const handlers = [
   http.post("*/api/v1/auth/register", () => {
     return HttpResponse.json(
       {
-        token_type: "bearer",
-        user: createMockUser(),
+        success: true,
         message: "success.auth.register",
+      },
+      { status: 201 },
+    );
+  }),
+
+  http.post("*/api/v1/auth/logout", () => {
+    return HttpResponse.json(
+      {
+        success: true,
+        message: "success.auth.logout",
       },
       {
         headers: {
-          "Set-Cookie": "access_token=fake-cookie-jwt; HttpOnly; Path=/; SameSite=Lax",
+          "Set-Cookie": "access_token=; HttpOnly; Path=/; Max-Age=0",
         },
       },
     );
   }),
 
-  http.post("*/api/v1/auth/logout", () => {
-    return new HttpResponse(null, {
-      status: 200,
-      headers: {
-        "Set-Cookie": "access_token=; HttpOnly; Path=/; Max-Age=0",
-      },
-    });
-  }),
-
   http.post("*/api/v1/auth/refresh", () => {
     return HttpResponse.json(
-      { message: "Token refreshed", success: true },
+      { message: "success.auth.refresh", success: true },
       {
         headers: {
           "Set-Cookie": "access_token=new-fake-cookie-jwt; HttpOnly; Path=/; SameSite=Lax",
