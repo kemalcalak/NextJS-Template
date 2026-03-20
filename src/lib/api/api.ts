@@ -2,7 +2,14 @@ import axios from "axios";
 import { toast } from "sonner";
 
 import i18n from "@/i18n/config";
-import { ROUTES, getLocaleFromPath, getLocalizedPath } from "@/lib/config/routes";
+import {
+  ROUTES,
+  getLocaleFromPath,
+  getLocalizedPath,
+  getPathWithoutLocale,
+  protectedRoutes,
+  matchesRoute,
+} from "@/lib/config/routes";
 import { useAuthStore } from "@/stores/auth.store";
 
 import type { AxiosInstance, AxiosError, AxiosResponse, InternalAxiosRequestConfig } from "axios";
@@ -13,7 +20,8 @@ interface ErrorResponse {
   error?: string;
 }
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
+const isServer = typeof window === "undefined";
+const API_URL = isServer ? (process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000") : "";
 const API_PREFIX = process.env.NEXT_PUBLIC_API_PREFIX ?? "/api/v1";
 
 const api: AxiosInstance = axios.create({
@@ -54,10 +62,15 @@ const performLogout = async () => {
   // Restore hard redirect to clear React Query cache and other stale state
   if (typeof window !== "undefined") {
     const locale = getLocaleFromPath(window.location.pathname);
-    const loginPath = getLocalizedPath(ROUTES.login, locale);
+    const pathWithoutLocale = getPathWithoutLocale(window.location.pathname);
 
-    // Only redirect if we are not already going to the login page to avoid loops
-    if (window.location.pathname !== loginPath) {
+    // Only redirect to login if we are currently on a protected route
+    const isProtectedRoute = protectedRoutes.some((route) =>
+      matchesRoute(pathWithoutLocale, route),
+    );
+
+    if (isProtectedRoute) {
+      const loginPath = getLocalizedPath(ROUTES.login, locale);
       window.location.href = loginPath;
     }
   }
@@ -142,7 +155,7 @@ api.interceptors.response.use(
     const originalRequest = error.config as InternalAxiosRequestConfig & { _retry?: boolean };
     const status = error.response?.status;
     const url = originalRequest.url || "";
-    const isAuthRequest = url.includes("/auth/login") || url.includes("/auth/register");
+    const isAuthRequest = url.includes("/auth/");
 
     if (status !== 401) {
       handleNonAuthError(error);

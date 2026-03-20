@@ -39,5 +39,8 @@ jobs:
       - name: Run Tests
         run: pnpm vitest run
 
+      - name: Run E2E Tests
+        run: pnpm test:e2e
+
       - name: Run Prettier Format Check
         run: pnpm format:check

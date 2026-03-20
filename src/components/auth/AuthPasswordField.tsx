@@ -50,6 +50,7 @@ export function AuthPasswordField<TFieldValues extends FieldValues>({
               onClick={() => {
                 setShowPassword(!showPassword);
               }}
+              aria-label={showPassword ? "Hide password" : "Show password"}
               className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground hover:text-foreground transition-colors"
             >
               {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
