@@ -40,8 +40,8 @@ export const authService = {
     return api.post<MessageResponse, MessageResponse>("/auth/logout");
   },
 
-  refresh: (): Promise<{ access_token: string }> => {
-    return api.post<{ access_token: string }, { access_token: string }>("/auth/refresh");
+  refresh: (): Promise<MessageResponse> => {
+    return api.post<MessageResponse, MessageResponse>("/auth/refresh");
   },
 
   verifyEmail: (payload: VerifyEmailPayload): Promise<MessageResponse> => {
