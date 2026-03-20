@@ -1,7 +1,3 @@
-import i18n from "i18next";
-import LanguageDetector from "i18next-browser-languagedetector";
-import { initReactI18next } from "react-i18next";
-
 import enAuth from "./locales/en/auth.json";
 import enCommon from "./locales/en/common.json";
 import enDashboard from "./locales/en/dashboard.json";
@@ -20,6 +16,8 @@ import trProfile from "./locales/tr/profile.json";
 import trSeo from "./locales/tr/seo.json";
 import trSuccess from "./locales/tr/success.json";
 import trValidation from "./locales/tr/validation.json";
+
+export const LANGUAGES = ["en", "tr"] as const;
 
 const resources = {
   en: {
@@ -44,42 +42,34 @@ const resources = {
     profile: trProfile,
     seo: trSeo,
   },
-};
+} as const;
 
-i18n
-  .use(LanguageDetector)
-  .use(initReactI18next)
-  .init({
-    resources,
-    supportedLngs: ["en", "tr"],
+type Locale = keyof typeof resources;
+type Namespace = keyof (typeof resources)["en"];
 
-    fallbackLng: "en",
-    defaultNS: "common",
-    ns: [
-      "common",
-      "auth",
-      "validation",
-      "errors",
-      "success",
-      "home",
-      "dashboard",
-      "profile",
-      "seo",
-    ],
+/**
+ * Simple server-side translation helper for Edge/Server components
+ * avoids i18next overhead for simple lookups.
+ */
+export function getServerTranslations(locale = "en", ns: Namespace = "common") {
+  const activeLocale = (resources[locale as Locale] ? locale : "en") as Locale;
+  const translations = resources[activeLocale][ns];
 
-    interpolation: {
-      escapeValue: false,
-      defaultVariables: {
-        appName: process.env.NEXT_PUBLIC_APP_NAME || "NextJS Template",
-      },
+  return {
+    t: (key: string, defaultValue?: string): string => {
+      const keys = key.split(".");
+      let result: unknown = translations;
+
+      for (const k of keys) {
+        if (result && typeof result === "object" && k in result) {
+          result = (result as Record<string, unknown>)[k];
+        } else {
+          result = undefined;
+          break;
+        }
+      }
+
+      return typeof result === "string" ? result : defaultValue || key;
     },
-
-    react: {
-      useSuspense: false,
-    },
-  })
-  .catch((error: unknown) => {
-    console.error("i18n initialized failed:", error);
-  });
-
-export default i18n;
+  };
+}
