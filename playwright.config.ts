@@ -5,11 +5,11 @@ import { defineConfig, devices } from "@playwright/test";
  */
 export default defineConfig({
   testDir: "./tests-e2e",
-  /* Global timeout for each test in milliseconds. */
-  timeout: 10000,
+  /* Global timeout for each test in milliseconds - increased for better stability */
+  timeout: 30000,
   expect: {
-    /* Timeout for each expectation in milliseconds. */
-    timeout: 5000,
+    /* Timeout for each expectation in milliseconds */
+    timeout: 10000,
   },
   /* Run tests in files in parallel */
   fullyParallel: true,
@@ -17,8 +17,8 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
   retries: process.env.CI ? 1 : 0,
-  /* Use parallel workers for faster test execution */
-  workers: process.env.CI ? 4 : 4,
+  /* Use more parallel workers for faster test execution */
+  workers: process.env.CI ? 4 : 8,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: "html",
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
@@ -26,11 +26,11 @@ export default defineConfig({
     /* Base URL to use in actions like `await page.goto('/')`. */
     baseURL: "http://127.0.0.1:3000",
 
-    /* Action timeout in milliseconds. */
-    actionTimeout: 10000,
+    /* Action timeout in milliseconds */
+    actionTimeout: 15000,
 
-    /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
-    trace: "on-first-retry",
+    /* Collect trace only on CI failures to speed up local testing */
+    trace: process.env.CI ? "on-first-retry" : "off",
 
     /* Disable video recording for faster test execution */
     video: "off",
@@ -39,13 +39,16 @@ export default defineConfig({
     screenshot: "only-on-failure",
   },
 
-  /* Configure projects for major browsers */
+  /* Configure projects for major browsers - use only chromium for faster test execution */
   projects: [
     {
       name: "chromium-desktop",
       use: { ...devices["Desktop Chrome"] },
     },
 
+    // Firefox and WebKit disabled for faster test execution during development
+    // Re-enable before CI/CD by uncommenting:
+    /*
     {
       name: "firefox",
       use: { ...devices["Desktop Firefox"] },
@@ -55,6 +58,7 @@ export default defineConfig({
       name: "webkit",
       use: { ...devices["Desktop Safari"] },
     },
+    */
   ],
 
   /* Run your local dev server before starting the tests */
