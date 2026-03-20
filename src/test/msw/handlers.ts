@@ -4,8 +4,8 @@ export const handlers = [
   // Users handlers
   http.get("*/api/v1/users", () => {
     return HttpResponse.json([
-      { id: 1, first_name: "John", last_name: "Doe", email: "john@example.com" },
-      { id: 2, first_name: "Jane", last_name: "Doe", email: "jane@example.com" },
+      { id: "1", first_name: "John", last_name: "Doe", email: "john@example.com" },
+      { id: "2", first_name: "Jane", last_name: "Doe", email: "jane@example.com" },
     ]);
   }),
 
