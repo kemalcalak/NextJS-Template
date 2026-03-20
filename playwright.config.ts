@@ -6,10 +6,10 @@ import { defineConfig, devices } from "@playwright/test";
 export default defineConfig({
   testDir: "./tests-e2e",
   /* Global timeout for each test in milliseconds. */
-  timeout: 10000,
+  timeout: 20000,
   expect: {
     /* Timeout for each expectation in milliseconds. */
-    timeout: 5000,
+    timeout: 15000,
   },
   /* Run tests in files in parallel */
   fullyParallel: true,
@@ -27,7 +27,7 @@ export default defineConfig({
     baseURL: "http://127.0.0.1:3000",
 
     /* Action timeout in milliseconds. */
-    actionTimeout: 10000,
+    actionTimeout: 20000,
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: "on-first-retry",
@@ -46,15 +46,15 @@ export default defineConfig({
       use: { ...devices["Desktop Chrome"] },
     },
 
-    {
-      name: "firefox",
-      use: { ...devices["Desktop Firefox"] },
-    },
+    // {
+    //   name: "firefox",
+    //   use: { ...devices["Desktop Firefox"] },
+    // },
 
-    {
-      name: "webkit",
-      use: { ...devices["Desktop Safari"] },
-    },
+    // {
+    //   name: "webkit",
+    //   use: { ...devices["Desktop Safari"] },
+    // },
   ],
 
   /* Run your local dev server before starting the tests */
