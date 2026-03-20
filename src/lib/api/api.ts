@@ -71,7 +71,7 @@ const performLogout = async () => {
 
     if (isProtectedRoute) {
       const loginPath = getLocalizedPath(ROUTES.login, locale);
-      window.location.href = loginPath;
+      window.location.href = `${loginPath}?session_expired=true`;
     }
   }
 };
@@ -155,7 +155,7 @@ api.interceptors.response.use(
     const originalRequest = error.config as InternalAxiosRequestConfig & { _retry?: boolean };
     const status = error.response?.status;
     const url = originalRequest.url || "";
-    const isAuthRequest = url.includes("/auth/");
+    const isAuthRequest = url.includes("/auth/") && !url.includes("/auth/change-password");
 
     if (status !== 401) {
       handleNonAuthError(error);

@@ -49,7 +49,7 @@ export function AuthHydrator({ children }: { children: React.ReactNode }) {
 
       if (isProtectedRoute) {
         const currentLocale = getLocaleFromPath(pathname);
-        router.replace(getLocalizedPath(ROUTES.login, currentLocale));
+        router.replace(`${getLocalizedPath(ROUTES.login, currentLocale)}?session_expired=true`);
       }
     }
   }, [isSessionInitialized, isAuthenticated, pathname, router]);

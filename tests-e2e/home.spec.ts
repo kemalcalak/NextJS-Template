@@ -35,7 +35,7 @@ test.describe("Basic Navigation", () => {
       {
         name: "NEXT_LOCALE",
         value: "tr",
-        domain: "localhost",
+        domain: "127.0.0.1",
         path: "/",
       },
     ]);

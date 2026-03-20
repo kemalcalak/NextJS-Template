@@ -24,13 +24,13 @@ const setupAuthenticatedState = async (page: Page) => {
     {
       name: "access_token",
       value: "fake-jwt-token",
-      domain: "localhost",
+      domain: "127.0.0.1",
       path: "/",
     },
     {
       name: "NEXT_LOCALE",
       value: "tr",
-      domain: "localhost",
+      domain: "127.0.0.1",
       path: "/",
     },
   ]);
@@ -91,7 +91,7 @@ test.describe("Dashboard Page", () => {
       {
         name: "access_token",
         value: "fake-jwt",
-        url: "http://localhost:3000",
+        url: "http://127.0.0.1:3000",
       },
     ]);
 

@@ -25,7 +25,7 @@ const setupAuthenticatedState = async (page: Page) => {
     {
       name: "access_token",
       value: "fake-jwt",
-      domain: "localhost",
+      domain: "127.0.0.1",
       path: "/",
     },
   ]);

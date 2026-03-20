@@ -62,6 +62,7 @@ function handleAuthGuard(request: NextRequest, pathname: string, token: string |
     return response;
   }
 
+  const sessionExpired = request.nextUrl.searchParams.get("session_expired") === "true";
   let response: NextResponse | null = null;
 
   // If not logged in and onto a protected route -> redirect to login
@@ -71,7 +72,8 @@ function handleAuthGuard(request: NextRequest, pathname: string, token: string |
   }
 
   // If logged in and onto an auth route -> redirect to dashboard
-  else if (isAuthRoute && token) {
+  // Note: We skip this redirect if session_expired=true is present to break potential loops
+  else if (isAuthRoute && token && !sessionExpired) {
     const dashboardUrl = new URL(getLocalizedPath(ROUTES.dashboard, currentLocale), request.url);
     response = NextResponse.redirect(dashboardUrl);
   }

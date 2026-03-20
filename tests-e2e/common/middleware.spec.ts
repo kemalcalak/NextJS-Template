@@ -17,7 +17,7 @@ test.describe("Middleware - Locale Redirection", () => {
       {
         name: "NEXT_LOCALE",
         value: "tr",
-        domain: "localhost",
+        domain: "127.0.0.1",
         path: "/",
       },
     ]);
@@ -65,7 +65,7 @@ test.describe("Middleware - Authentication Guards", () => {
       {
         name: "access_token",
         value: "fake-jwt-token",
-        domain: "localhost",
+        domain: "127.0.0.1",
         path: "/",
       },
     ]);
@@ -84,7 +84,7 @@ test.describe("Middleware - Authenticated Access", () => {
       {
         name: "access_token",
         value: "fake-jwt-token",
-        domain: "localhost",
+        domain: "127.0.0.1",
         path: "/",
       },
     ]);
