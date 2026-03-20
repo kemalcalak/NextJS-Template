@@ -29,13 +29,13 @@ describe("Home Page", () => {
   it("renders welcome message and features", () => {
     vi.mocked(useAuthStore).mockReturnValue({
       user: null,
-      token: null,
+      isAuthenticated: false,
+      isLoading: false,
+      isSessionInitialized: false,
       login: vi.fn(),
       logout: vi.fn(),
-      register: vi.fn(),
       setUser: vi.fn(),
-      setToken: vi.fn(),
-      isLoading: false,
+      setSessionInitialized: vi.fn(),
     });
 
     renderWithProviders(<HomeContent />);
@@ -51,13 +51,13 @@ describe("Home Page", () => {
   it("renders login and register buttons for unauthenticated users", () => {
     vi.mocked(useAuthStore).mockReturnValue({
       user: null,
-      token: null,
+      isAuthenticated: false,
+      isLoading: false,
+      isSessionInitialized: false,
       login: vi.fn(),
       logout: vi.fn(),
-      register: vi.fn(),
       setUser: vi.fn(),
-      setToken: vi.fn(),
-      isLoading: false,
+      setSessionInitialized: vi.fn(),
     });
 
     renderWithProviders(<HomeContent />);
@@ -76,13 +76,13 @@ describe("Home Page", () => {
         last_name: "User",
         role: "USER",
       },
-      token: "fake-token",
+      isAuthenticated: true,
+      isLoading: false,
+      isSessionInitialized: true,
       login: vi.fn(),
       logout: vi.fn(),
-      register: vi.fn(),
       setUser: vi.fn(),
-      setToken: vi.fn(),
-      isLoading: false,
+      setSessionInitialized: vi.fn(),
     });
 
     renderWithProviders(<HomeContent />);

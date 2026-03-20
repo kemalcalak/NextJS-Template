@@ -47,13 +47,13 @@ describe("AppHeader Component", () => {
     // Mock unauthenticated state
     vi.mocked(useAuthStore).mockReturnValue({
       user: null,
-      token: null,
+      isAuthenticated: false,
+      isLoading: false,
+      isSessionInitialized: false,
       login: vi.fn(),
       logout: vi.fn(),
-      register: vi.fn(),
       setUser: vi.fn(),
-      setToken: vi.fn(),
-      isLoading: false,
+      setSessionInitialized: vi.fn(),
     });
 
     renderWithProviders(<AppHeader />);
@@ -68,13 +68,13 @@ describe("AppHeader Component", () => {
     // Mock authenticated state
     vi.mocked(useAuthStore).mockReturnValue({
       user: createMockUser({ email: "test@example.com", first_name: "Test", last_name: "User" }),
-      token: "fake-token",
+      isAuthenticated: true,
+      isLoading: false,
+      isSessionInitialized: true,
       login: vi.fn(),
       logout: vi.fn(),
-      register: vi.fn(),
       setUser: vi.fn(),
-      setToken: vi.fn(),
-      isLoading: false,
+      setSessionInitialized: vi.fn(),
     });
 
     renderWithProviders(<AppHeader />);
@@ -90,13 +90,13 @@ describe("AppHeader Component", () => {
   it("renders theme and language toggle buttons", () => {
     vi.mocked(useAuthStore).mockReturnValue({
       user: null,
-      token: null,
+      isAuthenticated: false,
+      isLoading: false,
+      isSessionInitialized: false,
       login: vi.fn(),
       logout: vi.fn(),
-      register: vi.fn(),
       setUser: vi.fn(),
-      setToken: vi.fn(),
-      isLoading: false,
+      setSessionInitialized: vi.fn(),
     });
 
     renderWithProviders(<AppHeader />);
