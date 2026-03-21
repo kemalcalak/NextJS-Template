@@ -1,0 +1,151 @@
+# NextJS-Template Cursor Rules
+
+## Stack
+
+- **Framework**: Next.js 16 (App Router with `[locale]` routing)
+- **Runtime**: React 19
+- **Language**: TypeScript (strict mode enforced)
+- **Styling**: Tailwind CSS 4 + shadcn/ui + Radix UI
+- **Forms**: React Hook Form + Zod validation
+- **State**: Zustand (global) + React Query (server state)
+- **i18n**: i18next with namespaces (en, tr)
+- **API**: Axios with custom abstraction layer
+- **Testing**: Playwright E2E + Vitest unit tests
+- **Bundler**: Turbopack (default, do NOT add webpack)
+
+## Code Style & Exports
+
+- **Exports**: Named exports ONLY. Never use default exports
+  - **Exception**: `page.tsx`, `layout.tsx`, `loading.tsx`, `error.tsx` files require default exports (Next.js App Router requirement)
+- **Types**: Required for all variables, parameters, and returns. No `any` type
+- **Styling**: Tailwind utility classes exclusively. No separate CSS files
+- **Path imports**: Always use `@/` alias (maps to `src/`). Never use relative `../` paths
+- **Naming**: `camelCase` for functions/vars, `PascalCase` for components/types
+
+## Architecture Rules
+
+### API Calls
+
+- **ONLY** call API through `src/lib/api/` abstraction
+- Never use `fetch()` or `axios` directly in components
+- Example: `import { authService } from '@/lib/api/endpoints/auth'`
+- Service pattern: create typed functions in endpoint files with Zod schemas
+
+### Global State Management
+
+- **Zustand**: For client-side global state (auth, UI state) in `src/stores/`
+- **React Query**: For server state (API cache, sync) using hooks in components
+- Do NOT duplicate state between Zustand and React Query
+
+### Validation Schemas
+
+- All input validation uses Zod (`src/schemas/`)
+- Both API payloads and form inputs must have Zod schemas
+- Reference existing schemas before creating new ones
+
+### Components
+
+- **Shared/reusable**: Place in `src/components/common/`
+- **Auth-related**: Place in `src/components/auth/`
+- **Page-specific**: Co-locate with page folder or in relevant subfolder
+- **shadcn/ui**: Check if component exists: `pnpm dlx shadcn@latest add <name>`
+- **UI patterns**: Use shadcn/ui over building custom components
+
+### Internationalization (i18n)
+
+- All user-facing strings use `useLanguage()` hook or `useTranslation()`
+- Translation files: `src/i18n/locales/{en,tr}/{namespace}.json`
+- Access: `useTranslation('namespace')` → `t('key')`
+- Keep translations modular by namespace (auth, errors, success, common, etc.)
+
+### Routing & Locales
+
+- All routes nested under `src/app/[locale]/`
+- URL format: `/en/dashboard`, `/tr/login` (locale-first)
+- Use `getLocalizedPath()` utility for navigation
+- Protected routes: defined in `src/lib/config/routes.ts`
+
+### Forms
+
+- Use React Hook Form + Zod for validation
+- Example: `const form = useForm<LoginSchema>({ resolver: zodResolver(loginSchema) })`
+- Reuse `AuthEmailField`, `AuthPasswordField` components for auth
+- Place form components in `src/components/`
+
+## Next.js 16 Specifics
+
+- **NO `middleware.ts`**: Use `src/proxy.ts` for routing logic
+- **NO webpack config**: Turbopack is default bundler
+- **APP Router only**: No pages/ directory
+- **Server Components by default**: Use `"use client"` only when needed
+- **Locale routing**: All routes under `[locale]` segment
+
+## Environment Variables
+
+- Never hardcode URLs or config
+- Use: `NEXT_PUBLIC_API_URL` (backend base), `NEXT_PUBLIC_API_PREFIX` (default `/api/v1`)
+- App name: `NEXT_PUBLIC_APP_NAME`
+- Never commit `.env` file — always use `.env.example`
+
+## TypeScript & Linting
+
+- **Strict mode**: All compiler options enabled in `tsconfig.json`
+- **ESLint**: Strict + React + React Hooks + type-checked
+- Fix errors: `pnpm lint`
+- Format code: `pnpm format`
+- Max file: 300 lines (skip blank/comments), max function: 100 lines
+
+## Conventional Commits
+
+All commits must follow this format: `type: description`
+
+**Examples:**
+
+- `feat: add profile settings page with theme preference`
+- `feat: implement password reset flow with email verification`
+- `feat: add Turkish translations for auth pages`
+- `feat: integrate React Query for user profile caching`
+- `feat: create reusable FormField component for auth`
+- `feat: add Zod schema validation for reset password form`
+- `fix: correct email validation regex in auth schema`
+- `fix: prevent duplicate API calls on form submission`
+- `fix: resolve locale routing issue on language switch`
+- `refactor: extract API error handling to custom hook`
+- `refactor: split large auth store into feature stores`
+- `refactor: migrate from useState to React Query for server state`
+- `chore: update Next.js to v16.2.1`
+- `chore: bump shadcn/ui components to latest`
+- `docs: add component creation guidelines to README`
+- `docs: update API proxy configuration documentation`
+- `test: add E2E tests for forgot password flow`
+- `test: cover edge cases in password validation schema`
+
+## Testing
+
+- **E2E**: Playwright in `tests-e2e/` with `*.spec.ts` files
+- **Unit**: Vitest in `src/test/` with `*.test.ts` files
+- **API Mocking**: Use MSW for HTTP mocking in tests
+- Run: `pnpm test:e2e` (E2E), `pnpm lint` (lint)
+
+## Forbidden
+
+- ❌ Default exports
+- ❌ `fetch()` or direct `axios` calls (use API abstraction)
+- ❌ Hardcoded URLs or API paths
+- ❌ CSS files (use Tailwind only)
+- ❌ `middleware.ts` (use `proxy.ts`)
+- ❌ webpack config
+- ❌ Committing `.env` files
+- ❌ `any` type without `// @ts-expect-error` comment
+- ❌ Relative imports in imports (always use `@/`)
+
+## Commands
+
+```bash
+pnpm dev              # Dev server (localhost:3000)
+pnpm build            # Production build
+pnpm lint             # Check linting
+pnpm format           # Format code
+pnpm test:e2e         # Run Playwright tests
+pnpm test:e2e:report  # View test report
+```
