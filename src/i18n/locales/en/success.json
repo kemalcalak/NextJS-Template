@@ -14,6 +14,10 @@
       "password_change_success": "Password changed successfully.",
       "logout_success": "Logged out successfully.",
       "register_success": "Registered successfully. Please verify your email."
+    },
+    "account": {
+      "deactivated": "Account deactivated. It will be deleted in 30 days unless you reactivate it.",
+      "reactivated": "Welcome back! Your account is active again."
     }
   }
 }

@@ -82,14 +82,26 @@ export const useUpdateMe = () => {
   });
 };
 
-// Delete own account mutation
-export const useDeleteMe = () => {
+// Deactivate own account (starts the 30-day grace window)
+export const useDeactivateMe = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (password: string) => usersApi.deleteMe(password),
+    mutationFn: (password: string) => usersApi.deactivateMe(password),
     onSuccess: () => {
-      // Typically followed by logout or redirect
+      // Backend already cleared HttpOnly cookies; drop cached user state so
+      // the next navigation picks up the deactivated status on re-login.
       queryClient.clear();
+    },
+  });
+};
+
+// Cancel a pending deletion and restore the account
+export const useReactivateMe = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: () => usersApi.reactivateMe(),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["users", "me"] });
     },
   });
 };

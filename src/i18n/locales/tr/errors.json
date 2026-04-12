@@ -24,6 +24,11 @@
     "auth": {
       "refresh_token_missing": "Yenileme token'ı eksik.",
       "invalid_current_password": "Mevcut şifre yanlış."
+    },
+    "account": {
+      "already_deactivated": "Hesabınız zaten silinmek üzere planlanmış.",
+      "not_deactivated": "Hesabınız aktif — iptal edilecek bir işlem yok.",
+      "deletion_expired": "Bu hesabın bekleme süresi dolmuş."
     }
   }
 }

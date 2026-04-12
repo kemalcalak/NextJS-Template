@@ -9,5 +9,6 @@
   "passwordRequired": "Şifre gereklidir",
   "confirmPasswordRequired": "Lütfen şifrenizi onaylayın",
   "nameMin": "İsim en az {{count}} karakter olmalıdır",
-  "confirmPasswordMismatch": "Şifreler eşleşmiyor"
+  "confirmPasswordMismatch": "Şifreler eşleşmiyor",
+  "deactivateAcknowledgeRequired": "Sonucu anladığınızı onaylamanız gerekir."
 }

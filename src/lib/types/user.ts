@@ -11,6 +11,8 @@ export interface User {
   updated_at: string;
   is_deleted: boolean;
   deleted_at: string | null;
+  deactivated_at: string | null;
+  deletion_scheduled_at: string | null;
 }
 
 export interface UserUpdateResponse {
