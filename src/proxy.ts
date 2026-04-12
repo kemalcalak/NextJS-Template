@@ -11,17 +11,17 @@ import {
   getPathWithoutLocale,
   ROUTES,
   getLocalizedPath,
+  type Locale,
 } from "@/lib/config/routes";
 
 import type { NextRequest } from "next/server";
 
 function handleLocaleRedirect(request: NextRequest, pathname: string, search: string) {
-  let locale = request.cookies.get("NEXT_LOCALE")?.value;
-  if (!locale || !locales.includes(locale)) {
-    // Priority: Cookie > Default Locale
-    // We skip accept-language to ensure predictable behavior for first-time visitors and tests
-    locale = defaultLocale;
-  }
+  const cookieLocale = request.cookies.get("NEXT_LOCALE")?.value;
+  const locale: Locale =
+    cookieLocale && locales.includes(cookieLocale as Locale)
+      ? (cookieLocale as Locale)
+      : defaultLocale;
 
   // IMPORTANT: Preserve search parameters (query string)
   const targetPath = `/${locale}${pathname === "/" ? "" : pathname}${search}`;

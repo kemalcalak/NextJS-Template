@@ -25,20 +25,18 @@ export function ClientSideProviders({
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    const initI18n = async () => {
-      if (!i18n.isInitialized) {
+    let cancelled = false;
+    const syncLocale = async () => {
+      if (i18n.language !== locale) {
         await i18n.changeLanguage(locale);
       }
-      setMounted(true);
+      if (!cancelled) setMounted(true);
     };
-    void initI18n();
+    void syncLocale();
+    return () => {
+      cancelled = true;
+    };
   }, [locale]);
-
-  useEffect(() => {
-    if (mounted && i18n.language !== locale) {
-      void i18n.changeLanguage(locale);
-    }
-  }, [locale, mounted]);
 
   const loadingMessage = loadingMessages[locale] || loadingMessages.en;
 

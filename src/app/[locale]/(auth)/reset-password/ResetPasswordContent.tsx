@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { isAxiosError } from "axios";
 import { Loader2, ShieldCheck, XCircle } from "lucide-react";
 import { motion } from "motion/react";
 import Link from "next/link";
@@ -18,8 +19,6 @@ import { Form } from "@/components/ui/form";
 import { useResetPasswordMutation } from "@/hooks/api/use-auth";
 import { getLocaleFromPath, ROUTES, getLocalizedPath } from "@/lib/config/routes";
 import { getResetSchema, type ResetFormValues } from "@/schemas/auth";
-
-import type { AxiosError } from "axios";
 
 const SuccessState = ({ t, locale }: { t: (key: string) => string; locale: string }) => (
   <div className="flex min-h-screen items-center justify-center bg-background p-4 sm:p-8">
@@ -76,8 +75,11 @@ export function ResetPasswordContent() {
       await resetPasswordMutation.mutateAsync({ token, new_password: values.password });
       setSuccess(true);
     } catch (err: unknown) {
-      const axiosError = err as AxiosError<{ detail?: string }>;
-      setError(axiosError.response?.data?.detail || t("resetPassword.errorMsg"));
+      const detail =
+        isAxiosError<{ detail?: string }>(err) && err.response?.data?.detail
+          ? err.response.data.detail
+          : null;
+      setError(detail ?? t("resetPassword.errorMsg"));
     }
   };
 

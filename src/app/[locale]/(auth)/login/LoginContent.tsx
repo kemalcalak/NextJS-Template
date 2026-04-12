@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useState } from "react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2, Lock } from "lucide-react";
@@ -36,10 +36,8 @@ export function LoginContent() {
   const { mutate: login, isPending: isLoading } = useLoginMutation();
   const [showPassword, setShowPassword] = useState(false);
 
-  const schema = useMemo(() => getLoginSchema(tv), [tv]);
-
   const form = useForm<LoginFormValues>({
-    resolver: zodResolver(schema),
+    resolver: zodResolver(getLoginSchema(tv)),
     defaultValues: {
       email: "",
       password: "",

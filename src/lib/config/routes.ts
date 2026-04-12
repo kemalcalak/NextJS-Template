@@ -1,5 +1,6 @@
-export const locales = ["en", "tr"];
-export const defaultLocale = "en";
+export const locales = ["en", "tr"] as const;
+export type Locale = (typeof locales)[number];
+export const defaultLocale: Locale = "en";
 
 export const ROUTES = {
   home: "/",
@@ -9,6 +10,7 @@ export const ROUTES = {
   resetPassword: "/reset-password",
   verifyEmail: "/verify-email",
   verifyEmailNotice: "/verify-email-notice",
+  accountDeactivated: "/account-deactivated",
   dashboard: "/dashboard",
   profile: "/profile",
   logout: "/logout",
@@ -37,6 +39,11 @@ export const authRoutes = [
 
 // Public routes that should always be accessible (without locale prefix)
 export const publicAuthRoutes = [ROUTES.verifyEmailNotice];
+
+// Routes that require a valid session but MUST remain reachable when the
+// account is in the deletion grace window. The protected-layout guard
+// redirects deactivated users to these instead of the dashboard.
+export const pendingDeletionRoutes = [ROUTES.accountDeactivated];
 
 /**
  * Checks if a given path matches any of the routes in the list.
