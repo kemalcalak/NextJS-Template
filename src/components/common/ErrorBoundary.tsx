@@ -98,5 +98,3 @@ export function ErrorBoundary({ children, onReset }: Omit<ErrorBoundaryProps, "t
     </ErrorBoundaryBase>
   );
 }
-
-export default ErrorBoundary;

@@ -12,9 +12,9 @@ const createMockUser = (overrides: Partial<User> = {}): User => ({
   is_verified: true,
   created_at: new Date().toISOString(),
   updated_at: new Date().toISOString(),
-  is_deleted: false,
   title: null,
-  deleted_at: null,
+  deactivated_at: null,
+  deletion_scheduled_at: null,
   ...overrides,
 });
 
@@ -80,5 +80,23 @@ export const handlers = [
         },
       },
     );
+  }),
+
+  http.delete("*/api/v1/users/me", () => {
+    return HttpResponse.json(
+      { success: true, message: "success.account.deactivated" },
+      {
+        headers: {
+          "Set-Cookie": "access_token=; HttpOnly; Path=/; Max-Age=0",
+        },
+      },
+    );
+  }),
+
+  http.post("*/api/v1/users/me/reactivate", () => {
+    return HttpResponse.json({
+      success: true,
+      message: "success.account.reactivated",
+    });
   }),
 ];

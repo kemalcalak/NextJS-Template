@@ -5,12 +5,17 @@ import i18n from "@/i18n/config";
 
 import { ClientSideProviders } from "../ClientSideProviders";
 
-// Mock i18n
+import type { TFunction } from "i18next";
+
+// Mock i18n — identity translation function, cast through unknown because
+// i18next's TFunction is a branded type that's awkward to fake in tests.
 const mockChangeLanguage = vi.fn().mockImplementation((_lng?: string) => {
-  return Promise.resolve(((key: string) => key) as any);
+  const identity = (key: string): string => key;
+  return Promise.resolve(identity as unknown as TFunction);
 });
 const mockedI18n = i18n as unknown as {
   isInitialized: boolean;
+  language: string;
   changeLanguage: typeof mockChangeLanguage;
 };
 mockedI18n.isInitialized = false;
@@ -33,6 +38,7 @@ describe("ClientSideProviders", () => {
   });
 
   it("should show loading screen initially and then render children", async () => {
+    mockedI18n.language = "tr";
     render(
       <ClientSideProviders locale="en">
         <div data-testid="child">App Content</div>
@@ -51,6 +57,7 @@ describe("ClientSideProviders", () => {
   });
 
   it("should apply correct loading message for Turkish locale", async () => {
+    mockedI18n.language = "en";
     render(
       <ClientSideProviders locale="tr">
         <div data-testid="child">App Content</div>

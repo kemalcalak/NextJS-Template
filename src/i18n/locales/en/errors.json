@@ -24,6 +24,11 @@
     "auth": {
       "refresh_token_missing": "Refresh token is missing.",
       "invalid_current_password": "Current password is incorrect."
+    },
+    "account": {
+      "already_deactivated": "Your account is already scheduled for deletion.",
+      "not_deactivated": "Your account is active — nothing to cancel.",
+      "deletion_expired": "This account's grace window has expired."
     }
   }
 }

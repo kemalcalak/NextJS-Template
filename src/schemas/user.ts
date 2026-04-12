@@ -30,3 +30,13 @@ export const getChangePasswordSchema = (t: TFunction) =>
     });
 
 export type ChangePasswordFormValues = z.infer<ReturnType<typeof getChangePasswordSchema>>;
+
+export const getDeactivateAccountSchema = (t: TFunction) =>
+  z.object({
+    password: z.string().min(1, { message: t("validation:passwordRequired") }),
+    acknowledge: z.boolean().refine((v) => v, {
+      message: t("validation:deactivateAcknowledgeRequired"),
+    }),
+  });
+
+export type DeactivateAccountFormValues = z.infer<ReturnType<typeof getDeactivateAccountSchema>>;

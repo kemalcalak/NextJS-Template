@@ -1,3 +1,5 @@
+import { locales } from "@/lib/config/routes";
+
 import enAuth from "./locales/en/auth.json";
 import enCommon from "./locales/en/common.json";
 import enDashboard from "./locales/en/dashboard.json";
@@ -17,7 +19,7 @@ import trSeo from "./locales/tr/seo.json";
 import trSuccess from "./locales/tr/success.json";
 import trValidation from "./locales/tr/validation.json";
 
-export const LANGUAGES = ["en", "tr"] as const;
+export const LANGUAGES = locales;
 
 const resources = {
   en: {

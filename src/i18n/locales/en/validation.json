@@ -9,5 +9,6 @@
   "passwordRequired": "Password is required",
   "confirmPasswordRequired": "Please confirm your password",
   "nameMin": "Name must be at least {{count}} characters",
-  "confirmPasswordMismatch": "Passwords do not match"
+  "confirmPasswordMismatch": "Passwords do not match",
+  "deactivateAcknowledgeRequired": "You must confirm that you understand the consequence."
 }

@@ -1,0 +1,27 @@
+{
+  "deactivate": {
+    "title": "Tehlikeli alan",
+    "description": "Hesabınızı devre dışı bırakın. Kalıcı olarak silinmeden önce fikrinizi değiştirmek için 30 gününüz var.",
+    "cta": "Hesabı devre dışı bırak",
+    "dialog": {
+      "title": "Hesabınızı devre dışı bırakmak istiyor musunuz?",
+      "description": "Hesabınız hemen devre dışı bırakılacak ve 30 gün sonra kalıcı olarak silinecek. Bu süre içinde tekrar giriş yaparak silme işlemini iptal edebilirsiniz.",
+      "passwordLabel": "Onaylamak için şifrenizi girin",
+      "acknowledgeLabel": "Bekleme süresi sonunda hesabımın silineceğini anlıyorum.",
+      "cancel": "Vazgeç",
+      "confirm": "Devre dışı bırak",
+      "submitting": "Devre dışı bırakılıyor..."
+    }
+  },
+  "deactivated": {
+    "title": "Hesabınız devre dışı",
+    "subtitle": "Hesabınız silinmek üzere planlandığı için tüm özellikler duraklatıldı.",
+    "daysRemaining_one": "Kalıcı silinmeye {{count}} gün kaldı",
+    "daysRemaining_other": "Kalıcı silinmeye {{count}} gün kaldı",
+    "scheduledAt": "Silme tarihi: {{date}}",
+    "reactivatePrompt": "Fikriniz mi değişti? Tek tıkla hesabınızı geri kazanın.",
+    "reactivate": "Hesabımı koru",
+    "reactivating": "Geri yükleniyor...",
+    "logout": "Çıkış yap"
+  }
+}

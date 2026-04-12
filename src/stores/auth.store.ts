@@ -20,34 +20,33 @@ interface AuthState {
 
 interface StoredAuth {
   state?: {
-    user?: User;
     isAuthenticated?: boolean;
   };
 }
 
-// Helper to get initial state from localStorage for synchronous access
-const getStoredAuth = () => {
+// Only the isAuthenticated flag is persisted so the UI can decide
+// synchronously whether to render a protected shell or a login screen on
+// first paint. The actual user object is always re-fetched from /me by
+// AuthHydrator — never read profile fields out of localStorage.
+const getStoredAuthFlag = (): { isAuthenticated: boolean } => {
+  if (typeof window === "undefined") return { isAuthenticated: false };
   try {
-    if (typeof window === "undefined") return { user: null, isAuthenticated: false };
     const raw = localStorage.getItem("auth-storage");
-    if (!raw) return { user: null, isAuthenticated: false };
+    if (!raw) return { isAuthenticated: false };
     const parsed = JSON.parse(raw) as unknown as StoredAuth;
-    return {
-      user: parsed.state?.user || null,
-      isAuthenticated: parsed.state?.isAuthenticated || false,
-    };
+    return { isAuthenticated: Boolean(parsed.state?.isAuthenticated) };
   } catch {
-    return { user: null, isAuthenticated: false };
+    return { isAuthenticated: false };
   }
 };
 
-const initialData =
-  typeof window !== "undefined" ? getStoredAuth() : { user: null, isAuthenticated: false };
+const initialFlag = getStoredAuthFlag();
 
 export const useAuthStore = create<AuthState>()(
   persist(
     (set) => ({
-      ...initialData,
+      user: null,
+      isAuthenticated: initialFlag.isAuthenticated,
       isLoading: false,
       isSessionInitialized: false,
 
@@ -72,7 +71,7 @@ export const useAuthStore = create<AuthState>()(
     }),
     {
       name: "auth-storage",
-      partialize: (s) => ({ user: s.user, isAuthenticated: s.isAuthenticated }),
+      partialize: (s) => ({ isAuthenticated: s.isAuthenticated }),
     },
   ),
 );

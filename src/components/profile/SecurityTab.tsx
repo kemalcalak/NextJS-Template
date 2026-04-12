@@ -7,6 +7,7 @@ import { Loader2, Lock, Shield, CheckCircle2, Eye, EyeOff } from "lucide-react";
 import { useForm, type Control } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
+import { DangerZone } from "@/components/profile/DangerZone";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -90,64 +91,68 @@ export const SecurityTab = () => {
   };
 
   return (
-    <Card className="border-border/50 bg-card/50 backdrop-blur-sm">
-      <CardHeader>
-        <CardTitle className="text-xl flex items-center gap-2">
-          <Shield className="h-5 w-5 text-primary" />
-          {t("security.title")}
-        </CardTitle>
-        <CardDescription>{t("security.description")}</CardDescription>
-      </CardHeader>
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)}>
-          <CardContent className="space-y-4">
-            <PasswordField
-              control={form.control}
-              name="current_password"
-              label={t("security.currentPassword")}
-              isLoading={isLoading}
-              icon={
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              }
-            />
+    <div className="space-y-6">
+      <Card className="border-border/50 bg-card/50 backdrop-blur-sm">
+        <CardHeader>
+          <CardTitle className="text-xl flex items-center gap-2">
+            <Shield className="h-5 w-5 text-primary" />
+            {t("security.title")}
+          </CardTitle>
+          <CardDescription>{t("security.description")}</CardDescription>
+        </CardHeader>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)}>
+            <CardContent className="space-y-4">
+              <PasswordField
+                control={form.control}
+                name="current_password"
+                label={t("security.currentPassword")}
+                isLoading={isLoading}
+                icon={
+                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                }
+              />
 
-            <Separator className="my-2" />
+              <Separator className="my-2" />
 
-            <PasswordField
-              control={form.control}
-              name="new_password"
-              label={t("security.newPassword")}
-              isLoading={isLoading}
-              icon={
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              }
-            />
+              <PasswordField
+                control={form.control}
+                name="new_password"
+                label={t("security.newPassword")}
+                isLoading={isLoading}
+                icon={
+                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                }
+              />
 
-            <PasswordField
-              control={form.control}
-              name="confirmPassword"
-              label={t("security.confirmPassword")}
-              isLoading={isLoading}
-              icon={
-                <CheckCircle2 className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              }
-            />
+              <PasswordField
+                control={form.control}
+                name="confirmPassword"
+                label={t("security.confirmPassword")}
+                isLoading={isLoading}
+                icon={
+                  <CheckCircle2 className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                }
+              />
 
-            <div className="pt-4">
-              <Button type="submit" disabled={isLoading} className="w-full md:w-auto">
-                {isLoading ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    {t("security.submitting")}
-                  </>
-                ) : (
-                  t("security.submit")
-                )}
-              </Button>
-            </div>
-          </CardContent>
-        </form>
-      </Form>
-    </Card>
+              <div className="pt-4">
+                <Button type="submit" disabled={isLoading} className="w-full md:w-auto">
+                  {isLoading ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      {t("security.submitting")}
+                    </>
+                  ) : (
+                    t("security.submit")
+                  )}
+                </Button>
+              </div>
+            </CardContent>
+          </form>
+        </Form>
+      </Card>
+
+      <DangerZone />
+    </div>
   );
 };

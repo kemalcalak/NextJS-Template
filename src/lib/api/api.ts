@@ -24,12 +24,22 @@ const isServer = typeof window === "undefined";
 const API_URL = isServer ? (process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000") : "";
 const API_PREFIX = process.env.NEXT_PUBLIC_API_PREFIX ?? "/api/v1";
 
+// Requests under /auth/* should not trigger silent refresh-and-retry when
+// they 401. /auth/change-password is the exception: it runs as an
+// authenticated user and its 401 should follow the normal refresh flow.
+const AUTH_ROUTE_PREFIX = "/auth/";
+const REFRESHABLE_AUTH_PATHS: readonly string[] = ["/auth/change-password"];
+
 const api: AxiosInstance = axios.create({
   baseURL: `${API_URL}${API_PREFIX}`,
   timeout: 10000,
   withCredentials: true,
   headers: {
     "Content-Type": "application/json",
+    // Custom header forces a CORS preflight for cross-origin POST/PUT/DELETE
+    // and makes classic HTML-form CSRF impossible. Combined with the backend
+    // origin allow-list and SameSite cookies this is our CSRF defense.
+    "X-Requested-With": "XMLHttpRequest",
   },
 });
 
@@ -53,7 +63,14 @@ const performLogout = async () => {
 
   if (isAuthenticated) {
     try {
-      await axios.post(`${API_URL}${API_PREFIX}/auth/logout`, {}, { withCredentials: true });
+      await axios.post(
+        `${API_URL}${API_PREFIX}/auth/logout`,
+        {},
+        {
+          withCredentials: true,
+          headers: { "X-Requested-With": "XMLHttpRequest" },
+        },
+      );
     } catch {
       // Ignore background logout failure
     }
@@ -99,7 +116,14 @@ const attemptTokenRefresh = async (
     if (!refreshPromise) {
       refreshPromise = (async () => {
         try {
-          await axios.post(`${API_URL}${API_PREFIX}/auth/refresh`, {}, { withCredentials: true });
+          await axios.post(
+            `${API_URL}${API_PREFIX}/auth/refresh`,
+            {},
+            {
+              withCredentials: true,
+              headers: { "X-Requested-With": "XMLHttpRequest" },
+            },
+          );
           return "refreshed";
         } finally {
           refreshPromise = null;
@@ -155,7 +179,8 @@ api.interceptors.response.use(
     const originalRequest = error.config as InternalAxiosRequestConfig & { _retry?: boolean };
     const status = error.response?.status;
     const url = originalRequest.url || "";
-    const isAuthRequest = url.includes("/auth/") && !url.includes("/auth/change-password");
+    const isAuthRequest =
+      url.includes(AUTH_ROUTE_PREFIX) && !REFRESHABLE_AUTH_PATHS.some((path) => url.includes(path));
 
     if (status !== 401) {
       handleNonAuthError(error);

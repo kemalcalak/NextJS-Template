@@ -13,5 +13,13 @@ export const usersApi = {
     const response = await api.patch<UserUpdateResponse, UserUpdateResponse>("/users/me", data);
     return response.user;
   },
-  deleteMe: (password: string): Promise<void> => api.delete("/users/me", { data: { password } }),
+  deactivateMe: (password: string, lang: string): Promise<{ success: boolean; message: string }> =>
+    api.delete<{ success: boolean; message: string }, { success: boolean; message: string }>(
+      "/users/me",
+      { data: { password, lang } },
+    ),
+  reactivateMe: (): Promise<{ success: boolean; message: string }> =>
+    api.post<{ success: boolean; message: string }, { success: boolean; message: string }>(
+      "/users/me/reactivate",
+    ),
 };

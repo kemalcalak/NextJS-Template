@@ -2,6 +2,9 @@ import i18n from "i18next";
 import LanguageDetector from "i18next-browser-languagedetector";
 import { initReactI18next } from "react-i18next";
 
+import { defaultLocale, locales } from "@/lib/config/routes";
+
+import enAccount from "./locales/en/account.json";
 import enAuth from "./locales/en/auth.json";
 import enCommon from "./locales/en/common.json";
 import enDashboard from "./locales/en/dashboard.json";
@@ -11,6 +14,7 @@ import enProfile from "./locales/en/profile.json";
 import enSeo from "./locales/en/seo.json";
 import enSuccess from "./locales/en/success.json";
 import enValidation from "./locales/en/validation.json";
+import trAccount from "./locales/tr/account.json";
 import trAuth from "./locales/tr/auth.json";
 import trCommon from "./locales/tr/common.json";
 import trDashboard from "./locales/tr/dashboard.json";
@@ -32,6 +36,7 @@ const resources = {
     dashboard: enDashboard,
     profile: enProfile,
     seo: enSeo,
+    account: enAccount,
   },
   tr: {
     common: trCommon,
@@ -43,6 +48,7 @@ const resources = {
     dashboard: trDashboard,
     profile: trProfile,
     seo: trSeo,
+    account: trAccount,
   },
 };
 
@@ -51,9 +57,9 @@ i18n
   .use(initReactI18next)
   .init({
     resources,
-    supportedLngs: ["en", "tr"],
+    supportedLngs: [...locales],
 
-    fallbackLng: "en",
+    fallbackLng: defaultLocale,
     defaultNS: "common",
     ns: [
       "common",
@@ -65,6 +71,7 @@ i18n
       "dashboard",
       "profile",
       "seo",
+      "account",
     ],
 
     interpolation: {

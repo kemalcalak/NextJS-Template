@@ -10,9 +10,20 @@ import { ProfileContent } from "../ProfileContent";
 const mockUpdateMe = vi.fn();
 const mockChangePassword = vi.fn();
 
+const mockDeactivate = vi.fn();
+const mockReactivate = vi.fn();
+
 vi.mock("@/hooks/api/use-users", () => ({
   useUpdateMe: () => ({
     mutate: mockUpdateMe,
+    isPending: false,
+  }),
+  useDeactivateMe: () => ({
+    mutate: mockDeactivate,
+    isPending: false,
+  }),
+  useReactivateMe: () => ({
+    mutate: mockReactivate,
     isPending: false,
   }),
 }));

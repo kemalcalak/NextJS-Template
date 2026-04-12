@@ -1,16 +1,17 @@
 // Import SEO translations directly (server-side, no i18n client needed)
 import enSeo from "@/i18n/locales/en/seo.json";
 import trSeo from "@/i18n/locales/tr/seo.json";
+import { defaultLocale, locales } from "@/lib/config/routes";
 
 import type { BuildMetadataOptions, SeoLocale, SeoPageKey } from "./types";
 import type { Metadata } from "next";
 
 /**
  * Validates and normalizes locale string to SeoLocale type.
- * Falls back to "en" for unsupported locales.
+ * Falls back to the default locale for unsupported values.
  */
 export function validateLocale(locale: string): SeoLocale {
-  return (["en", "tr"].includes(locale) ? locale : "en") as SeoLocale;
+  return (locales.includes(locale as SeoLocale) ? locale : defaultLocale) as SeoLocale;
 }
 
 const seoTranslations: Record<SeoLocale, Record<string, { title: string; description: string }>> = {
@@ -21,8 +22,8 @@ const seoTranslations: Record<SeoLocale, Record<string, { title: string; descrip
 // Base URL for canonical and OG URLs — defaults to localhost in dev
 const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
 
-// Supported locales for hreflang alternate links
-const SUPPORTED_LOCALES: SeoLocale[] = ["en", "tr"];
+// Supported locales for hreflang alternate links — kept in sync with routes.ts
+const SUPPORTED_LOCALES: readonly SeoLocale[] = locales;
 
 /**
  * Resolves the page meta (title + description) for the given locale and page key.

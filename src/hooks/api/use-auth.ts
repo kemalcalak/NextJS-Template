@@ -31,7 +31,8 @@ export function useLoginMutation() {
     mutationFn: (payload: LoginPayload) => authService.login(payload),
     onSuccess: (data) => {
       login(data.user);
-      router.push(getLocalizedPath(ROUTES.dashboard, currentLocale));
+      const target = data.user.deletion_scheduled_at ? ROUTES.accountDeactivated : ROUTES.dashboard;
+      router.push(getLocalizedPath(target, currentLocale));
     },
     onError: (
       error: AxiosError<{ error?: string; detail?: string; success?: boolean }>,
@@ -115,9 +116,6 @@ export function useResendVerificationMutation() {
   return useMutation({
     mutationFn: (payload: { email: string; lang?: string }) =>
       authService.resendVerification({ lang: i18n.language, ...payload }),
-    onSuccess: () => {
-      /* no-op */
-    },
   });
 }
 
