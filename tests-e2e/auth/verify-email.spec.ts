@@ -14,8 +14,13 @@ test.describe("Verify Email", () => {
   });
 
   test("should display verifying state initially", async ({ page }) => {
-    // Mock successful verification (no artificial delay needed)
+    // Delay the mock response so the "verifying" UI stays on screen long
+    // enough for the assertion — without a delay the success state can paint
+    // before Playwright queries the DOM, producing a flaky miss.
     await page.route("**/api/v1/auth/verify-email*", async (route) => {
+      await new Promise<void>((resolve) => {
+        setTimeout(resolve, 1_500);
+      });
       await route.fulfill({
         status: 200,
         contentType: "application/json",
