@@ -73,8 +73,6 @@ describe("Authentication Integration", () => {
       is_verified: true,
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
-      is_deleted: false,
-      deleted_at: null,
       deactivated_at: null,
       deletion_scheduled_at: null,
     };

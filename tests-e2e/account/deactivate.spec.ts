@@ -23,9 +23,7 @@ interface MockUser {
   is_verified: boolean;
   created_at: string;
   updated_at: string;
-  is_deleted: boolean;
   title: string | null;
-  deleted_at: string | null;
   deactivated_at: string | null;
   deletion_scheduled_at: string | null;
 }
@@ -40,9 +38,7 @@ const baseUser: MockUser = {
   is_verified: true,
   created_at: "2026-01-01T00:00:00Z",
   updated_at: "2026-01-01T00:00:00Z",
-  is_deleted: false,
   title: null,
-  deleted_at: null,
   deactivated_at: null,
   deletion_scheduled_at: null,
 };

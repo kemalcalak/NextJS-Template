@@ -33,9 +33,7 @@ const BASE_USER = {
   is_verified: true,
   created_at: "2026-01-01T00:00:00Z",
   updated_at: "2026-01-01T00:00:00Z",
-  is_deleted: false,
   title: null,
-  deleted_at: null,
   deactivated_at: null,
   deletion_scheduled_at: null,
 };

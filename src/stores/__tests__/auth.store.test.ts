@@ -35,8 +35,6 @@ describe("useAuthStore", () => {
       is_verified: true,
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
-      is_deleted: false,
-      deleted_at: null,
       deactivated_at: null,
       deletion_scheduled_at: null,
     } as const;
@@ -62,9 +60,7 @@ describe("useAuthStore", () => {
         is_verified: true,
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
-        is_deleted: false,
-        deleted_at: null,
-        deactivated_at: null,
+          deactivated_at: null,
         deletion_scheduled_at: null,
       },
       isAuthenticated: true,
@@ -91,8 +87,6 @@ describe("useAuthStore", () => {
       is_verified: true,
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
-      is_deleted: false,
-      deleted_at: null,
       deactivated_at: null,
       deletion_scheduled_at: null,
     } as const;
