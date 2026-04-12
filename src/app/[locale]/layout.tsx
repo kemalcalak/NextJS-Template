@@ -52,8 +52,8 @@ export default async function RootLayout({
             <AppHeader />
             <main className="flex-1 flex flex-col">{children}</main>
           </div>
-          <Toaster richColors position="top-right" />
         </ClientSideProviders>
+        <Toaster richColors position="top-right" />
       </body>
     </html>
   );

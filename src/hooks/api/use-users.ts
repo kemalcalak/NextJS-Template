@@ -86,7 +86,8 @@ export const useUpdateMe = () => {
 export const useDeactivateMe = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (password: string) => usersApi.deactivateMe(password),
+    mutationFn: ({ password, lang }: { password: string; lang: string }) =>
+      usersApi.deactivateMe(password, lang),
     onSuccess: () => {
       // Backend already cleared HttpOnly cookies; drop cached user state so
       // the next navigation picks up the deactivated status on re-login.

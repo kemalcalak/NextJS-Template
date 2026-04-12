@@ -50,17 +50,17 @@ export const DangerZone = () => {
   });
 
   const onSubmit = (values: DeactivateAccountFormValues) => {
-    deactivate(values.password, {
-      onSuccess: () => {
-        setOpen(false);
-        form.reset();
-        // Backend already cleared the auth cookies. Clear the client store
-        // and route to the login page so the user has to re-authenticate
-        // before landing on the "account deactivated" screen.
-        logout();
-        router.push(getLocalizedPath(ROUTES.login, language));
+    deactivate(
+      { password: values.password, lang: language },
+      {
+        onSuccess: () => {
+          setOpen(false);
+          form.reset();
+          logout();
+          router.push(getLocalizedPath(ROUTES.login, language));
+        },
       },
-    });
+    );
   };
 
   return (

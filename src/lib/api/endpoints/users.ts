@@ -13,10 +13,10 @@ export const usersApi = {
     const response = await api.patch<UserUpdateResponse, UserUpdateResponse>("/users/me", data);
     return response.user;
   },
-  deactivateMe: (password: string): Promise<{ success: boolean; message: string }> =>
+  deactivateMe: (password: string, lang: string): Promise<{ success: boolean; message: string }> =>
     api.delete<{ success: boolean; message: string }, { success: boolean; message: string }>(
       "/users/me",
-      { data: { password } },
+      { data: { password, lang } },
     ),
   reactivateMe: (): Promise<{ success: boolean; message: string }> =>
     api.post<{ success: boolean; message: string }, { success: boolean; message: string }>(
