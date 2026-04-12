@@ -75,6 +75,8 @@ describe("Authentication Integration", () => {
       updated_at: new Date().toISOString(),
       is_deleted: false,
       deleted_at: null,
+      deactivated_at: null,
+      deletion_scheduled_at: null,
     };
 
     act(() => {
