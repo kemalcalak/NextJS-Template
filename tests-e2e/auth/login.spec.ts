@@ -40,8 +40,11 @@ test.describe("Login Flow", () => {
 
     await page.goto("/tr/login");
 
-    await page.fill('input[name="email"]', "test@example.com");
-    await page.fill('input[name="password"]', "Password123!");
+    // pressSequentially fires per-character events so react-hook-form
+    // registers the value on webkit; bare page.fill() can drop the email
+    // input there.
+    await page.locator('input[name="email"]').pressSequentially("test@example.com");
+    await page.locator('input[name="password"]').pressSequentially("Password123!");
     await page.click('button[type="submit"]');
 
     // Expected transition to dashboard
@@ -59,8 +62,8 @@ test.describe("Login Flow", () => {
 
     await page.goto("/tr/login");
 
-    await page.fill('input[name="email"]', "wrong@example.com");
-    await page.fill('input[name="password"]', "wrongpass");
+    await page.locator('input[name="email"]').pressSequentially("wrong@example.com");
+    await page.locator('input[name="password"]').pressSequentially("wrongpass");
     await page.click('button[type="submit"]');
 
     // Expected error message from API

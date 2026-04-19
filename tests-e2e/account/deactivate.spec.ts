@@ -171,8 +171,10 @@ test.describe("Account deactivation flow", () => {
     await page.goto("/tr/login");
     const emailInput = page.locator('input[name="email"]');
     await emailInput.waitFor({ state: "visible", timeout: 60_000 });
-    await emailInput.fill("jane@example.com");
-    await page.fill('input[name="password"]', "Password123!");
+    // pressSequentially — webkit can drop values from bare .fill() on
+    // controlled RHF inputs.
+    await emailInput.pressSequentially("jane@example.com");
+    await page.locator('input[name="password"]').pressSequentially("Password123!");
     await page.click('button[type="submit"]');
 
     await expect(page).toHaveURL(/.*\/tr\/account-deactivated/);

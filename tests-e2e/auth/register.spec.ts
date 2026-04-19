@@ -28,11 +28,13 @@ test.describe("Register Flow", () => {
 
     await page.goto("/tr/register");
 
-    await page.fill('input[name="first_name"]', "John");
-    await page.fill('input[name="last_name"]', "Doe");
-    await page.fill('input[name="email"]', "test@example.com");
-    await page.fill('input[name="password"]', "Password123!");
-    await page.fill('input[name="confirmPassword"]', "Password123!");
+    // pressSequentially dispatches real keypress events; webkit occasionally
+    // drops values assigned via bare page.fill() on controlled RHF inputs.
+    await page.locator('input[name="first_name"]').pressSequentially("John");
+    await page.locator('input[name="last_name"]').pressSequentially("Doe");
+    await page.locator('input[name="email"]').pressSequentially("test@example.com");
+    await page.locator('input[name="password"]').pressSequentially("Password123!");
+    await page.locator('input[name="confirmPassword"]').pressSequentially("Password123!");
     await page.click('button[type="submit"]');
 
     // Successful registration redirects to verify-email-notice
@@ -54,11 +56,11 @@ test.describe("Register Flow", () => {
 
     await page.goto("/tr/register");
 
-    await page.fill('input[name="first_name"]', "John");
-    await page.fill('input[name="last_name"]', "Doe");
-    await page.fill('input[name="email"]', "existing@example.com");
-    await page.fill('input[name="password"]', "Password123!");
-    await page.fill('input[name="confirmPassword"]', "Password123!");
+    await page.locator('input[name="first_name"]').pressSequentially("John");
+    await page.locator('input[name="last_name"]').pressSequentially("Doe");
+    await page.locator('input[name="email"]').pressSequentially("existing@example.com");
+    await page.locator('input[name="password"]').pressSequentially("Password123!");
+    await page.locator('input[name="confirmPassword"]').pressSequentially("Password123!");
     await page.click('button[type="submit"]');
 
     await expect(page.locator("text=User with this email already exists").first()).toBeVisible();

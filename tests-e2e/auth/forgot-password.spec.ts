@@ -26,7 +26,9 @@ test.describe("Forgot Password Flow (TR)", () => {
 
     await page.goto("/tr/forgot-password");
 
-    await page.fill('input[name="email"]', "nonexistent@example.com");
+    // pressSequentially — webkit can drop values assigned via page.fill()
+    // on controlled RHF inputs.
+    await page.locator('input[name="email"]').pressSequentially("nonexistent@example.com");
     await page.click('button[type="submit"]');
 
     // Expected error message from API (handled by toast)
@@ -46,7 +48,7 @@ test.describe("Forgot Password Flow (TR)", () => {
     await page.goto("/tr/forgot-password");
 
     const testEmail = "valid@example.com";
-    await page.fill('input[name="email"]', testEmail);
+    await page.locator('input[name="email"]').pressSequentially(testEmail);
     await page.click('button[type="submit"]');
 
     // Many apps show a success message on the same page instead of a hard redirect
@@ -58,7 +60,7 @@ test.describe("Forgot Password Flow (TR)", () => {
 
   test("should show validation errors on invalid email", async ({ page }) => {
     await page.goto("/tr/forgot-password");
-    await page.fill('input[name="email"]', "invalid-email");
+    await page.locator('input[name="email"]').pressSequentially("invalid-email");
     await page.click('button[type="submit"]');
 
     // Expected: "Geçerli bir email adresi girin" (t("validation:emailInvalid"))

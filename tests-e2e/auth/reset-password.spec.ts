@@ -50,8 +50,10 @@ test.describe("Reset Password Flow - Valid Token State", () => {
 
     await page.goto("/tr/reset-password?token=valid-token");
 
-    await page.fill('input[name="password"]', "NewPass123!");
-    await page.fill('input[name="confirmPassword"]', "NewPass123!");
+    // pressSequentially — webkit can drop values from bare page.fill() on
+    // controlled RHF inputs.
+    await page.locator('input[name="password"]').pressSequentially("NewPass123!");
+    await page.locator('input[name="confirmPassword"]').pressSequentially("NewPass123!");
     await page.click('button[type="submit"]');
 
     // Successful reset should redirect to login or show success state
@@ -77,8 +79,8 @@ test.describe("Reset Password Flow - Valid Token State", () => {
 
     await page.goto("/tr/reset-password?token=invalid-token");
 
-    await page.fill('input[name="password"]', "NewPass123!");
-    await page.fill('input[name="confirmPassword"]', "NewPass123!");
+    await page.locator('input[name="password"]').pressSequentially("NewPass123!");
+    await page.locator('input[name="confirmPassword"]').pressSequentially("NewPass123!");
     await page.click('button[type="submit"]');
 
     // API error detail or localized message

@@ -136,8 +136,12 @@ test.describe("Header - Desktop Viewport", () => {
     await setupAuthenticatedState(page);
     await page.goto("/tr");
 
-    // Login/Register should be hidden
-    await expect(page.getByRole("button", { name: /Giriş Yap|Login/i })).not.toBeVisible();
+    // Login/Register should be hidden from the app header. Scope to the
+    // <header> banner since the landing page also has a "Hesabınıza giriş yapın"
+    // CTA that would otherwise trip the strict-mode locator.
+    await expect(
+      page.getByRole("banner").getByRole("button", { name: /Giriş Yap|Login/i }),
+    ).not.toBeVisible();
 
     // Avatar button
     const avatarBtn = page.locator("button.rounded-full").first();
