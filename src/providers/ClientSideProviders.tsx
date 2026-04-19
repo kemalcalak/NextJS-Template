@@ -22,27 +22,34 @@ export function ClientSideProviders({
   children: React.ReactNode;
   locale: string;
 }) {
-  const [mounted, setMounted] = useState(false);
+  // Gate the first paint behind i18n being in sync with the URL locale so we
+  // don't flash English copy on a /tr/ route. Once we've crossed that bar the
+  // gate stays open — later language switches just re-render via react-i18next
+  // without a full-screen loader.
+  const [initialSync, setInitialSync] = useState(() => i18n.language === locale);
 
   useEffect(() => {
+    if (initialSync) return;
     let cancelled = false;
-    const syncLocale = async () => {
-      if (i18n.language !== locale) {
-        await i18n.changeLanguage(locale);
-      }
-      if (!cancelled) setMounted(true);
-    };
-    void syncLocale();
+    void i18n.changeLanguage(locale).finally(() => {
+      if (!cancelled) setInitialSync(true);
+    });
     return () => {
       cancelled = true;
     };
-  }, [locale]);
+  }, [initialSync, locale]);
+
+  useEffect(() => {
+    if (!initialSync) return;
+    if (i18n.language === locale) return;
+    void i18n.changeLanguage(locale);
+  }, [initialSync, locale]);
 
   const loadingMessage = loadingMessages[locale] || loadingMessages.en;
 
   return (
     <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-      {!mounted ? (
+      {!initialSync ? (
         <LoadingScreen fullScreen message={loadingMessage} />
       ) : (
         <QueryProvider>
