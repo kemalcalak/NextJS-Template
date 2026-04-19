@@ -81,7 +81,7 @@ test.describe("Forgot Password Flow (EN)", () => {
 
   test("should show validation errors on invalid email", async ({ page }) => {
     await page.goto("/en/forgot-password");
-    await page.fill('input[name="email"]', "invalid-email");
+    await page.locator('input[name="email"]').pressSequentially("invalid-email");
     await page.click('button[type="submit"]');
 
     // Expected: "Invalid email" or "Please enter a valid email" (validation:emailInvalid)
