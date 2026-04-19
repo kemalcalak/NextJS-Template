@@ -1,6 +1,6 @@
 "use client";
 
-import { LayoutDashboard, LogOut, User as UserIcon } from "lucide-react";
+import { LayoutDashboard, LogOut, ShieldCheck, User as UserIcon } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 
@@ -86,6 +86,16 @@ export const AuthButtons = ({ user, onNavigate }: AuthButtonsProps) => {
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
+        {user.role === "admin" ? (
+          <DropdownMenuItem
+            onClick={() => {
+              handleNavigate(ROUTES.adminDashboard);
+            }}
+          >
+            <ShieldCheck className="mr-2 h-4 w-4 text-primary" />
+            <span>{t("admin:shell.title", "Administration")}</span>
+          </DropdownMenuItem>
+        ) : null}
         <DropdownMenuItem
           onClick={() => {
             handleNavigate(ROUTES.dashboard);

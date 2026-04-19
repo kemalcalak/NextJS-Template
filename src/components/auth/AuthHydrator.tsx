@@ -10,12 +10,20 @@ import {
   getLocaleFromPath,
   getLocalizedPath,
   getPathWithoutLocale,
+  isAdminPath,
   matchesRoute,
   pendingDeletionRoutes,
   protectedRoutes,
   ROUTES,
 } from "@/lib/config/routes";
 import { useAuthStore } from "@/stores/auth.store";
+
+// Module-level guard — survives any React remount, including the one the root
+// [locale] layout performs when the URL locale segment changes. A component
+// ref resets on each mount, but this module is loaded exactly once per page
+// load, so /users/me fires at most once per browser session until a hard
+// reload. React 19 Strict Mode double-invokes are also naturally absorbed.
+let sessionRequestInFlight = false;
 
 export function AuthHydrator({ children }: { children: React.ReactNode }) {
   const { user, setUser, setSessionInitialized, isSessionInitialized, isAuthenticated } =
@@ -24,6 +32,9 @@ export function AuthHydrator({ children }: { children: React.ReactNode }) {
   const router = useRouter();
 
   useEffect(() => {
+    if (sessionRequestInFlight || isSessionInitialized) return;
+    sessionRequestInFlight = true;
+
     const hydrate = async () => {
       try {
         const fetched = await authService.getMe();
@@ -36,9 +47,7 @@ export function AuthHydrator({ children }: { children: React.ReactNode }) {
       }
     };
 
-    if (!isSessionInitialized) {
-      void hydrate();
-    }
+    void hydrate();
   }, [setUser, setSessionInitialized, isSessionInitialized]);
 
   // Check for redirects after initialization
@@ -56,7 +65,8 @@ export function AuthHydrator({ children }: { children: React.ReactNode }) {
 
     if (!isAuthenticated) {
       if (isProtectedRoute || isPendingDeletionRoute) {
-        router.replace(`${getLocalizedPath(ROUTES.login, currentLocale)}?session_expired=true`);
+        const target = isAdminPath(pathWithoutLocale) ? ROUTES.adminLogin : ROUTES.login;
+        router.replace(`${getLocalizedPath(target, currentLocale)}?session_expired=true`);
       }
       return;
     }

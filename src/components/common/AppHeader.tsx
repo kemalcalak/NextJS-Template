@@ -19,7 +19,13 @@ import {
 import { useLanguage } from "@/hooks/use-language";
 import { useTheme } from "@/hooks/use-theme";
 import { useIsMobile } from "@/hooks/useMediaQuery";
-import { ROUTES, getLocalizedPath, getLocaleFromPath } from "@/lib/config/routes";
+import {
+  ROUTES,
+  getLocalizedPath,
+  getLocaleFromPath,
+  getPathWithoutLocale,
+  matchesRoute,
+} from "@/lib/config/routes";
 import { useAuthStore } from "@/stores/auth.store";
 
 export const AppHeader = () => {
@@ -32,6 +38,7 @@ export const AppHeader = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const isMobile = useIsMobile();
+  const { changeLanguage } = useLanguage();
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -42,11 +49,18 @@ export const AppHeader = () => {
     };
   }, []);
 
+  // The admin login is a dedicated, chrome-free surface — it has its own
+  // header block inside the card and shouldn't compete with the global app
+  // header. Hiding the header here keeps the admin login consistent with the
+  // /admin subdomain layout it's designed to eventually live on.
+  const pathWithoutLocale = getPathWithoutLocale(pathname);
+  if (matchesRoute(pathWithoutLocale, ROUTES.adminLogin)) {
+    return null;
+  }
+
   const toggleTheme = () => {
     setTheme(resolvedTheme === "dark" ? "light" : "dark");
   };
-
-  const { changeLanguage } = useLanguage();
 
   const handleChangeLanguage = (lng: string) => {
     changeLanguage(lng, () => {
