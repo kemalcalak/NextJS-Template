@@ -9,12 +9,37 @@ import {
   matchesRoute,
   getLocaleFromPath,
   getPathWithoutLocale,
+  isAdminPath,
   ROUTES,
   getLocalizedPath,
   type Locale,
 } from "@/lib/config/routes";
 
 import type { NextRequest } from "next/server";
+
+interface RedirectDecisionInput {
+  isProtectedRoute: boolean;
+  isAuthRoute: boolean;
+  hasToken: boolean;
+  sessionExpired: boolean;
+  underAdmin: boolean;
+}
+
+function resolveRedirectTarget({
+  isProtectedRoute,
+  isAuthRoute,
+  hasToken,
+  sessionExpired,
+  underAdmin,
+}: RedirectDecisionInput): string | null {
+  if (isProtectedRoute && !hasToken) {
+    return underAdmin ? ROUTES.adminLogin : ROUTES.login;
+  }
+  if (isAuthRoute && hasToken && !sessionExpired) {
+    return underAdmin ? ROUTES.adminDashboard : ROUTES.dashboard;
+  }
+  return null;
+}
 
 function handleLocaleRedirect(request: NextRequest, pathname: string, search: string) {
   const cookieLocale = request.cookies.get("NEXT_LOCALE")?.value;
@@ -63,25 +88,22 @@ function handleAuthGuard(request: NextRequest, pathname: string, token: string |
   }
 
   const sessionExpired = request.nextUrl.searchParams.get("session_expired") === "true";
-  let response: NextResponse | null = null;
+  const underAdmin = isAdminPath(pathWithoutLocale);
+  const redirectTarget = resolveRedirectTarget({
+    isProtectedRoute,
+    isAuthRoute,
+    hasToken: Boolean(token),
+    sessionExpired,
+    underAdmin,
+  });
 
-  // If not logged in and onto a protected route -> redirect to login
-  if (isProtectedRoute && !token) {
-    const loginUrl = new URL(getLocalizedPath(ROUTES.login, currentLocale), request.url);
-    response = NextResponse.redirect(loginUrl);
-  }
-
-  // If logged in and onto an auth route -> redirect to dashboard
-  // Note: We skip this redirect if session_expired=true is present to break potential loops
-  else if (isAuthRoute && token && !sessionExpired) {
-    const dashboardUrl = new URL(getLocalizedPath(ROUTES.dashboard, currentLocale), request.url);
-    response = NextResponse.redirect(dashboardUrl);
-  }
-
-  // Default: proceed to the page
-  if (!response) {
-    response = NextResponse.next();
-  }
+  // Admin routes send the user to /admin/login so the two login surfaces stay
+  // separate (future-proof for an admin.<domain> split). Visitors of
+  // /admin/login are sent to /admin/dashboard; the admin layout then verifies
+  // the role and kicks non-admins back to /dashboard.
+  const response = redirectTarget
+    ? NextResponse.redirect(new URL(getLocalizedPath(redirectTarget, currentLocale), request.url))
+    : NextResponse.next();
 
   // Ensure cookie is set correctly to persist locale choice
   const localeFromCookie = request.cookies.get("NEXT_LOCALE")?.value;

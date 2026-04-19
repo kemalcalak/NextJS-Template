@@ -29,6 +29,12 @@
       "already_deactivated": "Hesabınız zaten silinmek üzere planlanmış.",
       "not_deactivated": "Hesabınız aktif — iptal edilecek bir işlem yok.",
       "deletion_expired": "Bu hesabın bekleme süresi dolmuş."
+    },
+    "admin": {
+      "cannot_modify_self": "Yöneticiler kendi hesaplarını bu panelden değiştiremez.",
+      "cannot_delete_self": "Yöneticiler kendilerini silemez.",
+      "cannot_demote_last_admin": "Son aktif yöneticinin rolünü düşüremezsiniz.",
+      "cannot_delete_last_admin": "Son aktif yöneticiyi silemezsiniz."
     }
   }
 }

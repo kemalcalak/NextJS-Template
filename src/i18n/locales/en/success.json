@@ -18,6 +18,13 @@
     "account": {
       "deactivated": "Account deactivated. It will be deleted in 30 days unless you reactivate it.",
       "reactivated": "Welcome back! Your account is active again."
+    },
+    "admin": {
+      "user_updated": "User updated successfully.",
+      "user_activated": "User reactivated successfully.",
+      "user_deactivated": "User deactivated. Scheduled for deletion after the grace period.",
+      "user_deleted": "User permanently deleted.",
+      "password_reset_sent": "Password reset email sent."
     }
   }
 }

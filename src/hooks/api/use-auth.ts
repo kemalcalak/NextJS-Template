@@ -72,18 +72,21 @@ export function useLogoutMutation() {
   const router = useRouter();
   const pathname = usePathname();
   const currentLocale = getLocaleFromPath(pathname);
-  const { logout } = useAuthStore();
+  const { logout, user } = useAuthStore();
+
+  // Pick the login surface that matches who the user *was* — clearing the
+  // store first would erase the role. Admins stay in the admin login flow
+  // (future-proof for the admin.<domain> split), everyone else lands on /login.
+  const redirectAfterLogout = () => {
+    const target = user?.role === "admin" ? ROUTES.adminLogin : ROUTES.login;
+    logout();
+    router.push(getLocalizedPath(target, currentLocale));
+  };
 
   return useMutation({
     mutationFn: () => authService.logout(),
-    onSuccess: () => {
-      logout();
-      router.push(getLocalizedPath(ROUTES.login, currentLocale));
-    },
-    onError: () => {
-      logout();
-      router.push(getLocalizedPath(ROUTES.login, currentLocale));
-    },
+    onSuccess: redirectAfterLogout,
+    onError: redirectAfterLogout,
   });
 }
 

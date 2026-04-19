@@ -1,0 +1,163 @@
+{
+  "login": {
+    "title": "Yönetici Girişi",
+    "subtitle": "Kısıtlı alan. Yalnızca yöneticiler.",
+    "cardTitle": "Yönetici olarak giriş yap",
+    "cardDescription": "Devam etmek için yönetici bilgilerinizi girin.",
+    "emailLabel": "Kurumsal e-posta",
+    "passwordLabel": "Şifre",
+    "submitButton": "Giriş Yap",
+    "submitting": "Giriş yapılıyor...",
+    "backToApp": "Ana uygulamaya dön"
+  },
+  "shell": {
+    "title": "Yönetim",
+    "nav": {
+      "dashboard": "Panel",
+      "users": "Kullanıcılar",
+      "activities": "Aktivite günlüğü"
+    },
+    "signedInAs": "Giriş yapılan hesap",
+    "exit": "Yönetimden çık",
+    "forbiddenTitle": "Sadece yöneticiler",
+    "forbiddenDescription": "Giriş yaptınız, fakat bu alan için yönetici rolü gereklidir.",
+    "forbiddenCta": "Panele dön"
+  },
+  "dashboard": {
+    "title": "Panel",
+    "subtitle": "Kullanıcılar ve son aktivitelere genel bakış.",
+    "stats": {
+      "totalUsers": "Toplam kullanıcı",
+      "activeUsers": "Aktif kullanıcı",
+      "admins": "Yönetici",
+      "activitiesToday": "Aktivite"
+    },
+    "recentActivity": "Son aktiviteler",
+    "viewAllActivity": "Tüm aktiviteleri gör",
+    "viewAllUsers": "Tüm kullanıcıları gör"
+  },
+  "users": {
+    "title": "Kullanıcılar",
+    "subtitle": "Tüm hesapları arayın, filtreleyin ve yönetin.",
+    "filters": {
+      "searchPlaceholder": "E-posta veya isme göre ara",
+      "role": "Rol",
+      "roleAny": "Tüm roller",
+      "status": "Durum",
+      "statusAny": "Tüm durumlar",
+      "statusActive": "Aktif",
+      "statusInactive": "Pasif",
+      "verified": "Doğrulanmış",
+      "verifiedAny": "Tümü",
+      "verifiedYes": "Doğrulanmış",
+      "verifiedNo": "Doğrulanmamış",
+      "reset": "Filtreleri temizle"
+    },
+    "columns": {
+      "user": "Kullanıcı",
+      "email": "E-posta",
+      "role": "Rol",
+      "status": "Durum",
+      "verified": "Doğrulanmış",
+      "created": "Oluşturuldu",
+      "actions": "İşlemler"
+    },
+    "status": {
+      "active": "Aktif",
+      "inactive": "Pasif",
+      "pendingDeletion": "Silinmek üzere"
+    },
+    "role": {
+      "admin": "Yönetici",
+      "user": "Kullanıcı"
+    },
+    "empty": "Seçili filtrelerle eşleşen kullanıcı yok.",
+    "loading": "Kullanıcılar yükleniyor...",
+    "pagination": {
+      "previous": "Önceki",
+      "next": "Sonraki",
+      "page": "Sayfa {{page}} / {{total}}",
+      "showing": "{{from}}–{{to}} / {{total}}",
+      "rowsPerPage": "Sayfa başına"
+    },
+    "rowActions": {
+      "open": "Detayları aç",
+      "activate": "Aktifleştir",
+      "deactivate": "Pasifleştir",
+      "resetPassword": "Şifre sıfırlama gönder",
+      "delete": "Kullanıcıyı sil"
+    }
+  },
+  "userDetail": {
+    "backToUsers": "Kullanıcılara dön",
+    "overviewTitle": "Hesap özeti",
+    "overviewDescription": "Bu kullanıcıya ait temel bilgiler ve durum.",
+    "editTitle": "Kullanıcıyı düzenle",
+    "editDescription": "Profil, rol ve erişim bilgilerini güncelleyin.",
+    "activityTitle": "Son aktiviteler",
+    "activityDescription": "Bu kullanıcıya ait denetim olayları.",
+    "activityEmpty": "Son aktivite yok.",
+    "dangerTitle": "Tehlikeli işlemler",
+    "dangerDescription": "Bu işlemler denetlenir ve kullanıcı tarafından geri alınamaz.",
+    "fields": {
+      "firstName": "Ad",
+      "lastName": "Soyad",
+      "title": "Unvan",
+      "email": "E-posta",
+      "role": "Rol",
+      "active": "Aktif",
+      "verified": "E-posta doğrulanmış"
+    },
+    "save": "Değişiklikleri kaydet",
+    "saving": "Kaydediliyor...",
+    "cancel": "İptal",
+    "resetPassword": "Şifre sıfırlama gönder",
+    "resetting": "Gönderiliyor...",
+    "activate": "Hesabı aktifleştir",
+    "deactivate": "Hesabı pasifleştir",
+    "delete": "Kullanıcıyı sil",
+    "deleting": "Siliniyor..."
+  },
+  "confirm": {
+    "deleteTitle": "Bu kullanıcı silinsin mi?",
+    "deleteDescription": "Bu işlem kullanıcıyı kalıcı olarak siler ve geri alınamaz.",
+    "deleteConfirm": "Kullanıcıyı sil",
+    "deactivateTitle": "Bu kullanıcı pasifleştirilsin mi?",
+    "deactivateDescription": "Kullanıcı erişimini kaybeder ve hesabı silinmek üzere planlanır.",
+    "deactivateConfirm": "Pasifleştir",
+    "activateTitle": "Bu kullanıcı aktifleştirilsin mi?",
+    "activateDescription": "Girişi yeniden etkinleştirir ve planlanmış silmeyi iptal eder.",
+    "activateConfirm": "Aktifleştir",
+    "resetTitle": "Şifre sıfırlama gönderilsin mi?",
+    "resetDescription": "Kullanıcı e-posta ile güvenli bir bağlantı alır. Yeni şifreyi asla göremezsiniz.",
+    "resetConfirm": "Sıfırlama e-postası gönder",
+    "cancel": "İptal"
+  },
+  "activities": {
+    "title": "Aktivite günlüğü",
+    "subtitle": "Platform genelinde denetlenen tüm olaylar.",
+    "filters": {
+      "type": "Tür",
+      "typeAny": "Tüm türler",
+      "resource": "Kaynak",
+      "resourceAny": "Tüm kaynaklar",
+      "status": "Durum",
+      "statusAny": "Tüm durumlar",
+      "reset": "Filtreleri temizle"
+    },
+    "columns": {
+      "when": "Zaman",
+      "user": "Kullanıcı",
+      "type": "Tür",
+      "resource": "Kaynak",
+      "status": "Durum",
+      "details": "Detaylar"
+    },
+    "status": {
+      "success": "Başarılı",
+      "failure": "Başarısız"
+    },
+    "empty": "Seçili filtrelerle eşleşen aktivite yok.",
+    "loading": "Aktiviteler yükleniyor..."
+  }
+}

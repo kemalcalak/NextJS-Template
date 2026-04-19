@@ -10,6 +10,11 @@ export type SeoPageKey =
   | "verifyEmailNotice"
   | "dashboard"
   | "profile"
+  | "adminLogin"
+  | "adminDashboard"
+  | "adminUsers"
+  | "adminUserDetail"
+  | "adminActivities"
   | "notFound"
   | "error";
 

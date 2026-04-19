@@ -29,6 +29,12 @@
       "already_deactivated": "Your account is already scheduled for deletion.",
       "not_deactivated": "Your account is active — nothing to cancel.",
       "deletion_expired": "This account's grace window has expired."
+    },
+    "admin": {
+      "cannot_modify_self": "Administrators cannot modify their own account from this panel.",
+      "cannot_delete_self": "Administrators cannot delete themselves.",
+      "cannot_demote_last_admin": "You cannot demote the last active administrator.",
+      "cannot_delete_last_admin": "You cannot delete the last active administrator."
     }
   }
 }

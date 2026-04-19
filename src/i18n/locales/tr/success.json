@@ -18,6 +18,13 @@
     "account": {
       "deactivated": "Hesabınız devre dışı bırakıldı. Geri almazsanız 30 gün sonra silinecek.",
       "reactivated": "Tekrar hoş geldiniz! Hesabınız yeniden aktif."
+    },
+    "admin": {
+      "user_updated": "Kullanıcı başarıyla güncellendi.",
+      "user_activated": "Kullanıcı yeniden aktifleştirildi.",
+      "user_deactivated": "Kullanıcı pasifleştirildi. Bekleme süresinin ardından silinecek.",
+      "user_deleted": "Kullanıcı kalıcı olarak silindi.",
+      "password_reset_sent": "Şifre sıfırlama e-postası gönderildi."
     }
   }
 }

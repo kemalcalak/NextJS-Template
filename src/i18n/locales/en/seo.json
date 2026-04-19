@@ -35,6 +35,26 @@
     "title": "Profile",
     "description": "View and edit your personal profile, preferences, and account settings."
   },
+  "adminLogin": {
+    "title": "Admin Sign In",
+    "description": "Sign in to the administration area to manage users and view activity."
+  },
+  "adminDashboard": {
+    "title": "Admin Dashboard",
+    "description": "Administrative overview of users, activity, and system health."
+  },
+  "adminUsers": {
+    "title": "User Management",
+    "description": "Search, filter, update, and deactivate user accounts."
+  },
+  "adminUserDetail": {
+    "title": "User Details",
+    "description": "Edit a user, manage their status, and review their activity log."
+  },
+  "adminActivities": {
+    "title": "Activity Log",
+    "description": "Browse audit events across all users."
+  },
   "notFound": {
     "title": "Page Not Found",
     "description": "The page you are looking for does not exist or may have been moved."
