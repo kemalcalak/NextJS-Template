@@ -15,6 +15,7 @@ import {
   pendingDeletionRoutes,
   protectedRoutes,
   ROUTES,
+  suspendedRoutes,
 } from "@/lib/config/routes";
 import { useAuthStore } from "@/stores/auth.store";
 
@@ -62,12 +63,27 @@ export function AuthHydrator({ children }: { children: React.ReactNode }) {
     const isPendingDeletionRoute = pendingDeletionRoutes.some((route) =>
       matchesRoute(pathWithoutLocale, route),
     );
+    const isSuspendedRoute = suspendedRoutes.some((route) =>
+      matchesRoute(pathWithoutLocale, route),
+    );
 
     if (!isAuthenticated) {
-      if (isProtectedRoute || isPendingDeletionRoute) {
+      if (isProtectedRoute || isPendingDeletionRoute || isSuspendedRoute) {
         const target = isAdminPath(pathWithoutLocale) ? ROUTES.adminLogin : ROUTES.login;
         router.replace(`${getLocalizedPath(target, currentLocale)}?session_expired=true`);
       }
+      return;
+    }
+
+    // Admin-suspended sessions route to the suspended landing and nowhere
+    // else. Checked before the deletion-grace flow because suspension wins.
+    const isSuspended = Boolean(user?.suspended_at);
+    if (isSuspended && !isSuspendedRoute) {
+      router.replace(getLocalizedPath(ROUTES.accountSuspended, currentLocale));
+      return;
+    }
+    if (!isSuspended && isSuspendedRoute) {
+      router.replace(getLocalizedPath(ROUTES.dashboard, currentLocale));
       return;
     }
 
@@ -83,12 +99,14 @@ export function AuthHydrator({ children }: { children: React.ReactNode }) {
   }, [isSessionInitialized, isAuthenticated, user, pathname, router]);
 
   // While hydrating, don't show children for protected routes. This gate
-  // also covers pendingDeletionRoutes so deactivated users aren't flashed
-  // a forbidden page before the guarding effect redirects them.
+  // also covers pendingDeletionRoutes and suspendedRoutes so deactivated /
+  // suspended users aren't flashed a forbidden page before the guarding
+  // effect redirects them.
   const pathWithoutLocale = getPathWithoutLocale(pathname);
   const requiresAuthSession =
     protectedRoutes.some((route) => matchesRoute(pathWithoutLocale, route)) ||
-    pendingDeletionRoutes.some((route) => matchesRoute(pathWithoutLocale, route));
+    pendingDeletionRoutes.some((route) => matchesRoute(pathWithoutLocale, route)) ||
+    suspendedRoutes.some((route) => matchesRoute(pathWithoutLocale, route));
 
   if (requiresAuthSession && (!isSessionInitialized || !isAuthenticated)) {
     return <LoadingScreen />;

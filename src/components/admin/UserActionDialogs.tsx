@@ -27,24 +27,25 @@ export function UserActionDialogs({
   return (
     <>
       <ConfirmDialog
-        open={action === "activate"}
+        open={action === "unsuspend"}
         onOpenChange={onOpenChange}
-        title={t("confirm.activateTitle")}
-        description={t("confirm.activateDescription")}
-        confirmLabel={t("confirm.activateConfirm")}
+        title={t("confirm.unsuspendTitle")}
+        description={t("confirm.unsuspendDescription")}
+        confirmLabel={t("confirm.unsuspendConfirm")}
         cancelLabel={t("confirm.cancel")}
         onConfirm={onConfirm}
         isLoading={isLoading}
       />
       <ConfirmDialog
-        open={action === "deactivate"}
+        open={action === "suspend"}
         onOpenChange={onOpenChange}
-        title={t("confirm.deactivateTitle")}
-        description={t("confirm.deactivateDescription")}
-        confirmLabel={t("confirm.deactivateConfirm")}
+        title={t("confirm.suspendTitle")}
+        description={t("confirm.suspendDescription")}
+        confirmLabel={t("confirm.suspendConfirm")}
         cancelLabel={t("confirm.cancel")}
         onConfirm={onConfirm}
         isLoading={isLoading}
+        destructive
       />
       <ConfirmDialog
         open={action === "reset"}

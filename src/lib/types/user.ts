@@ -16,6 +16,7 @@ export interface User {
   updated_at: string;
   deactivated_at: string | null;
   deletion_scheduled_at: string | null;
+  suspended_at: string | null;
 }
 
 export interface UserUpdateResponse {

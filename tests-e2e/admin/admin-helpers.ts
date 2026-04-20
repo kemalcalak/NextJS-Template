@@ -17,6 +17,7 @@ export const adminUser: AdminUser = {
   updated_at: "2026-01-01T00:00:00Z",
   deactivated_at: null,
   deletion_scheduled_at: null,
+  suspended_at: null,
 };
 
 export const regularUser: AdminUser = {
@@ -32,6 +33,7 @@ export const regularUser: AdminUser = {
   updated_at: "2026-01-02T00:00:00Z",
   deactivated_at: null,
   deletion_scheduled_at: null,
+  suspended_at: null,
 };
 
 export const injectSession = async (

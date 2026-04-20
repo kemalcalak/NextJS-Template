@@ -37,12 +37,15 @@ export function StatusBadge({
   );
 }
 
-// Maps a user's active/deletion_scheduled state to a single badge. Kept next
-// to StatusBadge so pages don't each re-derive "pending deletion vs active vs
-// inactive" with nested ternaries.
+// Maps a user's suspension/deletion/active state to a single badge. Suspension
+// is checked first because it's the only state that supersedes everything else
+// (an admin-suspended row should never show as merely "inactive").
 export function UserStatusBadge({ user }: { user: AdminUser }) {
   const { t } = useTranslation("admin");
 
+  if (user.suspended_at) {
+    return <StatusBadge tone="danger">{t("users.status.suspended")}</StatusBadge>;
+  }
   if (user.deletion_scheduled_at) {
     return <StatusBadge tone="warning">{t("users.status.pendingDeletion")}</StatusBadge>;
   }

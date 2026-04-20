@@ -28,7 +28,10 @@
     "account": {
       "already_deactivated": "Your account is already scheduled for deletion.",
       "not_deactivated": "Your account is active — nothing to cancel.",
-      "deletion_expired": "This account's grace window has expired."
+      "deletion_expired": "This account's grace window has expired.",
+      "suspended": "Your account has been suspended by an administrator.",
+      "already_suspended": "This user is already suspended.",
+      "not_suspended": "This user is not suspended."
     },
     "admin": {
       "cannot_modify_self": "Administrators cannot modify their own account from this panel.",

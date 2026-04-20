@@ -65,7 +65,8 @@
     "status": {
       "active": "Active",
       "inactive": "Inactive",
-      "pendingDeletion": "Pending deletion"
+      "pendingDeletion": "Pending deletion",
+      "suspended": "Suspended"
     },
     "role": {
       "admin": "Admin",
@@ -83,8 +84,8 @@
     "rowActions": {
       "open": "Open details",
       "menu": "Row actions",
-      "activate": "Activate",
-      "deactivate": "Deactivate",
+      "suspend": "Suspend",
+      "unsuspend": "Lift suspension",
       "resetPassword": "Send password reset",
       "delete": "Delete user"
     }
@@ -98,7 +99,8 @@
       "created": "Created",
       "updated": "Updated",
       "deactivated": "Deactivated",
-      "scheduledDeletion": "Scheduled deletion"
+      "scheduledDeletion": "Scheduled deletion",
+      "suspended": "Suspended"
     },
     "editTitle": "Edit user",
     "editDescription": "Update profile, role, and access.",
@@ -121,8 +123,8 @@
     "cancel": "Cancel",
     "resetPassword": "Send password reset",
     "resetting": "Sending...",
-    "activate": "Activate account",
-    "deactivate": "Deactivate account",
+    "suspend": "Suspend account",
+    "unsuspend": "Lift suspension",
     "delete": "Delete user",
     "deleting": "Deleting..."
   },
@@ -130,12 +132,12 @@
     "deleteTitle": "Delete this user?",
     "deleteDescription": "This permanently removes the user and cannot be undone.",
     "deleteConfirm": "Delete user",
-    "deactivateTitle": "Deactivate this user?",
-    "deactivateDescription": "The user will lose access and their account will be scheduled for deletion.",
-    "deactivateConfirm": "Deactivate",
-    "activateTitle": "Activate this user?",
-    "activateDescription": "This re-enables login and cancels any scheduled deletion.",
-    "activateConfirm": "Activate",
+    "suspendTitle": "Suspend this user?",
+    "suspendDescription": "The user loses access immediately and the account is permanently suspended. Only an admin can later lift the suspension.",
+    "suspendConfirm": "Suspend",
+    "unsuspendTitle": "Lift this suspension?",
+    "unsuspendDescription": "This re-enables the account and restores the user's access.",
+    "unsuspendConfirm": "Lift suspension",
     "resetTitle": "Send a password reset?",
     "resetDescription": "The user receives a secure link by email. You never see the new password.",
     "resetConfirm": "Send reset email",

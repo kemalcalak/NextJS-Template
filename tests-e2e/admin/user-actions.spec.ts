@@ -11,7 +11,13 @@ import { LOCALES, getStrings } from "./admin-strings";
 
 import type { Page } from "@playwright/test";
 
-const inactiveUser = { ...regularUser, id: "user-2", email: "pause@test.com", is_active: false };
+const suspendedUser = {
+  ...regularUser,
+  id: "user-2",
+  email: "pause@test.com",
+  is_active: false,
+  suspended_at: "2026-04-20T10:00:00Z",
+};
 
 const mockAdminUserAction = async (
   page: Page,
@@ -69,41 +75,43 @@ for (const locale of LOCALES) {
       await expect.poll(() => capturedBody).toContain('"first_name":"Renamed"');
     });
 
-    test("deactivate opens confirm and hits /deactivate on confirm", async ({ page }) => {
+    test("suspend opens confirm and hits /suspend on confirm", async ({ page }) => {
       await injectSession(page, adminUser, locale);
       await mockMe(page, adminUser);
       await mockAdminUserDetail(page, regularUser);
       await mockAdminActivities(page);
-      const deactivate = await mockAdminUserAction(
+      const suspend = await mockAdminUserAction(
         page,
-        new RegExp(`.*/api/v1/admin/users/${regularUser.id}/deactivate$`),
+        new RegExp(`.*/api/v1/admin/users/${regularUser.id}/suspend$`),
         "POST",
       );
 
       await page.goto(`/${locale}/admin/users/${regularUser.id}`);
-      await page.getByRole("button", { name: s.userDetail.deactivate }).click();
-      await expect(page.getByRole("heading", { name: s.confirm.deactivateTitle })).toBeVisible();
-      await page.getByRole("button", { name: s.confirm.deactivateConfirm, exact: true }).click();
+      await page.getByRole("button", { name: s.userDetail.suspend }).click();
+      await expect(page.getByRole("heading", { name: s.confirm.suspendTitle })).toBeVisible();
+      await page.getByRole("button", { name: s.confirm.suspendConfirm, exact: true }).click();
 
-      await expect.poll(() => deactivate.calls).toBeGreaterThan(0);
+      await expect.poll(() => suspend.calls).toBeGreaterThan(0);
     });
 
-    test("activate button is rendered for inactive users and hits /activate", async ({ page }) => {
+    test("unsuspend button is rendered for suspended users and hits /unsuspend", async ({
+      page,
+    }) => {
       await injectSession(page, adminUser, locale);
       await mockMe(page, adminUser);
-      await mockAdminUserDetail(page, inactiveUser);
+      await mockAdminUserDetail(page, suspendedUser);
       await mockAdminActivities(page);
-      const activate = await mockAdminUserAction(
+      const unsuspend = await mockAdminUserAction(
         page,
-        new RegExp(`.*/api/v1/admin/users/${inactiveUser.id}/activate$`),
+        new RegExp(`.*/api/v1/admin/users/${suspendedUser.id}/unsuspend$`),
         "POST",
       );
 
-      await page.goto(`/${locale}/admin/users/${inactiveUser.id}`);
-      await page.getByRole("button", { name: s.userDetail.activate }).click();
-      await page.getByRole("button", { name: s.confirm.activateConfirm, exact: true }).click();
+      await page.goto(`/${locale}/admin/users/${suspendedUser.id}`);
+      await page.getByRole("button", { name: s.userDetail.unsuspend }).click();
+      await page.getByRole("button", { name: s.confirm.unsuspendConfirm, exact: true }).click();
 
-      await expect.poll(() => activate.calls).toBeGreaterThan(0);
+      await expect.poll(() => unsuspend.calls).toBeGreaterThan(0);
     });
 
     test("reset-password confirm hits /reset-password", async ({ page }) => {
@@ -176,7 +184,7 @@ for (const locale of LOCALES) {
       await mockAdminActivities(page);
 
       await page.goto(`/${locale}/admin/users/${adminUser.id}`);
-      await expect(page.getByRole("button", { name: s.userDetail.deactivate })).toBeDisabled();
+      await expect(page.getByRole("button", { name: s.userDetail.suspend })).toBeDisabled();
       await expect(page.getByRole("button", { name: s.userDetail.delete })).toBeDisabled();
     });
   });

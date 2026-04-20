@@ -42,6 +42,10 @@ export function useLoginMutation() {
       const errorData = error.response?.data;
       const errorCode = errorData?.error || errorData?.detail;
 
+      // ``error.account.suspended`` is surfaced via the global toast from the
+      // api interceptor. No redirect here — /account-suspended is a private
+      // landing page reached only by already-authenticated users whose session
+      // the AuthHydrator recognises as suspended.
       if (error.response?.status === 403 && errorCode === "error.user.email_not_verified") {
         const path = `${ROUTES.verifyEmailNotice}?email=${encodeURIComponent(variables.email)}`;
         router.push(getLocalizedPath(path, currentLocale));

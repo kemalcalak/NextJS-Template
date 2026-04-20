@@ -23,5 +23,11 @@
     "reactivate": "Keep my account",
     "reactivating": "Restoring...",
     "logout": "Log out"
+  },
+  "suspended": {
+    "title": "Your account has been suspended",
+    "subtitle": "An administrator has suspended this account. Access to all features is blocked until the suspension is lifted.",
+    "contactSupport": "If you believe this is a mistake, please contact support.",
+    "logout": "Log out"
   }
 }

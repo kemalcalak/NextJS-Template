@@ -65,7 +65,8 @@
     "status": {
       "active": "Aktif",
       "inactive": "Pasif",
-      "pendingDeletion": "Silinmek üzere"
+      "pendingDeletion": "Silinmek üzere",
+      "suspended": "Askıya alınmış"
     },
     "role": {
       "admin": "Yönetici",
@@ -83,8 +84,8 @@
     "rowActions": {
       "open": "Detayları aç",
       "menu": "Satır işlemleri",
-      "activate": "Aktifleştir",
-      "deactivate": "Pasifleştir",
+      "suspend": "Askıya al",
+      "unsuspend": "Askıyı kaldır",
       "resetPassword": "Şifre sıfırlama gönder",
       "delete": "Kullanıcıyı sil"
     }
@@ -98,7 +99,8 @@
       "created": "Oluşturuldu",
       "updated": "Güncellendi",
       "deactivated": "Pasifleştirildi",
-      "scheduledDeletion": "Planlanmış silme"
+      "scheduledDeletion": "Planlanmış silme",
+      "suspended": "Askıya alındı"
     },
     "editTitle": "Kullanıcıyı düzenle",
     "editDescription": "Profil, rol ve erişim bilgilerini güncelleyin.",
@@ -121,8 +123,8 @@
     "cancel": "İptal",
     "resetPassword": "Şifre sıfırlama gönder",
     "resetting": "Gönderiliyor...",
-    "activate": "Hesabı aktifleştir",
-    "deactivate": "Hesabı pasifleştir",
+    "suspend": "Hesabı askıya al",
+    "unsuspend": "Askıyı kaldır",
     "delete": "Kullanıcıyı sil",
     "deleting": "Siliniyor..."
   },
@@ -130,12 +132,12 @@
     "deleteTitle": "Bu kullanıcı silinsin mi?",
     "deleteDescription": "Bu işlem kullanıcıyı kalıcı olarak siler ve geri alınamaz.",
     "deleteConfirm": "Kullanıcıyı sil",
-    "deactivateTitle": "Bu kullanıcı pasifleştirilsin mi?",
-    "deactivateDescription": "Kullanıcı erişimini kaybeder ve hesabı silinmek üzere planlanır.",
-    "deactivateConfirm": "Pasifleştir",
-    "activateTitle": "Bu kullanıcı aktifleştirilsin mi?",
-    "activateDescription": "Girişi yeniden etkinleştirir ve planlanmış silmeyi iptal eder.",
-    "activateConfirm": "Aktifleştir",
+    "suspendTitle": "Bu kullanıcı askıya alınsın mı?",
+    "suspendDescription": "Kullanıcı erişimini anında kaybeder ve hesap kalıcı olarak askıya alınır. Askıyı yalnızca bir yönetici kaldırabilir.",
+    "suspendConfirm": "Askıya al",
+    "unsuspendTitle": "Bu askı kaldırılsın mı?",
+    "unsuspendDescription": "Hesap yeniden etkinleşir ve kullanıcının erişimi geri yüklenir.",
+    "unsuspendConfirm": "Askıyı kaldır",
     "resetTitle": "Şifre sıfırlama gönderilsin mi?",
     "resetDescription": "Kullanıcı e-posta ile güvenli bir bağlantı alır. Yeni şifreyi asla göremezsiniz.",
     "resetConfirm": "Sıfırlama e-postası gönder",

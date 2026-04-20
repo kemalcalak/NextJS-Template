@@ -27,6 +27,10 @@
     "title": "E-postanızı Kontrol Edin",
     "description": "Size bir doğrulama bağlantısı gönderdik. Lütfen gelen kutunuzu ve spam klasörünü kontrol edin."
   },
+  "accountSuspended": {
+    "title": "Hesap Askıya Alındı",
+    "description": "Bu hesap yönetici tarafından askıya alındı."
+  },
   "dashboard": {
     "title": "Dashboard",
     "description": "Kişisel dashboard'unuzdan projelerinizi, görevlerinizi ve ekibinizi yönetin."

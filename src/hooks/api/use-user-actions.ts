@@ -1,14 +1,14 @@
 import { useTranslation } from "react-i18next";
 
 import {
-  useActivateAdminUser,
-  useDeactivateAdminUser,
   useDeleteAdminUser,
   useResetAdminUserPassword,
+  useSuspendAdminUser,
+  useUnsuspendAdminUser,
 } from "@/hooks/api/use-admin";
 import type { AdminUser } from "@/lib/types/admin";
 
-export type UserActionKind = "activate" | "deactivate" | "delete" | "reset";
+export type UserActionKind = "suspend" | "unsuspend" | "delete" | "reset";
 
 interface RunOptions {
   onSuccess?: () => void;
@@ -18,18 +18,18 @@ interface RunOptions {
 
 export function useUserActions() {
   const { i18n } = useTranslation();
-  const activate = useActivateAdminUser();
-  const deactivate = useDeactivateAdminUser();
+  const suspend = useSuspendAdminUser();
+  const unsuspend = useUnsuspendAdminUser();
   const remove = useDeleteAdminUser();
   const resetPassword = useResetAdminUserPassword();
 
   const run = (kind: UserActionKind, user: AdminUser, opts?: RunOptions) => {
     switch (kind) {
-      case "activate":
-        activate.mutate(user.id, opts);
+      case "suspend":
+        suspend.mutate(user.id, opts);
         return;
-      case "deactivate":
-        deactivate.mutate(user.id, opts);
+      case "unsuspend":
+        unsuspend.mutate(user.id, opts);
         return;
       case "delete":
         remove.mutate(user.id, opts);
@@ -41,7 +41,7 @@ export function useUserActions() {
   };
 
   const isLoading =
-    activate.isPending || deactivate.isPending || remove.isPending || resetPassword.isPending;
+    suspend.isPending || unsuspend.isPending || remove.isPending || resetPassword.isPending;
 
   return { run, isLoading };
 }

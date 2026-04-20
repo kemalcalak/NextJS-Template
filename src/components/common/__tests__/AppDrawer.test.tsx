@@ -35,6 +35,7 @@ const createMockUser = (overrides: Partial<User> = {}): User => ({
   title: null,
   deactivated_at: null,
   deletion_scheduled_at: null,
+  suspended_at: null,
   ...overrides,
 });
 

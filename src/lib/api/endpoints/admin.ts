@@ -39,11 +39,11 @@ export const adminApi = {
   updateUser: (id: string, payload: AdminUserUpdatePayload): Promise<AdminUserUpdateResponse> =>
     api.patch<AdminUserUpdateResponse, AdminUserUpdateResponse>(`/admin/users/${id}`, payload),
 
-  activateUser: (id: string): Promise<MessageResponse> =>
-    api.post<MessageResponse, MessageResponse>(`/admin/users/${id}/activate`),
+  suspendUser: (id: string): Promise<MessageResponse> =>
+    api.post<MessageResponse, MessageResponse>(`/admin/users/${id}/suspend`),
 
-  deactivateUser: (id: string): Promise<MessageResponse> =>
-    api.post<MessageResponse, MessageResponse>(`/admin/users/${id}/deactivate`),
+  unsuspendUser: (id: string): Promise<MessageResponse> =>
+    api.post<MessageResponse, MessageResponse>(`/admin/users/${id}/unsuspend`),
 
   deleteUser: (id: string): Promise<MessageResponse> =>
     api.delete<MessageResponse, MessageResponse>(`/admin/users/${id}`),

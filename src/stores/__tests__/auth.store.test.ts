@@ -39,6 +39,7 @@ describe("useAuthStore", () => {
       updated_at: new Date().toISOString(),
       deactivated_at: null,
       deletion_scheduled_at: null,
+      suspended_at: null,
     } as const;
 
     useAuthStore.getState().login(user);
@@ -64,6 +65,7 @@ describe("useAuthStore", () => {
         updated_at: new Date().toISOString(),
         deactivated_at: null,
         deletion_scheduled_at: null,
+        suspended_at: null,
       },
       isAuthenticated: true,
       isLoading: false,
@@ -91,6 +93,7 @@ describe("useAuthStore", () => {
       updated_at: new Date().toISOString(),
       deactivated_at: null,
       deletion_scheduled_at: null,
+      suspended_at: null,
     } as const;
 
     useAuthStore.getState().setUser(user);

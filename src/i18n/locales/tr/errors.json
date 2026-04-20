@@ -28,7 +28,10 @@
     "account": {
       "already_deactivated": "Hesabınız zaten silinmek üzere planlanmış.",
       "not_deactivated": "Hesabınız aktif — iptal edilecek bir işlem yok.",
-      "deletion_expired": "Bu hesabın bekleme süresi dolmuş."
+      "deletion_expired": "Bu hesabın bekleme süresi dolmuş.",
+      "suspended": "Hesabınız yönetici tarafından askıya alındı.",
+      "already_suspended": "Bu kullanıcı zaten askıda.",
+      "not_suspended": "Bu kullanıcı askıda değil."
     },
     "admin": {
       "cannot_modify_self": "Yöneticiler kendi hesaplarını bu panelden değiştiremez.",

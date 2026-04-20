@@ -18,6 +18,7 @@ const user: AdminUser = {
   updated_at: "2026-01-02T00:00:00Z",
   deactivated_at: null,
   deletion_scheduled_at: null,
+  suspended_at: null,
 };
 
 describe("UserOverviewCard", () => {

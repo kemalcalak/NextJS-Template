@@ -1,13 +1,6 @@
 "use client";
 
-import {
-  CheckCircle2,
-  ChevronRight,
-  KeyRound,
-  MoreHorizontal,
-  PauseCircle,
-  Trash2,
-} from "lucide-react";
+import { Ban, ChevronRight, KeyRound, MoreHorizontal, RotateCcw, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslation } from "react-i18next";
@@ -110,24 +103,25 @@ export function UsersTable({ rows, isLoading, currentUserId, onAction }: UsersTa
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end" className="w-48">
-                        {user.is_active ? (
+                        {user.suspended_at ? (
                           <DropdownMenuItem
-                            disabled={isSelf}
                             onSelect={() => {
-                              onAction("deactivate", user);
+                              onAction("unsuspend", user);
                             }}
                           >
-                            <PauseCircle className="mr-2 h-4 w-4" />
-                            {t("users.rowActions.deactivate")}
+                            <RotateCcw className="mr-2 h-4 w-4" />
+                            {t("users.rowActions.unsuspend")}
                           </DropdownMenuItem>
                         ) : (
                           <DropdownMenuItem
+                            disabled={isSelf}
+                            className="text-destructive focus:text-destructive"
                             onSelect={() => {
-                              onAction("activate", user);
+                              onAction("suspend", user);
                             }}
                           >
-                            <CheckCircle2 className="mr-2 h-4 w-4" />
-                            {t("users.rowActions.activate")}
+                            <Ban className="mr-2 h-4 w-4" />
+                            {t("users.rowActions.suspend")}
                           </DropdownMenuItem>
                         )}
                         <DropdownMenuItem

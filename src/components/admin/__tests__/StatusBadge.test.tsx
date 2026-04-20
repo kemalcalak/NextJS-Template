@@ -18,6 +18,7 @@ const baseUser: AdminUser = {
   updated_at: "2026-01-01T00:00:00Z",
   deactivated_at: null,
   deletion_scheduled_at: null,
+  suspended_at: null,
 };
 
 describe("StatusBadge", () => {
@@ -28,7 +29,22 @@ describe("StatusBadge", () => {
 });
 
 describe("UserStatusBadge", () => {
-  it("shows 'pending deletion' when deletion_scheduled_at is set (takes priority)", () => {
+  it("shows 'suspended' when suspended_at is set (wins over every other state)", () => {
+    render(
+      <UserStatusBadge
+        user={{
+          ...baseUser,
+          is_active: false,
+          suspended_at: "2026-04-20T10:00:00Z",
+          // Both pending-deletion and suspended set at once — suspended still wins.
+          deletion_scheduled_at: "2026-05-01T00:00:00Z",
+        }}
+      />,
+    );
+    expect(screen.getByText(/admin:users\.status\.suspended/)).toBeInTheDocument();
+  });
+
+  it("shows 'pending deletion' when deletion_scheduled_at is set (takes priority over active)", () => {
     render(
       <UserStatusBadge
         user={{ ...baseUser, is_active: true, deletion_scheduled_at: "2026-05-01T00:00:00Z" }}

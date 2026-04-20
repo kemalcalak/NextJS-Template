@@ -17,8 +17,8 @@ describe("UserActionDialogs", () => {
   });
 
   it.each([
-    ["activate", "activateTitle", "activateConfirm"] as const,
-    ["deactivate", "deactivateTitle", "deactivateConfirm"] as const,
+    ["suspend", "suspendTitle", "suspendConfirm"] as const,
+    ["unsuspend", "unsuspendTitle", "unsuspendConfirm"] as const,
     ["reset", "resetTitle", "resetConfirm"] as const,
     ["delete", "deleteTitle", "deleteConfirm"] as const,
   ])("shows the %s dialog with its title and confirm label", (kind, title, confirmKey) => {
@@ -41,13 +41,13 @@ describe("UserActionDialogs", () => {
     const onConfirm = vi.fn();
     render(
       <UserActionDialogs
-        action="deactivate"
+        action="suspend"
         onOpenChange={vi.fn()}
         onConfirm={onConfirm}
         isLoading={false}
       />,
     );
-    fireEvent.click(screen.getByRole("button", { name: /admin:confirm\.deactivateConfirm/ }));
+    fireEvent.click(screen.getByRole("button", { name: /admin:confirm\.suspendConfirm/ }));
     expect(onConfirm).toHaveBeenCalled();
   });
 

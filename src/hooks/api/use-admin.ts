@@ -69,10 +69,10 @@ export const useUpdateAdminUser = () => {
   });
 };
 
-export const useActivateAdminUser = () => {
+export const useSuspendAdminUser = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (id: string) => adminApi.activateUser(id),
+    mutationFn: (id: string) => adminApi.suspendUser(id),
     onSuccess: (_, id) => {
       queryClient.invalidateQueries({ queryKey: adminKeys.user(id) });
       invalidateUserSurfaces(queryClient);
@@ -80,10 +80,10 @@ export const useActivateAdminUser = () => {
   });
 };
 
-export const useDeactivateAdminUser = () => {
+export const useUnsuspendAdminUser = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (id: string) => adminApi.deactivateUser(id),
+    mutationFn: (id: string) => adminApi.unsuspendUser(id),
     onSuccess: (_, id) => {
       queryClient.invalidateQueries({ queryKey: adminKeys.user(id) });
       invalidateUserSurfaces(queryClient);

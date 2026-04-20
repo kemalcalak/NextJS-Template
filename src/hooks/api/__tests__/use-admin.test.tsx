@@ -3,14 +3,14 @@ import { http, HttpResponse } from "msw";
 import { describe, it, expect, vi } from "vitest";
 
 import {
-  useActivateAdminUser,
   useAdminActivities,
   useAdminUser,
   useAdminUserActivities,
   useAdminUsers,
-  useDeactivateAdminUser,
   useDeleteAdminUser,
   useResetAdminUserPassword,
+  useSuspendAdminUser,
+  useUnsuspendAdminUser,
   useUpdateAdminUser,
 } from "@/hooks/api/use-admin";
 import type { AdminActivity, AdminUser } from "@/lib/types/admin";
@@ -31,6 +31,7 @@ const mockAdmin: AdminUser = {
   updated_at: "2026-01-01T00:00:00Z",
   deactivated_at: null,
   deletion_scheduled_at: null,
+  suspended_at: null,
 };
 
 const mockActivity: AdminActivity = {
@@ -160,10 +161,10 @@ describe("admin user mutations", () => {
     expect(result.current.data?.user.first_name).toBe("Renamed");
   });
 
-  it("useActivateAdminUser POSTs /admin/users/:id/activate", async () => {
+  it("useSuspendAdminUser POSTs /admin/users/:id/suspend", async () => {
     const handler = vi.fn(() => HttpResponse.json({ success: true, message: "ok" }));
-    server.use(http.post("*/api/v1/admin/users/admin-1/activate", handler));
-    const { result } = renderHook(() => useActivateAdminUser(), { wrapper: createWrapper() });
+    server.use(http.post("*/api/v1/admin/users/admin-1/suspend", handler));
+    const { result } = renderHook(() => useSuspendAdminUser(), { wrapper: createWrapper() });
     result.current.mutate("admin-1");
     await waitFor(() => {
       expect(result.current.isSuccess).toBe(true);
@@ -171,10 +172,10 @@ describe("admin user mutations", () => {
     expect(handler).toHaveBeenCalled();
   });
 
-  it("useDeactivateAdminUser POSTs /admin/users/:id/deactivate", async () => {
+  it("useUnsuspendAdminUser POSTs /admin/users/:id/unsuspend", async () => {
     const handler = vi.fn(() => HttpResponse.json({ success: true, message: "ok" }));
-    server.use(http.post("*/api/v1/admin/users/admin-1/deactivate", handler));
-    const { result } = renderHook(() => useDeactivateAdminUser(), { wrapper: createWrapper() });
+    server.use(http.post("*/api/v1/admin/users/admin-1/unsuspend", handler));
+    const { result } = renderHook(() => useUnsuspendAdminUser(), { wrapper: createWrapper() });
     result.current.mutate("admin-1");
     await waitFor(() => {
       expect(result.current.isSuccess).toBe(true);

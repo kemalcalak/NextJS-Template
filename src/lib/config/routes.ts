@@ -11,6 +11,7 @@ export const ROUTES = {
   verifyEmail: "/verify-email",
   verifyEmailNotice: "/verify-email-notice",
   accountDeactivated: "/account-deactivated",
+  accountSuspended: "/account-suspended",
   dashboard: "/dashboard",
   profile: "/profile",
   logout: "/logout",
@@ -36,6 +37,7 @@ export const protectedRoutes = [
   ROUTES.adminDashboard,
   ROUTES.adminUsers,
   ROUTES.adminActivities,
+  ROUTES.accountSuspended,
 ];
 
 // Routes that should NOT be accessible when logged in (without locale prefix)
@@ -55,6 +57,11 @@ export const publicAuthRoutes = [ROUTES.verifyEmailNotice];
 // account is in the deletion grace window. The protected-layout guard
 // redirects deactivated users to these instead of the dashboard.
 export const pendingDeletionRoutes = [ROUTES.accountDeactivated];
+
+// Routes reachable only when the session belongs to an admin-suspended user.
+// Mirrors ``pendingDeletionRoutes`` — the protected-layout guard sends
+// suspended users here and bounces active users away.
+export const suspendedRoutes = [ROUTES.accountSuspended];
 
 /**
  * Checks if a given path matches any of the routes in the list.

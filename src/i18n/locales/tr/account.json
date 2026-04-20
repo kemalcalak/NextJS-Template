@@ -23,5 +23,11 @@
     "reactivate": "Hesabımı koru",
     "reactivating": "Geri yükleniyor...",
     "logout": "Çıkış yap"
+  },
+  "suspended": {
+    "title": "Hesabınız askıya alındı",
+    "subtitle": "Yönetici tarafından hesabınız askıya alınmıştır. Askı kaldırılana kadar tüm özelliklere erişim engellidir.",
+    "contactSupport": "Bir hata olduğunu düşünüyorsanız lütfen destek ekibiyle iletişime geçin.",
+    "logout": "Çıkış yap"
   }
 }

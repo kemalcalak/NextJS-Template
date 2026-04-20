@@ -37,6 +37,7 @@ const BASE_USER = {
   title: null,
   deactivated_at: null,
   deletion_scheduled_at: null,
+  suspended_at: null,
 };
 
 beforeEach(() => {

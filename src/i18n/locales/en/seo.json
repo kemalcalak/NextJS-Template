@@ -27,6 +27,10 @@
     "title": "Check Your Email",
     "description": "We have sent you a verification link. Please check your inbox and spam folder."
   },
+  "accountSuspended": {
+    "title": "Account Suspended",
+    "description": "This account has been suspended by an administrator."
+  },
   "dashboard": {
     "title": "Dashboard",
     "description": "Manage your projects, tasks, and team from your personal dashboard."
