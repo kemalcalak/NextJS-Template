@@ -3,11 +3,10 @@
 import { useState } from "react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "@tanstack/react-query";
 import { Loader2, ShieldCheck } from "lucide-react";
 import { motion } from "motion/react";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
@@ -16,37 +15,24 @@ import { AuthPasswordField } from "@/components/auth/AuthPasswordField";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form } from "@/components/ui/form";
-import { authService } from "@/lib/api/endpoints/auth";
+import { useLoginMutation } from "@/hooks/api/use-auth";
 import { ROUTES, getLocaleFromPath, getLocalizedPath } from "@/lib/config/routes";
-import { SystemRole } from "@/lib/types/user";
 import { getLoginSchema, type LoginFormValues } from "@/schemas/auth";
-import { useAuthStore } from "@/stores/auth.store";
 
 export function AdminLoginContent() {
   const { t } = useTranslation(["admin", "auth", "validation"]);
   const { t: tv } = useTranslation("validation");
-  const router = useRouter();
   const pathname = usePathname();
   const currentLocale = getLocaleFromPath(pathname);
-  const { login } = useAuthStore();
+  // Reuses the public login mutation so admin sign-in inherits cache-clear,
+  // email-not-verified redirect, and post-login role-based routing without
+  // forking the success/error logic.
+  const { mutate: loginMutate, isPending: isLoading } = useLoginMutation();
   const [showPassword, setShowPassword] = useState(false);
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(getLoginSchema(tv)),
     defaultValues: { email: "", password: "", rememberMe: true },
-  });
-
-  // The admin login hits the same /auth/login endpoint as the public one. The
-  // protected layout server-side gate re-runs on the navigation, so an explicit
-  // router.refresh() is redundant. `replace` keeps the login page out of the
-  // back-stack after we've moved past it.
-  const { mutate: loginMutate, isPending: isLoading } = useMutation({
-    mutationFn: (payload: LoginFormValues) => authService.login(payload),
-    onSuccess: (data) => {
-      login(data.user);
-      const target = data.user.role === SystemRole.ADMIN ? ROUTES.adminDashboard : ROUTES.dashboard;
-      router.replace(getLocalizedPath(target, currentLocale));
-    },
   });
 
   return (

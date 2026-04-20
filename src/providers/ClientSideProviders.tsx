@@ -45,12 +45,6 @@ export function ClientSideProviders({
     };
   }, [locale]);
 
-  useEffect(() => {
-    if (!initialSync) return;
-    if (i18n.language === locale) return;
-    void i18n.changeLanguage(locale);
-  }, [initialSync, locale]);
-
   const loadingMessage = loadingMessages[locale] || loadingMessages.en;
 
   return (

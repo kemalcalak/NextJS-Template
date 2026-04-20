@@ -132,7 +132,7 @@
     "deleteDescription": "This permanently removes the user and cannot be undone.",
     "deleteConfirm": "Delete user",
     "suspendTitle": "Suspend this user?",
-    "suspendDescription": "The user loses access immediately and the account is permanently suspended. Only an admin can later lift the suspension.",
+    "suspendDescription": "The user loses access immediately and the account stays suspended until an admin lifts it.",
     "suspendConfirm": "Suspend",
     "unsuspendTitle": "Lift this suspension?",
     "unsuspendDescription": "This re-enables the account and restores the user's access.",

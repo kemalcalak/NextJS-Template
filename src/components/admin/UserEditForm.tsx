@@ -52,8 +52,8 @@ export function UserEditForm({ user, isSelf, isSaving, onSubmit }: UserEditFormP
     // re-enables the disabled inputs. Backend guards this too; belt-and-braces.
     // Email is never in the payload — admins cannot change identity.
     const payload: AdminUserUpdatePayload = {
-      first_name: values.first_name,
-      last_name: values.last_name,
+      first_name: values.first_name ? values.first_name : null,
+      last_name: values.last_name ? values.last_name : null,
       title: values.title ? values.title : null,
     };
     if (!isSelf) {

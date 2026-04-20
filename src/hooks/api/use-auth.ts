@@ -26,13 +26,22 @@ export function useLoginMutation() {
   const router = useRouter();
   const pathname = usePathname();
   const currentLocale = getLocaleFromPath(pathname);
+  const queryClient = useQueryClient();
   const { login } = useAuthStore();
 
   return useMutation({
     mutationFn: (payload: LoginPayload) => authService.login(payload),
     onSuccess: (data) => {
+      // Wipe any cached queries from a prior session before the new user's
+      // observers mount — without this, account A's data can flash to
+      // account B if both sign in to the same tab without a clean logout.
+      queryClient.clear();
       login(data.user);
-      const target = data.user.deletion_scheduled_at ? ROUTES.accountDeactivated : ROUTES.dashboard;
+      // Admin role wins over deletion-grace: the admin shell is the right
+      // home regardless of which login surface the user came through.
+      let target: string = ROUTES.dashboard;
+      if (data.user.role === SystemRole.ADMIN) target = ROUTES.adminDashboard;
+      else if (data.user.deletion_scheduled_at) target = ROUTES.accountDeactivated;
       router.push(getLocalizedPath(target, currentLocale));
     },
     onError: (

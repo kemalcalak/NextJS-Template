@@ -45,6 +45,11 @@ export function AuthHydrator({ children }: { children: React.ReactNode }) {
         setUser(null);
       } finally {
         setSessionInitialized(true);
+        // Tie the in-flight flag's lifetime to the request, not the module:
+        // future code that flips ``isSessionInitialized`` back to false (e.g.
+        // forced re-hydrate after impersonation) could otherwise be wedged
+        // permanently because this flag would still read true.
+        sessionRequestInFlight = false;
       }
     };
 

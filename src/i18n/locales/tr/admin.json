@@ -132,7 +132,7 @@
     "deleteDescription": "Bu işlem kullanıcıyı kalıcı olarak siler ve geri alınamaz.",
     "deleteConfirm": "Kullanıcıyı sil",
     "suspendTitle": "Bu kullanıcı askıya alınsın mı?",
-    "suspendDescription": "Kullanıcı erişimini anında kaybeder ve hesap kalıcı olarak askıya alınır. Askıyı yalnızca bir yönetici kaldırabilir.",
+    "suspendDescription": "Kullanıcı erişimini anında kaybeder ve hesap, bir yönetici askıyı kaldırana kadar askıda kalır.",
     "suspendConfirm": "Askıya al",
     "unsuspendTitle": "Bu askı kaldırılsın mı?",
     "unsuspendDescription": "Hesap yeniden etkinleşir ve kullanıcının erişimi geri yüklenir.",

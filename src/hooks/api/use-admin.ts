@@ -48,7 +48,7 @@ export const useAdminUser = (id: string | undefined) =>
       if (!id) throw new Error("User ID is required");
       return adminApi.getUser(id);
     },
-    enabled: typeof id === "string",
+    enabled: Boolean(id),
   });
 
 export const useAdminStats = () =>
@@ -126,6 +126,6 @@ export const useAdminUserActivities = (
       if (!userId) throw new Error("User ID is required");
       return adminApi.listUserActivities(userId, options);
     },
-    enabled: typeof userId === "string",
+    enabled: Boolean(userId),
     placeholderData: keepPreviousData,
   });
