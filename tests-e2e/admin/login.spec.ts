@@ -2,6 +2,7 @@ import { test, expect } from "../base-test";
 import {
   adminUser,
   mockAdminActivities,
+  mockAdminStats,
   mockAdminUsersList,
   mockMe,
   regularUser,
@@ -28,6 +29,7 @@ for (const locale of LOCALES) {
         });
       });
       await mockMe(page, adminUser);
+      await mockAdminStats(page, { users_total: 1, users_active: 1, users_admins: 1 });
       await mockAdminUsersList(page, [adminUser], 1);
       await mockAdminActivities(page);
 

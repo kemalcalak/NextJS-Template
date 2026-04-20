@@ -67,6 +67,8 @@ for (const locale of LOCALES) {
         .first()
         .click();
 
+      // The mobile AppDrawer still uses onClick-navigation <Button>s (unlike
+      // the desktop AuthButtons which were promoted to asChild + <Link>).
       await expect(
         page.getByRole("button", { name: s.auth.login.submitButton }).first(),
       ).toBeVisible();
@@ -101,11 +103,13 @@ for (const locale of LOCALES) {
 
     test("should show Login and Register buttons when unauthenticated", async ({ page }) => {
       await page.goto(`/${locale}`);
+      // AuthButtons now renders link-wrapped shadcn buttons for the unauth CTAs
+      // so cmd/ctrl-click opens in a new tab. The accessibility role is "link".
       await expect(
-        page.getByRole("button", { name: s.auth.login.submitButton }).first(),
+        page.getByRole("link", { name: s.auth.login.submitButton }).first(),
       ).toBeVisible();
       await expect(
-        page.getByRole("button", { name: s.auth.register.submitButton }).first(),
+        page.getByRole("link", { name: s.auth.register.submitButton }).first(),
       ).toBeVisible();
     });
 
@@ -114,7 +118,7 @@ for (const locale of LOCALES) {
       await page.goto(`/${locale}`);
 
       await expect(
-        page.getByRole("banner").getByRole("button", { name: s.auth.login.submitButton }),
+        page.getByRole("banner").getByRole("link", { name: s.auth.login.submitButton }),
       ).not.toBeVisible();
 
       const avatarBtn = page.locator("button.rounded-full").first();

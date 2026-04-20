@@ -70,7 +70,11 @@ for (const locale of LOCALES) {
 
       // Validation copy — regex accepts either locale.
       await expect(
-        page.locator("text=eşleşmiyor").or(page.locator("text=mismatch")).first(),
+        page
+          .locator("text=eşleşmiyor")
+          .or(page.locator("text=do not match"))
+          .or(page.locator("text=mismatch"))
+          .first(),
       ).toBeVisible();
     });
 

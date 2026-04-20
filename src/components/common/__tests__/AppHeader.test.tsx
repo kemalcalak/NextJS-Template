@@ -38,66 +38,68 @@ const createMockUser = (overrides: Partial<User> = {}): User => ({
   ...overrides,
 });
 
+// AppHeader consumes the store with a selector (`(state) => state.user`),
+// so the mock has to honour the selector instead of returning the full state.
+const mockAuthStore = (overrides: {
+  user?: User | null;
+  isAuthenticated?: boolean;
+  isLoading?: boolean;
+  isSessionInitialized?: boolean;
+}) => {
+  const state = {
+    user: overrides.user ?? null,
+    isAuthenticated: overrides.isAuthenticated ?? false,
+    isLoading: overrides.isLoading ?? false,
+    isSessionInitialized: overrides.isSessionInitialized ?? false,
+    login: vi.fn(),
+    logout: vi.fn(),
+    setUser: vi.fn(),
+    setSessionInitialized: vi.fn(),
+  };
+  // The real `useAuthStore` is overloaded (with/without selector). vi.mocked
+  // preserves the overloaded signature, which mockImplementation can't
+  // satisfy directly, so cast through a minimal matching type.
+  const mock = vi.mocked(useAuthStore) as unknown as {
+    mockImplementation: (fn: (selector?: (s: typeof state) => unknown) => unknown) => void;
+  };
+  mock.mockImplementation((selector) =>
+    typeof selector === "function" ? selector(state) : state,
+  );
+};
+
 describe("AppHeader Component", () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  it("renders login and register buttons when unauthenticated", () => {
-    // Mock unauthenticated state
-    vi.mocked(useAuthStore).mockReturnValue({
-      user: null,
-      isAuthenticated: false,
-      isLoading: false,
-      isSessionInitialized: false,
-      login: vi.fn(),
-      logout: vi.fn(),
-      setUser: vi.fn(),
-      setSessionInitialized: vi.fn(),
-    });
+  it("renders login and register links when unauthenticated", () => {
+    mockAuthStore({ user: null, isAuthenticated: false });
 
     renderWithProviders(<AppHeader />);
 
-    expect(screen.getByRole("button", { name: /auth:login\.submitButton/i })).toBeInTheDocument();
-    expect(
-      screen.getByRole("button", { name: /auth:register\.submitButton/i }),
-    ).toBeInTheDocument();
+    // AuthButtons now uses asChild + <Link> for the unauth CTAs so cmd-click
+    // opens in a new tab — the role is "link", not "button".
+    expect(screen.getByRole("link", { name: /auth:login\.submitButton/i })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /auth:register\.submitButton/i })).toBeInTheDocument();
   });
 
   it("renders user dropdown menu when authenticated", () => {
-    // Mock authenticated state
-    vi.mocked(useAuthStore).mockReturnValue({
+    mockAuthStore({
       user: createMockUser({ email: "test@example.com", first_name: "Test", last_name: "User" }),
       isAuthenticated: true,
-      isLoading: false,
       isSessionInitialized: true,
-      login: vi.fn(),
-      logout: vi.fn(),
-      setUser: vi.fn(),
-      setSessionInitialized: vi.fn(),
     });
 
     renderWithProviders(<AppHeader />);
 
-    // The user avatar button should be visible instead of login/register
-    expect(screen.queryByRole("button", { name: /auth\.login/i })).not.toBeInTheDocument();
-    expect(screen.queryByRole("button", { name: /auth\.register/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: /auth\.login/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: /auth\.register/i })).not.toBeInTheDocument();
 
-    // The user's mock avatar fallback 'T' (from Test User) should be rendered
     expect(screen.getByText("T")).toBeInTheDocument();
   });
 
   it("renders theme and language toggle buttons", () => {
-    vi.mocked(useAuthStore).mockReturnValue({
-      user: null,
-      isAuthenticated: false,
-      isLoading: false,
-      isSessionInitialized: false,
-      login: vi.fn(),
-      logout: vi.fn(),
-      setUser: vi.fn(),
-      setSessionInitialized: vi.fn(),
-    });
+    mockAuthStore({ user: null, isAuthenticated: false });
 
     renderWithProviders(<AppHeader />);
 

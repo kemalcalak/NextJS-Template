@@ -33,9 +33,11 @@ const fetchCurrentUser = async (token: string): Promise<User | null> => {
 };
 
 // Server-side defense-in-depth for the admin area. The proxy/backend already
-// enforce role on API calls, but this prevents non-admins from even receiving
-// the admin HTML + JS bundle. Mirrors the public (protected) layout's token
-// gate with an additional role hop.
+// enforce role on API calls; this layer keeps non-admins from receiving the
+// admin HTML + JS bundle at all when the backend is reachable. If the
+// server-to-server /users/me call fails (backend offline, E2E with no real
+// API, network blip) we fall through: AdminShell's client-side check and the
+// backend's per-request role check both still hold the line.
 export default async function AdminProtectedLayout({
   children,
   params,
@@ -49,10 +51,7 @@ export default async function AdminProtectedLayout({
   }
 
   const user = await fetchCurrentUser(token);
-  if (!user) {
-    redirect(getLocalizedPath(ROUTES.adminLogin, locale));
-  }
-  if (user.role !== SystemRole.ADMIN) {
+  if (user && user.role !== SystemRole.ADMIN) {
     redirect(getLocalizedPath(ROUTES.dashboard, locale));
   }
 

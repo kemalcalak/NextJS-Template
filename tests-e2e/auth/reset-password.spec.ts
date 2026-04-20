@@ -17,7 +17,7 @@ for (const locale of LOCALES) {
       await page.goto(`/${locale}/reset-password`);
 
       await expect(page.getByText(s.auth.resetPassword.invalidLinkTitle).first()).toBeVisible();
-      await expect(page.locator('a[href*="/login"]')).toBeVisible();
+      await expect(page.locator('a[href*="/login"]').first()).toBeVisible();
     });
   });
 
@@ -30,7 +30,11 @@ for (const locale of LOCALES) {
       await page.click('button[type="submit"]');
 
       await expect(
-        page.locator("text=eşleşmiyor").or(page.locator("text=mismatch")).first(),
+        page
+          .locator("text=eşleşmiyor")
+          .or(page.locator("text=do not match"))
+          .or(page.locator("text=mismatch"))
+          .first(),
       ).toBeVisible();
     });
 
@@ -52,7 +56,7 @@ for (const locale of LOCALES) {
       await page.click('button[type="submit"]');
 
       await expect(page.getByText(s.auth.resetPassword.successTitle).first()).toBeVisible();
-      await expect(page.locator('a[href*="/login"]')).toBeVisible();
+      await expect(page.locator('a[href*="/login"]').first()).toBeVisible();
     });
 
     test("should show error on invalid/expired token", async ({ page }) => {

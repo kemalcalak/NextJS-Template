@@ -111,7 +111,7 @@ export function ActivitiesContent() {
               <SelectItem value="all">{t("activities.filters.typeAny")}</SelectItem>
               {ACTIVITY_TYPES.map((v) => (
                 <SelectItem key={v} value={v}>
-                  {v}
+                  {t(`activities.type.${v}` as const)}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -131,7 +131,7 @@ export function ActivitiesContent() {
               <SelectItem value="all">{t("activities.filters.resourceAny")}</SelectItem>
               {RESOURCE_TYPES.map((v) => (
                 <SelectItem key={v} value={v}>
-                  {v}
+                  {t(`activities.resource.${v}` as const)}
                 </SelectItem>
               ))}
             </SelectContent>

@@ -22,14 +22,20 @@ export function ClientSideProviders({
   children: React.ReactNode;
   locale: string;
 }) {
-  // Gate the first paint behind i18n being in sync with the URL locale so we
-  // don't flash English copy on a /tr/ route. Once we've crossed that bar the
-  // gate stays open — later language switches just re-render via react-i18next
-  // without a full-screen loader.
-  const [initialSync, setInitialSync] = useState(() => i18n.language === locale);
+  // Initial state MUST match on server and client to avoid a hydration
+  // mismatch. `i18n.language` diverges across the two (server uses the static
+  // fallback, client's LanguageDetector may read a cookie), so we always start
+  // `false` and let the effect below flip it once i18n is in sync with the URL
+  // locale. This costs one frame of LoadingScreen flash; any alternative
+  // reading i18n.language during render would flicker hydration warnings.
+  const [initialSync, setInitialSync] = useState(false);
 
   useEffect(() => {
-    if (initialSync) return;
+    if (i18n.language === locale) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setInitialSync(true);
+      return;
+    }
     let cancelled = false;
     void i18n.changeLanguage(locale).finally(() => {
       if (!cancelled) setInitialSync(true);
@@ -37,7 +43,7 @@ export function ClientSideProviders({
     return () => {
       cancelled = true;
     };
-  }, [initialSync, locale]);
+  }, [locale]);
 
   useEffect(() => {
     if (!initialSync) return;

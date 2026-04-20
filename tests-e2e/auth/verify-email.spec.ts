@@ -44,7 +44,7 @@ for (const locale of LOCALES) {
       await page.goto(`/${locale}/verify-email?token=valid-token`);
 
       await expect(page.getByText(s.auth.verifyEmail.successTitle).first()).toBeVisible();
-      await expect(page.locator('a[href*="/login"]')).toBeVisible();
+      await expect(page.locator('a[href*="/login"]').first()).toBeVisible();
     });
 
     test("should show error on invalid token", async ({ page }) => {

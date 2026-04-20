@@ -98,6 +98,29 @@ export const mockAdminActivities = async (
   });
 };
 
+export const mockAdminStats = async (
+  page: Page,
+  stats: Partial<{
+    users_total: number;
+    users_active: number;
+    users_verified: number;
+    users_admins: number;
+    activities_total: number;
+  }> = {},
+): Promise<void> => {
+  const payload = JSON.stringify({
+    users_total: 0,
+    users_active: 0,
+    users_verified: 0,
+    users_admins: 0,
+    activities_total: 0,
+    ...stats,
+  });
+  await page.route(/.*\/api\/v1\/admin\/stats$/, async (route) => {
+    await route.fulfill({ status: 200, contentType: "application/json", body: payload });
+  });
+};
+
 export const mockAdminUserDetail = async (page: Page, user: AdminUser): Promise<void> => {
   await page.route(new RegExp(`.*/api/v1/admin/users/${user.id}$`), async (route) => {
     if (route.request().method() !== "GET") {
