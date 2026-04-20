@@ -59,11 +59,14 @@ export interface AdminUserListParams {
   is_verified?: boolean;
 }
 
+// Email is intentionally absent — admins cannot rewrite a user's identity.
+// The backend enforces this with ``extra=forbid`` on the matching Pydantic
+// schema, so a stray ``email`` key returns 422 instead of being silently
+// dropped.
 export interface AdminUserUpdatePayload {
   first_name?: string | null;
   last_name?: string | null;
   title?: string | null;
-  email?: string;
   role?: SystemRole;
   is_active?: boolean;
   is_verified?: boolean;

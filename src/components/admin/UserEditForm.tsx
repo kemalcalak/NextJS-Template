@@ -26,7 +26,6 @@ const userToFormValues = (user: AdminUser): AdminUserUpdateFormValues => ({
   first_name: user.first_name ?? "",
   last_name: user.last_name ?? "",
   title: user.title ?? "",
-  email: user.email,
   role: user.role ?? SystemRole.USER,
   is_active: user.is_active,
   is_verified: user.is_verified,
@@ -51,11 +50,11 @@ export function UserEditForm({ user, isSelf, isSaving, onSubmit }: UserEditFormP
   const handleSubmit = form.handleSubmit((values) => {
     // Self-edit must not alter role, is_active, or is_verified even if DevTools
     // re-enables the disabled inputs. Backend guards this too; belt-and-braces.
+    // Email is never in the payload — admins cannot change identity.
     const payload: AdminUserUpdatePayload = {
       first_name: values.first_name,
       last_name: values.last_name,
       title: values.title ? values.title : null,
-      email: values.email,
     };
     if (!isSelf) {
       payload.role = values.role;

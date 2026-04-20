@@ -113,7 +113,6 @@
       "firstName": "First name",
       "lastName": "Last name",
       "title": "Title",
-      "email": "Email",
       "role": "Role",
       "active": "Active",
       "verified": "Email verified"

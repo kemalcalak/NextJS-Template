@@ -67,19 +67,6 @@ export function UserEditFormFields({ form, isSelf }: UserEditFormFieldsProps) {
           </FormItem>
         )}
       />
-      <FormField
-        control={form.control}
-        name="email"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>{t("userDetail.fields.email")}</FormLabel>
-            <FormControl>
-              <Input type="email" {...field} />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
       <div className="grid gap-4 md:grid-cols-3">
         <FormField
           control={form.control}
