@@ -39,6 +39,7 @@ export interface AdminStats {
   users_total: number;
   users_active: number;
   users_verified: number;
+  users_admins: number;
   activities_total: number;
 }
 

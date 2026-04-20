@@ -8,9 +8,8 @@ import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useAdminActivities, useAdminUsers } from "@/hooks/api/use-admin";
+import { useAdminStats } from "@/hooks/api/use-admin";
 import { ROUTES, getLocaleFromPath, getLocalizedPath } from "@/lib/config/routes";
-import { SystemRole } from "@/lib/types/user";
 
 const StatCard = ({
   label,
@@ -43,19 +42,7 @@ export function DashboardContent() {
   const pathname = usePathname();
   const currentLocale = getLocaleFromPath(pathname);
 
-  // Derive rough counts from the cheapest possible list queries. Good enough
-  // for a template; a real deployment should add a /admin/stats endpoint when
-  // the user table grows. limit=1 because we only need the `total` field.
-  const { data: allUsers, isLoading: usersLoading } = useAdminUsers({ limit: 1 });
-  const { data: activeUsers, isLoading: activeLoading } = useAdminUsers({
-    limit: 1,
-    is_active: true,
-  });
-  const { data: admins, isLoading: adminsLoading } = useAdminUsers({
-    limit: 1,
-    role: SystemRole.ADMIN,
-  });
-  const { data: activities, isLoading: activitiesLoading } = useAdminActivities({ limit: 1 });
+  const { data: stats, isLoading } = useAdminStats();
 
   return (
     <div className="space-y-6">
@@ -69,27 +56,27 @@ export function DashboardContent() {
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard
           label={t("dashboard.stats.totalUsers")}
-          value={allUsers?.total ?? 0}
+          value={stats?.users_total ?? 0}
           icon={Users}
-          loading={usersLoading}
+          loading={isLoading}
         />
         <StatCard
           label={t("dashboard.stats.activeUsers")}
-          value={activeUsers?.total ?? 0}
+          value={stats?.users_active ?? 0}
           icon={UserCheck}
-          loading={activeLoading}
+          loading={isLoading}
         />
         <StatCard
           label={t("dashboard.stats.admins")}
-          value={admins?.total ?? 0}
+          value={stats?.users_admins ?? 0}
           icon={ShieldCheck}
-          loading={adminsLoading}
+          loading={isLoading}
         />
         <StatCard
           label={t("dashboard.stats.activitiesToday")}
-          value={activities?.total ?? 0}
+          value={stats?.activities_total ?? 0}
           icon={Activity}
-          loading={activitiesLoading}
+          loading={isLoading}
         />
       </div>
 
