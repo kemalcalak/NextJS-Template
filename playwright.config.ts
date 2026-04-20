@@ -62,5 +62,13 @@ export default defineConfig({
     command: process.env.CI ? "pnpm build && pnpm start" : "pnpm dev",
     url: "http://127.0.0.1:3000",
     reuseExistingServer: !process.env.CI,
+    env: {
+      // The admin (protected) layout does a server-to-server /users/me call
+      // as role-based defense-in-depth. Playwright's page.route only mocks
+      // browser traffic, so we disable that SSR fetch during E2E. AdminShell's
+      // client-side role check (which test mocks do see) plus the backend's
+      // per-request enforcement keep the surface protected in real deploys.
+      ADMIN_SSR_ROLE_GATE_DISABLED: "1",
+    },
   },
 });

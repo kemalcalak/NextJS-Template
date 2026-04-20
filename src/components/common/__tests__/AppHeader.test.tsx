@@ -62,9 +62,7 @@ const mockAuthStore = (overrides: {
   const mock = vi.mocked(useAuthStore) as unknown as {
     mockImplementation: (fn: (selector?: (s: typeof state) => unknown) => unknown) => void;
   };
-  mock.mockImplementation((selector) =>
-    typeof selector === "function" ? selector(state) : state,
-  );
+  mock.mockImplementation((selector) => (typeof selector === "function" ? selector(state) : state));
 };
 
 describe("AppHeader Component", () => {

@@ -3,6 +3,7 @@ import {
   adminUser,
   injectSession,
   mockAdminActivities,
+  mockAdminStats,
   mockAdminUsersList,
   mockMe,
   regularUser,
@@ -31,6 +32,7 @@ for (const locale of LOCALES) {
     test("admin can reach the admin dashboard", async ({ page }) => {
       await injectSession(page, adminUser, locale);
       await mockMe(page, adminUser);
+      await mockAdminStats(page, { users_total: 1, users_active: 1, users_admins: 1 });
       await mockAdminUsersList(page, [adminUser], 1);
       await mockAdminActivities(page);
 

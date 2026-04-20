@@ -38,6 +38,13 @@ const fetchCurrentUser = async (token: string): Promise<User | null> => {
 // server-to-server /users/me call fails (backend offline, E2E with no real
 // API, network blip) we fall through: AdminShell's client-side check and the
 // backend's per-request role check both still hold the line.
+//
+// E2E runs set ADMIN_SSR_ROLE_GATE_DISABLED=1 so Playwright's page.route
+// mocks (which only intercept browser traffic) don't have to fake the
+// server-to-server /users/me call the gate would otherwise issue — the
+// resulting 401 spam in the backend log is the visible symptom.
+const SSR_ROLE_GATE_DISABLED = process.env.ADMIN_SSR_ROLE_GATE_DISABLED === "1";
+
 export default async function AdminProtectedLayout({
   children,
   params,
@@ -50,9 +57,11 @@ export default async function AdminProtectedLayout({
     redirect(getLocalizedPath(ROUTES.adminLogin, locale));
   }
 
-  const user = await fetchCurrentUser(token);
-  if (user && user.role !== SystemRole.ADMIN) {
-    redirect(getLocalizedPath(ROUTES.dashboard, locale));
+  if (!SSR_ROLE_GATE_DISABLED) {
+    const user = await fetchCurrentUser(token);
+    if (user && user.role !== SystemRole.ADMIN) {
+      redirect(getLocalizedPath(ROUTES.dashboard, locale));
+    }
   }
 
   return <AdminShell>{children}</AdminShell>;
