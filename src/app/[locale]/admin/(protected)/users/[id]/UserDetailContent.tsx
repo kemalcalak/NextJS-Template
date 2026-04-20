@@ -14,11 +14,7 @@ import { UserDangerZone } from "@/components/admin/UserDangerZone";
 import { UserEditForm } from "@/components/admin/UserEditForm";
 import { UserOverviewCard } from "@/components/admin/UserOverviewCard";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  useAdminUser,
-  useAdminUserActivities,
-  useUpdateAdminUser,
-} from "@/hooks/api/use-admin";
+import { useAdminUser, useAdminUserActivities, useUpdateAdminUser } from "@/hooks/api/use-admin";
 import { useUserActions, type UserActionKind } from "@/hooks/api/use-user-actions";
 import { ROUTES, getLocaleFromPath, getLocalizedPath } from "@/lib/config/routes";
 import type { AdminUserUpdatePayload } from "@/lib/types/admin";
@@ -108,12 +104,7 @@ export function UserDetailContent({ userId }: { userId: string }) {
         <UserOverviewCard user={user} />
       </div>
 
-      <UserDangerZone
-        user={user}
-        isSelf={isSelf}
-        disabled={isActionLoading}
-        onAction={setAction}
-      />
+      <UserDangerZone user={user} isSelf={isSelf} disabled={isActionLoading} onAction={setAction} />
 
       <Card className="border-border/50 bg-card/60">
         <CardHeader>

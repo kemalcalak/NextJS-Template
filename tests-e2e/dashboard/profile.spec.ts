@@ -107,7 +107,10 @@ for (const locale of LOCALES) {
 
       // Success toast uses the translated success message — regex accepts either.
       await expect(
-        page.locator("text=başarıyla güncellendi").or(page.locator("text=updated successfully")).first(),
+        page
+          .locator("text=başarıyla güncellendi")
+          .or(page.locator("text=updated successfully"))
+          .first(),
       ).toBeVisible();
       await expect(page.locator('input[name="first_name"]')).toHaveValue("Johnny");
     });

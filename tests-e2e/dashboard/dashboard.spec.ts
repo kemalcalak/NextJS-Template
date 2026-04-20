@@ -64,9 +64,9 @@ for (const locale of LOCALES) {
         });
       });
 
-      await page.context().addCookies([
-        { name: "access_token", value: "fake-jwt", url: "http://127.0.0.1:3000" },
-      ]);
+      await page
+        .context()
+        .addCookies([{ name: "access_token", value: "fake-jwt", url: "http://127.0.0.1:3000" }]);
 
       await page.goto(`/${locale}/dashboard`);
       await expect(page.locator(".animate-pulse").first()).toBeVisible();

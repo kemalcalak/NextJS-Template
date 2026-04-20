@@ -121,9 +121,7 @@ export function ActivityTable({
                   {row.user_id.slice(0, 8)}
                 </td>
               ) : null}
-              <td className="px-4 py-3 font-medium">
-                {t(`activities.type.${row.activity_type}`)}
-              </td>
+              <td className="px-4 py-3 font-medium">{t(`activities.type.${row.activity_type}`)}</td>
               <td className="px-4 py-3 text-muted-foreground">
                 {t(`activities.resource.${row.resource_type}`)}
               </td>

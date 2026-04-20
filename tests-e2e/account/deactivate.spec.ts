@@ -5,7 +5,6 @@ import { SystemRole } from "@/lib/types/user";
 import { test, expect } from "../base-test";
 import { LOCALES, getStrings, reEscape, type Locale } from "../i18n-strings";
 
-
 /**
  * Covers the self-deactivation grace-period flow end-to-end:
  *   1. Authenticated user opens the Danger Zone → submits the dialog → API
@@ -123,7 +122,9 @@ for (const locale of LOCALES) {
       await page.getByRole("checkbox").check();
 
       await page
-        .getByRole("button", { name: new RegExp(`^${reEscape(s.account.deactivate.dialog.confirm)}$`) })
+        .getByRole("button", {
+          name: new RegExp(`^${reEscape(s.account.deactivate.dialog.confirm)}$`),
+        })
         .click();
 
       await expect(page).toHaveURL(new RegExp(`.*/${locale}/login`));

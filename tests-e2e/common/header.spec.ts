@@ -123,7 +123,9 @@ for (const locale of LOCALES) {
       await avatarBtn.click();
       await expect(page.getByText("John Doe").first()).toBeVisible();
       await expect(
-        page.getByRole("menuitem", { name: new RegExp(reEscape(s.common.nav.profile), "i") }).first(),
+        page
+          .getByRole("menuitem", { name: new RegExp(reEscape(s.common.nav.profile), "i") })
+          .first(),
       ).toBeVisible();
     });
 

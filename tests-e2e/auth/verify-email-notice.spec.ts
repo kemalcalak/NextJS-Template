@@ -9,18 +9,14 @@ for (const locale of LOCALES) {
       page,
     }) => {
       const testEmail = "test@example.com";
-      await page.goto(
-        `/${locale}/verify-email-notice?email=${encodeURIComponent(testEmail)}`,
-      );
+      await page.goto(`/${locale}/verify-email-notice?email=${encodeURIComponent(testEmail)}`);
 
       await expect(page).toHaveURL(
         new RegExp(`.*verify-email-notice.*email=${encodeURIComponent(testEmail)}`),
       );
       await expect(page.locator('input[name="email"]')).toHaveValue(testEmail);
 
-      await expect(
-        page.getByRole("link", { name: s.auth.verifyEmail.backToLogin }),
-      ).toBeVisible();
+      await expect(page.getByRole("link", { name: s.auth.verifyEmail.backToLogin })).toBeVisible();
 
       await page.route("**/api/v1/auth/resend-verification*", async (route) => {
         await route.fulfill({
@@ -30,9 +26,7 @@ for (const locale of LOCALES) {
         });
       });
 
-      await page
-        .getByRole("button", { name: s.auth.verifyEmail.resendButton })
-        .click();
+      await page.getByRole("button", { name: s.auth.verifyEmail.resendButton }).click();
 
       await expect(page.getByText(s.auth.verifyEmail.resendSuccess).first()).toBeVisible();
     });

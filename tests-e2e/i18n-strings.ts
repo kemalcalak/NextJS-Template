@@ -47,5 +47,4 @@ export const getStrings = (locale: Locale) => bundles[locale];
 
 // Escape regex metacharacters so translated copy can be embedded in
 // `new RegExp(...)` locators without tripping on punctuation like "?".
-export const reEscape = (input: string): string =>
-  input.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+export const reEscape = (input: string): string => input.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
