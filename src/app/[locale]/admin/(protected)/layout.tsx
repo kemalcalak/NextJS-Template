@@ -2,7 +2,6 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
 import { ROUTES, getLocalizedPath } from "@/lib/config/routes";
-import { SystemRole, type User } from "@/lib/types/user";
 
 import { AdminShell } from "./AdminShell";
 
@@ -11,40 +10,16 @@ interface AdminProtectedLayoutProps {
   params: Promise<{ locale: string }>;
 }
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
-const API_PREFIX = process.env.NEXT_PUBLIC_API_PREFIX ?? "/api/v1";
-
-// Reuse /users/me rather than adding a dedicated me-role endpoint: the server
-// round-trip happens once per admin navigation and the response is cheap.
-const fetchCurrentUser = async (token: string): Promise<User | null> => {
-  try {
-    const res = await fetch(`${API_URL}${API_PREFIX}/users/me`, {
-      headers: {
-        cookie: `access_token=${token}`,
-        "X-Requested-With": "XMLHttpRequest",
-      },
-      cache: "no-store",
-    });
-    if (!res.ok) return null;
-    return (await res.json()) as User;
-  } catch {
-    return null;
-  }
-};
-
-// Server-side defense-in-depth for the admin area. The proxy/backend already
-// enforce role on API calls; this layer keeps non-admins from receiving the
-// admin HTML + JS bundle at all when the backend is reachable. If the
-// server-to-server /users/me call fails (backend offline, E2E with no real
-// API, network blip) we fall through: AdminShell's client-side check and the
-// backend's per-request role check both still hold the line.
-//
-// E2E runs set ADMIN_SSR_ROLE_GATE_DISABLED=1 so Playwright's page.route
-// mocks (which only intercept browser traffic) don't have to fake the
-// server-to-server /users/me call the gate would otherwise issue — the
-// resulting 401 spam in the backend log is the visible symptom.
-const SSR_ROLE_GATE_DISABLED = process.env.ADMIN_SSR_ROLE_GATE_DISABLED === "1";
-
+// Server-side the only thing we can cheaply assert is that an access_token
+// cookie is present — that's enough to short-circuit unauthenticated visitors
+// before shipping the admin bundle. Role enforcement lives in two other,
+// load-bearing places:
+//   1. AdminShell's client-side /users/me hydration redirects non-admins to
+//      /dashboard before the admin UI is interactive.
+//   2. The backend rejects every admin API call that isn't from an admin
+//      role with a 403 — this is the only layer a real attacker can't bypass.
+// An SSR /users/me round-trip would be pure defense-in-depth, at the cost of
+// an extra server→backend hop on every admin navigation.
 export default async function AdminProtectedLayout({
   children,
   params,
@@ -55,13 +30,6 @@ export default async function AdminProtectedLayout({
 
   if (!token) {
     redirect(getLocalizedPath(ROUTES.adminLogin, locale));
-  }
-
-  if (!SSR_ROLE_GATE_DISABLED) {
-    const user = await fetchCurrentUser(token);
-    if (user && user.role !== SystemRole.ADMIN) {
-      redirect(getLocalizedPath(ROUTES.dashboard, locale));
-    }
   }
 
   return <AdminShell>{children}</AdminShell>;
