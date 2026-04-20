@@ -30,7 +30,7 @@ import { useAuthStore } from "@/stores/auth.store";
 
 export const AppHeader = () => {
   const { t } = useTranslation();
-  const { user } = useAuthStore();
+  const user = useAuthStore((state) => state.user);
   const { theme, setTheme, resolvedTheme } = useTheme();
   const pathname = usePathname();
   const currentLocale = getLocaleFromPath(pathname);

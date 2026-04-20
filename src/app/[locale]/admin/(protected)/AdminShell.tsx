@@ -26,7 +26,11 @@ interface AdminShellProps {
 
 export function AdminShell({ children }: AdminShellProps) {
   const { t } = useTranslation("admin");
-  const { user, isAuthenticated, isSessionInitialized } = useAuthStore();
+  // Fine-grained selectors so unrelated store fields (e.g. isLoading) don't
+  // re-render the admin shell on every auth-tick.
+  const user = useAuthStore((state) => state.user);
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const isSessionInitialized = useAuthStore((state) => state.isSessionInitialized);
   const pathname = usePathname();
   const router = useRouter();
   const currentLocale = getLocaleFromPath(pathname);

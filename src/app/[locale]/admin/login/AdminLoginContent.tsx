@@ -37,20 +37,15 @@ export function AdminLoginContent() {
   });
 
   // The admin login hits the same /auth/login endpoint as the public one. The
-  // admin layout then gates non-admin users client-side and kicks them back to
-  // the public dashboard, so non-admins can never see the admin shell.
-  //
-  // `router.replace` (not push) prevents "back" from returning to the login
-  // surface after we've moved past it. `router.refresh()` forces the server
-  // components — including the protected layout's cookie read — to re-run so
-  // the just-set access_token cookie is honoured immediately.
+  // protected layout server-side gate re-runs on the navigation, so an explicit
+  // router.refresh() is redundant. `replace` keeps the login page out of the
+  // back-stack after we've moved past it.
   const { mutate: loginMutate, isPending: isLoading } = useMutation({
     mutationFn: (payload: LoginFormValues) => authService.login(payload),
     onSuccess: (data) => {
       login(data.user);
       const target = data.user.role === SystemRole.ADMIN ? ROUTES.adminDashboard : ROUTES.dashboard;
       router.replace(getLocalizedPath(target, currentLocale));
-      router.refresh();
     },
   });
 

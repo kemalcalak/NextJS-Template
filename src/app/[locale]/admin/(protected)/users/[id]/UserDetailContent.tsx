@@ -9,43 +9,37 @@ import { useTranslation } from "react-i18next";
 
 import { ActivityTable } from "@/components/admin/ActivityTable";
 import { StatusBadge, UserStatusBadge } from "@/components/admin/StatusBadge";
-import { UserActionDialogs, type UserActionKind } from "@/components/admin/UserActionDialogs";
+import { UserActionDialogs } from "@/components/admin/UserActionDialogs";
 import { UserDangerZone } from "@/components/admin/UserDangerZone";
 import { UserEditForm } from "@/components/admin/UserEditForm";
 import { UserOverviewCard } from "@/components/admin/UserOverviewCard";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
-  useActivateAdminUser,
   useAdminUser,
   useAdminUserActivities,
-  useDeactivateAdminUser,
-  useDeleteAdminUser,
-  useResetAdminUserPassword,
   useUpdateAdminUser,
 } from "@/hooks/api/use-admin";
+import { useUserActions, type UserActionKind } from "@/hooks/api/use-user-actions";
 import { ROUTES, getLocaleFromPath, getLocalizedPath } from "@/lib/config/routes";
 import type { AdminUserUpdatePayload } from "@/lib/types/admin";
 import { SystemRole } from "@/lib/types/user";
 import { useAuthStore } from "@/stores/auth.store";
 
 export function UserDetailContent({ userId }: { userId: string }) {
-  const { t, i18n } = useTranslation("admin");
+  const { t } = useTranslation("admin");
   const router = useRouter();
   const pathname = usePathname();
   const currentLocale = getLocaleFromPath(pathname);
-  const { user: currentUser } = useAuthStore();
+  const currentUserId = useAuthStore((state) => state.user?.id ?? null);
 
   const { data: user, isLoading } = useAdminUser(userId);
   const { data: activities, isLoading: activitiesLoading } = useAdminUserActivities(userId, {
     limit: 20,
   });
   const update = useUpdateAdminUser();
-  const activate = useActivateAdminUser();
-  const deactivate = useDeactivateAdminUser();
-  const remove = useDeleteAdminUser();
-  const resetPassword = useResetAdminUserPassword();
+  const { run, isLoading: isActionLoading } = useUserActions();
 
-  const [action, setAction] = useState<UserActionKind>(null);
+  const [action, setAction] = useState<UserActionKind | null>(null);
 
   if (isLoading || !user) {
     return (
@@ -56,32 +50,25 @@ export function UserDetailContent({ userId }: { userId: string }) {
     );
   }
 
-  const isSelf = currentUser?.id === user.id;
+  const isSelf = currentUserId === user.id;
 
   const handleSave = (payload: AdminUserUpdatePayload) => {
     update.mutate({ id: user.id, payload });
   };
 
-  const runAction = () => {
+  const confirmAction = () => {
     if (!action) return;
-    const onSettled = () => {
-      setAction(null);
-    };
-    if (action === "activate") activate.mutate(user.id, { onSettled });
-    else if (action === "deactivate") deactivate.mutate(user.id, { onSettled });
-    else if (action === "reset")
-      resetPassword.mutate({ id: user.id, lang: i18n.language }, { onSettled });
-    else
-      remove.mutate(user.id, {
-        onSuccess: () => {
+    // Dialog closes only on success so failed actions keep the dialog open for
+    // the user to retry. Delete redirects back to the list on success.
+    run(action, user, {
+      onSuccess: () => {
+        setAction(null);
+        if (action === "delete") {
           router.push(getLocalizedPath(ROUTES.adminUsers, currentLocale));
-        },
-        onSettled,
-      });
+        }
+      },
+    });
   };
-
-  const actionLoading =
-    activate.isPending || deactivate.isPending || remove.isPending || resetPassword.isPending;
 
   return (
     <div className="space-y-6">
@@ -124,19 +111,8 @@ export function UserDetailContent({ userId }: { userId: string }) {
       <UserDangerZone
         user={user}
         isSelf={isSelf}
-        disabled={actionLoading}
-        onReset={() => {
-          setAction("reset");
-        }}
-        onActivate={() => {
-          setAction("activate");
-        }}
-        onDeactivate={() => {
-          setAction("deactivate");
-        }}
-        onDelete={() => {
-          setAction("delete");
-        }}
+        disabled={isActionLoading}
+        onAction={setAction}
       />
 
       <Card className="border-border/50 bg-card/60">
@@ -159,8 +135,8 @@ export function UserDetailContent({ userId }: { userId: string }) {
         onOpenChange={(open) => {
           if (!open) setAction(null);
         }}
-        onConfirm={runAction}
-        isLoading={actionLoading}
+        onConfirm={confirmAction}
+        isLoading={isActionLoading}
       />
     </div>
   );

@@ -1,6 +1,7 @@
 "use client";
 
 import { LayoutDashboard, LogOut, ShieldCheck, User as UserIcon } from "lucide-react";
+import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 
@@ -29,11 +30,6 @@ export const AuthButtons = ({ user, onNavigate }: AuthButtonsProps) => {
   const currentLocale = getLocaleFromPath(pathname);
   const router = useRouter();
 
-  const handleNavigate = (path: string) => {
-    onNavigate?.();
-    router.push(getLocalizedPath(path, currentLocale));
-  };
-
   const handleLogout = () => {
     onNavigate?.();
     router.push(getLocalizedPath(ROUTES.logout, currentLocale));
@@ -42,20 +38,25 @@ export const AuthButtons = ({ user, onNavigate }: AuthButtonsProps) => {
   if (!user) {
     return (
       <div className="flex items-center gap-2">
-        <Button
-          variant="ghost"
-          onClick={() => {
-            handleNavigate(ROUTES.login);
-          }}
-        >
-          {t("auth:login.submitButton", "Login")}
+        <Button asChild variant="ghost">
+          <Link
+            href={getLocalizedPath(ROUTES.login, currentLocale)}
+            onClick={() => {
+              onNavigate?.();
+            }}
+          >
+            {t("auth:login.submitButton", "Login")}
+          </Link>
         </Button>
-        <Button
-          onClick={() => {
-            handleNavigate(ROUTES.register);
-          }}
-        >
-          {t("auth:register.submitButton", "Register")}
+        <Button asChild>
+          <Link
+            href={getLocalizedPath(ROUTES.register, currentLocale)}
+            onClick={() => {
+              onNavigate?.();
+            }}
+          >
+            {t("auth:register.submitButton", "Register")}
+          </Link>
         </Button>
       </div>
     );
@@ -88,30 +89,39 @@ export const AuthButtons = ({ user, onNavigate }: AuthButtonsProps) => {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         {user.role === SystemRole.ADMIN ? (
-          <DropdownMenuItem
-            onClick={() => {
-              handleNavigate(ROUTES.adminDashboard);
-            }}
-          >
-            <ShieldCheck className="mr-2 h-4 w-4 text-primary" />
-            <span>{t("admin:shell.title", "Administration")}</span>
+          <DropdownMenuItem asChild>
+            <Link
+              href={getLocalizedPath(ROUTES.adminDashboard, currentLocale)}
+              onClick={() => {
+                onNavigate?.();
+              }}
+            >
+              <ShieldCheck className="mr-2 h-4 w-4 text-primary" />
+              <span>{t("admin:shell.title", "Administration")}</span>
+            </Link>
           </DropdownMenuItem>
         ) : null}
-        <DropdownMenuItem
-          onClick={() => {
-            handleNavigate(ROUTES.dashboard);
-          }}
-        >
-          <LayoutDashboard className="mr-2 h-4 w-4" />
-          <span>{t("common:nav.dashboard", "Dashboard")}</span>
+        <DropdownMenuItem asChild>
+          <Link
+            href={getLocalizedPath(ROUTES.dashboard, currentLocale)}
+            onClick={() => {
+              onNavigate?.();
+            }}
+          >
+            <LayoutDashboard className="mr-2 h-4 w-4" />
+            <span>{t("common:nav.dashboard", "Dashboard")}</span>
+          </Link>
         </DropdownMenuItem>
-        <DropdownMenuItem
-          onClick={() => {
-            handleNavigate(ROUTES.profile);
-          }}
-        >
-          <UserIcon className="mr-2 h-4 w-4" />
-          <span>{t("common:nav.profile", "Profile")}</span>
+        <DropdownMenuItem asChild>
+          <Link
+            href={getLocalizedPath(ROUTES.profile, currentLocale)}
+            onClick={() => {
+              onNavigate?.();
+            }}
+          >
+            <UserIcon className="mr-2 h-4 w-4" />
+            <span>{t("common:nav.profile", "Profile")}</span>
+          </Link>
         </DropdownMenuItem>
 
         <DropdownMenuSeparator />

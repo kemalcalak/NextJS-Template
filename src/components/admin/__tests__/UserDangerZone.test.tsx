@@ -25,10 +25,7 @@ const renderZone = (overrides: Partial<React.ComponentProps<typeof UserDangerZon
     user: baseUser,
     isSelf: false,
     disabled: false,
-    onReset: vi.fn(),
-    onActivate: vi.fn(),
-    onDeactivate: vi.fn(),
-    onDelete: vi.fn(),
+    onAction: vi.fn(),
     ...overrides,
   };
   render(<UserDangerZone {...props} />);
@@ -38,15 +35,7 @@ const renderZone = (overrides: Partial<React.ComponentProps<typeof UserDangerZon
 describe("UserDangerZone", () => {
   it("shows 'deactivate' for active users and 'activate' for inactive ones", () => {
     const { rerender } = render(
-      <UserDangerZone
-        user={baseUser}
-        isSelf={false}
-        disabled={false}
-        onReset={vi.fn()}
-        onActivate={vi.fn()}
-        onDeactivate={vi.fn()}
-        onDelete={vi.fn()}
-      />,
+      <UserDangerZone user={baseUser} isSelf={false} disabled={false} onAction={vi.fn()} />,
     );
     expect(
       screen.getByRole("button", { name: /admin:userDetail\.deactivate/ }),
@@ -60,10 +49,7 @@ describe("UserDangerZone", () => {
         user={{ ...baseUser, is_active: false }}
         isSelf={false}
         disabled={false}
-        onReset={vi.fn()}
-        onActivate={vi.fn()}
-        onDeactivate={vi.fn()}
-        onDelete={vi.fn()}
+        onAction={vi.fn()}
       />,
     );
     expect(screen.getByRole("button", { name: /admin:userDetail\.activate/ })).toBeInTheDocument();
@@ -77,14 +63,14 @@ describe("UserDangerZone", () => {
     expect(screen.getByRole("button", { name: /admin:userDetail\.resetPassword/ })).toBeEnabled();
   });
 
-  it("invokes the supplied callbacks when buttons are clicked", () => {
+  it("invokes onAction with the correct kind when buttons are clicked", () => {
     const props = renderZone();
     fireEvent.click(screen.getByRole("button", { name: /admin:userDetail\.resetPassword/ }));
     fireEvent.click(screen.getByRole("button", { name: /admin:userDetail\.deactivate/ }));
     fireEvent.click(screen.getByRole("button", { name: /admin:userDetail\.delete/ }));
-    expect(props.onReset).toHaveBeenCalled();
-    expect(props.onDeactivate).toHaveBeenCalled();
-    expect(props.onDelete).toHaveBeenCalled();
+    expect(props.onAction).toHaveBeenCalledWith("reset");
+    expect(props.onAction).toHaveBeenCalledWith("deactivate");
+    expect(props.onAction).toHaveBeenCalledWith("delete");
   });
 
   it("disables every button when the disabled flag is set", () => {

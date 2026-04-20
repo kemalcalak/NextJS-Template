@@ -41,8 +41,12 @@ export function UserEditForm({ user, isSelf, isSaving, onSubmit }: UserEditFormP
   });
 
   useEffect(() => {
+    // Reset when the underlying user changes (navigating between detail pages).
+    // `form` is deliberately excluded — RHF re-creates handlers on every render,
+    // which would stomp user edits mid-form on any parent re-render.
     form.reset(userToFormValues(user));
-  }, [user, form]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user.id]);
 
   const handleSubmit = form.handleSubmit((values) => {
     // Self-edit must not alter role, is_active, or is_verified even if DevTools

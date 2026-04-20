@@ -21,6 +21,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import type { UserActionKind } from "@/hooks/api/use-user-actions";
 import { ROUTES, getLocaleFromPath, getLocalizedPath } from "@/lib/config/routes";
 import { formatDate } from "@/lib/format-date";
 import type { AdminUser } from "@/lib/types/admin";
@@ -30,21 +31,10 @@ interface UsersTableProps {
   rows: AdminUser[];
   isLoading: boolean;
   currentUserId: string | null;
-  onActivate: (user: AdminUser) => void;
-  onDeactivate: (user: AdminUser) => void;
-  onReset: (user: AdminUser) => void;
-  onDelete: (user: AdminUser) => void;
+  onAction: (kind: UserActionKind, user: AdminUser) => void;
 }
 
-export function UsersTable({
-  rows,
-  isLoading,
-  currentUserId,
-  onActivate,
-  onDeactivate,
-  onReset,
-  onDelete,
-}: UsersTableProps) {
+export function UsersTable({ rows, isLoading, currentUserId, onAction }: UsersTableProps) {
   const { t } = useTranslation("admin");
   const pathname = usePathname();
   const currentLocale = getLocaleFromPath(pathname);
@@ -124,7 +114,7 @@ export function UsersTable({
                         <DropdownMenuItem
                           disabled={isSelf}
                           onSelect={() => {
-                            onDeactivate(user);
+                            onAction("deactivate", user);
                           }}
                         >
                           <PauseCircle className="mr-2 h-4 w-4" />
@@ -133,7 +123,7 @@ export function UsersTable({
                       ) : (
                         <DropdownMenuItem
                           onSelect={() => {
-                            onActivate(user);
+                            onAction("activate", user);
                           }}
                         >
                           <CheckCircle2 className="mr-2 h-4 w-4" />
@@ -142,7 +132,7 @@ export function UsersTable({
                       )}
                       <DropdownMenuItem
                         onSelect={() => {
-                          onReset(user);
+                          onAction("reset", user);
                         }}
                       >
                         <KeyRound className="mr-2 h-4 w-4" />
@@ -153,7 +143,7 @@ export function UsersTable({
                         disabled={isSelf}
                         className="text-destructive focus:text-destructive"
                         onSelect={() => {
-                          onDelete(user);
+                          onAction("delete", user);
                         }}
                       >
                         <Trash2 className="mr-2 h-4 w-4" />

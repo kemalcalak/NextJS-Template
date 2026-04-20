@@ -24,68 +24,63 @@ const active: AdminUser = {
 
 const inactive: AdminUser = { ...active, id: "u2", email: "u2@test.com", is_active: false };
 
-const handlers = () => ({
+const makeProps = () => ({
   currentUserId: null,
-  onActivate: vi.fn(),
-  onDeactivate: vi.fn(),
-  onReset: vi.fn(),
-  onDelete: vi.fn(),
+  onAction: vi.fn(),
 });
 
 describe("UsersTable", () => {
   it("renders a row per user and hides the empty state", () => {
-    const h = handlers();
-    renderWithProviders(<UsersTable rows={[active, inactive]} isLoading={false} {...h} />);
+    const props = makeProps();
+    renderWithProviders(<UsersTable rows={[active, inactive]} isLoading={false} {...props} />);
     expect(screen.getByText("u1@test.com")).toBeInTheDocument();
     expect(screen.getByText("u2@test.com")).toBeInTheDocument();
     expect(screen.queryByText(/admin:users\.empty/)).not.toBeInTheDocument();
   });
 
   it("shows the empty translation key when no rows and not loading", () => {
-    const h = handlers();
-    renderWithProviders(<UsersTable rows={[]} isLoading={false} {...h} />);
+    const props = makeProps();
+    renderWithProviders(<UsersTable rows={[]} isLoading={false} {...props} />);
     expect(screen.getByText(/admin:users\.empty/)).toBeInTheDocument();
   });
 
   it("shows the loading label when the table is waiting on the first page", () => {
-    const h = handlers();
-    renderWithProviders(<UsersTable rows={[]} isLoading {...h} />);
+    const props = makeProps();
+    renderWithProviders(<UsersTable rows={[]} isLoading {...props} />);
     expect(screen.getByText(/admin:users\.loading/)).toBeInTheDocument();
   });
 
   // Radix DropdownMenu only opens through pointer events — jsdom+fireEvent.click
   // alone leaves it in `data-state="closed"`, so these tests use userEvent which
   // dispatches the full pointer+click sequence.
-  it("opens the row-actions menu and calls onDeactivate for an active user", async () => {
+  it("opens the row-actions menu and calls onAction('deactivate') for an active user", async () => {
     const user = userEvent.setup();
-    const h = handlers();
-    renderWithProviders(<UsersTable rows={[active]} isLoading={false} {...h} />);
+    const props = makeProps();
+    renderWithProviders(<UsersTable rows={[active]} isLoading={false} {...props} />);
 
     await user.click(screen.getByRole("button", { name: /admin:users\.rowActions\.menu/ }));
     const menu = await screen.findByRole("menu");
     await user.click(within(menu).getByText(/admin:users\.rowActions\.deactivate/));
-    expect(h.onDeactivate).toHaveBeenCalledWith(active);
-    expect(h.onActivate).not.toHaveBeenCalled();
+    expect(props.onAction).toHaveBeenCalledWith("deactivate", active);
   });
 
-  it("swaps the menu to onActivate for inactive users", async () => {
+  it("swaps the menu to activate for inactive users", async () => {
     const user = userEvent.setup();
-    const h = handlers();
-    renderWithProviders(<UsersTable rows={[inactive]} isLoading={false} {...h} />);
+    const props = makeProps();
+    renderWithProviders(<UsersTable rows={[inactive]} isLoading={false} {...props} />);
     await user.click(screen.getByRole("button", { name: /admin:users\.rowActions\.menu/ }));
     const menu = await screen.findByRole("menu");
     await user.click(within(menu).getByText(/admin:users\.rowActions\.activate/));
-    expect(h.onActivate).toHaveBeenCalledWith(inactive);
-    expect(h.onDeactivate).not.toHaveBeenCalled();
+    expect(props.onAction).toHaveBeenCalledWith("activate", inactive);
   });
 
-  it("calls onDelete from the menu", async () => {
+  it("calls onAction('delete') from the menu", async () => {
     const user = userEvent.setup();
-    const h = handlers();
-    renderWithProviders(<UsersTable rows={[active]} isLoading={false} {...h} />);
+    const props = makeProps();
+    renderWithProviders(<UsersTable rows={[active]} isLoading={false} {...props} />);
     await user.click(screen.getByRole("button", { name: /admin:users\.rowActions\.menu/ }));
     const menu = await screen.findByRole("menu");
     await user.click(within(menu).getByText(/admin:users\.rowActions\.delete/));
-    expect(h.onDelete).toHaveBeenCalledWith(active);
+    expect(props.onAction).toHaveBeenCalledWith("delete", active);
   });
 });

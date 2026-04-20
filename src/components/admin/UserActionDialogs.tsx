@@ -3,11 +3,12 @@
 import { useTranslation } from "react-i18next";
 
 import { ConfirmDialog } from "@/components/admin/ConfirmDialog";
+import type { UserActionKind } from "@/hooks/api/use-user-actions";
 
-export type UserActionKind = "activate" | "deactivate" | "reset" | "delete" | null;
+export type { UserActionKind };
 
 interface UserActionDialogsProps {
-  action: UserActionKind;
+  action: UserActionKind | null;
   onOpenChange: (open: boolean) => void;
   onConfirm: () => void;
   isLoading: boolean;

@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next";
 
 import { AdminPagination } from "@/components/admin/Pagination";
 import { DEFAULT_PAGE_SIZE } from "@/components/admin/pagination-config";
-import { UserActionDialogs, type UserActionKind } from "@/components/admin/UserActionDialogs";
+import { UserActionDialogs } from "@/components/admin/UserActionDialogs";
 import {
   UsersFilters,
   type UsersRoleFilter,
@@ -15,24 +15,19 @@ import {
 } from "@/components/admin/UsersFilters";
 import { UsersTable } from "@/components/admin/UsersTable";
 import { Card, CardContent } from "@/components/ui/card";
-import {
-  useActivateAdminUser,
-  useAdminUsers,
-  useDeactivateAdminUser,
-  useDeleteAdminUser,
-  useResetAdminUserPassword,
-} from "@/hooks/api/use-admin";
+import { useAdminUsers } from "@/hooks/api/use-admin";
+import { useUserActions, type UserActionKind } from "@/hooks/api/use-user-actions";
 import { useDebounce } from "@/hooks/use-debounce";
 import type { AdminUser } from "@/lib/types/admin";
 import { useAuthStore } from "@/stores/auth.store";
 
 interface Pending {
-  kind: UserActionKind;
+  kind: UserActionKind | null;
   user: AdminUser | null;
 }
 
 export function UsersContent() {
-  const { t, i18n } = useTranslation("admin");
+  const { t } = useTranslation("admin");
   const currentUserId = useAuthStore((state) => state.user?.id ?? null);
 
   const [searchInput, setSearchInput] = useState("");
@@ -58,10 +53,7 @@ export function UsersContent() {
   );
 
   const { data, isLoading, isFetching } = useAdminUsers(params);
-  const activate = useActivateAdminUser();
-  const deactivate = useDeactivateAdminUser();
-  const remove = useDeleteAdminUser();
-  const resetPassword = useResetAdminUserPassword();
+  const { run, isLoading: isActionLoading } = useUserActions();
 
   const hasFilters = searchInput !== "" || role !== "all" || status !== "all" || verified !== "all";
 
@@ -73,28 +65,17 @@ export function UsersContent() {
     setSkip(0);
   };
 
-  const setAction = (kind: NonNullable<UserActionKind>, user: AdminUser) => {
-    setPending({ kind, user });
-  };
-
   const clearAction = () => {
     setPending({ kind: null, user: null });
   };
 
-  const runAction = () => {
+  const confirmAction = () => {
     const { kind, user } = pending;
     if (!kind || !user) return;
-    const onSettled = () => {
-      clearAction();
-    };
-    if (kind === "activate") activate.mutate(user.id, { onSettled });
-    else if (kind === "deactivate") deactivate.mutate(user.id, { onSettled });
-    else if (kind === "delete") remove.mutate(user.id, { onSettled });
-    else resetPassword.mutate({ id: user.id, lang: i18n.language }, { onSettled });
+    // Close the dialog only after the server confirms. On failure the global
+    // toast fires (api interceptor) and the dialog stays open for retry.
+    run(kind, user, { onSuccess: clearAction });
   };
-
-  const isActionLoading =
-    activate.isPending || deactivate.isPending || remove.isPending || resetPassword.isPending;
 
   return (
     <div className="space-y-6">
@@ -134,17 +115,8 @@ export function UsersContent() {
             rows={data?.data ?? []}
             isLoading={isLoading && !data}
             currentUserId={currentUserId}
-            onActivate={(u) => {
-              setAction("activate", u);
-            }}
-            onDeactivate={(u) => {
-              setAction("deactivate", u);
-            }}
-            onReset={(u) => {
-              setAction("reset", u);
-            }}
-            onDelete={(u) => {
-              setAction("delete", u);
+            onAction={(kind, user) => {
+              setPending({ kind, user });
             }}
           />
           {data ? (
@@ -173,7 +145,7 @@ export function UsersContent() {
         onOpenChange={(open) => {
           if (!open) clearAction();
         }}
-        onConfirm={runAction}
+        onConfirm={confirmAction}
         isLoading={isActionLoading}
       />
     </div>
