@@ -22,16 +22,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ROUTES, getLocaleFromPath, getLocalizedPath } from "@/lib/config/routes";
+import { formatDate } from "@/lib/format-date";
 import type { AdminUser } from "@/lib/types/admin";
 import { SystemRole } from "@/lib/types/user";
-
-const formatDate = (iso: string) => {
-  try {
-    return new Date(iso).toLocaleDateString();
-  } catch {
-    return iso;
-  }
-};
 
 interface UsersTableProps {
   rows: AdminUser[];
@@ -118,7 +111,11 @@ export function UsersTable({
                   </Button>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="icon-sm" aria-label="row-actions">
+                      <Button
+                        variant="ghost"
+                        size="icon-sm"
+                        aria-label={t("users.rowActions.menu")}
+                      >
                         <MoreHorizontal className="h-4 w-4" />
                       </Button>
                     </DropdownMenuTrigger>

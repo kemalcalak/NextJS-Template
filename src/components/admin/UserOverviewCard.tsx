@@ -3,26 +3,21 @@
 import { useTranslation } from "react-i18next";
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { formatDateTime } from "@/lib/format-date";
 import type { AdminUser } from "@/lib/types/admin";
-
-const formatDate = (iso?: string | null) => {
-  if (!iso) return "—";
-  try {
-    return new Date(iso).toLocaleString();
-  } catch {
-    return iso;
-  }
-};
 
 export function UserOverviewCard({ user }: { user: AdminUser }) {
   const { t } = useTranslation("admin");
 
   const rows: { label: string; value: string }[] = [
-    { label: "ID", value: user.id.slice(0, 12) },
-    { label: "Created", value: formatDate(user.created_at) },
-    { label: "Updated", value: formatDate(user.updated_at) },
-    { label: "Deactivated", value: formatDate(user.deactivated_at) },
-    { label: "Scheduled deletion", value: formatDate(user.deletion_scheduled_at) },
+    { label: t("userDetail.overview.id"), value: user.id.slice(0, 12) },
+    { label: t("userDetail.overview.created"), value: formatDateTime(user.created_at) },
+    { label: t("userDetail.overview.updated"), value: formatDateTime(user.updated_at) },
+    { label: t("userDetail.overview.deactivated"), value: formatDateTime(user.deactivated_at) },
+    {
+      label: t("userDetail.overview.scheduledDeletion"),
+      value: formatDateTime(user.deletion_scheduled_at),
+    },
   ];
 
   return (

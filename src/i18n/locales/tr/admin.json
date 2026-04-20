@@ -82,6 +82,7 @@
     },
     "rowActions": {
       "open": "Detayları aç",
+      "menu": "Satır işlemleri",
       "activate": "Aktifleştir",
       "deactivate": "Pasifleştir",
       "resetPassword": "Şifre sıfırlama gönder",
@@ -92,6 +93,13 @@
     "backToUsers": "Kullanıcılara dön",
     "overviewTitle": "Hesap özeti",
     "overviewDescription": "Bu kullanıcıya ait temel bilgiler ve durum.",
+    "overview": {
+      "id": "ID",
+      "created": "Oluşturuldu",
+      "updated": "Güncellendi",
+      "deactivated": "Pasifleştirildi",
+      "scheduledDeletion": "Planlanmış silme"
+    },
     "editTitle": "Kullanıcıyı düzenle",
     "editDescription": "Profil, rol ve erişim bilgilerini güncelleyin.",
     "activityTitle": "Son aktiviteler",
@@ -156,6 +164,21 @@
     "status": {
       "success": "Başarılı",
       "failure": "Başarısız"
+    },
+    "type": {
+      "create": "Oluştur",
+      "read": "Oku",
+      "update": "Güncelle",
+      "delete": "Sil",
+      "execute": "Çalıştır",
+      "login": "Giriş",
+      "logout": "Çıkış",
+      "export": "Dışa aktar",
+      "invite": "Davet"
+    },
+    "resource": {
+      "user": "Kullanıcı",
+      "auth": "Kimlik"
     },
     "empty": "Seçili filtrelerle eşleşen aktivite yok.",
     "loading": "Aktiviteler yükleniyor..."

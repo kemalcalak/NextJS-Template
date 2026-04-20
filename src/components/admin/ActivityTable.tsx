@@ -3,6 +3,7 @@
 import { useTranslation } from "react-i18next";
 
 import { StatusBadge } from "@/components/admin/StatusBadge";
+import { formatDateTime } from "@/lib/format-date";
 import type {
   ActivityDetails as ActivityDetailsValue,
   AdminActivity,
@@ -72,14 +73,6 @@ interface ActivityTableProps {
   emptyLabel?: string;
 }
 
-const formatDate = (iso: string) => {
-  try {
-    return new Date(iso).toLocaleString();
-  } catch {
-    return iso;
-  }
-};
-
 export function ActivityTable({
   rows,
   isLoading = false,
@@ -121,15 +114,19 @@ export function ActivityTable({
           {rows.map((row) => (
             <tr key={row.id} className={cn("hover:bg-muted/30 transition-colors")}>
               <td className="whitespace-nowrap px-4 py-3 text-xs text-muted-foreground">
-                {formatDate(row.created_at)}
+                {formatDateTime(row.created_at)}
               </td>
               {showUser ? (
                 <td className="px-4 py-3 font-mono text-xs text-muted-foreground">
                   {row.user_id.slice(0, 8)}
                 </td>
               ) : null}
-              <td className="px-4 py-3 font-medium">{row.activity_type}</td>
-              <td className="px-4 py-3 text-muted-foreground">{row.resource_type}</td>
+              <td className="px-4 py-3 font-medium">
+                {t(`activities.type.${row.activity_type}`)}
+              </td>
+              <td className="px-4 py-3 text-muted-foreground">
+                {t(`activities.resource.${row.resource_type}`)}
+              </td>
               <td className="px-4 py-3">
                 <StatusBadge tone={row.status === "success" ? "success" : "danger"}>
                   {t(`activities.status.${row.status}`)}

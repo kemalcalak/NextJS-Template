@@ -61,7 +61,7 @@ describe("UsersTable", () => {
     const h = handlers();
     renderWithProviders(<UsersTable rows={[active]} isLoading={false} {...h} />);
 
-    await user.click(screen.getByRole("button", { name: "row-actions" }));
+    await user.click(screen.getByRole("button", { name: /admin:users\.rowActions\.menu/ }));
     const menu = await screen.findByRole("menu");
     await user.click(within(menu).getByText(/admin:users\.rowActions\.deactivate/));
     expect(h.onDeactivate).toHaveBeenCalledWith(active);
@@ -72,7 +72,7 @@ describe("UsersTable", () => {
     const user = userEvent.setup();
     const h = handlers();
     renderWithProviders(<UsersTable rows={[inactive]} isLoading={false} {...h} />);
-    await user.click(screen.getByRole("button", { name: "row-actions" }));
+    await user.click(screen.getByRole("button", { name: /admin:users\.rowActions\.menu/ }));
     const menu = await screen.findByRole("menu");
     await user.click(within(menu).getByText(/admin:users\.rowActions\.activate/));
     expect(h.onActivate).toHaveBeenCalledWith(inactive);
@@ -83,7 +83,7 @@ describe("UsersTable", () => {
     const user = userEvent.setup();
     const h = handlers();
     renderWithProviders(<UsersTable rows={[active]} isLoading={false} {...h} />);
-    await user.click(screen.getByRole("button", { name: "row-actions" }));
+    await user.click(screen.getByRole("button", { name: /admin:users\.rowActions\.menu/ }));
     const menu = await screen.findByRole("menu");
     await user.click(within(menu).getByText(/admin:users\.rowActions\.delete/));
     expect(h.onDelete).toHaveBeenCalledWith(active);

@@ -82,6 +82,7 @@
     },
     "rowActions": {
       "open": "Open details",
+      "menu": "Row actions",
       "activate": "Activate",
       "deactivate": "Deactivate",
       "resetPassword": "Send password reset",
@@ -92,6 +93,13 @@
     "backToUsers": "Back to users",
     "overviewTitle": "Account overview",
     "overviewDescription": "Basic information and status for this user.",
+    "overview": {
+      "id": "ID",
+      "created": "Created",
+      "updated": "Updated",
+      "deactivated": "Deactivated",
+      "scheduledDeletion": "Scheduled deletion"
+    },
     "editTitle": "Edit user",
     "editDescription": "Update profile, role, and access.",
     "activityTitle": "Recent activity",
@@ -156,6 +164,21 @@
     "status": {
       "success": "Success",
       "failure": "Failure"
+    },
+    "type": {
+      "create": "Create",
+      "read": "Read",
+      "update": "Update",
+      "delete": "Delete",
+      "execute": "Execute",
+      "login": "Login",
+      "logout": "Logout",
+      "export": "Export",
+      "invite": "Invite"
+    },
+    "resource": {
+      "user": "User",
+      "auth": "Auth"
     },
     "empty": "No activity matches the current filters.",
     "loading": "Loading activity..."
