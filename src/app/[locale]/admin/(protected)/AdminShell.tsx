@@ -16,6 +16,7 @@ import {
   getPathWithoutLocale,
   matchesRoute,
 } from "@/lib/config/routes";
+import { SystemRole } from "@/lib/types/user";
 import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/stores/auth.store";
 
@@ -37,7 +38,7 @@ export function AdminShell({ children }: AdminShellProps) {
   useEffect(() => {
     if (!isSessionInitialized) return;
     if (!isAuthenticated) return;
-    if (user && user.role !== "admin") {
+    if (user && user.role !== SystemRole.ADMIN) {
       router.replace(getLocalizedPath(ROUTES.dashboard, currentLocale));
     }
   }, [isSessionInitialized, isAuthenticated, user, router, currentLocale]);
@@ -46,7 +47,7 @@ export function AdminShell({ children }: AdminShellProps) {
     return <LoadingScreen />;
   }
 
-  if (user.role !== "admin") {
+  if (user.role !== SystemRole.ADMIN) {
     return (
       <div className="flex min-h-[60vh] items-center justify-center p-8">
         <div className="max-w-md text-center">

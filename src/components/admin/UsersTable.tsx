@@ -23,6 +23,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { ROUTES, getLocaleFromPath, getLocalizedPath } from "@/lib/config/routes";
 import type { AdminUser } from "@/lib/types/admin";
+import { SystemRole } from "@/lib/types/user";
 
 const formatDate = (iso: string) => {
   try {
@@ -88,7 +89,7 @@ export function UsersTable({
                 </Link>
               </td>
               <td className="px-4 py-3">
-                <StatusBadge tone={user.role === "admin" ? "primary" : "muted"}>
+                <StatusBadge tone={user.role === SystemRole.ADMIN ? "primary" : "muted"}>
                   {t(`users.role.${user.role}` as const)}
                 </StatusBadge>
               </td>

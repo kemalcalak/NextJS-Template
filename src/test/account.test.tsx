@@ -16,6 +16,7 @@ vi.mock("zustand/middleware", async () => {
 
 import { AccountDeactivatedContent } from "@/app/[locale]/(protected)/account-deactivated/AccountDeactivatedContent";
 import { DangerZone } from "@/components/profile/DangerZone";
+import { SystemRole } from "@/lib/types/user";
 import { useAuthStore } from "@/stores/auth.store";
 import { createWrapper } from "@/test/test-utils";
 
@@ -28,7 +29,7 @@ const BASE_USER = {
   email: "john@example.com",
   first_name: "John",
   last_name: "Doe",
-  role: "USER",
+  role: SystemRole.USER,
   is_active: true,
   is_verified: true,
   created_at: "2026-01-01T00:00:00Z",

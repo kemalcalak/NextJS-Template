@@ -1,6 +1,6 @@
-import type { User } from "./user";
+import { SystemRole, type User } from "./user";
 
-export type SystemRole = "admin" | "user";
+export { SystemRole };
 
 export type ActivityType =
   | "create"
@@ -34,6 +34,13 @@ export type ActivityDetails = Record<string, JsonValue>;
 // /users/me User plus admin-only fields; reusing the User type keeps the
 // client aligned with auth-store consumers.
 export type AdminUser = User;
+
+export interface AdminStats {
+  users_total: number;
+  users_active: number;
+  users_verified: number;
+  activities_total: number;
+}
 
 export interface AdminUserListResponse {
   data: AdminUser[];

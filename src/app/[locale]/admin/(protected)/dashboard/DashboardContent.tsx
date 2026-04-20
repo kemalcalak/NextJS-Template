@@ -10,6 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useAdminActivities, useAdminUsers } from "@/hooks/api/use-admin";
 import { ROUTES, getLocaleFromPath, getLocalizedPath } from "@/lib/config/routes";
+import { SystemRole } from "@/lib/types/user";
 
 const StatCard = ({
   label,
@@ -50,7 +51,10 @@ export function DashboardContent() {
     limit: 1,
     is_active: true,
   });
-  const { data: admins, isLoading: adminsLoading } = useAdminUsers({ limit: 1, role: "admin" });
+  const { data: admins, isLoading: adminsLoading } = useAdminUsers({
+    limit: 1,
+    role: SystemRole.ADMIN,
+  });
   const { data: activities, isLoading: activitiesLoading } = useAdminActivities({ limit: 1 });
 
   return (

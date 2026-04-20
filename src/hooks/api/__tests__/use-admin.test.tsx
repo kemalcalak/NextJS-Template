@@ -14,6 +14,7 @@ import {
   useUpdateAdminUser,
 } from "@/hooks/api/use-admin";
 import type { AdminActivity, AdminUser } from "@/lib/types/admin";
+import { SystemRole } from "@/lib/types/user";
 import { server } from "@/test/msw/server";
 import { createWrapper } from "@/test/test-utils";
 
@@ -23,7 +24,7 @@ const mockAdmin: AdminUser = {
   first_name: "A",
   last_name: "Admin",
   title: null,
-  role: "admin",
+  role: SystemRole.ADMIN,
   is_active: true,
   is_verified: true,
   created_at: "2026-01-01T00:00:00Z",
@@ -69,7 +70,7 @@ describe("useAdminUsers", () => {
       }),
     );
     const { result } = renderHook(
-      () => useAdminUsers({ limit: 1, is_active: true, role: "admin" }),
+      () => useAdminUsers({ limit: 1, is_active: true, role: SystemRole.ADMIN }),
       { wrapper: createWrapper() },
     );
     await waitFor(() => {

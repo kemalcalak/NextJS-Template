@@ -4,6 +4,7 @@ import { describe, it, expect, vi } from "vitest";
 
 import { UsersTable } from "@/components/admin/UsersTable";
 import type { AdminUser } from "@/lib/types/admin";
+import { SystemRole } from "@/lib/types/user";
 import { renderWithProviders } from "@/test/test-utils";
 
 const active: AdminUser = {
@@ -12,7 +13,7 @@ const active: AdminUser = {
   first_name: "Ann",
   last_name: "Active",
   title: null,
-  role: "user",
+  role: SystemRole.USER,
   is_active: true,
   is_verified: true,
   created_at: "2026-01-01T00:00:00Z",

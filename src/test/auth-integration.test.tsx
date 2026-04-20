@@ -1,6 +1,7 @@
 import { screen, waitFor, act } from "@testing-library/react";
 import { describe, it, expect, beforeEach, vi } from "vitest";
 
+import { SystemRole } from "@/lib/types/user";
 import { useAuthStore } from "@/stores/auth.store";
 import { renderWithProviders } from "@/test/test-utils";
 
@@ -68,7 +69,7 @@ describe("Authentication Integration", () => {
       first_name: "Test",
       last_name: "User",
       title: "Mr",
-      role: "user",
+      role: SystemRole.USER,
       is_active: true,
       is_verified: true,
       created_at: new Date().toISOString(),

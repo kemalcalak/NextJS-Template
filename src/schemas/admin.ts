@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import { SystemRole } from "@/lib/types/user";
+
 import type { TFunction } from "i18next";
 
 export const getAdminUserUpdateSchema = (t: TFunction) =>
@@ -20,7 +22,7 @@ export const getAdminUserUpdateSchema = (t: TFunction) =>
       .trim()
       .min(1, { message: t("validation:emailRequired") })
       .pipe(z.email({ message: t("validation:emailInvalid") })),
-    role: z.enum(["admin", "user"]),
+    role: z.enum(SystemRole),
     is_active: z.boolean(),
     is_verified: z.boolean(),
   });

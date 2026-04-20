@@ -18,6 +18,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Form } from "@/components/ui/form";
 import { authService } from "@/lib/api/endpoints/auth";
 import { ROUTES, getLocaleFromPath, getLocalizedPath } from "@/lib/config/routes";
+import { SystemRole } from "@/lib/types/user";
 import { getLoginSchema, type LoginFormValues } from "@/schemas/auth";
 import { useAuthStore } from "@/stores/auth.store";
 
@@ -47,7 +48,7 @@ export function AdminLoginContent() {
     mutationFn: (payload: LoginFormValues) => authService.login(payload),
     onSuccess: (data) => {
       login(data.user);
-      const target = data.user.role === "admin" ? ROUTES.adminDashboard : ROUTES.dashboard;
+      const target = data.user.role === SystemRole.ADMIN ? ROUTES.adminDashboard : ROUTES.dashboard;
       router.replace(getLocalizedPath(target, currentLocale));
       router.refresh();
     },

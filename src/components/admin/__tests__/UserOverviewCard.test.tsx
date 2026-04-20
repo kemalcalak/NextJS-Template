@@ -3,6 +3,7 @@ import { describe, it, expect } from "vitest";
 
 import { UserOverviewCard } from "@/components/admin/UserOverviewCard";
 import type { AdminUser } from "@/lib/types/admin";
+import { SystemRole } from "@/lib/types/user";
 
 const user: AdminUser = {
   id: "abcdef0123456789",
@@ -10,7 +11,7 @@ const user: AdminUser = {
   first_name: "U",
   last_name: "Ser",
   title: null,
-  role: "user",
+  role: SystemRole.USER,
   is_active: true,
   is_verified: true,
   created_at: "2026-01-01T00:00:00Z",

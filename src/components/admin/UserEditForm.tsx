@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form } from "@/components/ui/form";
 import type { AdminUser, AdminUserUpdatePayload } from "@/lib/types/admin";
+import { SystemRole } from "@/lib/types/user";
 import { getAdminUserUpdateSchema, type AdminUserUpdateFormValues } from "@/schemas/admin";
 
 interface UserEditFormProps {
@@ -26,7 +27,7 @@ const userToFormValues = (user: AdminUser): AdminUserUpdateFormValues => ({
   last_name: user.last_name ?? "",
   title: user.title ?? "",
   email: user.email,
-  role: (user.role as "admin" | "user") ?? "user",
+  role: user.role ?? SystemRole.USER,
   is_active: user.is_active,
   is_verified: user.is_verified,
 });

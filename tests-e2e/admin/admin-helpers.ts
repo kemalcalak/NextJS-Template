@@ -1,4 +1,5 @@
 import type { AdminActivity, AdminUser } from "@/lib/types/admin";
+import { SystemRole } from "@/lib/types/user";
 
 import type { Page } from "@playwright/test";
 
@@ -8,7 +9,7 @@ export const adminUser: AdminUser = {
   first_name: "Ada",
   last_name: "Admin",
   title: "Platform Admin",
-  role: "admin",
+  role: SystemRole.ADMIN,
   is_active: true,
   is_verified: true,
   created_at: "2026-01-01T00:00:00Z",
@@ -23,7 +24,7 @@ export const regularUser: AdminUser = {
   first_name: "Usain",
   last_name: "User",
   title: null,
-  role: "user",
+  role: SystemRole.USER,
   is_active: true,
   is_verified: true,
   created_at: "2026-01-02T00:00:00Z",

@@ -25,6 +25,7 @@ import {
 } from "@/hooks/api/use-admin";
 import { ROUTES, getLocaleFromPath, getLocalizedPath } from "@/lib/config/routes";
 import type { AdminUserUpdatePayload } from "@/lib/types/admin";
+import { SystemRole } from "@/lib/types/user";
 import { useAuthStore } from "@/stores/auth.store";
 
 export function UserDetailContent({ userId }: { userId: string }) {
@@ -101,7 +102,7 @@ export function UserDetailContent({ userId }: { userId: string }) {
           <p className="text-sm text-muted-foreground">{user.email}</p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
-          <StatusBadge tone={user.role === "admin" ? "primary" : "muted"}>
+          <StatusBadge tone={user.role === SystemRole.ADMIN ? "primary" : "muted"}>
             {t(`users.role.${user.role}` as const)}
           </StatusBadge>
           <UserStatusBadge user={user} />

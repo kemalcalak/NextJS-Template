@@ -12,6 +12,7 @@ import type {
   ResetPasswordPayload,
   ChangePasswordPayload,
 } from "@/lib/types/auth";
+import { SystemRole } from "@/lib/types/user";
 import { useAuthStore } from "@/stores/auth.store";
 
 import type { AxiosError } from "axios";
@@ -78,7 +79,7 @@ export function useLogoutMutation() {
   // store first would erase the role. Admins stay in the admin login flow
   // (future-proof for the admin.<domain> split), everyone else lands on /login.
   const redirectAfterLogout = () => {
-    const target = user?.role === "admin" ? ROUTES.adminLogin : ROUTES.login;
+    const target = user?.role === SystemRole.ADMIN ? ROUTES.adminLogin : ROUTES.login;
     logout();
     router.push(getLocalizedPath(target, currentLocale));
   };

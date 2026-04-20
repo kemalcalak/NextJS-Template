@@ -15,6 +15,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { getLocaleFromPath, ROUTES, getLocalizedPath } from "@/lib/config/routes";
+import { SystemRole } from "@/lib/types/user";
 import type { User } from "@/stores/auth.store";
 
 interface AuthButtonsProps {
@@ -86,7 +87,7 @@ export const AuthButtons = ({ user, onNavigate }: AuthButtonsProps) => {
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        {user.role === "admin" ? (
+        {user.role === SystemRole.ADMIN ? (
           <DropdownMenuItem
             onClick={() => {
               handleNavigate(ROUTES.adminDashboard);

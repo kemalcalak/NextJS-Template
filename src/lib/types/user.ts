@@ -1,10 +1,15 @@
+export enum SystemRole {
+  ADMIN = "admin",
+  USER = "user",
+}
+
 export interface User {
   id: string;
   email: string;
   first_name: string | null;
   last_name: string | null;
   title: string | null;
-  role: string;
+  role: SystemRole;
   is_active: boolean;
   is_verified: boolean;
   created_at: string;
