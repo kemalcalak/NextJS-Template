@@ -45,15 +45,20 @@ export function UserEditForm({ user, isSelf, isSaving, onSubmit }: UserEditFormP
   }, [user, form]);
 
   const handleSubmit = form.handleSubmit((values) => {
-    onSubmit({
+    // Self-edit must not alter role, is_active, or is_verified even if DevTools
+    // re-enables the disabled inputs. Backend guards this too; belt-and-braces.
+    const payload: AdminUserUpdatePayload = {
       first_name: values.first_name,
       last_name: values.last_name,
       title: values.title ? values.title : null,
       email: values.email,
-      role: values.role,
-      is_active: values.is_active,
-      is_verified: values.is_verified,
-    });
+    };
+    if (!isSelf) {
+      payload.role = values.role;
+      payload.is_active = values.is_active;
+      payload.is_verified = values.is_verified;
+    }
+    onSubmit(payload);
   });
 
   return (

@@ -2,6 +2,7 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
 import { ROUTES, getLocalizedPath } from "@/lib/config/routes";
+import { SystemRole, type User } from "@/lib/types/user";
 
 import { AdminShell } from "./AdminShell";
 
@@ -10,11 +11,31 @@ interface AdminProtectedLayoutProps {
   params: Promise<{ locale: string }>;
 }
 
-// Server-side cookie gate for the admin area. The proxy already performs
-// this redirect for us, but repeating it here matches the public (protected)
-// layout's "defense in depth" pattern and keeps SSR honest. The role check
-// (admin vs. plain user) lives in the client AdminShell since we need the
-// /users/me payload for that — the cookie itself doesn't carry the role.
+const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
+const API_PREFIX = process.env.NEXT_PUBLIC_API_PREFIX ?? "/api/v1";
+
+// Reuse /users/me rather than adding a dedicated me-role endpoint: the server
+// round-trip happens once per admin navigation and the response is cheap.
+const fetchCurrentUser = async (token: string): Promise<User | null> => {
+  try {
+    const res = await fetch(`${API_URL}${API_PREFIX}/users/me`, {
+      headers: {
+        cookie: `access_token=${token}`,
+        "X-Requested-With": "XMLHttpRequest",
+      },
+      cache: "no-store",
+    });
+    if (!res.ok) return null;
+    return (await res.json()) as User;
+  } catch {
+    return null;
+  }
+};
+
+// Server-side defense-in-depth for the admin area. The proxy/backend already
+// enforce role on API calls, but this prevents non-admins from even receiving
+// the admin HTML + JS bundle. Mirrors the public (protected) layout's token
+// gate with an additional role hop.
 export default async function AdminProtectedLayout({
   children,
   params,
@@ -25,6 +46,14 @@ export default async function AdminProtectedLayout({
 
   if (!token) {
     redirect(getLocalizedPath(ROUTES.adminLogin, locale));
+  }
+
+  const user = await fetchCurrentUser(token);
+  if (!user) {
+    redirect(getLocalizedPath(ROUTES.adminLogin, locale));
+  }
+  if (user.role !== SystemRole.ADMIN) {
+    redirect(getLocalizedPath(ROUTES.dashboard, locale));
   }
 
   return <AdminShell>{children}</AdminShell>;

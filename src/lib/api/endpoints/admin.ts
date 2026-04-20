@@ -1,11 +1,12 @@
 import type {
   AdminActivityListParams,
   AdminActivityListResponse,
+  AdminStats,
+  AdminUser,
   AdminUserListParams,
   AdminUserListResponse,
   AdminUserUpdatePayload,
   AdminUserUpdateResponse,
-  AdminUser,
 } from "@/lib/types/admin";
 import type { MessageResponse } from "@/lib/types/auth";
 
@@ -65,4 +66,6 @@ export const adminApi = {
     api.get<AdminActivityListResponse, AdminActivityListResponse>("/admin/activities", {
       params: pruneParams(params),
     }),
+
+  getStats: (): Promise<AdminStats> => api.get<AdminStats, AdminStats>("/admin/stats"),
 };

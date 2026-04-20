@@ -25,6 +25,7 @@ const active: AdminUser = {
 const inactive: AdminUser = { ...active, id: "u2", email: "u2@test.com", is_active: false };
 
 const handlers = () => ({
+  currentUserId: null,
   onActivate: vi.fn(),
   onDeactivate: vi.fn(),
   onReset: vi.fn(),

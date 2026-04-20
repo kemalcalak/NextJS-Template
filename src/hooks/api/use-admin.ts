@@ -7,34 +7,54 @@ import type {
   AdminUserUpdatePayload,
 } from "@/lib/types/admin";
 
+// Each resource type owns a distinct top-level segment so prefix-invalidation
+// never accidentally fans out across resources. `usersList` ≠ `user` ≠
+// `userActivities` — invalidating one leaves the others untouched.
 export const adminKeys = {
-  root: ["admin"] as const,
-  users: (params?: AdminUserListParams) => ["admin", "users", params ?? {}] as const,
-  user: (id: string) => ["admin", "users", "detail", id] as const,
-  activities: (params?: AdminActivityListParams) => ["admin", "activities", params ?? {}] as const,
-  userActivities: (userId: string, skip?: number, limit?: number) =>
-    ["admin", "users", userId, "activities", { skip, limit }] as const,
+  all: ["admin"] as const,
+  usersListPrefix: ["admin", "usersList"] as const,
+  usersList: (params?: AdminUserListParams) => ["admin", "usersList", params ?? {}] as const,
+  user: (id: string) => ["admin", "user", id] as const,
+  userActivities: (userId: string, opts?: { skip?: number; limit?: number }) =>
+    ["admin", "userActivities", userId, opts ?? {}] as const,
+  activitiesListPrefix: ["admin", "activitiesList"] as const,
+  activitiesList: (params?: AdminActivityListParams) =>
+    ["admin", "activitiesList", params ?? {}] as const,
+  stats: ["admin", "stats"] as const,
 };
 
-const invalidateAdminUsers = (queryClient: ReturnType<typeof useQueryClient>) => {
-  queryClient.invalidateQueries({ queryKey: ["admin", "users"] });
+type QueryClient = ReturnType<typeof useQueryClient>;
+
+// After a user mutation, fan-out invalidation to every surface that could show
+// stale data. Crucially, the user detail cache is NOT invalidated — callers
+// that optimistically set it (e.g. useUpdateAdminUser) would see their write
+// overwritten by a refetch race.
+const invalidateUserSurfaces = (queryClient: QueryClient) => {
+  queryClient.invalidateQueries({ queryKey: adminKeys.usersListPrefix });
+  queryClient.invalidateQueries({ queryKey: adminKeys.stats });
 };
 
 export const useAdminUsers = (params?: AdminUserListParams) =>
   useQuery({
-    queryKey: adminKeys.users(params),
+    queryKey: adminKeys.usersList(params),
     queryFn: () => adminApi.listUsers(params),
     placeholderData: keepPreviousData,
   });
 
 export const useAdminUser = (id: string | undefined) =>
   useQuery({
-    queryKey: id ? adminKeys.user(id) : ["admin", "users", "detail", "invalid"],
+    queryKey: id ? adminKeys.user(id) : ["admin", "user", "invalid"],
     queryFn: () => {
       if (!id) throw new Error("User ID is required");
       return adminApi.getUser(id);
     },
     enabled: typeof id === "string",
+  });
+
+export const useAdminStats = () =>
+  useQuery({
+    queryKey: adminKeys.stats,
+    queryFn: () => adminApi.getStats(),
   });
 
 export const useUpdateAdminUser = () => {
@@ -44,7 +64,7 @@ export const useUpdateAdminUser = () => {
       adminApi.updateUser(id, payload),
     onSuccess: (response) => {
       queryClient.setQueryData(adminKeys.user(response.user.id), response.user);
-      invalidateAdminUsers(queryClient);
+      invalidateUserSurfaces(queryClient);
     },
   });
 };
@@ -55,7 +75,7 @@ export const useActivateAdminUser = () => {
     mutationFn: (id: string) => adminApi.activateUser(id),
     onSuccess: (_, id) => {
       queryClient.invalidateQueries({ queryKey: adminKeys.user(id) });
-      invalidateAdminUsers(queryClient);
+      invalidateUserSurfaces(queryClient);
     },
   });
 };
@@ -66,7 +86,7 @@ export const useDeactivateAdminUser = () => {
     mutationFn: (id: string) => adminApi.deactivateUser(id),
     onSuccess: (_, id) => {
       queryClient.invalidateQueries({ queryKey: adminKeys.user(id) });
-      invalidateAdminUsers(queryClient);
+      invalidateUserSurfaces(queryClient);
     },
   });
 };
@@ -75,8 +95,9 @@ export const useDeleteAdminUser = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (id: string) => adminApi.deleteUser(id),
-    onSuccess: () => {
-      invalidateAdminUsers(queryClient);
+    onSuccess: (_, id) => {
+      queryClient.removeQueries({ queryKey: adminKeys.user(id) });
+      invalidateUserSurfaces(queryClient);
     },
   });
 };
@@ -88,7 +109,7 @@ export const useResetAdminUserPassword = () =>
 
 export const useAdminActivities = (params?: AdminActivityListParams) =>
   useQuery({
-    queryKey: adminKeys.activities(params),
+    queryKey: adminKeys.activitiesList(params),
     queryFn: () => adminApi.listActivities(params),
     placeholderData: keepPreviousData,
   });
@@ -99,8 +120,8 @@ export const useAdminUserActivities = (
 ) =>
   useQuery({
     queryKey: userId
-      ? adminKeys.userActivities(userId, options?.skip, options?.limit)
-      : ["admin", "users", "invalid", "activities"],
+      ? adminKeys.userActivities(userId, options)
+      : ["admin", "userActivities", "invalid"],
     queryFn: () => {
       if (!userId) throw new Error("User ID is required");
       return adminApi.listUserActivities(userId, options);

@@ -24,6 +24,7 @@ import {
 } from "@/hooks/api/use-admin";
 import { useDebounce } from "@/hooks/use-debounce";
 import type { AdminUser } from "@/lib/types/admin";
+import { useAuthStore } from "@/stores/auth.store";
 
 interface Pending {
   kind: UserActionKind;
@@ -32,6 +33,7 @@ interface Pending {
 
 export function UsersContent() {
   const { t, i18n } = useTranslation("admin");
+  const currentUserId = useAuthStore((state) => state.user?.id ?? null);
 
   const [searchInput, setSearchInput] = useState("");
   const [role, setRole] = useState<UsersRoleFilter>("all");
@@ -131,6 +133,7 @@ export function UsersContent() {
           <UsersTable
             rows={data?.data ?? []}
             isLoading={isLoading && !data}
+            currentUserId={currentUserId}
             onActivate={(u) => {
               setAction("activate", u);
             }}

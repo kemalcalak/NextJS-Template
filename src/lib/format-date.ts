@@ -1,6 +1,4 @@
-"use client";
-
-import { useLanguage } from "@/hooks/use-language";
+import i18n from "@/i18n/config";
 
 type DateInput = string | null | undefined;
 
@@ -18,25 +16,15 @@ const DATETIME_OPTIONS: Intl.DateTimeFormatOptions = {
   minute: "2-digit",
 };
 
-const format = (iso: DateInput, locale: string, opts: Intl.DateTimeFormatOptions): string => {
+const format = (iso: DateInput, opts: Intl.DateTimeFormatOptions): string => {
   if (!iso) return "—";
   try {
-    return new Intl.DateTimeFormat(locale, opts).format(new Date(iso));
+    return new Intl.DateTimeFormat(i18n.language || "en", opts).format(new Date(iso));
   } catch {
     return iso;
   }
 };
 
-export const formatDate = (iso: DateInput, locale: string): string =>
-  format(iso, locale, DATE_OPTIONS);
+export const formatDate = (iso: DateInput): string => format(iso, DATE_OPTIONS);
 
-export const formatDateTime = (iso: DateInput, locale: string): string =>
-  format(iso, locale, DATETIME_OPTIONS);
-
-export function useFormatDate() {
-  const { language } = useLanguage();
-  return {
-    formatDate: (iso: DateInput) => formatDate(iso, language),
-    formatDateTime: (iso: DateInput) => formatDateTime(iso, language),
-  };
-}
+export const formatDateTime = (iso: DateInput): string => format(iso, DATETIME_OPTIONS);

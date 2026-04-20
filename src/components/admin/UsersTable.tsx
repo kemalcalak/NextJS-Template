@@ -36,6 +36,7 @@ const formatDate = (iso: string) => {
 interface UsersTableProps {
   rows: AdminUser[];
   isLoading: boolean;
+  currentUserId: string | null;
   onActivate: (user: AdminUser) => void;
   onDeactivate: (user: AdminUser) => void;
   onReset: (user: AdminUser) => void;
@@ -45,6 +46,7 @@ interface UsersTableProps {
 export function UsersTable({
   rows,
   isLoading,
+  currentUserId,
   onActivate,
   onDeactivate,
   onReset,
@@ -68,7 +70,9 @@ export function UsersTable({
           </tr>
         </thead>
         <tbody className="divide-y divide-border">
-          {rows.map((user) => (
+          {rows.map((user) => {
+            const isSelf = currentUserId === user.id;
+            return (
             <tr key={user.id} className="hover:bg-muted/30 transition-colors">
               <td className="px-4 py-3">
                 <Link
@@ -121,6 +125,7 @@ export function UsersTable({
                     <DropdownMenuContent align="end" className="w-48">
                       {user.is_active ? (
                         <DropdownMenuItem
+                          disabled={isSelf}
                           onSelect={() => {
                             onDeactivate(user);
                           }}
@@ -148,6 +153,7 @@ export function UsersTable({
                       </DropdownMenuItem>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem
+                        disabled={isSelf}
                         className="text-destructive focus:text-destructive"
                         onSelect={() => {
                           onDelete(user);
@@ -161,7 +167,8 @@ export function UsersTable({
                 </div>
               </td>
             </tr>
-          ))}
+            );
+          })}
           {rows.length === 0 ? (
             <tr>
               <td colSpan={6} className="px-4 py-12 text-center text-sm text-muted-foreground">

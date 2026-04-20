@@ -1,4 +1,4 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter, usePathname } from "next/navigation";
 import { useTranslation } from "react-i18next";
 
@@ -73,6 +73,7 @@ export function useLogoutMutation() {
   const router = useRouter();
   const pathname = usePathname();
   const currentLocale = getLocaleFromPath(pathname);
+  const queryClient = useQueryClient();
   const { logout, user } = useAuthStore();
 
   // Pick the login surface that matches who the user *was* — clearing the
@@ -81,6 +82,7 @@ export function useLogoutMutation() {
   const redirectAfterLogout = () => {
     const target = user?.role === SystemRole.ADMIN ? ROUTES.adminLogin : ROUTES.login;
     logout();
+    queryClient.clear();
     router.push(getLocalizedPath(target, currentLocale));
   };
 
