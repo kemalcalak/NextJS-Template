@@ -19,7 +19,10 @@ export function UserDangerZone({ user, isSelf, disabled, onAction }: UserDangerZ
   const { t } = useTranslation("admin");
 
   return (
-    <Card className="border-destructive/30 bg-destructive/5">
+    <Card
+      data-testid="admin-user-danger-zone"
+      className="border-destructive/30 bg-destructive/5"
+    >
       <CardHeader>
         <CardTitle className="text-base text-destructive">{t("userDetail.dangerTitle")}</CardTitle>
         <CardDescription>{t("userDetail.dangerDescription")}</CardDescription>

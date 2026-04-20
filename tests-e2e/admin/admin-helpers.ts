@@ -1,6 +1,7 @@
 import type { AdminActivity, AdminUser } from "@/lib/types/admin";
 import { SystemRole } from "@/lib/types/user";
 
+import type { Locale } from "./admin-strings";
 import type { Page } from "@playwright/test";
 
 export const adminUser: AdminUser = {
@@ -33,10 +34,14 @@ export const regularUser: AdminUser = {
   deletion_scheduled_at: null,
 };
 
-export const injectSession = async (page: Page, user: AdminUser): Promise<void> => {
+export const injectSession = async (
+  page: Page,
+  user: AdminUser,
+  locale: Locale = "tr",
+): Promise<void> => {
   await page.context().addCookies([
     { name: "access_token", value: "fake-jwt-token", domain: "127.0.0.1", path: "/" },
-    { name: "NEXT_LOCALE", value: "tr", domain: "127.0.0.1", path: "/" },
+    { name: "NEXT_LOCALE", value: locale, domain: "127.0.0.1", path: "/" },
   ]);
   await page.addInitScript(
     (data: string) => {

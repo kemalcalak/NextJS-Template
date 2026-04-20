@@ -7,61 +7,75 @@ import {
   mockMe,
   regularUser,
 } from "./admin-helpers";
+import { LOCALES, getStrings } from "./admin-strings";
 
 import type { Page } from "@playwright/test";
 
-// Returns distinct `total` values depending on which filter was requested, so
-// each of the 4 stat cards can be asserted independently.
-const mockUserStats = async (
+const mockStatsResponse = async (
   page: Page,
-  { total, active, admins }: { total: number; active: number; admins: number },
+  stats: {
+    users_total: number;
+    users_active: number;
+    users_verified: number;
+    users_admins: number;
+    activities_total: number;
+  },
 ): Promise<void> => {
-  await page.route(/.*\/api\/v1\/admin\/users(\?.*)?$/, async (route) => {
-    if (route.request().method() !== "GET") {
-      await route.continue();
-      return;
-    }
-    const url = new URL(route.request().url());
-    let value = total;
-    if (url.searchParams.get("is_active") === "true") value = active;
-    else if (url.searchParams.get("role") === "admin") value = admins;
+  await page.route(/.*\/api\/v1\/admin\/stats$/, async (route) => {
     await route.fulfill({
       status: 200,
       contentType: "application/json",
-      body: JSON.stringify({ data: [], total: value, skip: 0, limit: 1 }),
+      body: JSON.stringify(stats),
     });
   });
 };
 
-test.describe("Admin dashboard", () => {
-  test("renders stat cards with totals from the backend", async ({ page }) => {
-    await injectSession(page, adminUser);
-    await mockMe(page, adminUser);
-    await mockUserStats(page, { total: 42, active: 37, admins: 3 });
-    await mockAdminActivities(page);
+for (const locale of LOCALES) {
+  const s = getStrings(locale).admin;
 
-    await page.goto("/tr/admin/dashboard");
+  test.describe(`Admin dashboard [${locale}]`, () => {
+    test("renders stat cards with totals from the backend", async ({ page }) => {
+      await injectSession(page, adminUser, locale);
+      await mockMe(page, adminUser);
+      await mockStatsResponse(page, {
+        users_total: 42,
+        users_active: 37,
+        users_verified: 28,
+        users_admins: 3,
+        activities_total: 119,
+      });
+      await mockAdminActivities(page);
 
-    await expect(page.getByRole("heading", { name: "Panel" })).toBeVisible();
-    await expect(page.getByText("42", { exact: true })).toBeVisible();
-    await expect(page.getByText("37", { exact: true })).toBeVisible();
-    // Two stat cards share a total; the third "3" is the admins count.
-    await expect(page.getByText("3", { exact: true })).toBeVisible();
+      await page.goto(`/${locale}/admin/dashboard`);
+
+      await expect(page.getByRole("heading", { name: s.dashboard.title })).toBeVisible();
+      await expect(page.getByText("42", { exact: true })).toBeVisible();
+      await expect(page.getByText("37", { exact: true })).toBeVisible();
+      await expect(page.getByText("3", { exact: true })).toBeVisible();
+      await expect(page.getByText("119", { exact: true })).toBeVisible();
+    });
+
+    test("quick-action buttons navigate to users and activities", async ({ page }) => {
+      await injectSession(page, adminUser, locale);
+      await mockMe(page, adminUser);
+      await mockStatsResponse(page, {
+        users_total: 2,
+        users_active: 2,
+        users_verified: 2,
+        users_admins: 1,
+        activities_total: 0,
+      });
+      await mockAdminUsersList(page, [adminUser, regularUser], 2);
+      await mockAdminActivities(page);
+
+      await page.goto(`/${locale}/admin/dashboard`);
+
+      await page.getByRole("link", { name: s.dashboard.viewAllUsers }).click();
+      await expect(page).toHaveURL(new RegExp(`.*/${locale}/admin/users`));
+
+      await page.goto(`/${locale}/admin/dashboard`);
+      await page.getByRole("link", { name: s.dashboard.viewAllActivity }).click();
+      await expect(page).toHaveURL(new RegExp(`.*/${locale}/admin/activities`));
+    });
   });
-
-  test("quick-action buttons navigate to users and activities", async ({ page }) => {
-    await injectSession(page, adminUser);
-    await mockMe(page, adminUser);
-    await mockAdminUsersList(page, [adminUser, regularUser], 2);
-    await mockAdminActivities(page);
-
-    await page.goto("/tr/admin/dashboard");
-
-    await page.getByRole("link", { name: "Tüm kullanıcıları gör" }).click();
-    await expect(page).toHaveURL(/.*\/tr\/admin\/users/);
-
-    await page.goto("/tr/admin/dashboard");
-    await page.getByRole("link", { name: "Tüm aktiviteleri gör" }).click();
-    await expect(page).toHaveURL(/.*\/tr\/admin\/activities/);
-  });
-});
+}

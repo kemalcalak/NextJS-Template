@@ -6,6 +6,12 @@ import { test as setup, expect } from "@playwright/test";
  * This dramatically speeds up test execution since we don't need to login in every test.
  */
 setup("authenticate user", async ({ page }) => {
+  // The setup only needs to produce a signed-in storage state — the specific
+  // locale doesn't matter because specs that consume the state set their own
+  // NEXT_LOCALE cookie. Use the default (en) here to avoid coupling the setup
+  // to a single UI language.
+  const locale = "en";
+
   // Mock the login API response
   await page.route("**/api/v1/auth/login", async (route) => {
     await route.fulfill({
@@ -41,18 +47,14 @@ setup("authenticate user", async ({ page }) => {
     });
   });
 
-  // Navigate to login page
-  await page.goto("/tr/login");
+  await page.goto(`/${locale}/login`);
 
-  // Fill in login form
   await page.fill('input[name="email"]', "test@example.com");
   await page.fill('input[name="password"]', "Password123!");
 
-  // Submit the form
   await page.click('button[type="submit"]');
 
-  // Wait for redirect to dashboard, confirming successful login
-  await expect(page).toHaveURL(/.*\/tr\/dashboard/);
+  await expect(page).toHaveURL(new RegExp(`.*/${locale}/dashboard`));
 
   // Save the authentication state (cookies, local storage, session storage)
   // This will be reused by other tests via storageState configuration

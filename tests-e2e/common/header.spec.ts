@@ -1,8 +1,9 @@
 import { test, expect } from "../base-test";
+import { LOCALES, getStrings, reEscape, type Locale } from "../i18n-strings";
 
 import type { Page } from "@playwright/test";
 
-const setupAuthenticatedState = async (page: Page) => {
+const setupAuthenticatedState = async (page: Page, locale: Locale) => {
   const mockUser = {
     id: "1",
     email: "john@example.com",
@@ -18,14 +19,9 @@ const setupAuthenticatedState = async (page: Page) => {
     });
   });
 
-  // Inject authentication cookie for middleware compatibility
   await page.context().addCookies([
-    {
-      name: "access_token",
-      value: "fake-jwt-token",
-      domain: "127.0.0.1",
-      path: "/",
-    },
+    { name: "access_token", value: "fake-jwt-token", domain: "127.0.0.1", path: "/" },
+    { name: "NEXT_LOCALE", value: locale, domain: "127.0.0.1", path: "/" },
   ]);
 
   await page.addInitScript(
@@ -39,128 +35,141 @@ const setupAuthenticatedState = async (page: Page) => {
   );
 };
 
-test.describe("Header - Mobile Viewport", () => {
+for (const locale of LOCALES) {
+  const s = getStrings(locale);
+
+  test.describe(`Header - Mobile Viewport [${locale}]`, () => {
+    test.use({ viewport: { width: 375, height: 812 } });
+
+    test.beforeEach(async ({ page }) => {
+      await page.route("**/api/v1/users/me", async (route) => {
+        await route.fulfill({ status: 401 });
+      });
+    });
+
+    test("should show the hamburger menu button and open drawer", async ({ page }) => {
+      await page.goto(`/${locale}`);
+      const hamburgerBtn = page
+        .getByRole("button", { name: new RegExp(reEscape(s.common.ui.toggleMenu), "i") })
+        .first();
+      await expect(hamburgerBtn).toBeVisible();
+
+      await hamburgerBtn.click();
+      await expect(page.locator('[role="dialog"]')).toBeVisible();
+    });
+
+    test("should show Login and Register buttons in drawer when unauthenticated", async ({
+      page,
+    }) => {
+      await page.goto(`/${locale}`);
+      await page
+        .getByRole("button", { name: new RegExp(reEscape(s.common.ui.toggleMenu), "i") })
+        .first()
+        .click();
+
+      await expect(
+        page.getByRole("button", { name: s.auth.login.submitButton }).first(),
+      ).toBeVisible();
+      await expect(
+        page.getByRole("button", { name: s.auth.register.submitButton }).first(),
+      ).toBeVisible();
+    });
+
+    test("should show user info in drawer when authenticated", async ({ page }) => {
+      await setupAuthenticatedState(page, locale);
+      await page.goto(`/${locale}`);
+      await page
+        .getByRole("button", { name: new RegExp(reEscape(s.common.ui.toggleMenu), "i") })
+        .first()
+        .click();
+
+      await expect(page.getByText("John Doe").first()).toBeVisible();
+      await expect(
+        page.getByRole("button", { name: s.auth.logout.logoutButton }).first(),
+      ).toBeVisible();
+    });
+  });
+
+  test.describe(`Header - Desktop Viewport [${locale}]`, () => {
+    test.use({ viewport: { width: 1280, height: 800 } });
+
+    test.beforeEach(async ({ page }) => {
+      await page.route("**/api/v1/users/me", async (route) => {
+        await route.fulfill({ status: 401 });
+      });
+    });
+
+    test("should show Login and Register buttons when unauthenticated", async ({ page }) => {
+      await page.goto(`/${locale}`);
+      await expect(
+        page.getByRole("button", { name: s.auth.login.submitButton }).first(),
+      ).toBeVisible();
+      await expect(
+        page.getByRole("button", { name: s.auth.register.submitButton }).first(),
+      ).toBeVisible();
+    });
+
+    test("should show user avatar and dropdown when authenticated", async ({ page }) => {
+      await setupAuthenticatedState(page, locale);
+      await page.goto(`/${locale}`);
+
+      await expect(
+        page.getByRole("banner").getByRole("button", { name: s.auth.login.submitButton }),
+      ).not.toBeVisible();
+
+      const avatarBtn = page.locator("button.rounded-full").first();
+      await expect(avatarBtn).toBeVisible();
+
+      await avatarBtn.click();
+      await expect(page.getByText("John Doe").first()).toBeVisible();
+      await expect(
+        page.getByRole("menuitem", { name: new RegExp(reEscape(s.common.nav.profile), "i") }).first(),
+      ).toBeVisible();
+    });
+
+    test("should toggle theme via header", async ({ page }) => {
+      await page.goto(`/${locale}`);
+      const themeBtn = page
+        .getByRole("button", { name: new RegExp(reEscape(s.common.ui.toggleTheme), "i") })
+        .first();
+      await expect(themeBtn).toBeVisible();
+
+      await themeBtn.click();
+
+      const getTheme = () => page.evaluate(() => localStorage.getItem("theme"));
+      await expect.poll(getTheme, { timeout: 3000 }).not.toBeNull();
+    });
+  });
+}
+
+// Language-switch test doesn't fit the per-locale loop — it asserts the
+// transition between locales.
+test.describe("Header - Language switch", () => {
   test.use({ viewport: { width: 375, height: 812 } });
 
   test.beforeEach(async ({ page }) => {
-    // Mock unauthenticated state by default
     await page.route("**/api/v1/users/me", async (route) => {
       await route.fulfill({ status: 401 });
     });
-  });
-
-  test("should show the hamburger menu button and open drawer", async ({ page }) => {
-    await page.goto("/tr");
-    const hamburgerBtn = page
-      .getByRole("button", { name: /Menüyü Aç\/Kapat|toggle menu/i })
-      .first();
-    await expect(hamburgerBtn).toBeVisible();
-
-    await hamburgerBtn.click();
-    await expect(page.locator('[role="dialog"]')).toBeVisible();
-  });
-
-  test("should show Login and Register buttons in drawer when unauthenticated (TR)", async ({
-    page,
-  }) => {
-    await page.goto("/tr");
-    await page
-      .getByRole("button", { name: /Menüyü Aç\/Kapat|toggle menu/i })
-      .first()
-      .click();
-
-    // Labels from auth.json
-    await expect(page.getByRole("button", { name: /Giriş Yap/i }).first()).toBeVisible();
-    await expect(
-      page.getByRole("button", { name: /Kayıt Ol|Register|Create Account/i }).first(),
-    ).toBeVisible();
-  });
-
-  test("should show user info in drawer when authenticated", async ({ page }) => {
-    await setupAuthenticatedState(page);
-    await page.goto("/tr");
-    await page
-      .getByRole("button", { name: /Menüyü Aç\/Kapat|toggle menu/i })
-      .first()
-      .click();
-
-    await expect(page.getByText("John Doe").first()).toBeVisible();
-    await expect(page.getByRole("button", { name: /Çıkış Yap|Logout/i }).first()).toBeVisible();
   });
 
   test("should switch language between TR and EN", async ({ page }) => {
-    // Start from home page which will redirect to default locale (/en)
     await page.goto("/");
     await expect(page).toHaveURL(/.*\/en/);
 
-    // Open menu
     await page
-      .getByRole("button", { name: /Menüyü Aç\/Kapat|toggle menu/i })
+      .getByRole("button", { name: /Toggle Menu|Menüyü Aç\/Kapat/i })
       .first()
       .click();
 
-    // Select the language toggle button. It might be labeled as "Dil" or "Language" or "Türkçe"
     const targetLangBtn = page
-      .getByRole("button", { name: /Dili Değiştir|Toggle Language|Dil|Language|Türkçe/i })
+      .getByRole("button", { name: /Toggle Language|Dili Değiştir|Türkçe|Language|Dil/i })
       .first();
     await expect(targetLangBtn).toBeVisible();
 
-    // Force click to handle any viewport or animation issues
     await targetLangBtn.scrollIntoViewIfNeeded();
     await targetLangBtn.click({ force: true });
 
-    // Should switch to TR and close drawer
     await expect(page).toHaveURL(/.*\/tr/, { timeout: 15000 });
-  });
-});
-
-test.describe("Header - Desktop Viewport", () => {
-  test.use({ viewport: { width: 1280, height: 800 } });
-
-  test.beforeEach(async ({ page }) => {
-    await page.route("**/api/v1/users/me", async (route) => {
-      await route.fulfill({ status: 401 });
-    });
-  });
-
-  test("should show Login and Register buttons when unauthenticated (EN)", async ({ page }) => {
-    await page.goto("/en");
-    // Flexible names for Login/Register
-    await expect(page.getByRole("button", { name: /Login|Giriş Yap/i }).first()).toBeVisible();
-    await expect(
-      page.getByRole("button", { name: /Register|Kayıt Ol|Sign Up|Create Account/i }).first(),
-    ).toBeVisible();
-  });
-
-  test("should show user avatar and dropdown when authenticated", async ({ page }) => {
-    await setupAuthenticatedState(page);
-    await page.goto("/tr");
-
-    // Login/Register should be hidden from the app header. Scope to the
-    // <header> banner since the landing page also has a "Hesabınıza giriş yapın"
-    // CTA that would otherwise trip the strict-mode locator.
-    await expect(
-      page.getByRole("banner").getByRole("button", { name: /Giriş Yap|Login/i }),
-    ).not.toBeVisible();
-
-    // Avatar button
-    const avatarBtn = page.locator("button.rounded-full").first();
-    await expect(avatarBtn).toBeVisible();
-
-    await avatarBtn.click();
-    await expect(page.getByText("John Doe").first()).toBeVisible();
-    await expect(page.getByRole("menuitem", { name: /Profil/i }).first()).toBeVisible();
-  });
-
-  test("should toggle theme via header", async ({ page }) => {
-    await page.goto("/tr");
-    const themeBtn = page.getByRole("button", { name: /Temayı Değiştir|Toggle theme/i }).first();
-    await expect(themeBtn).toBeVisible();
-
-    await themeBtn.click();
-
-    // The theme is persisted in localStorage 'theme' key
-    const getTheme = () => page.evaluate(() => localStorage.getItem("theme"));
-    await expect.poll(getTheme, { timeout: 3000 }).not.toBeNull();
   });
 });

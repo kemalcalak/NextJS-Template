@@ -1,47 +1,41 @@
 import { test, expect } from "./base-test";
+import { LOCALES, getStrings, reEscape } from "./i18n-strings";
 
-test.describe("Basic Navigation", () => {
-  test("should render SEO tags on the home page", async ({ page }) => {
-    await page.goto("/tr");
+for (const locale of LOCALES) {
+  const s = getStrings(locale);
 
-    // Browser title with Brand Suffix from layout template (%s — Brand)
-    // "Günlük Görevlerinizi Yönetin — NextJS Template"
-    await expect(page).toHaveTitle(/Günlük Görevlerinizi Yönetin — NextJS Template/);
+  test.describe(`Basic Navigation [${locale}]`, () => {
+    test("should render SEO tags on the home page", async ({ page }) => {
+      await page.goto(`/${locale}`);
 
-    const description = page.locator('meta[name="description"]');
-    await expect(description).toHaveAttribute(
-      "content",
-      "Günlük görevlerinizi ve projelerinizi yönetmek için en iyi platform. Hızlı, güvenli ve şık.",
-    );
+      // Title template from the layout appends " — NextJS Template".
+      await expect(page).toHaveTitle(new RegExp(reEscape(s.seo.home.title)));
 
-    const canonical = page.locator('link[rel="canonical"]');
-    // Allow optional trailing slash
-    await expect(canonical).toHaveAttribute("href", /.*\/tr\/?$/);
+      const description = page.locator('meta[name="description"]');
+      await expect(description).toHaveAttribute("content", s.seo.home.description);
 
-    const ogTitle = page.locator('meta[property="og:title"]');
-    // OG Title doesn't use the template in buildMetadata
-    await expect(ogTitle).toHaveAttribute("content", "Günlük Görevlerinizi Yönetin");
+      const canonical = page.locator('link[rel="canonical"]');
+      await expect(canonical).toHaveAttribute("href", new RegExp(`.*/${locale}/?$`));
+
+      const ogTitle = page.locator('meta[property="og:title"]');
+      await expect(ogTitle).toHaveAttribute("content", s.seo.home.title);
+    });
+
+    test("should show 404 page for non-existent routes", async ({ page }) => {
+      await page.goto(`/${locale}/non-existent-page`);
+      await expect(page.getByText(s.seo.notFound.title).first()).toBeVisible();
+      await expect(page).toHaveURL(new RegExp(`.*/${locale}/non-existent-page`));
+    });
   });
+}
 
-  test("should show 404 page for non-existent routes", async ({ page }) => {
-    await page.goto("/tr/non-existent-page");
-    await expect(page.locator("text=Sayfa Bulunamadı").first()).toBeVisible();
-    await expect(page).toHaveURL(/.*\/tr\/non-existent-page/);
-  });
-
+test.describe("Locale cookie persistence", () => {
   test("should persist language via cookie", async ({ context, page }) => {
-    // Set cookie explicitly using domain/path instead of url to try to avoid the "url or path" error
     await context.addCookies([
-      {
-        name: "NEXT_LOCALE",
-        value: "tr",
-        domain: "127.0.0.1",
-        path: "/",
-      },
+      { name: "NEXT_LOCALE", value: "tr", domain: "127.0.0.1", path: "/" },
     ]);
 
     await page.goto("/");
-    // Should be redirected to /tr
     await expect(page).toHaveURL(/.*\/tr/);
   });
 });

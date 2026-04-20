@@ -1,9 +1,9 @@
 import { test, expect } from "../base-test";
+import { LOCALES, getStrings, reEscape, type Locale } from "../i18n-strings";
 
 import type { Page } from "@playwright/test";
 
-// Helper to inject authenticated state into both the API and cookies
-const setupAuthenticatedState = async (page: Page) => {
+const setupAuthenticatedState = async (page: Page, locale: Locale) => {
   const mockUser = {
     id: "user-123",
     email: "john@example.com",
@@ -19,97 +19,72 @@ const setupAuthenticatedState = async (page: Page) => {
     });
   });
 
-  // Inject authentication cookie for middleware compatibility
   await page.context().addCookies([
-    {
-      name: "access_token",
-      value: "fake-jwt-token",
-      domain: "127.0.0.1",
-      path: "/",
-    },
-    {
-      name: "NEXT_LOCALE",
-      value: "tr",
-      domain: "127.0.0.1",
-      path: "/",
-    },
+    { name: "access_token", value: "fake-jwt-token", domain: "127.0.0.1", path: "/" },
+    { name: "NEXT_LOCALE", value: locale, domain: "127.0.0.1", path: "/" },
   ]);
 
   await page.addInitScript(
     (storageData) => {
       window.localStorage.setItem("auth-storage", storageData);
     },
-    JSON.stringify({
-      state: { user: mockUser, isAuthenticated: true },
-      version: 0,
-    }),
+    JSON.stringify({ state: { user: mockUser, isAuthenticated: true }, version: 0 }),
   );
 };
 
-test.describe("Dashboard Page", () => {
-  test("SEO - should have correct title and description", async ({ page }) => {
-    await setupAuthenticatedState(page);
-    await page.goto("/tr/dashboard");
+for (const locale of LOCALES) {
+  const s = getStrings(locale);
 
-    await expect(page).toHaveTitle(/Dashboard/i);
-    const description = page.locator('meta[name="description"]');
-    await expect(description).toHaveAttribute(
-      "content",
-      "Kişisel dashboard'unuzdan projelerinizi, görevlerinizi ve ekibinizi yönetin.",
-    );
-  });
+  test.describe(`Dashboard Page [${locale}]`, () => {
+    test("SEO - should have correct title and description", async ({ page }) => {
+      await setupAuthenticatedState(page, locale);
+      await page.goto(`/${locale}/dashboard`);
 
-  test("should display welcome message and user info", async ({ page }) => {
-    await setupAuthenticatedState(page);
-    await page.goto("/tr/dashboard");
-
-    // Welcome message from dashboard.welcome key
-    await expect(page.locator("text=Hoş geldiniz").first()).toBeVisible();
-
-    // User info card content
-    await expect(page.locator("text=Kullanıcı Bilgileri").first()).toBeVisible();
-    await expect(page.locator("text=John").first()).toBeVisible();
-    await expect(page.locator("text=john@example.com").first()).toBeVisible();
-  });
-
-  test("should show loading skeletons", async ({ page }) => {
-    // Mock users/me endpoint response
-    await page.route("**/api/v1/users/me", async (route) => {
-      await route.fulfill({
-        status: 200,
-        contentType: "application/json",
-        body: JSON.stringify({ id: "1", first_name: "John" }),
-      });
+      await expect(page).toHaveTitle(new RegExp(reEscape(s.seo.dashboard.title), "i"));
+      const description = page.locator('meta[name="description"]');
+      await expect(description).toHaveAttribute("content", s.seo.dashboard.description);
     });
 
-    // We don't call setupAuthenticatedState here to avoid setting cookie before navigation
-    // but the middleware might redirect. So we set just the cookie.
-    await page.context().addCookies([
-      {
-        name: "access_token",
-        value: "fake-jwt",
-        url: "http://127.0.0.1:3000",
-      },
-    ]);
+    test("should display welcome message and user info", async ({ page }) => {
+      await setupAuthenticatedState(page, locale);
+      await page.goto(`/${locale}/dashboard`);
 
-    await page.goto("/tr/dashboard");
-    await expect(page.locator(".animate-pulse").first()).toBeVisible();
+      await expect(page.getByText(s.dashboard.welcome).first()).toBeVisible();
+      await expect(page.getByText(s.dashboard.userInfo).first()).toBeVisible();
+      await expect(page.getByText("John").first()).toBeVisible();
+      await expect(page.getByText("john@example.com").first()).toBeVisible();
+    });
+
+    test("should show loading skeletons", async ({ page }) => {
+      await page.route("**/api/v1/users/me", async (route) => {
+        await route.fulfill({
+          status: 200,
+          contentType: "application/json",
+          body: JSON.stringify({ id: "1", first_name: "John" }),
+        });
+      });
+
+      await page.context().addCookies([
+        { name: "access_token", value: "fake-jwt", url: "http://127.0.0.1:3000" },
+      ]);
+
+      await page.goto(`/${locale}/dashboard`);
+      await expect(page.locator(".animate-pulse").first()).toBeVisible();
+    });
+
+    test("should have functional navigation from dashboard to profile", async ({ page }) => {
+      await setupAuthenticatedState(page, locale);
+      await page.goto(`/${locale}/dashboard`);
+
+      const profileBtn = page
+        .getByRole("button", { name: "john@example.com" })
+        .or(page.locator('button:has-text("J")'))
+        .or(page.getByRole("button", { name: new RegExp(reEscape(s.common.ui.toggleMenu), "i") }))
+        .first();
+      await profileBtn.click();
+
+      await page.getByText(s.common.nav.profile, { exact: true }).first().click();
+      await expect(page).toHaveURL(new RegExp(`.*/${locale}/profile`));
+    });
   });
-
-  test("should have functional navigation from dashboard to profile", async ({ page }) => {
-    await setupAuthenticatedState(page);
-    await page.goto("/tr/dashboard");
-
-    // Use the header profile button (robust)
-    const profileBtn = page
-      .getByRole("button", { name: "john@example.com" })
-      .or(page.locator('button:has-text("J")'))
-      .or(page.getByRole("button", { name: /Menüyü Aç\/Kapat/i }))
-      .first();
-    await profileBtn.click();
-
-    // Choose "Profil" from the menu that appeared
-    await page.getByText("Profil").first().click();
-    await expect(page).toHaveURL(/.*\/tr\/profile/);
-  });
-});
+}
