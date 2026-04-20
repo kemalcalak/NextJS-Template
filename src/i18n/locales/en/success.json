@@ -21,8 +21,8 @@
     },
     "admin": {
       "user_updated": "User updated successfully.",
-      "user_activated": "User reactivated successfully.",
-      "user_deactivated": "User deactivated. Scheduled for deletion after the grace period.",
+      "user_suspended": "User suspended. They cannot log in until an admin lifts the suspension.",
+      "user_unsuspended": "Suspension lifted. The user can sign in again.",
       "user_deleted": "User permanently deleted.",
       "password_reset_sent": "Password reset email sent."
     }

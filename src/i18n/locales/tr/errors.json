@@ -19,7 +19,9 @@
       "invalid_password": "Geçersiz şifre.",
       "user_inactive": "Kullanıcı hesabı aktif değil.",
       "email_not_verified": "E-posta adresi doğrulanmadı.",
-      "invalid_verification_token": "Geçersiz doğrulama token'ı."
+      "invalid_verification_token": "Geçersiz doğrulama token'ı.",
+      "invalid_email_domain": "Bu e-posta alan adı posta alamıyor.",
+      "disposable_email_not_allowed": "Geçici e-posta adresleri kabul edilmez."
     },
     "auth": {
       "refresh_token_missing": "Yenileme token'ı eksik.",

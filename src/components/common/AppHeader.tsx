@@ -53,8 +53,14 @@ export const AppHeader = () => {
   // header block inside the card and shouldn't compete with the global app
   // header. Hiding the header here keeps the admin login consistent with the
   // /admin subdomain layout it's designed to eventually live on.
+  // The /account-suspended page is also chrome-free: a suspended user must
+  // not have any nav affordance to bounce around the app — only the in-page
+  // logout button.
   const pathWithoutLocale = getPathWithoutLocale(pathname);
-  if (matchesRoute(pathWithoutLocale, ROUTES.adminLogin)) {
+  if (
+    matchesRoute(pathWithoutLocale, ROUTES.adminLogin) ||
+    matchesRoute(pathWithoutLocale, ROUTES.accountSuspended)
+  ) {
     return null;
   }
 

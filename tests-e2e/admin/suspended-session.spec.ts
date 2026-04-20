@@ -31,6 +31,10 @@ for (const locale of LOCALES) {
       // Suspended landing never exposes a reactivate affordance — logout only.
       await expect(page.getByTestId("account-suspended-logout")).toBeVisible();
       await expect(page.getByRole("button", { name: s.deactivated.reactivate })).not.toBeVisible();
+      // The global header (with avatar dropdown / dashboard / profile links)
+      // must be hidden so a suspended user has no escape hatch back into the
+      // app from the chrome.
+      await expect(page.locator("header")).toHaveCount(0);
     });
 
     test("a non-suspended user visiting /account-suspended is sent to the dashboard", async ({

@@ -108,7 +108,16 @@ export function AuthHydrator({ children }: { children: React.ReactNode }) {
     pendingDeletionRoutes.some((route) => matchesRoute(pathWithoutLocale, route)) ||
     suspendedRoutes.some((route) => matchesRoute(pathWithoutLocale, route));
 
-  if (requiresAuthSession && (!isSessionInitialized || !isAuthenticated)) {
+  // Hard-block suspended users from seeing any protected page (including the
+  // shared header / nav drawer that sits in the layout). The redirect effect
+  // above will land them on /account-suspended; until that runs, render only
+  // the loader so they can't click anything.
+  const isOnSuspendedRoute = suspendedRoutes.some((route) =>
+    matchesRoute(pathWithoutLocale, route),
+  );
+  const isLockedSuspended = isAuthenticated && Boolean(user?.suspended_at) && !isOnSuspendedRoute;
+
+  if (requiresAuthSession && (!isSessionInitialized || !isAuthenticated || isLockedSuspended)) {
     return <LoadingScreen />;
   }
 

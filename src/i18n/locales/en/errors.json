@@ -19,7 +19,9 @@
       "invalid_password": "Invalid password.",
       "user_inactive": "User is inactive.",
       "email_not_verified": "Email address is not verified.",
-      "invalid_verification_token": "Invalid verification token."
+      "invalid_verification_token": "Invalid verification token.",
+      "invalid_email_domain": "This email domain cannot receive mail.",
+      "disposable_email_not_allowed": "Disposable email addresses are not allowed."
     },
     "auth": {
       "refresh_token_missing": "Refresh token is missing.",
