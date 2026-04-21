@@ -1,13 +1,13 @@
 import { http, HttpResponse } from "msw";
 
-import type { User } from "@/lib/types/user";
+import { SystemRole, type User } from "@/lib/types/user";
 
 const createMockUser = (overrides: Partial<User> = {}): User => ({
   id: "1",
   email: "john@example.com",
   first_name: "John",
   last_name: "Doe",
-  role: "USER",
+  role: SystemRole.USER,
   is_active: true,
   is_verified: true,
   created_at: new Date().toISOString(),
@@ -15,6 +15,7 @@ const createMockUser = (overrides: Partial<User> = {}): User => ({
   title: null,
   deactivated_at: null,
   deletion_scheduled_at: null,
+  suspended_at: null,
   ...overrides,
 });
 

@@ -1,4 +1,4 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter, usePathname } from "next/navigation";
 import { useTranslation } from "react-i18next";
 
@@ -12,6 +12,7 @@ import type {
   ResetPasswordPayload,
   ChangePasswordPayload,
 } from "@/lib/types/auth";
+import { SystemRole } from "@/lib/types/user";
 import { useAuthStore } from "@/stores/auth.store";
 
 import type { AxiosError } from "axios";
@@ -25,13 +26,22 @@ export function useLoginMutation() {
   const router = useRouter();
   const pathname = usePathname();
   const currentLocale = getLocaleFromPath(pathname);
+  const queryClient = useQueryClient();
   const { login } = useAuthStore();
 
   return useMutation({
     mutationFn: (payload: LoginPayload) => authService.login(payload),
     onSuccess: (data) => {
+      // Wipe any cached queries from a prior session before the new user's
+      // observers mount — without this, account A's data can flash to
+      // account B if both sign in to the same tab without a clean logout.
+      queryClient.clear();
       login(data.user);
-      const target = data.user.deletion_scheduled_at ? ROUTES.accountDeactivated : ROUTES.dashboard;
+      // Admin role wins over deletion-grace: the admin shell is the right
+      // home regardless of which login surface the user came through.
+      let target: string = ROUTES.dashboard;
+      if (data.user.role === SystemRole.ADMIN) target = ROUTES.adminDashboard;
+      else if (data.user.deletion_scheduled_at) target = ROUTES.accountDeactivated;
       router.push(getLocalizedPath(target, currentLocale));
     },
     onError: (
@@ -41,6 +51,10 @@ export function useLoginMutation() {
       const errorData = error.response?.data;
       const errorCode = errorData?.error || errorData?.detail;
 
+      // ``error.account.suspended`` is surfaced via the global toast from the
+      // api interceptor. No redirect here — /account-suspended is a private
+      // landing page reached only by already-authenticated users whose session
+      // the AuthHydrator recognises as suspended.
       if (error.response?.status === 403 && errorCode === "error.user.email_not_verified") {
         const path = `${ROUTES.verifyEmailNotice}?email=${encodeURIComponent(variables.email)}`;
         router.push(getLocalizedPath(path, currentLocale));
@@ -72,18 +86,23 @@ export function useLogoutMutation() {
   const router = useRouter();
   const pathname = usePathname();
   const currentLocale = getLocaleFromPath(pathname);
-  const { logout } = useAuthStore();
+  const queryClient = useQueryClient();
+  const { logout, user } = useAuthStore();
+
+  // Pick the login surface that matches who the user *was* — clearing the
+  // store first would erase the role. Admins stay in the admin login flow
+  // (future-proof for the admin.<domain> split), everyone else lands on /login.
+  const redirectAfterLogout = () => {
+    const target = user?.role === SystemRole.ADMIN ? ROUTES.adminLogin : ROUTES.login;
+    logout();
+    queryClient.clear();
+    router.push(getLocalizedPath(target, currentLocale));
+  };
 
   return useMutation({
     mutationFn: () => authService.logout(),
-    onSuccess: () => {
-      logout();
-      router.push(getLocalizedPath(ROUTES.login, currentLocale));
-    },
-    onError: () => {
-      logout();
-      router.push(getLocalizedPath(ROUTES.login, currentLocale));
-    },
+    onSuccess: redirectAfterLogout,
+    onError: redirectAfterLogout,
   });
 }
 

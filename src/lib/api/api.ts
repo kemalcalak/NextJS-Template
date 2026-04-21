@@ -7,6 +7,7 @@ import {
   getLocaleFromPath,
   getLocalizedPath,
   getPathWithoutLocale,
+  isAdminPath,
   protectedRoutes,
   matchesRoute,
 } from "@/lib/config/routes";
@@ -87,7 +88,10 @@ const performLogout = async () => {
     );
 
     if (isProtectedRoute) {
-      const loginPath = getLocalizedPath(ROUTES.login, locale);
+      // Keep admins inside the admin shell on session expiry; the public login
+      // page would lose their original destination context.
+      const target = isAdminPath(pathWithoutLocale) ? ROUTES.adminLogin : ROUTES.login;
+      const loginPath = getLocalizedPath(target, locale);
       window.location.href = `${loginPath}?session_expired=true`;
     }
   }

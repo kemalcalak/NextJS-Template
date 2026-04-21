@@ -11,9 +11,14 @@ export const ROUTES = {
   verifyEmail: "/verify-email",
   verifyEmailNotice: "/verify-email-notice",
   accountDeactivated: "/account-deactivated",
+  accountSuspended: "/account-suspended",
   dashboard: "/dashboard",
   profile: "/profile",
   logout: "/logout",
+  adminLogin: "/admin/login",
+  adminDashboard: "/admin/dashboard",
+  adminUsers: "/admin/users",
+  adminActivities: "/admin/activities",
 } as const;
 
 /**
@@ -26,7 +31,14 @@ export const getLocalizedPath = (path: string, locale: string): string => {
 };
 
 // Routes that require authentication (without locale prefix)
-export const protectedRoutes = [ROUTES.dashboard, ROUTES.profile];
+export const protectedRoutes = [
+  ROUTES.dashboard,
+  ROUTES.profile,
+  ROUTES.adminDashboard,
+  ROUTES.adminUsers,
+  ROUTES.adminActivities,
+  ROUTES.accountSuspended,
+];
 
 // Routes that should NOT be accessible when logged in (without locale prefix)
 export const authRoutes = [
@@ -35,6 +47,7 @@ export const authRoutes = [
   ROUTES.forgotPassword,
   ROUTES.resetPassword,
   ROUTES.verifyEmail,
+  ROUTES.adminLogin,
 ];
 
 // Public routes that should always be accessible (without locale prefix)
@@ -45,12 +58,30 @@ export const publicAuthRoutes = [ROUTES.verifyEmailNotice];
 // redirects deactivated users to these instead of the dashboard.
 export const pendingDeletionRoutes = [ROUTES.accountDeactivated];
 
+// Routes reachable only when the session belongs to an admin-suspended user.
+// Mirrors ``pendingDeletionRoutes`` — the protected-layout guard sends
+// suspended users here and bounces active users away.
+export const suspendedRoutes = [ROUTES.accountSuspended];
+
 /**
  * Checks if a given path matches any of the routes in the list.
  * Matches exact paths or sub-paths (e.g., /dashboard matches /dashboard/profile).
  */
 export const matchesRoute = (path: string, route: string) =>
   path === route || path.startsWith(`${route}/`);
+
+// Routes that belong to the admin shell. The proxy uses this to redirect
+// logged-in visitors of /admin/login to /admin/dashboard instead of the
+// regular dashboard, and to send unauthenticated admin visitors back to
+// /admin/login instead of the public login page.
+export const adminRoutes = [
+  ROUTES.adminLogin,
+  ROUTES.adminDashboard,
+  ROUTES.adminUsers,
+  ROUTES.adminActivities,
+];
+
+export const isAdminPath = (path: string) => adminRoutes.some((route) => matchesRoute(path, route));
 
 /**
  * Removes the locale prefix from a path if it exists.

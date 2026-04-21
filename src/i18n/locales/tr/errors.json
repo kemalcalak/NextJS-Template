@@ -19,7 +19,9 @@
       "invalid_password": "Geçersiz şifre.",
       "user_inactive": "Kullanıcı hesabı aktif değil.",
       "email_not_verified": "E-posta adresi doğrulanmadı.",
-      "invalid_verification_token": "Geçersiz doğrulama token'ı."
+      "invalid_verification_token": "Geçersiz doğrulama token'ı.",
+      "invalid_email_domain": "Bu e-posta alan adı posta alamıyor.",
+      "disposable_email_not_allowed": "Geçici e-posta adresleri kabul edilmez."
     },
     "auth": {
       "refresh_token_missing": "Yenileme token'ı eksik.",
@@ -28,7 +30,16 @@
     "account": {
       "already_deactivated": "Hesabınız zaten silinmek üzere planlanmış.",
       "not_deactivated": "Hesabınız aktif — iptal edilecek bir işlem yok.",
-      "deletion_expired": "Bu hesabın bekleme süresi dolmuş."
+      "deletion_expired": "Bu hesabın bekleme süresi dolmuş.",
+      "suspended": "Hesabınız yönetici tarafından askıya alındı.",
+      "already_suspended": "Bu kullanıcı zaten askıda.",
+      "not_suspended": "Bu kullanıcı askıda değil."
+    },
+    "admin": {
+      "cannot_modify_self": "Yöneticiler kendi hesaplarını bu panelden değiştiremez.",
+      "cannot_delete_self": "Yöneticiler kendilerini silemez.",
+      "cannot_demote_last_admin": "Son aktif yöneticinin rolünü düşüremezsiniz.",
+      "cannot_delete_last_admin": "Son aktif yöneticiyi silemezsiniz."
     }
   }
 }

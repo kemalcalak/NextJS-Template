@@ -27,6 +27,10 @@
     "title": "Check Your Email",
     "description": "We have sent you a verification link. Please check your inbox and spam folder."
   },
+  "accountSuspended": {
+    "title": "Account Suspended",
+    "description": "This account has been suspended by an administrator."
+  },
   "dashboard": {
     "title": "Dashboard",
     "description": "Manage your projects, tasks, and team from your personal dashboard."
@@ -34,6 +38,26 @@
   "profile": {
     "title": "Profile",
     "description": "View and edit your personal profile, preferences, and account settings."
+  },
+  "adminLogin": {
+    "title": "Admin Sign In",
+    "description": "Sign in to the administration area to manage users and view activity."
+  },
+  "adminDashboard": {
+    "title": "Admin Dashboard",
+    "description": "Administrative overview of users, activity, and system health."
+  },
+  "adminUsers": {
+    "title": "User Management",
+    "description": "Search, filter, update, and deactivate user accounts."
+  },
+  "adminUserDetail": {
+    "title": "User Details",
+    "description": "Edit a user, manage their status, and review their activity log."
+  },
+  "adminActivities": {
+    "title": "Activity Log",
+    "description": "Browse audit events across all users."
   },
   "notFound": {
     "title": "Page Not Found",

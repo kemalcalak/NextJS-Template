@@ -27,6 +27,10 @@
     "title": "E-postanızı Kontrol Edin",
     "description": "Size bir doğrulama bağlantısı gönderdik. Lütfen gelen kutunuzu ve spam klasörünü kontrol edin."
   },
+  "accountSuspended": {
+    "title": "Hesap Askıya Alındı",
+    "description": "Bu hesap yönetici tarafından askıya alındı."
+  },
   "dashboard": {
     "title": "Dashboard",
     "description": "Kişisel dashboard'unuzdan projelerinizi, görevlerinizi ve ekibinizi yönetin."
@@ -34,6 +38,26 @@
   "profile": {
     "title": "Profil Ayarları",
     "description": "Kişisel profilinizi, tercihlerinizi ve hesap ayarlarınızı görüntüleyin ve düzenleyin."
+  },
+  "adminLogin": {
+    "title": "Yönetici Girişi",
+    "description": "Kullanıcıları yönetmek ve aktiviteleri görüntülemek için yönetim paneline giriş yapın."
+  },
+  "adminDashboard": {
+    "title": "Yönetici Paneli",
+    "description": "Kullanıcılar, aktiviteler ve sistem durumuna dair yönetim özeti."
+  },
+  "adminUsers": {
+    "title": "Kullanıcı Yönetimi",
+    "description": "Kullanıcı hesaplarını arayın, filtreleyin, güncelleyin ve devre dışı bırakın."
+  },
+  "adminUserDetail": {
+    "title": "Kullanıcı Detayı",
+    "description": "Bir kullanıcıyı düzenleyin, durumunu yönetin ve aktivite geçmişini inceleyin."
+  },
+  "adminActivities": {
+    "title": "Aktivite Günlüğü",
+    "description": "Tüm kullanıcılara ait denetim olaylarını görüntüleyin."
   },
   "notFound": {
     "title": "Sayfa Bulunamadı",

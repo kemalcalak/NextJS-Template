@@ -8,8 +8,14 @@ export type SeoPageKey =
   | "resetPassword"
   | "verifyEmail"
   | "verifyEmailNotice"
+  | "accountSuspended"
   | "dashboard"
   | "profile"
+  | "adminLogin"
+  | "adminDashboard"
+  | "adminUsers"
+  | "adminUserDetail"
+  | "adminActivities"
   | "notFound"
   | "error";
 

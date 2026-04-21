@@ -22,17 +22,24 @@ export function ClientSideProviders({
   children: React.ReactNode;
   locale: string;
 }) {
-  const [mounted, setMounted] = useState(false);
+  // Initial state MUST match on server and client to avoid a hydration
+  // mismatch. `i18n.language` diverges across the two (server uses the static
+  // fallback, client's LanguageDetector may read a cookie), so we always start
+  // `false` and let the effect below flip it once i18n is in sync with the URL
+  // locale. This costs one frame of LoadingScreen flash; any alternative
+  // reading i18n.language during render would flicker hydration warnings.
+  const [initialSync, setInitialSync] = useState(false);
 
   useEffect(() => {
+    if (i18n.language === locale) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setInitialSync(true);
+      return;
+    }
     let cancelled = false;
-    const syncLocale = async () => {
-      if (i18n.language !== locale) {
-        await i18n.changeLanguage(locale);
-      }
-      if (!cancelled) setMounted(true);
-    };
-    void syncLocale();
+    void i18n.changeLanguage(locale).finally(() => {
+      if (!cancelled) setInitialSync(true);
+    });
     return () => {
       cancelled = true;
     };
@@ -42,7 +49,7 @@ export function ClientSideProviders({
 
   return (
     <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-      {!mounted ? (
+      {!initialSync ? (
         <LoadingScreen fullScreen message={loadingMessage} />
       ) : (
         <QueryProvider>

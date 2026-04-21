@@ -1,0 +1,187 @@
+{
+  "login": {
+    "title": "Admin Sign In",
+    "subtitle": "Restricted area. Administrators only.",
+    "cardTitle": "Administrator sign in",
+    "cardDescription": "Enter your admin credentials to continue.",
+    "emailLabel": "Work email",
+    "passwordLabel": "Password",
+    "submitButton": "Sign in",
+    "submitting": "Signing in...",
+    "backToApp": "Back to the main app"
+  },
+  "shell": {
+    "title": "Administration",
+    "nav": {
+      "dashboard": "Dashboard",
+      "users": "Users",
+      "activities": "Activity log"
+    },
+    "signedInAs": "Signed in as",
+    "exit": "Exit admin",
+    "forbiddenTitle": "Admins only",
+    "forbiddenDescription": "You are signed in, but this area requires an administrator role.",
+    "forbiddenCta": "Back to dashboard"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "subtitle": "High-level view of users and recent activity.",
+    "stats": {
+      "totalUsers": "Total users",
+      "activeUsers": "Active users",
+      "admins": "Administrators",
+      "activitiesToday": "Activities"
+    },
+    "recentActivity": "Recent activity",
+    "viewAllActivity": "View all activity",
+    "viewAllUsers": "View all users"
+  },
+  "users": {
+    "title": "Users",
+    "subtitle": "Search, filter, and manage every account.",
+    "filters": {
+      "searchPlaceholder": "Search by email or name",
+      "role": "Role",
+      "roleAny": "Any role",
+      "status": "Status",
+      "statusAny": "Any status",
+      "statusActive": "Active",
+      "statusInactive": "Inactive",
+      "verified": "Verified",
+      "verifiedAny": "Any",
+      "verifiedYes": "Verified",
+      "verifiedNo": "Not verified",
+      "reset": "Clear filters"
+    },
+    "columns": {
+      "user": "User",
+      "email": "Email",
+      "role": "Role",
+      "status": "Status",
+      "verified": "Verified",
+      "created": "Created",
+      "actions": "Actions"
+    },
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive",
+      "pendingDeletion": "Pending deletion",
+      "suspended": "Suspended"
+    },
+    "role": {
+      "admin": "Admin",
+      "user": "User"
+    },
+    "empty": "No users match the current filters.",
+    "loading": "Loading users...",
+    "pagination": {
+      "previous": "Previous",
+      "next": "Next",
+      "page": "Page {{page}} of {{total}}",
+      "showing": "{{from}}–{{to}} of {{total}}",
+      "rowsPerPage": "Rows per page"
+    },
+    "rowActions": {
+      "open": "Open details",
+      "menu": "Row actions",
+      "suspend": "Suspend",
+      "unsuspend": "Lift suspension",
+      "resetPassword": "Send password reset",
+      "delete": "Delete user"
+    }
+  },
+  "userDetail": {
+    "backToUsers": "Back to users",
+    "overviewTitle": "Account overview",
+    "overviewDescription": "Basic information and status for this user.",
+    "overview": {
+      "id": "ID",
+      "created": "Created",
+      "updated": "Updated",
+      "deactivated": "Deactivated",
+      "scheduledDeletion": "Scheduled deletion",
+      "suspended": "Suspended"
+    },
+    "editTitle": "Edit user",
+    "editDescription": "Update profile, role, and access.",
+    "activityTitle": "Recent activity",
+    "activityDescription": "Audit events recorded for this user.",
+    "activityEmpty": "No recent activity.",
+    "dangerTitle": "Danger zone",
+    "dangerDescription": "These actions are audited and can't be undone by the target user.",
+    "fields": {
+      "firstName": "First name",
+      "lastName": "Last name",
+      "title": "Title",
+      "role": "Role",
+      "active": "Active",
+      "verified": "Email verified"
+    },
+    "save": "Save changes",
+    "saving": "Saving...",
+    "cancel": "Cancel",
+    "resetPassword": "Send password reset",
+    "resetting": "Sending...",
+    "suspend": "Suspend account",
+    "unsuspend": "Lift suspension",
+    "delete": "Delete user",
+    "deleting": "Deleting..."
+  },
+  "confirm": {
+    "deleteTitle": "Delete this user?",
+    "deleteDescription": "This permanently removes the user and cannot be undone.",
+    "deleteConfirm": "Delete user",
+    "suspendTitle": "Suspend this user?",
+    "suspendDescription": "The user loses access immediately and the account stays suspended until an admin lifts it.",
+    "suspendConfirm": "Suspend",
+    "unsuspendTitle": "Lift this suspension?",
+    "unsuspendDescription": "This re-enables the account and restores the user's access.",
+    "unsuspendConfirm": "Lift suspension",
+    "resetTitle": "Send a password reset?",
+    "resetDescription": "The user receives a secure link by email. You never see the new password.",
+    "resetConfirm": "Send reset email",
+    "cancel": "Cancel"
+  },
+  "activities": {
+    "title": "Activity log",
+    "subtitle": "Every audited event across the platform.",
+    "filters": {
+      "type": "Type",
+      "typeAny": "Any type",
+      "resource": "Resource",
+      "resourceAny": "Any resource",
+      "status": "Status",
+      "statusAny": "Any status",
+      "reset": "Clear filters"
+    },
+    "columns": {
+      "when": "When",
+      "user": "User",
+      "type": "Type",
+      "resource": "Resource",
+      "status": "Status",
+      "details": "Details"
+    },
+    "status": {
+      "success": "Success",
+      "failure": "Failure"
+    },
+    "type": {
+      "create": "Create",
+      "read": "Read",
+      "update": "Update",
+      "delete": "Delete",
+      "execute": "Execute",
+      "login": "Login",
+      "logout": "Logout",
+      "export": "Export",
+      "invite": "Invite"
+    },
+    "resource": {
+      "user": "User",
+      "auth": "Auth"
+    },
+    "empty": "No activity matches the current filters.",
+    "loading": "Loading activity..."
+  }
+}

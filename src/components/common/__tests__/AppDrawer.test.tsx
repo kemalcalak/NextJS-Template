@@ -2,7 +2,7 @@ import { screen, fireEvent, waitFor } from "@testing-library/react";
 import { vi, describe, it, expect, beforeEach } from "vitest";
 
 import { AppDrawer } from "@/components/common/AppDrawer";
-import type { User } from "@/lib/types/user";
+import { SystemRole, type User } from "@/lib/types/user";
 import { useAuthStore } from "@/stores/auth.store";
 import { renderWithProviders } from "@/test/test-utils";
 
@@ -27,7 +27,7 @@ const createMockUser = (overrides: Partial<User> = {}): User => ({
   email: "test@example.com",
   first_name: "Test",
   last_name: "User",
-  role: "USER",
+  role: SystemRole.USER,
   is_active: true,
   is_verified: true,
   created_at: new Date().toISOString(),
@@ -35,6 +35,7 @@ const createMockUser = (overrides: Partial<User> = {}): User => ({
   title: null,
   deactivated_at: null,
   deletion_scheduled_at: null,
+  suspended_at: null,
   ...overrides,
 });
 

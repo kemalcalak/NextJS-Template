@@ -19,7 +19,9 @@
       "invalid_password": "Invalid password.",
       "user_inactive": "User is inactive.",
       "email_not_verified": "Email address is not verified.",
-      "invalid_verification_token": "Invalid verification token."
+      "invalid_verification_token": "Invalid verification token.",
+      "invalid_email_domain": "This email domain cannot receive mail.",
+      "disposable_email_not_allowed": "Disposable email addresses are not allowed."
     },
     "auth": {
       "refresh_token_missing": "Refresh token is missing.",
@@ -28,7 +30,16 @@
     "account": {
       "already_deactivated": "Your account is already scheduled for deletion.",
       "not_deactivated": "Your account is active — nothing to cancel.",
-      "deletion_expired": "This account's grace window has expired."
+      "deletion_expired": "This account's grace window has expired.",
+      "suspended": "Your account has been suspended by an administrator.",
+      "already_suspended": "This user is already suspended.",
+      "not_suspended": "This user is not suspended."
+    },
+    "admin": {
+      "cannot_modify_self": "Administrators cannot modify their own account from this panel.",
+      "cannot_delete_self": "Administrators cannot delete themselves.",
+      "cannot_demote_last_admin": "You cannot demote the last active administrator.",
+      "cannot_delete_last_admin": "You cannot delete the last active administrator."
     }
   }
 }

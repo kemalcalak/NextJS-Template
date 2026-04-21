@@ -1,5 +1,7 @@
 import { describe, it, expect, beforeEach } from "vitest";
 
+import { SystemRole } from "@/lib/types/user";
+
 import { useAuthStore } from "../auth.store";
 
 describe("useAuthStore", () => {
@@ -30,13 +32,14 @@ describe("useAuthStore", () => {
       first_name: "Test",
       last_name: "User",
       title: "Mr",
-      role: "user",
+      role: SystemRole.USER,
       is_active: true,
       is_verified: true,
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
       deactivated_at: null,
       deletion_scheduled_at: null,
+      suspended_at: null,
     } as const;
 
     useAuthStore.getState().login(user);
@@ -55,13 +58,14 @@ describe("useAuthStore", () => {
         first_name: "Test",
         last_name: "User",
         title: "Mr",
-        role: "user",
+        role: SystemRole.USER,
         is_active: true,
         is_verified: true,
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
         deactivated_at: null,
         deletion_scheduled_at: null,
+        suspended_at: null,
       },
       isAuthenticated: true,
       isLoading: false,
@@ -82,13 +86,14 @@ describe("useAuthStore", () => {
       first_name: "Other",
       last_name: "User",
       title: "Mr",
-      role: "user",
+      role: SystemRole.USER,
       is_active: true,
       is_verified: true,
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
       deactivated_at: null,
       deletion_scheduled_at: null,
+      suspended_at: null,
     } as const;
 
     useAuthStore.getState().setUser(user);
