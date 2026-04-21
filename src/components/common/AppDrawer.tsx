@@ -1,13 +1,6 @@
 "use client";
 
-import {
-  Menu,
-  User as UserIcon,
-  LogOut,
-  LayoutDashboard,
-  Home,
-  ShieldCheck,
-} from "lucide-react";
+import { Menu, User as UserIcon, LogOut, LayoutDashboard, Home, ShieldCheck } from "lucide-react";
 import { useRouter, usePathname } from "next/navigation";
 import { useTranslation } from "react-i18next";
 

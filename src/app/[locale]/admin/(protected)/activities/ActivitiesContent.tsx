@@ -167,12 +167,7 @@ export function ActivitiesContent() {
               </SelectContent>
             </Select>
             {hasFilters ? (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={resetFilters}
-                className="w-full md:w-auto"
-              >
+              <Button variant="ghost" size="sm" onClick={resetFilters} className="w-full md:w-auto">
                 <X className="h-4 w-4" />
                 {t("activities.filters.reset")}
               </Button>

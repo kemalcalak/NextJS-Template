@@ -124,12 +124,7 @@ export function UsersFilters({
             </SelectContent>
           </Select>
           {hasFilters ? (
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={onReset}
-              className="w-full md:w-auto"
-            >
+            <Button variant="ghost" size="sm" onClick={onReset} className="w-full md:w-auto">
               <X className="h-4 w-4" />
               {t("users.filters.reset")}
             </Button>
