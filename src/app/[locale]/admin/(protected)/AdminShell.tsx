@@ -93,7 +93,7 @@ export function AdminShell({ children }: AdminShellProps) {
   ];
 
   return (
-    <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 p-4 md:flex-row md:p-6 lg:p-8">
+    <div className="mx-auto flex w-full max-w-[1920px] flex-col gap-6 p-4 md:flex-row md:p-6 lg:p-8 xl:p-12">
       <aside className="md:sticky md:top-24 md:h-fit md:w-56 md:shrink-0">
         <div className="mb-4 flex items-center gap-2 px-2">
           <ShieldCheck className="h-4 w-4 text-primary" />
