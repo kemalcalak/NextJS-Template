@@ -1,6 +1,13 @@
 "use client";
 
-import { Menu, User as UserIcon, LogOut, LayoutDashboard, Home } from "lucide-react";
+import {
+  Menu,
+  User as UserIcon,
+  LogOut,
+  LayoutDashboard,
+  Home,
+  ShieldCheck,
+} from "lucide-react";
 import { useRouter, usePathname } from "next/navigation";
 import { useTranslation } from "react-i18next";
 
@@ -22,6 +29,7 @@ import {
   getLocalizedPath,
   matchesRoute,
 } from "@/lib/config/routes";
+import { SystemRole } from "@/lib/types/user";
 import { cn } from "@/lib/utils";
 import { useAuthStore, type User } from "@/stores/auth.store";
 
@@ -152,6 +160,15 @@ export const AppDrawer = ({
             />
             {user && (
               <>
+                {user.role === SystemRole.ADMIN && (
+                  <NavLink
+                    href={ROUTES.adminDashboard}
+                    icon={ShieldCheck}
+                    label={t("admin:shell.title", "Administration")}
+                    active={isActive(ROUTES.adminDashboard)}
+                    onClick={navigate}
+                  />
+                )}
                 <NavLink
                   href={ROUTES.dashboard}
                   icon={LayoutDashboard}

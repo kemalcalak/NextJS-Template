@@ -95,73 +95,89 @@ export function ActivitiesContent() {
       </div>
 
       <Card className="border-border/50 bg-card/60">
-        <CardContent className="flex flex-wrap items-center gap-3 p-4">
-          <Select
-            value={type}
-            onValueChange={(value) => {
-              if (!isTypeFilter(value)) return;
-              setType(value);
-              setSkip(0);
-            }}
-          >
-            <SelectTrigger aria-label={t("activities.filters.type")} className="min-w-[140px]">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">{t("activities.filters.typeAny")}</SelectItem>
-              {ACTIVITY_TYPES.map((v) => (
-                <SelectItem key={v} value={v}>
-                  {t(`activities.type.${v}` as const)}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <Select
-            value={resource}
-            onValueChange={(value) => {
-              if (!isResourceFilter(value)) return;
-              setResource(value);
-              setSkip(0);
-            }}
-          >
-            <SelectTrigger aria-label={t("activities.filters.resource")} className="min-w-[140px]">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">{t("activities.filters.resourceAny")}</SelectItem>
-              {RESOURCE_TYPES.map((v) => (
-                <SelectItem key={v} value={v}>
-                  {t(`activities.resource.${v}` as const)}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <Select
-            value={status}
-            onValueChange={(value) => {
-              if (!isStatusFilter(value)) return;
-              setStatus(value);
-              setSkip(0);
-            }}
-          >
-            <SelectTrigger aria-label={t("activities.filters.status")} className="min-w-[140px]">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">{t("activities.filters.statusAny")}</SelectItem>
-              {STATUS_OPTIONS.map((v) => (
-                <SelectItem key={v} value={v}>
-                  {t(`activities.status.${v}` as const)}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          {hasFilters ? (
-            <Button variant="ghost" size="sm" onClick={resetFilters}>
-              <X className="h-4 w-4" />
-              {t("activities.filters.reset")}
-            </Button>
-          ) : null}
+        <CardContent className="flex flex-col gap-3 p-4 md:flex-row md:flex-wrap md:items-center">
+          <div className="grid grid-cols-2 gap-2 md:contents">
+            <Select
+              value={type}
+              onValueChange={(value) => {
+                if (!isTypeFilter(value)) return;
+                setType(value);
+                setSkip(0);
+              }}
+            >
+              <SelectTrigger
+                aria-label={t("activities.filters.type")}
+                className="w-full md:w-fit md:min-w-35"
+              >
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">{t("activities.filters.typeAny")}</SelectItem>
+                {ACTIVITY_TYPES.map((v) => (
+                  <SelectItem key={v} value={v}>
+                    {t(`activities.type.${v}` as const)}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Select
+              value={resource}
+              onValueChange={(value) => {
+                if (!isResourceFilter(value)) return;
+                setResource(value);
+                setSkip(0);
+              }}
+            >
+              <SelectTrigger
+                aria-label={t("activities.filters.resource")}
+                className="w-full md:w-fit md:min-w-35"
+              >
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">{t("activities.filters.resourceAny")}</SelectItem>
+                {RESOURCE_TYPES.map((v) => (
+                  <SelectItem key={v} value={v}>
+                    {t(`activities.resource.${v}` as const)}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Select
+              value={status}
+              onValueChange={(value) => {
+                if (!isStatusFilter(value)) return;
+                setStatus(value);
+                setSkip(0);
+              }}
+            >
+              <SelectTrigger
+                aria-label={t("activities.filters.status")}
+                className="w-full md:w-fit md:min-w-35"
+              >
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">{t("activities.filters.statusAny")}</SelectItem>
+                {STATUS_OPTIONS.map((v) => (
+                  <SelectItem key={v} value={v}>
+                    {t(`activities.status.${v}` as const)}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            {hasFilters ? (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={resetFilters}
+                className="w-full md:w-auto"
+              >
+                <X className="h-4 w-4" />
+                {t("activities.filters.reset")}
+              </Button>
+            ) : null}
+          </div>
         </CardContent>
       </Card>
 

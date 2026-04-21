@@ -167,6 +167,20 @@ describe("AppDrawer Component", () => {
     expect(mockPush).toHaveBeenCalledWith("/en/logout");
   });
 
+  it("shows the Administration link for admin users", () => {
+    mockAuthenticated({ role: SystemRole.ADMIN });
+    renderWithProviders(<AppDrawer {...defaultProps} isMobileMenuOpen />);
+
+    expect(screen.getByRole("button", { name: /admin:shell\.title/i })).toBeInTheDocument();
+  });
+
+  it("does not show the Administration link for non-admin users", () => {
+    mockAuthenticated();
+    renderWithProviders(<AppDrawer {...defaultProps} isMobileMenuOpen />);
+
+    expect(screen.queryByRole("button", { name: /admin:shell\.title/i })).not.toBeInTheDocument();
+  });
+
   it("calls setIsMobileMenuOpen when language changes", () => {
     const setIsMobileMenuOpen = vi.fn();
     mockAuthenticated();
