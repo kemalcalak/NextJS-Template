@@ -2,53 +2,107 @@
 
 import * as React from "react";
 
-import { Avatar as AvatarPrimitive } from "radix-ui";
-
 import { cn } from "@/lib/utils";
+
+interface AvatarContextValue {
+  imageStatus: "idle" | "loaded" | "error";
+}
+const AvatarContext = React.createContext<AvatarContextValue | null>(null);
+
+const useAvatarContext = (): AvatarContextValue => {
+  const ctx = React.useContext(AvatarContext);
+  return ctx ?? { imageStatus: "idle" };
+};
 
 function Avatar({
   className,
   size = "default",
+  children,
   ...props
-}: React.ComponentProps<typeof AvatarPrimitive.Root> & {
+}: React.ComponentProps<"span"> & {
   size?: "default" | "sm" | "lg";
 }) {
+  const [imageStatus, setImageStatus] = React.useState<AvatarContextValue["imageStatus"]>("idle");
+  const childrenWithStatus = React.useMemo(
+    () =>
+      React.Children.map(children, (child) => {
+        if (
+          React.isValidElement(child) &&
+          (child.type as { displayName?: string })?.displayName === "AvatarImage"
+        ) {
+          return React.cloneElement(child as React.ReactElement<AvatarImageProps>, {
+            onStatusChange: setImageStatus,
+          });
+        }
+        return child;
+      }),
+    [children],
+  );
+
   return (
-    <AvatarPrimitive.Root
-      data-slot="avatar"
-      data-size={size}
-      className={cn(
-        "group/avatar relative flex size-8 shrink-0 rounded-full select-none after:absolute after:inset-0 after:rounded-full after:border after:border-border after:mix-blend-darken data-[size=lg]:size-10 data-[size=sm]:size-6 dark:after:mix-blend-lighten",
-        className,
-      )}
-      {...props}
-    />
+    <AvatarContext.Provider value={{ imageStatus }}>
+      <span
+        data-slot="avatar"
+        data-size={size}
+        className={cn(
+          "group/avatar relative flex size-8 shrink-0 rounded-full select-none after:absolute after:inset-0 after:rounded-full after:border after:border-border after:mix-blend-darken data-[size=lg]:size-10 data-[size=sm]:size-6 dark:after:mix-blend-lighten",
+          className,
+        )}
+        {...props}
+      >
+        {childrenWithStatus}
+      </span>
+    </AvatarContext.Provider>
   );
 }
 
-function AvatarImage({ className, ...props }: React.ComponentProps<typeof AvatarPrimitive.Image>) {
-  return (
-    <AvatarPrimitive.Image
-      data-slot="avatar-image"
-      className={cn("aspect-square size-full rounded-full object-cover", className)}
-      {...props}
-    />
-  );
+interface AvatarImageProps extends React.ComponentProps<"img"> {
+  onStatusChange?: (status: "loaded" | "error") => void;
 }
 
-function AvatarFallback({
+function AvatarImage({
   className,
+  onStatusChange,
+  onLoad,
+  onError,
+  alt = "",
   ...props
-}: React.ComponentProps<typeof AvatarPrimitive.Fallback>) {
+}: AvatarImageProps) {
+  const { imageStatus } = useAvatarContext();
+  if (imageStatus === "error") return null;
   return (
-    <AvatarPrimitive.Fallback
+    <img
+      data-slot="avatar-image"
+      alt={alt}
+      className={cn("aspect-square size-full rounded-full object-cover", className)}
+      onLoad={(e) => {
+        onStatusChange?.("loaded");
+        onLoad?.(e);
+      }}
+      onError={(e) => {
+        onStatusChange?.("error");
+        onError?.(e);
+      }}
+      {...props}
+    />
+  );
+}
+AvatarImage.displayName = "AvatarImage";
+
+function AvatarFallback({ className, children, ...props }: React.ComponentProps<"span">) {
+  const { imageStatus } = useAvatarContext();
+  if (imageStatus === "loaded") return null;
+  return (
+    <span
       data-slot="avatar-fallback"
       className={cn(
         "flex size-full items-center justify-center rounded-full bg-muted text-sm text-muted-foreground group-data-[size=sm]/avatar:text-xs",
         className,
       )}
       {...props}
-    />
+    >
+      {children}
+    </span>
   );
 }
 
