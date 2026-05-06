@@ -1,3 +1,5 @@
+import { env } from "@/env";
+
 import type { Metadata, Viewport } from "next";
 
 // Global viewport settings applied to all pages
@@ -17,7 +19,7 @@ export const metadata: Metadata = {
     template: "%s — NextJS Template",
   },
   description: "Next.js + i18n Boilerplate",
-  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"),
+  metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

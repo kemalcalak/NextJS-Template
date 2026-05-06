@@ -1,3 +1,7 @@
+import "./src/env";
+
+import { withSentryConfig } from "@sentry/nextjs";
+
 import type { NextConfig } from "next";
 
 const isProd = process.env.NODE_ENV === "production";
@@ -59,4 +63,14 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+// Sentry wraps next.config to upload source maps and instrument the build.
+// Source map upload only runs when SENTRY_AUTH_TOKEN is set; safe to omit
+// in local dev or when no Sentry project exists yet.
+export default withSentryConfig(nextConfig, {
+  org: process.env.SENTRY_ORG,
+  project: process.env.SENTRY_PROJECT,
+  authToken: process.env.SENTRY_AUTH_TOKEN,
+  silent: !process.env.CI,
+  tunnelRoute: "/monitoring",
+  disableLogger: true,
+});

@@ -16,6 +16,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { env } from "@/env";
 import { useLanguage } from "@/hooks/use-language";
 import { useTheme } from "@/hooks/use-theme";
 import { useIsMobile } from "@/hooks/useMediaQuery";
@@ -83,7 +84,7 @@ export const AppHeader = () => {
             className="hover:opacity-80 transition-opacity"
           >
             <h2 className="text-lg font-semibold tracking-tight cursor-pointer">
-              {process.env.NEXT_PUBLIC_APP_NAME || "NextJS Template"}
+              {env.NEXT_PUBLIC_APP_NAME}
             </h2>
           </Link>
         </div>

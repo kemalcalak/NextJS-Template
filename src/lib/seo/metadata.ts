@@ -1,3 +1,4 @@
+import { env } from "@/env";
 // Import SEO translations directly (server-side, no i18n client needed)
 import enSeo from "@/i18n/locales/en/seo.json";
 import trSeo from "@/i18n/locales/tr/seo.json";
@@ -20,7 +21,7 @@ const seoTranslations: Record<SeoLocale, Record<string, { title: string; descrip
 };
 
 // Base URL for canonical and OG URLs — defaults to localhost in dev
-const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+const BASE_URL = env.NEXT_PUBLIC_APP_URL;
 
 // Supported locales for hreflang alternate links — kept in sync with routes.ts
 const SUPPORTED_LOCALES: readonly SeoLocale[] = locales;
