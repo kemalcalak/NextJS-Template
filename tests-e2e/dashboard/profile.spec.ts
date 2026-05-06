@@ -49,20 +49,20 @@ for (const locale of LOCALES) {
       await setupAuthenticatedState(page, locale);
       await page.goto(`/${locale}/profile`);
 
-      await expect(page.locator('input[name="first_name"]')).toHaveValue("John");
-      await expect(page.locator('input[name="last_name"]')).toHaveValue("Doe");
-      await expect(page.locator('input[name="email"]')).toHaveValue("john@example.com");
+      await expect(page.locator("input#first_name")).toHaveValue("John");
+      await expect(page.locator("input#last_name")).toHaveValue("Doe");
+      await expect(page.locator("input#email")).toHaveValue("john@example.com");
     });
 
     test("should toggle edit mode and show save/cancel buttons", async ({ page }) => {
       await setupAuthenticatedState(page, locale);
       await page.goto(`/${locale}/profile`);
 
-      await expect(page.locator('input[name="first_name"]')).toBeDisabled();
+      await expect(page.locator("input#first_name")).toBeDisabled();
 
       await page.getByRole("button", { name: s.common.buttons.edit }).click();
 
-      await expect(page.locator('input[name="first_name"]')).toBeEnabled();
+      await expect(page.locator("input#first_name")).toBeEnabled();
       await expect(page.getByRole("button", { name: s.common.buttons.save })).toBeVisible();
       await expect(page.getByRole("button", { name: s.common.buttons.cancel })).toBeVisible();
     });
@@ -74,7 +74,7 @@ for (const locale of LOCALES) {
       await page.getByRole("tab", { name: s.profile.tabs.security }).click();
 
       await expect(page.getByText(s.profile.security.currentPassword).first()).toBeVisible();
-      await expect(page.locator('input[name="current_password"]')).toBeVisible();
+      await expect(page.locator("input#current_password")).toBeVisible();
     });
 
     test("should update profile successfully", async ({ page }) => {
@@ -102,7 +102,7 @@ for (const locale of LOCALES) {
 
       await page.goto(`/${locale}/profile`);
       await page.getByRole("button", { name: s.common.buttons.edit }).click();
-      await page.fill('input[name="first_name"]', "Johnny");
+      await page.fill("input#first_name", "Johnny");
       await page.getByRole("button", { name: s.profile.info.submit }).click();
 
       // Success toast uses the translated success message — regex accepts either.
@@ -112,7 +112,7 @@ for (const locale of LOCALES) {
           .or(page.locator("text=updated successfully"))
           .first(),
       ).toBeVisible();
-      await expect(page.locator('input[name="first_name"]')).toHaveValue("Johnny");
+      await expect(page.locator("input#first_name")).toHaveValue("Johnny");
     });
 
     test("should show validation errors on profile info form", async ({ page }) => {
@@ -120,7 +120,7 @@ for (const locale of LOCALES) {
       await page.goto(`/${locale}/profile`);
 
       await page.getByRole("button", { name: s.common.buttons.edit }).click();
-      await page.fill('input[name="first_name"]', "a");
+      await page.fill("input#first_name", "a");
       await page.getByRole("button", { name: s.profile.info.submit }).click();
 
       await expect(
@@ -142,9 +142,9 @@ for (const locale of LOCALES) {
       await page.goto(`/${locale}/profile`);
       await page.getByRole("tab", { name: s.profile.tabs.security }).click();
 
-      await page.fill('input[name="current_password"]', "OldPass123!");
-      await page.fill('input[name="new_password"]', "NewPass123!");
-      await page.fill('input[name="confirmPassword"]', "NewPass123!");
+      await page.fill("input#current_password", "OldPass123!");
+      await page.fill("input#new_password", "NewPass123!");
+      await page.fill("input#confirmPassword", "NewPass123!");
 
       await page.getByRole("button", { name: s.profile.security.submit }).click();
 

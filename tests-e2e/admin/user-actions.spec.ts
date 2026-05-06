@@ -69,7 +69,7 @@ for (const locale of LOCALES) {
       });
 
       await page.goto(`/${locale}/admin/users/${regularUser.id}`);
-      await page.locator('input[name="first_name"]').fill("Renamed");
+      await page.locator("input#first_name").fill("Renamed");
       await page.getByRole("button", { name: s.userDetail.save }).click();
 
       await expect.poll(() => capturedBody).toContain('"first_name":"Renamed"');
@@ -88,8 +88,13 @@ for (const locale of LOCALES) {
 
       await page.goto(`/${locale}/admin/users/${regularUser.id}`);
       await page.getByRole("button", { name: s.userDetail.suspend }).click();
-      await expect(page.getByRole("heading", { name: s.confirm.suspendTitle })).toBeVisible();
-      await page.getByRole("button", { name: s.confirm.suspendConfirm, exact: true }).click();
+      await expect(
+        page.locator(".ant-modal-title", { hasText: s.confirm.suspendTitle }),
+      ).toBeVisible();
+      await page
+        .locator(".ant-modal-footer")
+        .getByRole("button", { name: s.confirm.suspendConfirm, exact: true })
+        .click();
 
       await expect.poll(() => suspend.calls).toBeGreaterThan(0);
     });
@@ -109,7 +114,10 @@ for (const locale of LOCALES) {
 
       await page.goto(`/${locale}/admin/users/${suspendedUser.id}`);
       await page.getByRole("button", { name: s.userDetail.unsuspend }).click();
-      await page.getByRole("button", { name: s.confirm.unsuspendConfirm, exact: true }).click();
+      await page
+        .locator(".ant-modal-footer")
+        .getByRole("button", { name: s.confirm.unsuspendConfirm, exact: true })
+        .click();
 
       await expect.poll(() => unsuspend.calls).toBeGreaterThan(0);
     });
@@ -130,7 +138,10 @@ for (const locale of LOCALES) {
         .getByTestId("admin-user-danger-zone")
         .getByRole("button", { name: s.userDetail.resetPassword })
         .click();
-      await page.getByRole("button", { name: s.confirm.resetConfirm }).click();
+      await page
+        .locator(".ant-modal-footer")
+        .getByRole("button", { name: s.confirm.resetConfirm })
+        .click();
 
       await expect.poll(() => reset.calls).toBeGreaterThan(0);
     });
@@ -171,7 +182,10 @@ for (const locale of LOCALES) {
         .getByTestId("admin-user-danger-zone")
         .getByRole("button", { name: s.userDetail.delete })
         .click();
-      await page.getByRole("button", { name: s.confirm.deleteConfirm }).click();
+      await page
+        .locator(".ant-modal-footer")
+        .getByRole("button", { name: s.confirm.deleteConfirm })
+        .click();
 
       await expect.poll(() => state.calls).toBeGreaterThan(0);
       await expect(page).toHaveURL(new RegExp(`.*/${locale}/admin/users(\\?.*)?$`));

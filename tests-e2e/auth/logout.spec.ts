@@ -58,7 +58,7 @@ for (const locale of LOCALES) {
         .first();
       await avatar.click();
 
-      await page.getByText(s.auth.logout.logoutButton).click();
+      await page.getByRole("menuitem", { name: s.auth.logout.logoutButton }).click();
 
       await expect(page).toHaveURL(new RegExp(`.*/${locale}(/login)?$`));
 

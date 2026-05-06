@@ -26,7 +26,7 @@ for (const locale of LOCALES) {
 
       // pressSequentially — webkit can drop values assigned via page.fill()
       // on controlled RHF inputs.
-      await page.locator('input[name="email"]').pressSequentially("nonexistent@example.com");
+      await page.locator("input#email").pressSequentially("nonexistent@example.com");
       await page.click('button[type="submit"]');
 
       await expect(page.getByText("User with this email not found").first()).toBeVisible();
@@ -43,7 +43,7 @@ for (const locale of LOCALES) {
 
       await page.goto(`/${locale}/forgot-password`);
 
-      await page.locator('input[name="email"]').pressSequentially("valid@example.com");
+      await page.locator("input#email").pressSequentially("valid@example.com");
       await page.click('button[type="submit"]');
 
       await expect(page.getByText(s.auth.forgotPassword.successTitle).first()).toBeVisible();
@@ -51,7 +51,7 @@ for (const locale of LOCALES) {
 
     test("should show validation errors on invalid email", async ({ page }) => {
       await page.goto(`/${locale}/forgot-password`);
-      await page.locator('input[name="email"]').pressSequentially("invalid-email");
+      await page.locator("input#email").pressSequentially("invalid-email");
       await page.click('button[type="submit"]');
 
       // Validation copy — one locale matches per iteration.

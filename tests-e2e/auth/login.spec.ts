@@ -41,8 +41,8 @@ for (const locale of LOCALES) {
       // pressSequentially fires per-character events so react-hook-form
       // registers the value on webkit; bare page.fill() can drop the email
       // input there.
-      await page.locator('input[name="email"]').pressSequentially("test@example.com");
-      await page.locator('input[name="password"]').pressSequentially("Password123!");
+      await page.locator("input#email").pressSequentially("test@example.com");
+      await page.locator("input#password").pressSequentially("Password123!");
       await page.click('button[type="submit"]');
 
       await page.waitForURL(new RegExp(`.*/${locale}/dashboard`));
@@ -58,8 +58,8 @@ for (const locale of LOCALES) {
       });
 
       await page.goto(`/${locale}/login`);
-      await page.locator('input[name="email"]').pressSequentially("wrong@example.com");
-      await page.locator('input[name="password"]').pressSequentially("wrongpass");
+      await page.locator("input#email").pressSequentially("wrong@example.com");
+      await page.locator("input#password").pressSequentially("wrongpass");
       await page.click('button[type="submit"]');
 
       await expect(page.getByText("Invalid credentials").first()).toBeVisible();
@@ -86,12 +86,12 @@ for (const locale of LOCALES) {
 
     test("should toggle password visibility", async ({ page }) => {
       await page.goto(`/${locale}/login`);
-      const passwordInput = page.locator('input[name="password"]');
+      const passwordInput = page.locator("input#password");
 
       await expect(passwordInput).toHaveAttribute("type", "password");
-      await page.click('button[aria-label*="password"i]');
+      await page.locator(".ant-input-password-icon").first().click();
       await expect(passwordInput).toHaveAttribute("type", "text");
-      await page.click('button[aria-label*="password"i]');
+      await page.locator(".ant-input-password-icon").first().click();
       await expect(passwordInput).toHaveAttribute("type", "password");
     });
   });

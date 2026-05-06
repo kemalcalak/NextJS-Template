@@ -27,13 +27,11 @@ for (const locale of LOCALES) {
 
       await page.goto(`/${locale}/register`);
 
-      // pressSequentially dispatches real keypress events; webkit occasionally
-      // drops values assigned via bare page.fill() on controlled RHF inputs.
-      await page.locator('input[name="first_name"]').pressSequentially("John");
-      await page.locator('input[name="last_name"]').pressSequentially("Doe");
-      await page.locator('input[name="email"]').pressSequentially("test@example.com");
-      await page.locator('input[name="password"]').pressSequentially("Password123!");
-      await page.locator('input[name="confirmPassword"]').pressSequentially("Password123!");
+      await page.locator("input#first_name").fill("John");
+      await page.locator("input#last_name").fill("Doe");
+      await page.locator("input#email").fill("test@example.com");
+      await page.locator("input#password").fill("Password123!");
+      await page.locator("input#confirmPassword").fill("Password123!");
       await page.click('button[type="submit"]');
 
       await expect(page).toHaveURL(new RegExp(`.*/${locale}/verify-email-notice`));
@@ -51,11 +49,11 @@ for (const locale of LOCALES) {
 
       await page.goto(`/${locale}/register`);
 
-      await page.locator('input[name="first_name"]').pressSequentially("John");
-      await page.locator('input[name="last_name"]').pressSequentially("Doe");
-      await page.locator('input[name="email"]').pressSequentially("existing@example.com");
-      await page.locator('input[name="password"]').pressSequentially("Password123!");
-      await page.locator('input[name="confirmPassword"]').pressSequentially("Password123!");
+      await page.locator("input#first_name").fill("John");
+      await page.locator("input#last_name").fill("Doe");
+      await page.locator("input#email").fill("existing@example.com");
+      await page.locator("input#password").fill("Password123!");
+      await page.locator("input#confirmPassword").fill("Password123!");
       await page.click('button[type="submit"]');
 
       await expect(page.getByText("User with this email already exists").first()).toBeVisible();
@@ -64,8 +62,8 @@ for (const locale of LOCALES) {
     test("should show validation errors on password mismatch", async ({ page }) => {
       await page.goto(`/${locale}/register`);
 
-      await page.fill('input[name="password"]', "Password123!");
-      await page.fill('input[name="confirmPassword"]', "WrongPass123!");
+      await page.fill("input#password", "Password123!");
+      await page.fill("input#confirmPassword", "WrongPass123!");
       await page.click('button[type="submit"]');
 
       // Validation copy — regex accepts either locale.
@@ -80,12 +78,12 @@ for (const locale of LOCALES) {
 
     test("should toggle password visibility", async ({ page }) => {
       await page.goto(`/${locale}/register`);
-      const passwordInput = page.locator('input[name="password"]');
+      const passwordInput = page.locator("input#password");
 
       await expect(passwordInput).toHaveAttribute("type", "password");
-      await page.click('button[aria-label*="password"i]');
+      await page.locator(".ant-input-password-icon").first().click();
       await expect(passwordInput).toHaveAttribute("type", "text");
-      await page.click('button[aria-label*="password"i]');
+      await page.locator(".ant-input-password-icon").first().click();
       await expect(passwordInput).toHaveAttribute("type", "password");
     });
   });
