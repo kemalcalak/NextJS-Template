@@ -1,6 +1,7 @@
 import axios from "axios";
 import { toast } from "sonner";
 
+import { env } from "@/env";
 import i18n from "@/i18n/config";
 import {
   ROUTES,
@@ -22,8 +23,8 @@ interface ErrorResponse {
 }
 
 const isServer = typeof window === "undefined";
-const API_URL = isServer ? (process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000") : "";
-const API_PREFIX = process.env.NEXT_PUBLIC_API_PREFIX ?? "/api/v1";
+const API_URL = isServer ? env.NEXT_PUBLIC_API_URL : "";
+const API_PREFIX = env.NEXT_PUBLIC_API_PREFIX;
 
 // Requests under /auth/* should not trigger silent refresh-and-retry when
 // they 401. /auth/change-password is the exception: it runs as an

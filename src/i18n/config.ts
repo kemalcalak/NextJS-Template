@@ -2,6 +2,7 @@ import i18n from "i18next";
 import LanguageDetector from "i18next-browser-languagedetector";
 import { initReactI18next } from "react-i18next";
 
+import { env } from "@/env";
 import { defaultLocale, locales } from "@/lib/config/routes";
 
 import enAccount from "./locales/en/account.json";
@@ -82,7 +83,7 @@ i18n
     interpolation: {
       escapeValue: false,
       defaultVariables: {
-        appName: process.env.NEXT_PUBLIC_APP_NAME || "NextJS Template",
+        appName: env.NEXT_PUBLIC_APP_NAME,
       },
     },
 

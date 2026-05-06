@@ -51,6 +51,8 @@ The API proxy is pre-configured in `next.config.ts` to forward requests from you
 - **Styling & UI:** [Tailwind CSS 4](https://tailwindcss.com/) with [Radix UI](https://www.radix-ui.com/) primitives and [shadcn](https://ui.shadcn.com/) integration for pre-built accessible components.
 - **Forms & Validation:** [React Hook Form](https://react-hook-form.com/) combined with [Zod](https://zod.dev/) for schema-based, type-safe validation.
 - **Code Quality:** ESLint 9 and Prettier pre-configured for consistent code style and formatting.
+- **Pre-commit Hooks:** [Husky](https://typicode.github.io/husky/) + [lint-staged](https://github.com/lint-staged/lint-staged) auto-run ESLint + Prettier on staged files before every commit.
+- **Error Tracking:** [Sentry](https://sentry.io/) integration for client, server, and edge runtimes. Skipped automatically when no DSN is provided.
 - **Internationalization:** `react-i18next` with multi-language support (English & Turkish included) featuring localized validation/error/success messages matching backend responses.
 - **Dark Mode:** [next-themes](https://github.com/pacocoursey/next-themes) for effortless light/dark theme switching.
 - **Icons & Animations:** [Lucide React](https://lucide.dev/) for beautiful icons and [Motion](https://motion.dev/) for smooth animations.
@@ -98,6 +100,16 @@ Create a `.env.local` file (or copy from `.env.example`) and configure your API 
 NEXT_PUBLIC_API_URL=http://localhost:8000
 NEXT_PUBLIC_API_PREFIX=/api/v1
 NEXT_PUBLIC_APP_NAME=MyApp
+
+# Sentry (leave empty to disable error tracking)
+NEXT_PUBLIC_SENTRY_DSN=
+SENTRY_DSN=
+NEXT_PUBLIC_SENTRY_TRACES_SAMPLE_RATE=0
+SENTRY_TRACES_SAMPLE_RATE=0
+# Source map upload (CI only — leave empty locally)
+SENTRY_ORG=
+SENTRY_PROJECT=
+SENTRY_AUTH_TOKEN=
 ```
 
 **Environment Variables Explained:**
@@ -105,6 +117,13 @@ NEXT_PUBLIC_APP_NAME=MyApp
 - `NEXT_PUBLIC_API_URL`: Base URL of your FastAPI backend server
 - `NEXT_PUBLIC_API_PREFIX`: API version prefix (commonly `/api/v1`)
 - `NEXT_PUBLIC_APP_NAME`: Application name displayed throughout the UI
+
+**Optional — Sentry (leave empty to disable):**
+
+- `NEXT_PUBLIC_SENTRY_DSN`: DSN used by the browser SDK (`src/instrumentation-client.ts`)
+- `SENTRY_DSN`: DSN used by the server / edge SDK (`src/instrumentation.ts`)
+- `NEXT_PUBLIC_SENTRY_TRACES_SAMPLE_RATE` / `SENTRY_TRACES_SAMPLE_RATE`: Performance sampling (0–1, default 0)
+- `SENTRY_ORG` / `SENTRY_PROJECT` / `SENTRY_AUTH_TOKEN`: Required only in CI to upload source maps. Leave empty locally.
 
 ### 3. Start the Development Server
 
@@ -132,8 +151,11 @@ This project uses `pnpm` to manage dependencies and run scripts. Below are the k
 
 The project uses [Vitest](https://vitest.dev/) for unit and component testing, and [Playwright](https://playwright.dev/) for End-to-End (E2E) testing.
 
-- **`pnpm run test`**: Runs unit and component tests via Vitest (currently not configured, ready for setup).
+- **`pnpm vitest run`**: Runs unit and component tests once (CI-style).
+- **`pnpm vitest`**: Runs Vitest in watch mode.
+- **`pnpm vitest run path/to/file.test.tsx`**: Runs a single test file.
 - **`pnpm run test:e2e`**: Runs Playwright E2E tests in the `tests-e2e` folder to simulate user interactions across the entire application.
+- **`pnpm run test:e2e --project=chromium-desktop`**: Runs E2E in a single browser project.
 - **`pnpm run test:e2e:report`**: Shows the Playwright test report from the latest test run.
 
 ### 🧹 Code Quality & Formatting
@@ -143,6 +165,26 @@ This project uses ESLint v9 for catching logical errors and Prettier for code fo
 - **`pnpm run lint`**: Runs ESLint to find problems in your code.
 - **`pnpm run format`**: Automatically formats all supported files using Prettier.
 - **`pnpm run format:check`**: Checks if files are properly formatted (useful for CI/CD pipelines).
+- **`pnpm tsc -b`**: TypeScript type check (CI runs this).
+
+### 🪝 Git Hooks (Husky + lint-staged)
+
+Husky installs the hooks on `pnpm install` (via the `prepare` script). Two hooks ship:
+
+**`pre-commit`** (~10–15 s) — runs on every `git commit`:
+
+1. `pnpm lint-staged` — staged files only:
+   - `*.{ts,tsx,js,mjs,cjs}` → `eslint --fix` then `prettier --write`
+   - `*.{json,md,css,yml,yaml}` → `prettier --write`
+2. `pnpm tsc -b` — full project TypeScript type check (incremental cache after the first run).
+
+If ESLint can't auto-fix an issue or `tsc` reports a type error, the commit is aborted.
+
+**`pre-push`** (~30–90 s) — runs on every `git push`:
+
+- `pnpm build` — full production build. Catches issues that escape typecheck (RSC boundary violations, missing env vars validated by `src/env.ts`, route conflicts) before anything reaches the remote.
+
+Configuration lives in `lint-staged.config.mjs`, `.husky/pre-commit`, and `.husky/pre-push`. Build / Vitest / Playwright run in CI on top of all this — see `.github/workflows/ci.yml`.
 
 ---
 
@@ -153,6 +195,7 @@ This project uses ESLint v9 for catching logical errors and Prettier for code fo
 │   ├── app/              # Next.js App Router (Pages, Layouts, and Route Handlers)
 │   │   ├── globals.css   # Global styles
 │   │   ├── layout.tsx    # Root layout
+│   │   ├── global-error.tsx  # Root-level error boundary (Sentry capture)
 │   │   ├── [locale]/     # Locale-based routing segment
 │   │   │   ├── page.tsx              # Home page
 │   │   │   ├── layout.tsx            # Locale layout
@@ -191,19 +234,24 @@ This project uses ESLint v9 for catching logical errors and Prettier for code fo
 │   │   ├── setup.ts      # Vitest setup
 │   │   ├── test-utils.tsx # Testing utilities
 │   │   └── msw/          # Mock Service Worker setup
-│   ├── proxy.ts          # API proxy configuration
-│   └── main.tsx          # (Legacy) Entry point reference
+│   ├── proxy.ts          # Locale routing + auth guard (Next.js 16 successor to middleware.ts)
+│   ├── instrumentation.ts        # Sentry init for server / edge runtimes
+│   └── instrumentation-client.ts # Sentry init for browser runtime
 ├── tests-e2e/            # Playwright E2E tests
 │   ├── auth/             # Auth-related E2E tests
 │   ├── common/           # Common feature E2E tests
 │   ├── dashboard/        # Dashboard E2E tests
 │   └── base-test.ts      # Base test configuration
 ├── public/               # Static assets (images, favicon, etc.)
+├── .husky/               # Git hooks managed by Husky
+│   └── pre-commit        # Runs lint-staged before every commit
 ├── .env.example          # Example environment variables
-├── .prettierrc            # Prettier configuration
+├── .prettierrc           # Prettier configuration
+├── .prettierignore       # Files Prettier should skip
 ├── components.json       # shadcn configuration
 ├── eslint.config.mjs     # ESLint unified configuration
-├── next.config.ts        # Next.js configuration (includes API proxy)
+├── lint-staged.config.mjs # lint-staged file-pattern → command map
+├── next.config.ts        # Next.js configuration (proxy + Sentry wrapper)
 ├── package.json          # Dependencies and scripts
 ├── playwright.config.ts  # Playwright configuration
 ├── postcss.config.mjs    # PostCSS configuration

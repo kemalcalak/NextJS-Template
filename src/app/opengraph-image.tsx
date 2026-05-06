@@ -1,6 +1,7 @@
 /* eslint-disable react-refresh/only-export-components */
 import { ImageResponse } from "next/og";
 
+import { env } from "@/env";
 import { getServerTranslations } from "@/i18n/server";
 
 export const runtime = "edge";
@@ -20,7 +21,7 @@ export default function Image({ params }: { params: { locale: string } }) {
   // Use server-side translation helper instead of manual JSON import
   const { t } = getServerTranslations(params.locale);
   const subtitle = t("app_subtitle", "Modern, Type-Safe and Premium Next.js Template");
-  const appName = process.env.NEXT_PUBLIC_APP_NAME || "NextJS Template";
+  const appName = env.NEXT_PUBLIC_APP_NAME;
 
   return new ImageResponse(
     <div

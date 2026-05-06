@@ -14,6 +14,7 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
+import { env } from "@/env";
 import { useLanguage } from "@/hooks/use-language";
 import {
   getLocaleFromPath,
@@ -134,7 +135,7 @@ export const AppDrawer = ({
             className="text-2xl font-bold tracking-tight text-primary outline-none"
             tabIndex={-1}
           >
-            {process.env.NEXT_PUBLIC_APP_NAME || "NextJS Template"}
+            {env.NEXT_PUBLIC_APP_NAME}
           </DrawerTitle>
           <DrawerDescription className="sr-only">
             {t("common:ui.drawerDescription")}
