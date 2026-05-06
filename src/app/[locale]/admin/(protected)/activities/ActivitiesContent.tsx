@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 
+import { Select } from "antd";
 import { X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
@@ -10,13 +11,6 @@ import { AdminPagination } from "@/components/admin/Pagination";
 import { DEFAULT_PAGE_SIZE } from "@/components/admin/pagination-config";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { useAdminActivities } from "@/hooks/api/use-admin";
 import type {
   ActivityStatus,
@@ -97,75 +91,57 @@ export function ActivitiesContent() {
       <Card className="border-border/50 bg-card/60">
         <CardContent className="flex flex-col gap-3 p-4 md:flex-row md:flex-wrap md:items-center">
           <div className="grid grid-cols-2 gap-2 md:contents">
-            <Select
+            <Select<string>
               value={type}
-              onValueChange={(value) => {
+              onChange={(value) => {
                 if (!isTypeFilter(value)) return;
                 setType(value);
                 setSkip(0);
               }}
-            >
-              <SelectTrigger
-                aria-label={t("activities.filters.type")}
-                className="w-full md:w-fit md:min-w-35"
-              >
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">{t("activities.filters.typeAny")}</SelectItem>
-                {ACTIVITY_TYPES.map((v) => (
-                  <SelectItem key={v} value={v}>
-                    {t(`activities.type.${v}` as const)}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <Select
+              aria-label={t("activities.filters.type")}
+              className="w-full md:w-fit md:min-w-35"
+              options={[
+                { value: "all", label: t("activities.filters.typeAny") },
+                ...ACTIVITY_TYPES.map((v) => ({
+                  value: v,
+                  label: t(`activities.type.${v}` as const),
+                })),
+              ]}
+            />
+            <Select<string>
               value={resource}
-              onValueChange={(value) => {
+              onChange={(value) => {
                 if (!isResourceFilter(value)) return;
                 setResource(value);
                 setSkip(0);
               }}
-            >
-              <SelectTrigger
-                aria-label={t("activities.filters.resource")}
-                className="w-full md:w-fit md:min-w-35"
-              >
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">{t("activities.filters.resourceAny")}</SelectItem>
-                {RESOURCE_TYPES.map((v) => (
-                  <SelectItem key={v} value={v}>
-                    {t(`activities.resource.${v}` as const)}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <Select
+              aria-label={t("activities.filters.resource")}
+              className="w-full md:w-fit md:min-w-35"
+              options={[
+                { value: "all", label: t("activities.filters.resourceAny") },
+                ...RESOURCE_TYPES.map((v) => ({
+                  value: v,
+                  label: t(`activities.resource.${v}` as const),
+                })),
+              ]}
+            />
+            <Select<string>
               value={status}
-              onValueChange={(value) => {
+              onChange={(value) => {
                 if (!isStatusFilter(value)) return;
                 setStatus(value);
                 setSkip(0);
               }}
-            >
-              <SelectTrigger
-                aria-label={t("activities.filters.status")}
-                className="w-full md:w-fit md:min-w-35"
-              >
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">{t("activities.filters.statusAny")}</SelectItem>
-                {STATUS_OPTIONS.map((v) => (
-                  <SelectItem key={v} value={v}>
-                    {t(`activities.status.${v}` as const)}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+              aria-label={t("activities.filters.status")}
+              className="w-full md:w-fit md:min-w-35"
+              options={[
+                { value: "all", label: t("activities.filters.statusAny") },
+                ...STATUS_OPTIONS.map((v) => ({
+                  value: v,
+                  label: t(`activities.status.${v}` as const),
+                })),
+              ]}
+            />
             {hasFilters ? (
               <Button variant="ghost" size="sm" onClick={resetFilters} className="w-full md:w-auto">
                 <X className="h-4 w-4" />

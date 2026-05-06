@@ -1,5 +1,6 @@
 "use client";
 
+import { Dropdown, type MenuProps } from "antd";
 import { Ban, ChevronRight, KeyRound, MoreHorizontal, RotateCcw, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -7,13 +8,6 @@ import { useTranslation } from "react-i18next";
 
 import { StatusBadge, UserStatusBadge } from "@/components/admin/StatusBadge";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import type { UserActionKind } from "@/hooks/api/use-user-actions";
 import { ROUTES, getLocaleFromPath, getLocalizedPath } from "@/lib/config/routes";
 import { formatDate } from "@/lib/format-date";
@@ -26,6 +20,52 @@ interface UsersTableProps {
   currentUserId: string | null;
   onAction: (kind: UserActionKind, user: AdminUser) => void;
 }
+
+const buildRowMenu = (
+  user: AdminUser,
+  isSelf: boolean,
+  onAction: UsersTableProps["onAction"],
+  t: (key: string) => string,
+): MenuProps["items"] => [
+  user.suspended_at
+    ? {
+        key: "unsuspend",
+        icon: <RotateCcw className="h-4 w-4" />,
+        label: t("users.rowActions.unsuspend"),
+        onClick: () => {
+          onAction("unsuspend", user);
+        },
+      }
+    : {
+        key: "suspend",
+        icon: <Ban className="h-4 w-4" />,
+        label: t("users.rowActions.suspend"),
+        danger: true,
+        disabled: isSelf,
+        onClick: () => {
+          onAction("suspend", user);
+        },
+      },
+  {
+    key: "reset",
+    icon: <KeyRound className="h-4 w-4" />,
+    label: t("users.rowActions.resetPassword"),
+    onClick: () => {
+      onAction("reset", user);
+    },
+  },
+  { type: "divider" },
+  {
+    key: "delete",
+    icon: <Trash2 className="h-4 w-4" />,
+    label: t("users.rowActions.delete"),
+    danger: true,
+    disabled: isSelf,
+    onClick: () => {
+      onAction("delete", user);
+    },
+  },
+];
 
 export function UsersTable({ rows, isLoading, currentUserId, onAction }: UsersTableProps) {
   const { t } = useTranslation("admin");
@@ -92,8 +132,12 @@ export function UsersTable({ rows, isLoading, currentUserId, onAction }: UsersTa
                         <ChevronRight className="h-4 w-4" />
                       </Link>
                     </Button>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
+                    <Dropdown
+                      menu={{ items: buildRowMenu(user, isSelf, onAction, t) }}
+                      trigger={["click"]}
+                      placement="bottomRight"
+                    >
+                      <span>
                         <Button
                           variant="ghost"
                           size="icon-sm"
@@ -101,50 +145,8 @@ export function UsersTable({ rows, isLoading, currentUserId, onAction }: UsersTa
                         >
                           <MoreHorizontal className="h-4 w-4" />
                         </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end" className="w-48">
-                        {user.suspended_at ? (
-                          <DropdownMenuItem
-                            onSelect={() => {
-                              onAction("unsuspend", user);
-                            }}
-                          >
-                            <RotateCcw className="mr-2 h-4 w-4" />
-                            {t("users.rowActions.unsuspend")}
-                          </DropdownMenuItem>
-                        ) : (
-                          <DropdownMenuItem
-                            disabled={isSelf}
-                            className="text-destructive focus:text-destructive"
-                            onSelect={() => {
-                              onAction("suspend", user);
-                            }}
-                          >
-                            <Ban className="mr-2 h-4 w-4" />
-                            {t("users.rowActions.suspend")}
-                          </DropdownMenuItem>
-                        )}
-                        <DropdownMenuItem
-                          onSelect={() => {
-                            onAction("reset", user);
-                          }}
-                        >
-                          <KeyRound className="mr-2 h-4 w-4" />
-                          {t("users.rowActions.resetPassword")}
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem
-                          disabled={isSelf}
-                          className="text-destructive focus:text-destructive"
-                          onSelect={() => {
-                            onAction("delete", user);
-                          }}
-                        >
-                          <Trash2 className="mr-2 h-4 w-4" />
-                          {t("users.rowActions.delete")}
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
+                      </span>
+                    </Dropdown>
                   </div>
                 </td>
               </tr>

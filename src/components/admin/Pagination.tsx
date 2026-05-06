@@ -1,17 +1,11 @@
 "use client";
 
+import { Select } from "antd";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 import { PAGE_SIZE_OPTIONS } from "@/components/admin/pagination-config";
 import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 
 interface PaginationProps {
   total: number;
@@ -47,22 +41,14 @@ export function AdminPagination({
           <div className="flex items-center gap-2">
             <span>{t("users.pagination.rowsPerPage")}</span>
             <Select
-              value={String(limit)}
-              onValueChange={(value) => {
-                onPageSizeChange(Number(value));
+              value={limit}
+              size="small"
+              onChange={(value: number) => {
+                onPageSizeChange(value);
               }}
-            >
-              <SelectTrigger size="sm" aria-label={t("users.pagination.rowsPerPage")}>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {pageSizeOptions.map((option) => (
-                  <SelectItem key={option} value={String(option)}>
-                    {option}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+              aria-label={t("users.pagination.rowsPerPage")}
+              options={pageSizeOptions.map((option) => ({ value: option, label: String(option) }))}
+            />
           </div>
         ) : null}
       </div>

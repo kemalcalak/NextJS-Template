@@ -1,17 +1,6 @@
 "use client";
 
-import { Loader2 } from "lucide-react";
-
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+import { Button as AntdButton, Modal } from "antd";
 
 interface ConfirmDialogProps {
   open: boolean;
@@ -37,27 +26,33 @@ export function ConfirmDialog({
   destructive = false,
 }: ConfirmDialogProps) {
   return (
-    <AlertDialog open={open} onOpenChange={onOpenChange}>
-      <AlertDialogContent size="sm">
-        <AlertDialogHeader>
-          <AlertDialogTitle>{title}</AlertDialogTitle>
-          <AlertDialogDescription>{description}</AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel disabled={isLoading}>{cancelLabel}</AlertDialogCancel>
-          <AlertDialogAction
-            variant={destructive ? "destructive" : "default"}
+    <Modal
+      open={open}
+      title={title}
+      onCancel={() => {
+        if (!isLoading) onOpenChange(false);
+      }}
+      mask={{ closable: !isLoading }}
+      width={420}
+      destroyOnHidden
+      footer={
+        <div className="flex justify-end gap-2">
+          <AntdButton
+            type="default"
             disabled={isLoading}
-            onClick={(event) => {
-              event.preventDefault();
-              onConfirm();
+            onClick={() => {
+              onOpenChange(false);
             }}
           >
-            {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+            {cancelLabel}
+          </AntdButton>
+          <AntdButton type="primary" danger={destructive} loading={isLoading} onClick={onConfirm}>
             {confirmLabel}
-          </AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
+          </AntdButton>
+        </div>
+      }
+    >
+      <p className="text-sm text-muted-foreground">{description}</p>
+    </Modal>
   );
 }

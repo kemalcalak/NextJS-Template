@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 
-import { ArrowLeft, Loader2 } from "lucide-react";
+import { Spin } from "antd";
+import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
@@ -39,8 +40,8 @@ export function UserDetailContent({ userId }: { userId: string }) {
 
   if (isLoading || !user) {
     return (
-      <div className="flex h-40 items-center justify-center text-sm text-muted-foreground">
-        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+      <div className="flex h-40 items-center justify-center gap-2 text-sm text-muted-foreground">
+        <Spin size="small" />
         {t("users.loading")}
       </div>
     );
