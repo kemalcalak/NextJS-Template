@@ -13,7 +13,7 @@ describe("UserActionDialogs", () => {
         isLoading={false}
       />,
     );
-    expect(screen.queryByRole("alertdialog")).not.toBeInTheDocument();
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   });
 
   it.each([
@@ -30,7 +30,7 @@ describe("UserActionDialogs", () => {
         isLoading={false}
       />,
     );
-    expect(screen.getByRole("alertdialog")).toBeInTheDocument();
+    expect(screen.getByRole("dialog")).toBeInTheDocument();
     expect(screen.getByText(new RegExp(`admin:confirm\\.${title}`))).toBeInTheDocument();
     expect(
       screen.getByRole("button", { name: new RegExp(`admin:confirm\\.${confirmKey}`) }),
