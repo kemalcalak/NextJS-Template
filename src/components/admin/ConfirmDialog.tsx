@@ -46,7 +46,13 @@ export function ConfirmDialog({
           >
             {cancelLabel}
           </AntdButton>
-          <AntdButton type="primary" danger={destructive} loading={isLoading} onClick={onConfirm}>
+          <AntdButton
+            type="primary"
+            danger={destructive}
+            loading={isLoading}
+            disabled={isLoading}
+            onClick={onConfirm}
+          >
             {confirmLabel}
           </AntdButton>
         </div>
