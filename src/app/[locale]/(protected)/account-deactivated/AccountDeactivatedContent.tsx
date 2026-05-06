@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-import { AlertTriangle, Loader2, LogOut, ShieldCheck } from "lucide-react";
+import { AlertTriangle, LogOut, ShieldCheck } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 
@@ -101,34 +101,25 @@ export const AccountDeactivatedContent = () => {
         <CardFooter className="flex flex-col gap-2 sm:flex-row sm:justify-center">
           <Button
             onClick={onReactivate}
-            disabled={isReactivating || isLoggingOut}
+            loading={isReactivating}
+            disabled={isLoggingOut}
             className="w-full sm:w-auto"
           >
-            {isReactivating ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                {t("account:deactivated.reactivating")}
-              </>
-            ) : (
-              <>
-                <ShieldCheck className="mr-2 h-4 w-4" />
-                {t("account:deactivated.reactivate")}
-              </>
-            )}
+            {!isReactivating && <ShieldCheck className="mr-2 h-4 w-4" />}
+            {isReactivating
+              ? t("account:deactivated.reactivating")
+              : t("account:deactivated.reactivate")}
           </Button>
           <Button
             variant="outline"
             onClick={() => {
               logout();
             }}
-            disabled={isReactivating || isLoggingOut}
+            loading={isLoggingOut}
+            disabled={isReactivating}
             className="w-full sm:w-auto"
           >
-            {isLoggingOut ? (
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            ) : (
-              <LogOut className="mr-2 h-4 w-4" />
-            )}
+            {!isLoggingOut && <LogOut className="mr-2 h-4 w-4" />}
             {t("account:deactivated.logout")}
           </Button>
         </CardFooter>
