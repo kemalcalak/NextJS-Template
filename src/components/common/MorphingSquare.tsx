@@ -1,23 +1,15 @@
 "use client";
 
-import { cva } from "class-variance-authority";
 import { motion, type HTMLMotionProps } from "motion/react";
 
 import { cn } from "@/lib/utils";
 
-const morphingSquareVariants = cva("flex gap-2 items-center justify-center", {
-  variants: {
-    messagePlacement: {
-      bottom: "flex-col",
-      top: "flex-col-reverse",
-      right: "flex-row",
-      left: "flex-row-reverse",
-    },
-  },
-  defaultVariants: {
-    messagePlacement: "bottom",
-  },
-});
+const PLACEMENT_CLASSES = {
+  bottom: "flex-col",
+  top: "flex-col-reverse",
+  right: "flex-row",
+  left: "flex-row-reverse",
+} as const;
 
 export interface MorphingSquareProps {
   message?: string;
@@ -25,7 +17,7 @@ export interface MorphingSquareProps {
    * Position of the message relative to the spinner.
    * @default bottom
    */
-  messagePlacement?: "top" | "bottom" | "left" | "right";
+  messagePlacement?: keyof typeof PLACEMENT_CLASSES;
 }
 
 export function MorphingSquare({
@@ -35,7 +27,9 @@ export function MorphingSquare({
   ...props
 }: HTMLMotionProps<"div"> & MorphingSquareProps) {
   return (
-    <div className={cn(morphingSquareVariants({ messagePlacement }))}>
+    <div
+      className={cn("flex gap-2 items-center justify-center", PLACEMENT_CLASSES[messagePlacement])}
+    >
       <motion.div
         className={cn("w-10 h-10 bg-foreground", className)}
         animate={{
