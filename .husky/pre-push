@@ -1,1 +1,1 @@
-pnpm build
+pnpm tsc -b && pnpm build

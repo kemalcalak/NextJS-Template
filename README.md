@@ -171,18 +171,20 @@ This project uses ESLint v9 for catching logical errors and Prettier for code fo
 
 Husky installs the hooks on `pnpm install` (via the `prepare` script). Two hooks ship:
 
-**`pre-commit`** (~10–15 s) — runs on every `git commit`:
+**`pre-commit`** (~5–10 s) — runs on every `git commit`:
 
-1. `pnpm lint-staged` — staged files only:
-   - `*.{ts,tsx,js,mjs,cjs}` → `eslint --fix` then `prettier --write`
-   - `*.{json,md,css,yml,yaml}` → `prettier --write`
-2. `pnpm tsc -b` — full project TypeScript type check (incremental cache after the first run).
+- `pnpm lint-staged` — staged files only:
+  - `*.{ts,tsx,js,mjs,cjs}` → `eslint --fix` then `prettier --write`
+  - `*.{json,md,css,yml,yaml}` → `prettier --write`
 
-If ESLint can't auto-fix an issue or `tsc` reports a type error, the commit is aborted.
+If ESLint can't auto-fix an issue, the commit is aborted. Kept intentionally fast — typecheck and build run on push, not on every commit.
 
-**`pre-push`** (~30–90 s) — runs on every `git push`:
+**`pre-push`** (~40–100 s) — runs on every `git push`:
 
-- `pnpm build` — full production build. Catches issues that escape typecheck (RSC boundary violations, missing env vars validated by `src/env.ts`, route conflicts) before anything reaches the remote.
+1. `pnpm tsc -b` — full project TypeScript type check (incremental cache).
+2. `pnpm build` — full production build. Catches what typecheck can't (RSC boundary violations, missing env vars validated by `src/env.ts`, route conflicts) before anything reaches the remote.
+
+`&&` chains them — if typecheck fails, build is skipped to save time.
 
 Configuration lives in `lint-staged.config.mjs`, `.husky/pre-commit`, and `.husky/pre-push`. Build / Vitest / Playwright run in CI on top of all this — see `.github/workflows/ci.yml`.
 
