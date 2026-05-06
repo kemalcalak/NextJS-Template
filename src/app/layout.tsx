@@ -1,3 +1,5 @@
+import { AntdRegistry } from "@ant-design/nextjs-registry";
+
 import { env } from "@/env";
 
 import type { Metadata, Viewport } from "next";
@@ -23,5 +25,5 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  return children;
+  return <AntdRegistry>{children}</AntdRegistry>;
 }

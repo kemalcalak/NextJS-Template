@@ -7,6 +7,7 @@ import { ErrorBoundary } from "@/components/common/ErrorBoundary";
 import { LoadingScreen } from "@/components/common/LoadingScreen";
 import i18n from "@/i18n/config";
 
+import { AntdProvider } from "./AntdProvider";
 import { QueryProvider } from "./QueryProvider";
 import { ThemeProvider } from "./ThemeProvider";
 
@@ -49,15 +50,17 @@ export function ClientSideProviders({
 
   return (
     <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-      {!initialSync ? (
-        <LoadingScreen fullScreen message={loadingMessage} />
-      ) : (
-        <QueryProvider>
-          <AuthHydrator>
-            <ErrorBoundary>{children}</ErrorBoundary>
-          </AuthHydrator>
-        </QueryProvider>
-      )}
+      <AntdProvider locale={locale}>
+        {!initialSync ? (
+          <LoadingScreen fullScreen message={loadingMessage} />
+        ) : (
+          <QueryProvider>
+            <AuthHydrator>
+              <ErrorBoundary>{children}</ErrorBoundary>
+            </AuthHydrator>
+          </QueryProvider>
+        )}
+      </AntdProvider>
     </ThemeProvider>
   );
 }

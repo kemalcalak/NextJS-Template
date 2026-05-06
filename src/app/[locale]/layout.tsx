@@ -1,13 +1,18 @@
 import { Geist, Geist_Mono } from "next/font/google";
 
 import { AppHeader } from "@/components/common/AppHeader";
-import { Toaster } from "@/components/ui/sonner";
 import { buildMetadata, validateLocale } from "@/lib/seo/metadata";
+import { buildThemeStyleSheet } from "@/lib/theme/colors";
 import { ClientSideProviders } from "@/providers/ClientSideProviders";
 
 import type { Metadata } from "next";
 
 import "../globals.css";
+
+// Pre-rendered so both light and dark CSS variables are present in the initial
+// HTML; next-themes' inline script flips the .dark class before hydration,
+// avoiding a flash of unthemed content.
+const THEME_STYLES = buildThemeStyleSheet();
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -46,6 +51,10 @@ export default async function RootLayout({
 
   return (
     <html lang={locale} suppressHydrationWarning>
+      <head>
+        {/* eslint-disable-next-line react/no-danger -- internal theme CSS, no user input */}
+        <style dangerouslySetInnerHTML={{ __html: THEME_STYLES }} />
+      </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <ClientSideProviders locale={locale}>
           <div className="relative flex min-h-screen flex-col bg-background">
@@ -53,7 +62,6 @@ export default async function RootLayout({
             <main className="flex-1 flex flex-col">{children}</main>
           </div>
         </ClientSideProviders>
-        <Toaster richColors position="top-right" />
       </body>
     </html>
   );
