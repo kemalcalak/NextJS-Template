@@ -2,27 +2,26 @@
 
 import { useState, useEffect } from "react";
 
-import { zodResolver } from "@hookform/resolvers/zod";
+import { Form } from "antd";
 import { isAxiosError } from "axios";
-import { Loader2, ShieldCheck, XCircle } from "lucide-react";
+import { ShieldCheck, XCircle } from "lucide-react";
 import { motion } from "motion/react";
 import Link from "next/link";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
-import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
 import { AuthHeader } from "@/components/auth/AuthHeader";
 import { AuthPasswordField } from "@/components/auth/AuthPasswordField";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import { Form } from "@/components/ui/form";
 import { useResetPasswordMutation } from "@/hooks/api/use-auth";
 import { getLocaleFromPath, ROUTES, getLocalizedPath } from "@/lib/config/routes";
-import { getResetSchema, type ResetFormValues } from "@/schemas/auth";
+import { zodFieldRule } from "@/lib/validation/zodToAntdRule";
+import { getConfirmPasswordSchema, getPasswordSchema, type ResetFormValues } from "@/schemas/auth";
 
 const SuccessState = ({ t, locale }: { t: (key: string) => string; locale: string }) => (
   <div className="flex min-h-screen items-center justify-center bg-background p-4 sm:p-8">
-    <div className="mx-auto w-full max-w-md space-y-6 text-center animate-in fade-in duration-500">
+    <div className="mx-auto w-full max-w-md space-y-6 text-center">
       <ShieldCheck className="mx-auto h-12 w-12 text-green-500" />
       <h1 className="text-2xl font-bold tracking-tight">{t("resetPassword.successTitle")}</h1>
       <p className="text-muted-foreground">{t("resetPassword.successDesc")}</p>
@@ -57,18 +56,11 @@ export function ResetPasswordContent() {
 
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const resetPasswordMutation = useResetPasswordMutation();
   const isPending = resetPasswordMutation.isPending;
 
-  const form = useForm<ResetFormValues>({
-    resolver: zodResolver(getResetSchema(tv)),
-    defaultValues: { password: "", confirmPassword: "" },
-  });
-
-  const onSubmit = async (values: ResetFormValues) => {
+  const onFinish = async (values: ResetFormValues) => {
     if (!token) return;
     setError(null);
     try {
@@ -117,31 +109,39 @@ export function ResetPasswordContent() {
           </Alert>
         )}
 
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4" noValidate>
-            <AuthPasswordField
-              form={form}
-              isLoading={isPending}
-              showPassword={showPassword}
-              setShowPassword={setShowPassword}
-              t={t}
-              labelKey="resetPassword.newPassword"
-              name="password"
-            />
-            <AuthPasswordField
-              form={form}
-              isLoading={isPending}
-              showPassword={showConfirmPassword}
-              setShowPassword={setShowConfirmPassword}
-              t={t}
-              labelKey="resetPassword.confirmNewPassword"
-              name="confirmPassword"
-            />
-            <Button className="w-full" type="submit" disabled={isPending}>
-              {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              {isPending ? t("resetPassword.submitting") : t("resetPassword.submitButton")}
-            </Button>
-          </form>
+        <Form<ResetFormValues>
+          layout="vertical"
+          onFinish={onFinish}
+          initialValues={{ password: "", confirmPassword: "" }}
+          requiredMark={false}
+          className="space-y-4"
+        >
+          <Form.Item
+            name="password"
+            label={t("resetPassword.newPassword")}
+            rules={[zodFieldRule(getPasswordSchema(tv))]}
+          >
+            <AuthPasswordField disabled={isPending} />
+          </Form.Item>
+          <Form.Item
+            name="confirmPassword"
+            label={t("resetPassword.confirmNewPassword")}
+            dependencies={["password"]}
+            rules={[
+              zodFieldRule(getConfirmPasswordSchema(tv)),
+              ({ getFieldValue }) => ({
+                validator(_rule, value: string) {
+                  if (!value || getFieldValue("password") === value) return Promise.resolve();
+                  return Promise.reject(new Error(tv("confirmPasswordMismatch")));
+                },
+              }),
+            ]}
+          >
+            <AuthPasswordField disabled={isPending} />
+          </Form.Item>
+          <Button className="w-full" type="submit" loading={isPending}>
+            {isPending ? t("resetPassword.submitting") : t("resetPassword.submitButton")}
+          </Button>
         </Form>
       </motion.div>
     </div>

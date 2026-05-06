@@ -2,22 +2,21 @@
 
 import { useState } from "react";
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { ChevronLeft, Loader2, MailCheck } from "lucide-react";
+import { Form } from "antd";
+import { ChevronLeft, MailCheck } from "lucide-react";
 import { motion } from "motion/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
 import { AuthEmailField } from "@/components/auth/AuthEmailField";
 import { AuthHeader } from "@/components/auth/AuthHeader";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import { Form } from "@/components/ui/form";
 import { useForgotPasswordMutation } from "@/hooks/api/use-auth";
 import { getLocaleFromPath, ROUTES, getLocalizedPath } from "@/lib/config/routes";
-import { getForgotSchema, type ForgotFormValues } from "@/schemas/auth";
+import { zodFieldRule } from "@/lib/validation/zodToAntdRule";
+import { getEmailSchema, type ForgotFormValues } from "@/schemas/auth";
 
 import type { AxiosError } from "axios";
 
@@ -27,21 +26,16 @@ export function ForgotPasswordContent() {
   const pathname = usePathname();
   const currentLocale = getLocaleFromPath(pathname);
   const [success, setSuccess] = useState(false);
+  const [submittedEmail, setSubmittedEmail] = useState("");
   const [error, setError] = useState<string | null>(null);
 
   const forgotPasswordMutation = useForgotPasswordMutation();
 
-  const form = useForm<ForgotFormValues>({
-    resolver: zodResolver(getForgotSchema(tv)),
-    defaultValues: {
-      email: "",
-    },
-  });
-
-  const onSubmit = async (values: ForgotFormValues) => {
+  const onFinish = async (values: ForgotFormValues) => {
     setError(null);
     try {
       await forgotPasswordMutation.mutateAsync({ email: values.email });
+      setSubmittedEmail(values.email);
       setSuccess(true);
     } catch (err: unknown) {
       const axiosError = err as AxiosError<{ detail?: string }>;
@@ -60,7 +54,7 @@ export function ForgotPasswordContent() {
           <h1 className="text-2xl font-bold tracking-tight">{t("forgotPassword.successTitle")}</h1>
           <p className="text-muted-foreground">
             {t("forgotPassword.successDescPrefix")}{" "}
-            <span className="font-medium text-foreground">{form.getValues().email}</span>.
+            <span className="font-medium text-foreground">{submittedEmail}</span>.
           </p>
           <Button asChild className="w-full mt-4" variant="outline">
             <Link href={getLocalizedPath(ROUTES.login, currentLocale)}>
@@ -94,27 +88,30 @@ export function ForgotPasswordContent() {
           </Alert>
         )}
 
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4" noValidate>
-            <AuthEmailField
-              form={form}
-              isLoading={isPending}
-              t={t}
-              labelKey="forgotPassword.emailLabel"
-              name="email"
-            />
-            <div className="flex gap-3 pt-2">
-              <Button asChild variant="outline" className="flex-1" disabled={isPending}>
-                <Link href={getLocalizedPath(ROUTES.login, currentLocale)}>
-                  {t("forgotPassword.backToLogin")}
-                </Link>
-              </Button>
-              <Button className="flex-1" type="submit" disabled={isPending}>
-                {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                {isPending ? t("forgotPassword.submitting") : t("forgotPassword.submitButton")}
-              </Button>
-            </div>
-          </form>
+        <Form<ForgotFormValues>
+          layout="vertical"
+          onFinish={onFinish}
+          initialValues={{ email: "" }}
+          requiredMark={false}
+          className="space-y-4"
+        >
+          <Form.Item
+            name="email"
+            label={t("forgotPassword.emailLabel")}
+            rules={[zodFieldRule(getEmailSchema(tv))]}
+          >
+            <AuthEmailField disabled={isPending} />
+          </Form.Item>
+          <div className="flex gap-3 pt-2">
+            <Button asChild variant="outline" className="flex-1" disabled={isPending}>
+              <Link href={getLocalizedPath(ROUTES.login, currentLocale)}>
+                {t("forgotPassword.backToLogin")}
+              </Link>
+            </Button>
+            <Button className="flex-1" type="submit" loading={isPending}>
+              {isPending ? t("forgotPassword.submitting") : t("forgotPassword.submitButton")}
+            </Button>
+          </div>
         </Form>
       </motion.div>
     </div>

@@ -2,22 +2,21 @@
 
 import { useEffect } from "react";
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Mail, Loader2, CheckCircle2 } from "lucide-react";
+import { Form } from "antd";
+import { Mail, CheckCircle2 } from "lucide-react";
 import { motion } from "motion/react";
 import Link from "next/link";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
-import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
 import { AuthEmailField } from "@/components/auth/AuthEmailField";
 import { AuthHeader } from "@/components/auth/AuthHeader";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Form, FormDescription } from "@/components/ui/form";
 import { useResendVerificationMutation } from "@/hooks/api/use-auth";
 import { getLocaleFromPath, ROUTES, getLocalizedPath } from "@/lib/config/routes";
-import { getForgotSchema, type ForgotFormValues } from "@/schemas/auth";
+import { zodFieldRule } from "@/lib/validation/zodToAntdRule";
+import { getEmailSchema, type ForgotFormValues } from "@/schemas/auth";
 
 export function VerifyEmailNoticeContent() {
   const { t } = useTranslation(["auth", "errors"]);
@@ -30,13 +29,6 @@ export function VerifyEmailNoticeContent() {
 
   const { mutate: resendEmail, isPending: isLoading, isSuccess } = useResendVerificationMutation();
 
-  const form = useForm<ForgotFormValues>({
-    resolver: zodResolver(getForgotSchema(tv)),
-    defaultValues: {
-      email: emailParam || "",
-    },
-  });
-
   useEffect(() => {
     if (!emailParam) {
       router.replace(getLocalizedPath(ROUTES.login, currentLocale));
@@ -47,7 +39,7 @@ export function VerifyEmailNoticeContent() {
     return null;
   }
 
-  const onSubmit = (values: ForgotFormValues) => {
+  const onFinish = (values: ForgotFormValues) => {
     resendEmail({ email: values.email });
   };
 
@@ -72,59 +64,56 @@ export function VerifyEmailNoticeContent() {
             <CardDescription>{t("verifyEmail.cardDescription")}</CardDescription>
           </CardHeader>
 
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)}>
-              <CardContent className="grid gap-4">
+          <CardContent>
+            <Form<ForgotFormValues>
+              layout="vertical"
+              onFinish={onFinish}
+              initialValues={{ email: emailParam }}
+              requiredMark={false}
+            >
+              <div className="mb-2 flex items-center justify-between">
+                <label htmlFor="email" className="text-sm font-medium leading-none">
+                  {t("login.emailLabel")}
+                </label>
+                <span className="text-xs opacity-70">{t("verifyEmail.emailNote")}</span>
+              </div>
+              <Form.Item name="email" rules={[zodFieldRule(getEmailSchema(tv))]}>
                 <AuthEmailField
-                  form={form}
-                  isLoading={isLoading}
-                  t={t}
-                  labelKey="login.emailLabel"
+                  disabled={isLoading}
                   readOnly
                   className="bg-muted/50 cursor-not-allowed text-muted-foreground"
+                />
+              </Form.Item>
+
+              {isSuccess && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: "auto" }}
+                  className="flex items-center gap-2 rounded-lg bg-green-500/10 p-3 text-sm text-green-500"
                 >
-                  <FormDescription className="text-xs text-right opacity-70">
-                    {t("verifyEmail.emailNote")}
-                  </FormDescription>
-                </AuthEmailField>
+                  <CheckCircle2 className="h-4 w-4" />
+                  <p>{t("verifyEmail.resendSuccess")}</p>
+                </motion.div>
+              )}
 
-                {isSuccess && (
-                  <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: "auto" }}
-                    className="flex items-center gap-2 rounded-lg bg-green-500/10 p-3 text-sm text-green-500"
-                  >
-                    <CheckCircle2 className="h-4 w-4" />
-                    <p>{t("verifyEmail.resendSuccess")}</p>
-                  </motion.div>
-                )}
-
-                <div className="flex flex-row gap-3 mt-6">
-                  <Button
-                    asChild
-                    variant="outline"
-                    className="flex-1"
-                    type="button"
-                    disabled={isLoading}
-                  >
-                    <Link href={getLocalizedPath(ROUTES.login, currentLocale)}>
-                      {t("verifyEmail.backToLogin")}
-                    </Link>
-                  </Button>
-                  <Button className="flex-1" type="submit" disabled={isLoading || isSuccess}>
-                    {isLoading ? (
-                      <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        {t("login.submitting")}
-                      </>
-                    ) : (
-                      t("verifyEmail.resendButton")
-                    )}
-                  </Button>
-                </div>
-              </CardContent>
-            </form>
-          </Form>
+              <div className="flex flex-row gap-3 mt-6">
+                <Button
+                  asChild
+                  variant="outline"
+                  className="flex-1"
+                  type="button"
+                  disabled={isLoading}
+                >
+                  <Link href={getLocalizedPath(ROUTES.login, currentLocale)}>
+                    {t("verifyEmail.backToLogin")}
+                  </Link>
+                </Button>
+                <Button className="flex-1" type="submit" loading={isLoading} disabled={isSuccess}>
+                  {isLoading ? t("login.submitting") : t("verifyEmail.resendButton")}
+                </Button>
+              </div>
+            </Form>
+          </CardContent>
         </Card>
       </motion.div>
     </div>

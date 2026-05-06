@@ -1,56 +1,25 @@
-import { Mail } from "lucide-react";
-import { type FieldValues, type Path, type UseFormReturn } from "react-hook-form";
+"use client";
 
-import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Mail } from "lucide-react";
+
 import { Input } from "@/components/ui/input";
 
-interface AuthEmailFieldProps<TFieldValues extends FieldValues> {
-  form: UseFormReturn<TFieldValues>;
-  isLoading: boolean;
-  t: (key: string) => string;
-  labelKey: string;
-  name?: Path<TFieldValues>;
-  readOnly?: boolean;
-  className?: string;
-  children?: React.ReactNode;
-}
+import type { InputProps } from "antd";
 
-export function AuthEmailField<TFieldValues extends FieldValues>({
-  form,
-  isLoading,
-  t,
-  labelKey,
-  name = "email" as Path<TFieldValues>,
-  readOnly = false,
-  className,
-  children,
-}: AuthEmailFieldProps<TFieldValues>) {
+// Renders an antd Input prefixed with a mail icon. Designed to be placed
+// directly inside an antd <Form.Item name="email">; value/onChange flow
+// through the surrounding Form context.
+export function AuthEmailField({
+  placeholder = "kemalcalak@gmail.com",
+  ...rest
+}: Omit<InputProps, "prefix">) {
   return (
-    <FormField
-      control={form.control}
-      name={name}
-      render={({ field }) => (
-        <FormItem className="grid gap-2 text-left">
-          <div className="flex items-center justify-between">
-            <FormLabel>{t(labelKey)}</FormLabel>
-            {children}
-          </div>
-          <div className="relative">
-            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <FormControl>
-              <Input
-                type="text"
-                placeholder="kemalcalak@gmail.com"
-                className={`pl-10 ${className || ""}`}
-                disabled={isLoading}
-                readOnly={readOnly}
-                {...field}
-              />
-            </FormControl>
-          </div>
-          <FormMessage className="text-xs font-medium" />
-        </FormItem>
-      )}
+    <Input
+      type="text"
+      autoComplete="email"
+      prefix={<Mail className="h-4 w-4 text-muted-foreground" />}
+      placeholder={placeholder}
+      {...rest}
     />
   );
 }
