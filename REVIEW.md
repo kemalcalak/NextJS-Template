@@ -6,23 +6,23 @@
 
 ## 1. Stack
 
-| Katman            | Seçim                                                           |
-| ----------------- | --------------------------------------------------------------- |
-| Framework         | Next.js 16 App Router (`[locale]` segmentli, Turbopack default) |
-| Runtime           | React 19                                                        |
-| Dil               | TypeScript strict + `strictTypeChecked`                         |
-| UI / Styling      | shadcn/ui + Radix + Tailwind CSS 4 (utility-only)               |
-| Form              | React Hook Form + Zod                                           |
-| Server state      | TanStack Query v5                                               |
-| Client state      | Zustand + `persist`                                             |
-| HTTP              | Axios + custom interceptor (`src/lib/api/api.ts`)               |
-| i18n              | i18next + react-i18next (en, tr)                                |
-| Env               | `@t3-oss/env-nextjs` (boot-time validation)                     |
-| Routing guard     | `src/proxy.ts` (⚠️ NOT `middleware.ts`)                         |
-| Toast             | `sonner`                                                        |
-| Error tracking    | `@sentry/nextjs`                                                |
-| Test              | Playwright (E2E) + Vitest + Testing Library + MSW (unit)        |
-| Lint / Pre-commit | ESLint flat config (strict + a11y) + Husky + lint-staged        |
+| Katman            | Seçim                                                                                                                                                                                                |
+| ----------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Framework         | Next.js 16 App Router (`[locale]` segmentli, Turbopack default)                                                                                                                                      |
+| Runtime           | React 19                                                                                                                                                                                             |
+| Dil               | TypeScript strict + `strictTypeChecked`                                                                                                                                                              |
+| UI / Styling      | Ant Design v6 + `src/components/ui/` local primitive layer (Button/Input/Checkbox antd wrap; Card/Label/Alert/Avatar/Separator/Skeleton sıfır-bağımlılıklı Tailwind) + Tailwind CSS 4 (utility-only) |
+| Form              | antd `Form` + `Form.useForm` + Zod (köprü: `@/lib/validation/zodToAntdRule`)                                                                                                                         |
+| Server state      | TanStack Query v5                                                                                                                                                                                    |
+| Client state      | Zustand + `persist`                                                                                                                                                                                  |
+| HTTP              | Axios + custom interceptor (`src/lib/api/api.ts`)                                                                                                                                                    |
+| i18n              | i18next + react-i18next (en, tr)                                                                                                                                                                     |
+| Env               | `@t3-oss/env-nextjs` (boot-time validation)                                                                                                                                                          |
+| Routing guard     | `src/proxy.ts` (⚠️ NOT `middleware.ts`)                                                                                                                                                              |
+| Toast             | antd `notification`                                                                                                                                                                                  |
+| Error tracking    | `@sentry/nextjs`                                                                                                                                                                                     |
+| Test              | Playwright (E2E) + Vitest + Testing Library + MSW (unit)                                                                                                                                             |
+| Lint / Pre-commit | ESLint flat config (strict + a11y) + Husky + lint-staged                                                                                                                                             |
 
 Kanıt: [package.json](package.json), [eslint.config.mjs](eslint.config.mjs), [tsconfig.json](tsconfig.json).
 
@@ -106,10 +106,12 @@ Yeni feature: page → `app/[locale]/{f}/page.tsx`, schema → `schemas/{f}.ts`,
 
 ### 3.7 Form & validation
 
-- Zod schema → `schemas/<f>.ts`, factory `getXSchema(t)` ile i18n mesajları enjekte edilir.
-- React Hook Form + `@hookform/resolvers/zod` zorunlu ([LoginContent.tsx:39-46](<src/app/[locale]/(auth)/login/LoginContent.tsx>)).
-- shadcn `Form`/`FormField`/`FormItem`/`FormControl`/`FormLabel`/`FormMessage` ile sarılır.
-- Auth field'ları için paylaşılan: [AuthEmailField](src/components/auth/AuthEmailField.tsx), [AuthPasswordField](src/components/auth/AuthPasswordField.tsx), [AuthNameFields](src/components/auth/AuthNameFields.tsx) — yeniden yazılmamalı.
+- **Zod kaynak otoritedir.** Schema → `schemas/<f>.ts`, factory `getXSchema(t)` ile i18n mesajları enjekte edilir ([schemas/auth.ts:5-72](src/schemas/auth.ts)). TS tipleri schema'dan türetilir: `type LoginFormValues = z.infer<ReturnType<typeof getLoginSchema>>` ([schemas/auth.ts:36](src/schemas/auth.ts)).
+- **Form altyapısı antd `Form`**: `const [form] = Form.useForm<T>()` + `<Form<T> form={form} onFinish={onSubmit} layout="vertical">` + `Form.Item name=".." rules={[...]}` ([LoginContent.tsx:48-78](<src/app/[locale]/(auth)/login/LoginContent.tsx>)). RHF, `useForm` (RHF), `zodResolver`, `Controller`, shadcn `FormField`/`FormItem`/`FormControl`/`FormMessage` **tamamen kaldırıldı**. Yeni form yazımında bunları geri getirmek **blocker**. Kodda görülen `useForm` antd'in `Form.useForm`'u olmalı.
+- **Schema → rule köprüsü**: [`zodFieldRule(schema)`](src/lib/validation/zodToAntdRule.ts) zod schema'yı sync `safeParse` ile antd `Rule`'a çevirir; ilk issue'nun mesajı validation hatası olur. Kullanım: `<Form.Item rules={[zodFieldRule(getEmailSchema(tv))]}>` ([LoginContent.tsx:57](<src/app/[locale]/(auth)/login/LoginContent.tsx>)). Köprü sync — async refinement gerekiyorsa (uniqueness, server-side check) köprü genişletilmeli; `Form.Item`'a ayrı manuel async rule yazılıp `zodFieldRule` bypass'lanmaz.
+- **Validation i18n**: `const { t: tv } = useTranslation("validation")` ve `tv` schema factory'ye geçirilir. Validation mesajı schema dışında hardcode edilmez (kural [3.8](#38-i18n--toast) ile aynı).
+- **Submit**: antd `Form` `onFinish` parametresinde **validated** değerleri verir — manual `form.validateFields()` çağırılmaz. Hata `onFinishFailed` ile dinlenir (gerek varsa).
+- **Auth field paylaşımları** (artık antd `Form.Item` içine sarılı, prop sözleşmesi korunuyor): [AuthEmailField](src/components/auth/AuthEmailField.tsx), [AuthPasswordField](src/components/auth/AuthPasswordField.tsx), [AuthNameFields](src/components/auth/AuthNameFields.tsx) — yeniden yazılmamalı.
 
 ### 3.8 i18n & toast
 
@@ -117,7 +119,7 @@ Yeni feature: page → `app/[locale]/{f}/page.tsx`, schema → `schemas/{f}.ts`,
 - Namespace'ler [i18n/config.ts:31-58](src/i18n/config.ts): `common, auth, validation, errors, success, home, dashboard, profile, seo, account, admin`. Yeni key **EN ve TR'de** eşleşik eklenmeli; yeni namespace `resources` + `ns` array'ine kaydedilmeli.
 - Validation mesajları schema factory'lerinde `t` ile gelir — schema dışında string yazılmaz.
 - Dil değiştirme `useLanguage().changeLanguage(lng)` ([hooks/use-language.ts](src/hooks/use-language.ts)) — `i18n.changeLanguage` doğrudan çağrılmaz.
-- Toast `sonner` ([components/ui/sonner.tsx](src/components/ui/sonner.tsx)). `alert()` yasak ([eslint.config.mjs:171](eslint.config.mjs)). `{ id: ... }` ile duplicate önlenir.
+- **Toast: antd `notification` + modül-seviye köprü [`@/lib/toast`](src/lib/toast.ts)** — sonner benzeri yüzey: `toast.success/error/info/warning(message, { id? })`. [`AntdProvider`](src/providers/AntdProvider.tsx) `App.useApp()`'ten gelen **theme-aware** instance'ı `bindNotification` ile bağlar; bind olmazsa static `notification` fallback ([toast.ts:19-21](src/lib/toast.ts)). `api.ts` gibi hook-dışı callers bu köprüden çağırır — antd'in `notification`'ını doğrudan import edip kullanmak **yasak** (dark mode / theme token kaybolur). `alert()` yasak ([eslint.config.mjs:171](eslint.config.mjs)). Duplicate önleme: `{ id }` antd `key`'ine çevrilir ([toast.ts:24-37](src/lib/toast.ts)). `sonner` paketi ve `components/ui/sonner.tsx` kaldırıldı — geri eklenmemeli.
 
 ### 3.9 Env
 
@@ -155,7 +157,7 @@ Yeni feature: page → `app/[locale]/{f}/page.tsx`, schema → `schemas/{f}.ts`,
 8. **Hardcoded user-facing string** — `t(key)` + EN/TR JSON.
 9. **Hardcoded URL** — `getLocalizedPath(ROUTES.X, locale)`.
 10. **`.css` dosyası ekleme** (`globals.css` haricinde) — Tailwind utility-only.
-11. **Webpack config** — Turbopack default.
+11. **Genel webpack config eklemek** — Turbopack default. Tek bilinçli istisna: [next.config.ts:75](next.config.ts) `webpack.treeshake.removeDebugLogging` (Sentry log strip).
 12. **TanStack Query default'larını sayısal override** — gerekçesiz olmamalı.
 13. **Mutation sonrası `invalidateQueries`/`clear()` unutma.**
 14. **Cache key'inde dinamik parametre eksikliği** (id, dil, sayfa, filtre).
@@ -163,6 +165,9 @@ Yeni feature: page → `app/[locale]/{f}/page.tsx`, schema → `schemas/{f}.ts`,
 16. **Yeni Context API provider** — Zustand.
 17. **`ROUTES`/`protectedRoutes`/`authRoutes` listelerini güncellemeden yeni route ekleme.**
 18. **Toast duplicate** — interceptor zaten gösteriyorken hook'ta `toast.error` tekrar.
+19. **RHF / `useForm` (RHF) / `zodResolver` / `Controller` / shadcn `Form*` (`FormField`/`FormItem`/`FormControl`/`FormMessage`) / `sonner` geri ekleme** — antd `Form` + `Form.useForm` + `zodFieldRule` + `@/lib/toast` köprüsü standardı. **Blocker.**
+20. **antd'in statik imperative API'leri** (`notification.*` / `message.*` / `Modal.confirm` / `Modal.info`/`success`/`error`/`warning`) doğrudan import — React ağacının dışında çalışır, **ConfigProvider / theme token / dark mode kaybolur**. Toast için [`@/lib/toast`](src/lib/toast.ts) köprüsü zorunlu.
+21. **Confirm/dialog için `Modal.confirm` kullanma** — bu projede **declarative JSX `<Modal open={...} onOk onCancel>`** standardı. Örnek paylaşımlı bileşen: [components/admin/ConfirmDialog.tsx](src/components/admin/ConfirmDialog.tsx). Yeni confirm akışlarında bunu kullan veya aynı pattern'i izle.
 
 ---
 
@@ -213,11 +218,14 @@ Yeni feature: page → `app/[locale]/{f}/page.tsx`, schema → `schemas/{f}.ts`,
 
 ### 5.5 Form
 
-- **Zod schema'sız yeni form.**
-- **RHF bypass'i**: `Controller`/`FormField` yerine ham `<input>` + manual state.
-- **`zodResolver` eksik** veya yanlış schema.
-- **i18n schema factory dışında** validation mesajı hardcode.
-- **Submit handler'da `catch {}`** ve loading state UI'a yansıtılmamış.
+- **Zod schema'sız yeni form.** Schema `schemas/<f>.ts` factory pattern'inde olmalı.
+- **antd `Form.Item` bypass'i**: form içinde `Form.Item`'a sarılmamış ham `<input>` + manual state.
+- **`Form.Item` `rules` array'inde `zodFieldRule(getXSchema(tv))` eksik** — validation sessiz geçer, kullanıcı hatalı veri submit edebilir.
+- **`Form.useForm()` yerine `useState` ile form değeri yönetimi** — antd `Form` kontrolünü kaybeder, `onFinish` validated değer döndüremez.
+- **Manuel rule'la `zodFieldRule` bypass'ı** — async refinement gerekiyorsa köprü genişletilmeli, `Form.Item`'a ayrı `{ validator }` yazılıp zod kaynağı atlanmaz.
+- **RHF / `zodResolver` / `Controller` / shadcn `FormField`/`FormItem`/`FormControl`/`FormMessage` geri getirme.** Migration sonrası **blocker**.
+- **`i18n` schema factory dışında** validation mesajı hardcode. `useTranslation("validation")` `tv` schema'ya geçirilmeli.
+- **Submit handler'da `catch {}`** ve loading state UI'a yansıtılmamış — submit `<Button type="submit" loading={mutation.isPending}>` pattern'i ([UserEditForm.tsx:87](src/components/admin/UserEditForm.tsx)).
 
 ### 5.6 Routing & auth
 
@@ -232,8 +240,9 @@ Yeni feature: page → `app/[locale]/{f}/page.tsx`, schema → `schemas/{f}.ts`,
 - **Hardcoded TR/EN string** JSX/JSX prop içinde.
 - **`t(key)` çağrısı var ama EN veya TR JSON'da key yok** — runtime'da key string olarak görünür.
 - **Yeni namespace [i18n/config.ts](src/i18n/config.ts) `resources`'a eklenmemiş.**
-- **Backend ham mesajını toast'a doğrudan basma** — interceptor `errors:`/`success:` çevirisi yapar.
-- **Toast duplicate** — interceptor zaten gösteriyorken hook'ta `toast.error`.
+- **Backend ham mesajını toast'a doğrudan basma** — interceptor `errors:`/`success:` namespace çevirisini yapıp [`@/lib/toast`](src/lib/toast.ts) köprüsünden gösterir ([api.ts:54-56](src/lib/api/api.ts)). Component'te `error.response.data.detail`'i hardcoded toast'lamak duplicate + lokalizasyon kaybı.
+- **Toast duplicate** — interceptor zaten gösteriyorken hook'ta `toast.error` tekrar. Mutation `onError` içinde toast atmak gereksiz (interceptor halletti) — sadece state/cleanup yap.
+- **antd `notification` / `message`'ı doğrudan import edip `notification.error(...)`** — `@/lib/toast` köprüsü zorunlu, statik instance ConfigProvider/theme dışında kalır.
 
 ### 5.8 TypeScript
 
@@ -275,12 +284,12 @@ Bu maddeleri **flag etme**:
 6. **TODO** ticket/sahip referansı varsa kabul; tamamen sahipsizse minor.
 7. **i18n key'i TR/EN'de küçük yazım farkı** — bug değil.
 8. **Test eksikliği** yeni feature için — minor öneri, blocking değil. Auth/security/payment'ta major.
-9. **shadcn/ui'nin kendi DOM'undaki a11y attribute'ları** — kütüphane sağlıyor; component dışındaki `<div>`'ler hâlâ flag.
+9. **antd component'lerinin ve `src/components/ui/` local primitive layer'ının kendi DOM'undaki a11y attribute'ları** — kütüphane / paylaşımlı bileşen sağlıyor; bu component'lerin dışındaki ham `<div>`'ler hâlâ flag.
 10. **`React.memo` eksikliği** — sadece kanıtlanmış re-render maliyeti varsa flag.
 11. **`console.log`** — sadece production-impacting dosyalarda flag (`api.ts`, `auth.store.ts`, `proxy.ts`, `instrumentation*.ts`); diğerlerinde ESLint warn yeterli.
 12. **"Generic best practice"** önerileri (clean code, SOLID, DI) — review skopu dışı.
 13. **Sayfa default export'u** (`page.tsx`/`layout.tsx`/...) — Next.js zorunluluğu, override var.
-14. **`components/ui/*` shadcn pattern'leri** — kütüphane şablonu.
+14. **`components/ui/*` local primitive layer pattern'leri** — Button/Input/Checkbox antd wrap, Card/Label/Alert/Avatar/Separator/Skeleton sıfır-bağımlılıklı Tailwind; bu dosyaların iç pattern'i (variant class map, `cn()` kullanımı, `data-slot` attribute'ları) bilinçli — flag etme.
 15. **`useLocalStorage`/`useMediaQuery` kebab-case değil** — legacy isim; sadece **yeni hook'lar** kebab-case.
 
 ---
@@ -295,4 +304,4 @@ Bu maddeleri **flag etme**:
 
 ---
 
-Son güncelleme: 2026-05-06.
+Son güncelleme: 2026-05-19.
