@@ -55,7 +55,6 @@ export const ProfileInfoTab = () => {
         {!isEditing && (
           <Button
             variant="outline"
-            size="sm"
             onClick={() => {
               setIsEditing(true);
             }}
