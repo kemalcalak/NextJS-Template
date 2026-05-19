@@ -20,20 +20,10 @@ import { useLogoutMutation } from "@/hooks/api/use-auth";
 import { useReactivateMe } from "@/hooks/api/use-users";
 import { useLanguage } from "@/hooks/use-language";
 import { getLocalizedPath, ROUTES } from "@/lib/config/routes";
+import { formatLongDateTime } from "@/lib/format-date";
 import { useAuthStore } from "@/stores/auth.store";
 
 const MILLIS_IN_DAY = 1000 * 60 * 60 * 24;
-
-const formatScheduledAt = (iso: string, locale: string): string => {
-  try {
-    return new Intl.DateTimeFormat(locale, {
-      dateStyle: "long",
-      timeStyle: "short",
-    }).format(new Date(iso));
-  } catch {
-    return iso;
-  }
-};
 
 export const AccountDeactivatedContent = () => {
   const { t } = useTranslation(["account"]);
@@ -91,7 +81,7 @@ export const AccountDeactivatedContent = () => {
           </p>
           <p className="text-sm text-muted-foreground">
             {t("account:deactivated.scheduledAt", {
-              date: formatScheduledAt(scheduledAt, language),
+              date: formatLongDateTime(scheduledAt),
             })}
           </p>
           <p className="text-sm text-muted-foreground">
