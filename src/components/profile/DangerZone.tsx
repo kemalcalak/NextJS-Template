@@ -15,8 +15,7 @@ import { useDeactivateMe } from "@/hooks/api/use-users";
 import { useLanguage } from "@/hooks/use-language";
 import { ROUTES, getLocalizedPath } from "@/lib/config/routes";
 import { zodFieldRule } from "@/lib/validation/zodToAntdRule";
-import { getRequiredPasswordSchema } from "@/schemas/auth";
-import { type DeactivateAccountFormValues } from "@/schemas/user";
+import { type DeactivateAccountFormValues, getDeactivateAccountSchema } from "@/schemas/user";
 import { useAuthStore } from "@/stores/auth.store";
 
 export const DangerZone = () => {
@@ -29,6 +28,9 @@ export const DangerZone = () => {
   const { language } = useLanguage();
   const [form] = Form.useForm<DeactivateAccountFormValues>();
   const acknowledge = Form.useWatch("acknowledge", form);
+  const deactivateSchema = getDeactivateAccountSchema(tv);
+  const passwordRule = zodFieldRule(deactivateSchema.shape.password);
+  const acknowledgeRule = zodFieldRule(deactivateSchema.shape.acknowledge);
 
   const handleClose = () => {
     if (isPending) return;
@@ -97,7 +99,7 @@ export const DangerZone = () => {
           <Form.Item
             name="password"
             label={t("account:deactivate.dialog.passwordLabel")}
-            rules={[zodFieldRule(getRequiredPasswordSchema(tv))]}
+            rules={[passwordRule]}
           >
             <Input
               type="password"
@@ -108,20 +110,7 @@ export const DangerZone = () => {
             />
           </Form.Item>
 
-          <Form.Item
-            name="acknowledge"
-            valuePropName="checked"
-            rules={[
-              {
-                validator: (_rule, value: boolean) => {
-                  if (!value) {
-                    return Promise.reject(new Error(tv("deactivateAcknowledgeRequired")));
-                  }
-                  return Promise.resolve();
-                },
-              },
-            ]}
-          >
+          <Form.Item name="acknowledge" valuePropName="checked" rules={[acknowledgeRule]}>
             <Checkbox disabled={isPending}>
               {t("account:deactivate.dialog.acknowledgeLabel")}
             </Checkbox>

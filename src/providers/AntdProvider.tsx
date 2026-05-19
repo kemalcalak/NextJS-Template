@@ -15,9 +15,18 @@ const ANTD_LOCALES: Record<string, typeof enUS> = {
   tr: trTR,
 };
 
+interface NotificationBridgeProps {
+  children: React.ReactNode;
+}
+
+interface AntdProviderProps {
+  children: React.ReactNode;
+  locale: string;
+}
+
 // Exposes antd's theme-aware notification instance to module-level callers
 // (e.g. lib/api/api.ts) that cannot use App.useApp() directly.
-function NotificationBridge({ children }: { children: React.ReactNode }) {
+function NotificationBridge({ children }: NotificationBridgeProps) {
   const { notification } = AntdApp.useApp();
 
   useEffect(() => {
@@ -30,7 +39,7 @@ function NotificationBridge({ children }: { children: React.ReactNode }) {
   return children;
 }
 
-export function AntdProvider({ children, locale }: { children: React.ReactNode; locale: string }) {
+export function AntdProvider({ children, locale }: AntdProviderProps) {
   const { resolvedTheme } = useTheme();
   const isDark = resolvedTheme === "dark";
   const tokens = isDark ? darkAntdTokens : lightAntdTokens;
