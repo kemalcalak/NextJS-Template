@@ -24,7 +24,7 @@
       "user_suspended": "User suspended. They cannot log in until an admin lifts the suspension.",
       "user_unsuspended": "Suspension lifted. The user can sign in again.",
       "user_deleted": "User permanently deleted.",
-      "password_reset_sent": "Password reset email sent."
+      "password_changed": "User's password has been reset. They'll be notified by email and must use the 'Forgot Password' flow to regain access."
     }
   }
 }

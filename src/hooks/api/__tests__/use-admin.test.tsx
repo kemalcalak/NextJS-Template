@@ -7,8 +7,8 @@ import {
   useAdminUser,
   useAdminUserActivities,
   useAdminUsers,
+  useChangeAdminUserPassword,
   useDeleteAdminUser,
-  useResetAdminUserPassword,
   useSuspendAdminUser,
   useUnsuspendAdminUser,
   useUpdateAdminUser,
@@ -194,15 +194,15 @@ describe("admin user mutations", () => {
     expect(handler).toHaveBeenCalled();
   });
 
-  it("useResetAdminUserPassword POSTs /admin/users/:id/reset-password?lang=XX", async () => {
+  it("useChangeAdminUserPassword POSTs /admin/users/:id/change-password?lang=XX", async () => {
     let requestedUrl = "";
     server.use(
-      http.post("*/api/v1/admin/users/admin-1/reset-password", ({ request }) => {
+      http.post("*/api/v1/admin/users/admin-1/change-password", ({ request }) => {
         requestedUrl = request.url;
         return HttpResponse.json({ success: true, message: "ok" });
       }),
     );
-    const { result } = renderHook(() => useResetAdminUserPassword(), {
+    const { result } = renderHook(() => useChangeAdminUserPassword(), {
       wrapper: createWrapper(),
     });
     result.current.mutate({ id: "admin-1", lang: "tr" });

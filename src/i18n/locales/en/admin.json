@@ -86,7 +86,7 @@
       "menu": "Row actions",
       "suspend": "Suspend",
       "unsuspend": "Lift suspension",
-      "resetPassword": "Send password reset",
+      "changePassword": "Force password reset",
       "delete": "Delete user"
     }
   },
@@ -120,8 +120,7 @@
     "save": "Save changes",
     "saving": "Saving...",
     "cancel": "Cancel",
-    "resetPassword": "Send password reset",
-    "resetting": "Sending...",
+    "changePassword": "Force password reset",
     "suspend": "Suspend account",
     "unsuspend": "Lift suspension",
     "delete": "Delete user",
@@ -137,9 +136,9 @@
     "unsuspendTitle": "Lift this suspension?",
     "unsuspendDescription": "This re-enables the account and restores the user's access.",
     "unsuspendConfirm": "Lift suspension",
-    "resetTitle": "Send a password reset?",
-    "resetDescription": "The user receives a secure link by email. You never see the new password.",
-    "resetConfirm": "Send reset email",
+    "changePasswordTitle": "Force a password reset?",
+    "changePasswordDescription": "The user's password will be rotated to an unknown value. They must use the 'Forgot Password' link on the login page to regain access. You never see the new password.",
+    "changePasswordConfirm": "Force reset",
     "cancel": "Cancel"
   },
   "activities": {

@@ -102,9 +102,9 @@ export const useDeleteAdminUser = () => {
   });
 };
 
-export const useResetAdminUserPassword = () =>
+export const useChangeAdminUserPassword = () =>
   useMutation({
-    mutationFn: ({ id, lang }: { id: string; lang: string }) => adminApi.resetPassword(id, lang),
+    mutationFn: ({ id, lang }: { id: string; lang: string }) => adminApi.changePassword(id, lang),
   });
 
 export const useAdminActivities = (params?: AdminActivityListParams) =>

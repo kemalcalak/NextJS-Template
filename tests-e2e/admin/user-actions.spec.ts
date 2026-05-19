@@ -122,28 +122,28 @@ for (const locale of LOCALES) {
       await expect.poll(() => unsuspend.calls).toBeGreaterThan(0);
     });
 
-    test("reset-password confirm hits /reset-password", async ({ page }) => {
+    test("change-password confirm hits /change-password", async ({ page }) => {
       await injectSession(page, adminUser, locale);
       await mockMe(page, adminUser);
       await mockAdminUserDetail(page, regularUser);
       await mockAdminActivities(page);
-      const reset = await mockAdminUserAction(
+      const changePassword = await mockAdminUserAction(
         page,
-        new RegExp(`.*/api/v1/admin/users/${regularUser.id}/reset-password(\\?.*)?$`),
+        new RegExp(`.*/api/v1/admin/users/${regularUser.id}/change-password(\\?.*)?$`),
         "POST",
       );
 
       await page.goto(`/${locale}/admin/users/${regularUser.id}`);
       await page
         .getByTestId("admin-user-danger-zone")
-        .getByRole("button", { name: s.userDetail.resetPassword })
+        .getByRole("button", { name: s.userDetail.changePassword })
         .click();
       await page
         .locator(".ant-modal-footer")
-        .getByRole("button", { name: s.confirm.resetConfirm })
+        .getByRole("button", { name: s.confirm.changePasswordConfirm })
         .click();
 
-      await expect.poll(() => reset.calls).toBeGreaterThan(0);
+      await expect.poll(() => changePassword.calls).toBeGreaterThan(0);
     });
 
     test("delete confirm hits DELETE and redirects back to users", async ({ page }) => {

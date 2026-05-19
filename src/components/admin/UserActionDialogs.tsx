@@ -48,11 +48,11 @@ export function UserActionDialogs({
         destructive
       />
       <ConfirmDialog
-        open={action === "reset"}
+        open={action === "change-password"}
         onOpenChange={onOpenChange}
-        title={t("confirm.resetTitle")}
-        description={t("confirm.resetDescription")}
-        confirmLabel={t("confirm.resetConfirm")}
+        title={t("confirm.changePasswordTitle")}
+        description={t("confirm.changePasswordDescription")}
+        confirmLabel={t("confirm.changePasswordConfirm")}
         cancelLabel={t("confirm.cancel")}
         onConfirm={onConfirm}
         isLoading={isLoading}
