@@ -3,6 +3,7 @@ import { useRouter, usePathname } from "next/navigation";
 import { useTranslation } from "react-i18next";
 
 import { authService } from "@/lib/api/endpoints/auth";
+import { setPendingVerifyEmail } from "@/lib/auth/pending-verify-email";
 import { getLocaleFromPath, ROUTES, getLocalizedPath } from "@/lib/config/routes";
 import type {
   LoginPayload,
@@ -56,8 +57,8 @@ export function useLoginMutation() {
       // landing page reached only by already-authenticated users whose session
       // the AuthHydrator recognises as suspended.
       if (error.response?.status === 403 && errorCode === "error.user.email_not_verified") {
-        const path = `${ROUTES.verifyEmailNotice}?email=${encodeURIComponent(variables.email)}`;
-        router.push(getLocalizedPath(path, currentLocale));
+        setPendingVerifyEmail(variables.email);
+        router.push(getLocalizedPath(ROUTES.verifyEmailNotice, currentLocale));
       }
     },
   });
@@ -73,8 +74,8 @@ export function useRegisterMutation() {
     mutationFn: (payload: RegisterPayload) =>
       authService.register({ lang: i18n.language, ...payload }),
     onSuccess: (_, variables) => {
-      const path = `${ROUTES.verifyEmailNotice}?email=${encodeURIComponent(variables.email)}`;
-      router.push(getLocalizedPath(path, currentLocale));
+      setPendingVerifyEmail(variables.email);
+      router.push(getLocalizedPath(ROUTES.verifyEmailNotice, currentLocale));
     },
     onError: () => {
       // Handled globally by api interceptor

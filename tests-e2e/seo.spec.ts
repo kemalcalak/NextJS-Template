@@ -54,8 +54,15 @@ test.describe("SEO and Metadata Validation", () => {
     { key: "verify-email", route: "/verify-email?token=fake", seoPath: "/auth/verify-email" },
     {
       key: "verify-email-notice",
-      route: "/verify-email-notice?email=test@example.com",
+      route: "/verify-email-notice",
       seoPath: "/auth/verify-email-notice",
+      // Pending email lives in sessionStorage now, not the URL — seed it so
+      // the page renders instead of redirecting to /login.
+      setup: async (page: Page) => {
+        await page.addInitScript(() => {
+          window.sessionStorage.setItem("pendingVerifyEmail", "test@example.com");
+        });
+      },
     },
     { key: "dashboard", route: "/dashboard", protected: true },
     { key: "profile", route: "/profile", protected: true },
@@ -68,6 +75,9 @@ test.describe("SEO and Metadata Validation", () => {
       }) => {
         if (pageInfo.protected) {
           await setupAuthenticatedState(page);
+        }
+        if (pageInfo.setup) {
+          await pageInfo.setup(page);
         }
 
         const fullRoute = `/${locale}${pageInfo.route === "/" ? "" : pageInfo.route}`;

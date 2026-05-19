@@ -1,12 +1,12 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useSyncExternalStore } from "react";
 
 import { Form } from "antd";
 import { Mail, CheckCircle2 } from "lucide-react";
 import { motion } from "motion/react";
 import Link from "next/link";
-import { useRouter, useSearchParams, usePathname } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useTranslation } from "react-i18next";
 
 import { AuthEmailField } from "@/components/auth/AuthEmailField";
@@ -14,6 +14,12 @@ import { AuthHeader } from "@/components/auth/AuthHeader";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useResendVerificationMutation } from "@/hooks/api/use-auth";
+import {
+  clearPendingVerifyEmail,
+  getPendingVerifyEmail,
+  getServerPendingVerifyEmail,
+  subscribePendingVerifyEmail,
+} from "@/lib/auth/pending-verify-email";
 import { getLocaleFromPath, ROUTES, getLocalizedPath } from "@/lib/config/routes";
 import { zodFieldRule } from "@/lib/validation/zodToAntdRule";
 import { getEmailSchema, type ForgotFormValues } from "@/schemas/auth";
@@ -21,21 +27,29 @@ import { getEmailSchema, type ForgotFormValues } from "@/schemas/auth";
 export function VerifyEmailNoticeContent() {
   const { t } = useTranslation(["auth", "errors"]);
   const { t: tv } = useTranslation("validation");
-  const searchParams = useSearchParams();
   const pathname = usePathname();
   const currentLocale = getLocaleFromPath(pathname);
   const router = useRouter();
-  const emailParam = searchParams.get("email");
+  // useSyncExternalStore handles the SSR-snapshot (null) vs client-snapshot
+  // split without tripping react-hooks/set-state-in-effect.
+  const email = useSyncExternalStore(
+    subscribePendingVerifyEmail,
+    getPendingVerifyEmail,
+    getServerPendingVerifyEmail,
+  );
 
   const { mutate: resendEmail, isPending: isLoading, isSuccess } = useResendVerificationMutation();
 
   useEffect(() => {
-    if (!emailParam) {
+    // Wait for the client snapshot before deciding to redirect — otherwise the
+    // initial SSR-snapshot ``null`` would always push us back to /login.
+    if (typeof window === "undefined") return;
+    if (email === null) {
       router.replace(getLocalizedPath(ROUTES.login, currentLocale));
     }
-  }, [emailParam, router, currentLocale]);
+  }, [email, router, currentLocale]);
 
-  if (!emailParam) {
+  if (!email) {
     return null;
   }
 
@@ -68,7 +82,7 @@ export function VerifyEmailNoticeContent() {
             <Form<ForgotFormValues>
               layout="vertical"
               onFinish={onFinish}
-              initialValues={{ email: emailParam }}
+              initialValues={{ email }}
               requiredMark={false}
             >
               <div className="mb-2 flex items-center justify-between">
@@ -104,7 +118,10 @@ export function VerifyEmailNoticeContent() {
                   type="button"
                   disabled={isLoading}
                 >
-                  <Link href={getLocalizedPath(ROUTES.login, currentLocale)}>
+                  <Link
+                    href={getLocalizedPath(ROUTES.login, currentLocale)}
+                    onClick={clearPendingVerifyEmail}
+                  >
                     {t("verifyEmail.backToLogin")}
                   </Link>
                 </Button>

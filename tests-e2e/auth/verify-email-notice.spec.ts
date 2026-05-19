@@ -5,15 +5,17 @@ for (const locale of LOCALES) {
   const s = getStrings(locale);
 
   test.describe(`Verify Email Notice Flow [${locale}]`, () => {
-    test("should display notice and handle resend when navigated with email parameter", async ({
+    test("should display notice and handle resend when a pending email is stored", async ({
       page,
     }) => {
       const testEmail = "test@example.com";
-      await page.goto(`/${locale}/verify-email-notice?email=${encodeURIComponent(testEmail)}`);
+      await page.addInitScript((email) => {
+        window.sessionStorage.setItem("pendingVerifyEmail", email);
+      }, testEmail);
+      await page.goto(`/${locale}/verify-email-notice`);
 
-      await expect(page).toHaveURL(
-        new RegExp(`.*verify-email-notice.*email=${encodeURIComponent(testEmail)}`),
-      );
+      // URL must stay clean — no email leaks into Referer/logs/analytics.
+      await expect(page).toHaveURL(new RegExp(`.*/${locale}/verify-email-notice$`));
       await expect(page.locator("input#email")).toHaveValue(testEmail);
 
       await expect(page.getByRole("link", { name: s.auth.verifyEmail.backToLogin })).toBeVisible();
@@ -31,10 +33,9 @@ for (const locale of LOCALES) {
       await expect(page.getByText(s.auth.verifyEmail.resendSuccess).first()).toBeVisible();
     });
 
-    test("should not redirect if email parameter is missing", async ({ page }) => {
+    test("redirects to login when no pending email is stored", async ({ page }) => {
       await page.goto(`/${locale}/verify-email-notice`);
-      await expect(page).toHaveURL(/.*verify-email-notice/);
-      await expect(page.locator("input#email")).toHaveValue("");
+      await expect(page).toHaveURL(new RegExp(`.*/${locale}/login(\\?.*)?$`));
     });
   });
 }
