@@ -1,23 +1,20 @@
 "use client";
 
-import { useState } from "react";
-
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2, ShieldCheck } from "lucide-react";
+import { Form } from "antd";
+import { ShieldCheck } from "lucide-react";
 import { motion } from "motion/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
 import { AuthEmailField } from "@/components/auth/AuthEmailField";
 import { AuthPasswordField } from "@/components/auth/AuthPasswordField";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Form } from "@/components/ui/form";
 import { useLoginMutation } from "@/hooks/api/use-auth";
 import { ROUTES, getLocaleFromPath, getLocalizedPath } from "@/lib/config/routes";
-import { getLoginSchema, type LoginFormValues } from "@/schemas/auth";
+import { zodFieldRule } from "@/lib/validation/zodToAntdRule";
+import { getEmailSchema, getRequiredPasswordSchema, type LoginFormValues } from "@/schemas/auth";
 
 export function AdminLoginContent() {
   const { t } = useTranslation(["admin", "auth", "validation"]);
@@ -28,12 +25,10 @@ export function AdminLoginContent() {
   // email-not-verified redirect, and post-login role-based routing without
   // forking the success/error logic.
   const { mutate: loginMutate, isPending: isLoading } = useLoginMutation();
-  const [showPassword, setShowPassword] = useState(false);
 
-  const form = useForm<LoginFormValues>({
-    resolver: zodResolver(getLoginSchema(tv)),
-    defaultValues: { email: "", password: "", rememberMe: true },
-  });
+  const onFinish = (values: LoginFormValues) => {
+    loginMutate(values);
+  };
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background p-4 sm:p-8">
@@ -56,49 +51,40 @@ export function AdminLoginContent() {
             <CardTitle className="text-xl">{t("admin:login.cardTitle")}</CardTitle>
             <CardDescription>{t("admin:login.cardDescription")}</CardDescription>
           </CardHeader>
-          <Form {...form}>
-            <form
-              onSubmit={form.handleSubmit((data) => {
-                loginMutate(data);
-              })}
-              noValidate
+          <CardContent>
+            <Form<LoginFormValues>
+              layout="vertical"
+              onFinish={onFinish}
+              initialValues={{ email: "", password: "", rememberMe: true }}
+              requiredMark={false}
             >
-              <CardContent className="grid gap-4">
-                <AuthEmailField
-                  form={form}
-                  isLoading={isLoading}
-                  t={t}
-                  labelKey="admin:login.emailLabel"
-                />
-                <AuthPasswordField
-                  form={form}
-                  isLoading={isLoading}
-                  showPassword={showPassword}
-                  setShowPassword={setShowPassword}
-                  t={t}
-                  labelKey="admin:login.passwordLabel"
-                />
-                <div className="flex flex-col gap-3 mt-4">
-                  <Button className="w-full" type="submit" disabled={isLoading}>
-                    {isLoading ? (
-                      <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        {t("admin:login.submitting")}
-                      </>
-                    ) : (
-                      t("admin:login.submitButton")
-                    )}
-                  </Button>
-                  <Link
-                    href={getLocalizedPath(ROUTES.home, currentLocale)}
-                    className="text-center text-sm text-muted-foreground hover:text-foreground transition-colors"
-                  >
-                    {t("admin:login.backToApp")}
-                  </Link>
-                </div>
-              </CardContent>
-            </form>
-          </Form>
+              <Form.Item
+                name="email"
+                label={t("admin:login.emailLabel")}
+                rules={[zodFieldRule(getEmailSchema(tv))]}
+              >
+                <AuthEmailField disabled={isLoading} />
+              </Form.Item>
+              <Form.Item
+                name="password"
+                label={t("admin:login.passwordLabel")}
+                rules={[zodFieldRule(getRequiredPasswordSchema(tv))]}
+              >
+                <AuthPasswordField disabled={isLoading} />
+              </Form.Item>
+              <div className="flex flex-col gap-3 mt-4">
+                <Button className="w-full" type="submit" loading={isLoading}>
+                  {isLoading ? t("admin:login.submitting") : t("admin:login.submitButton")}
+                </Button>
+                <Link
+                  href={getLocalizedPath(ROUTES.home, currentLocale)}
+                  className="text-center text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  {t("admin:login.backToApp")}
+                </Link>
+              </div>
+            </Form>
+          </CardContent>
         </Card>
       </motion.div>
     </div>

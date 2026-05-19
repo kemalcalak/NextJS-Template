@@ -1,6 +1,6 @@
 "use client";
 
-import { Ban, Loader2, LogOut } from "lucide-react";
+import { Ban, LogOut } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 import { Button } from "@/components/ui/button";
@@ -46,14 +46,10 @@ export const AccountSuspendedContent = () => {
             onClick={() => {
               logout();
             }}
-            disabled={isLoggingOut}
+            loading={isLoggingOut}
             data-testid="account-suspended-logout"
           >
-            {isLoggingOut ? (
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            ) : (
-              <LogOut className="mr-2 h-4 w-4" />
-            )}
+            {!isLoggingOut && <LogOut className="mr-2 h-4 w-4" />}
             {t("account:suspended.logout")}
           </Button>
         </CardFooter>

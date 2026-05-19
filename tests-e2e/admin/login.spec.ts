@@ -37,8 +37,8 @@ for (const locale of LOCALES) {
       // pressSequentially fires per-character keydown/keypress/keyup events so
       // react-hook-form's controlled inputs register the value on webkit. Bare
       // page.fill() occasionally drops the email field on webkit here.
-      await page.locator('input[name="email"]').pressSequentially(adminUser.email);
-      await page.locator('input[name="password"]').pressSequentially("Password123!");
+      await page.locator("input#email").pressSequentially(adminUser.email);
+      await page.locator("input#password").pressSequentially("Password123!");
       await page.click('button[type="submit"]');
 
       await expect(page).toHaveURL(new RegExp(`.*/${locale}/admin/dashboard`));
@@ -62,8 +62,8 @@ for (const locale of LOCALES) {
       await mockMe(page, regularUser);
 
       await page.goto(`/${locale}/admin/login`);
-      await page.locator('input[name="email"]').pressSequentially(regularUser.email);
-      await page.locator('input[name="password"]').pressSequentially("Password123!");
+      await page.locator("input#email").pressSequentially(regularUser.email);
+      await page.locator("input#password").pressSequentially("Password123!");
       await page.click('button[type="submit"]');
 
       await expect(page).toHaveURL(new RegExp(`.*/${locale}/dashboard`));
@@ -79,8 +79,8 @@ for (const locale of LOCALES) {
       });
 
       await page.goto(`/${locale}/admin/login`);
-      await page.fill('input[name="email"]', "wrong@admin.test");
-      await page.fill('input[name="password"]', "nope");
+      await page.fill("input#email", "wrong@admin.test");
+      await page.fill("input#password", "nope");
       await page.click('button[type="submit"]');
 
       await expect(page).toHaveURL(new RegExp(`.*/${locale}/admin/login`));

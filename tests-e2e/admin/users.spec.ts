@@ -59,8 +59,8 @@ for (const locale of LOCALES) {
       await mockAdminActivities(page);
 
       await page.goto(`/${locale}/admin/users/${regularUser.id}`);
-      await expect(page.locator('input[name="first_name"]')).toHaveValue("Usain");
-      await expect(page.locator('input[name="last_name"]')).toHaveValue("User");
+      await expect(page.locator("input#first_name")).toHaveValue("Usain");
+      await expect(page.locator("input#last_name")).toHaveValue("User");
       // Email is intentionally not editable by admins (see UserEditFormFields)
       // — assert it surfaces read-only via the overview card instead.
       await expect(page.getByText("user@test.com").first()).toBeVisible();

@@ -1,13 +1,10 @@
 "use client";
 
-import { useMemo, useState } from "react";
-
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2, UserPlus } from "lucide-react";
+import { Form } from "antd";
+import { UserPlus } from "lucide-react";
 import { motion } from "motion/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
 import { AuthEmailField } from "@/components/auth/AuthEmailField";
@@ -16,10 +13,15 @@ import { AuthNameFields } from "@/components/auth/AuthNameFields";
 import { AuthPasswordField } from "@/components/auth/AuthPasswordField";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Form } from "@/components/ui/form";
 import { useRegisterMutation } from "@/hooks/api/use-auth";
 import { getLocaleFromPath, ROUTES, getLocalizedPath } from "@/lib/config/routes";
-import { getRegisterSchema, type RegisterFormValues } from "@/schemas/auth";
+import { zodFieldRule } from "@/lib/validation/zodToAntdRule";
+import {
+  getConfirmPasswordSchema,
+  getEmailSchema,
+  getPasswordSchema,
+  type RegisterFormValues,
+} from "@/schemas/auth";
 
 export function RegisterContent() {
   const { t } = useTranslation(["auth", "validation"]);
@@ -27,24 +29,8 @@ export function RegisterContent() {
   const pathname = usePathname();
   const currentLocale = getLocaleFromPath(pathname);
   const { mutate: registerUser, isPending: isLoading } = useRegisterMutation();
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  const schema = useMemo(() => getRegisterSchema(tv), [tv]);
-
-  const form = useForm<RegisterFormValues>({
-    resolver: zodResolver(schema),
-    defaultValues: {
-      first_name: "",
-      last_name: "",
-      email: "",
-      password: "",
-      confirmPassword: "",
-    },
-  });
-
-  const onSubmit = (data: RegisterFormValues) => {
-    const { confirmPassword: _, ...payload } = data;
+  const onFinish = ({ confirmPassword: _, ...payload }: RegisterFormValues) => {
     registerUser(payload);
   };
 
@@ -68,67 +54,75 @@ export function RegisterContent() {
             <CardTitle className="text-2xl">{t("register.cardTitle")}</CardTitle>
             <CardDescription>{t("register.cardDescription")}</CardDescription>
           </CardHeader>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} noValidate>
-              <CardContent className="grid gap-4">
-                <AuthNameFields
-                  form={form}
-                  isLoading={isLoading}
-                  t={t}
-                  firstNameLabelKey="register.firstNameLabel"
-                  lastNameLabelKey="register.lastNameLabel"
-                />
+          <CardContent>
+            <Form<RegisterFormValues>
+              layout="vertical"
+              onFinish={onFinish}
+              initialValues={{
+                first_name: "",
+                last_name: "",
+                email: "",
+                password: "",
+                confirmPassword: "",
+              }}
+              requiredMark={false}
+            >
+              <AuthNameFields
+                t={t}
+                disabled={isLoading}
+                firstNameLabelKey="register.firstNameLabel"
+                lastNameLabelKey="register.lastNameLabel"
+              />
 
-                <AuthEmailField
-                  form={form}
-                  isLoading={isLoading}
-                  t={t}
-                  labelKey="register.emailLabel"
-                />
+              <Form.Item
+                name="email"
+                label={t("register.emailLabel")}
+                rules={[zodFieldRule(getEmailSchema(tv))]}
+              >
+                <AuthEmailField disabled={isLoading} />
+              </Form.Item>
 
-                <AuthPasswordField
-                  form={form}
-                  isLoading={isLoading}
-                  showPassword={showPassword}
-                  setShowPassword={setShowPassword}
-                  t={t}
-                  labelKey="register.passwordLabel"
-                />
+              <Form.Item
+                name="password"
+                label={t("register.passwordLabel")}
+                rules={[zodFieldRule(getPasswordSchema(tv))]}
+              >
+                <AuthPasswordField disabled={isLoading} />
+              </Form.Item>
 
-                <AuthPasswordField
-                  form={form}
-                  isLoading={isLoading}
-                  showPassword={showConfirmPassword}
-                  setShowPassword={setShowConfirmPassword}
-                  t={t}
-                  labelKey="register.confirmPasswordLabel"
-                  name="confirmPassword"
-                />
+              <Form.Item
+                name="confirmPassword"
+                label={t("register.confirmPasswordLabel")}
+                dependencies={["password"]}
+                rules={[
+                  zodFieldRule(getConfirmPasswordSchema(tv)),
+                  ({ getFieldValue }) => ({
+                    validator(_rule, value: string) {
+                      if (!value || getFieldValue("password") === value) return Promise.resolve();
+                      return Promise.reject(new Error(tv("confirmPasswordMismatch")));
+                    },
+                  }),
+                ]}
+              >
+                <AuthPasswordField disabled={isLoading} />
+              </Form.Item>
 
-                <div className="flex flex-col gap-4 mt-4">
-                  <Button className="w-full" type="submit" disabled={isLoading}>
-                    {isLoading ? (
-                      <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        {t("register.submitting")}
-                      </>
-                    ) : (
-                      t("register.submitButton")
-                    )}
-                  </Button>
-                  <div className="text-center text-sm">
-                    {t("register.hasAccount")}{" "}
-                    <Link
-                      href={getLocalizedPath(ROUTES.login, currentLocale)}
-                      className="font-medium text-primary hover:underline transition-all"
-                    >
-                      {t("register.login")}
-                    </Link>
-                  </div>
+              <div className="flex flex-col gap-4 mt-4">
+                <Button className="w-full" type="submit" loading={isLoading}>
+                  {isLoading ? t("register.submitting") : t("register.submitButton")}
+                </Button>
+                <div className="text-center text-sm">
+                  {t("register.hasAccount")}{" "}
+                  <Link
+                    href={getLocalizedPath(ROUTES.login, currentLocale)}
+                    className="font-medium text-primary hover:underline transition-all"
+                  >
+                    {t("register.login")}
+                  </Link>
                 </div>
-              </CardContent>
-            </form>
-          </Form>
+              </div>
+            </Form>
+          </CardContent>
         </Card>
       </motion.div>
     </div>

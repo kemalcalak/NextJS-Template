@@ -2,7 +2,7 @@ import { z } from "zod";
 
 import type { TFunction } from "i18next";
 
-const getPasswordSchema = (t: TFunction) =>
+export const getPasswordSchema = (t: TFunction) =>
   z
     .string()
     .min(6, { message: t("passwordMin", { count: 6 }) })
@@ -11,11 +11,20 @@ const getPasswordSchema = (t: TFunction) =>
     .regex(/[0-9]/, { message: t("passwordNumber") })
     .regex(/[!@#$%^&*(),.?":{}|<>]/, { message: t("passwordSpecial") });
 
-const getEmailSchema = (t: TFunction) =>
+export const getRequiredPasswordSchema = (t: TFunction) =>
+  z.string().min(1, { message: t("passwordRequired") });
+
+export const getEmailSchema = (t: TFunction) =>
   z
     .string()
     .min(1, { message: t("emailRequired") })
     .pipe(z.email({ message: t("emailInvalid") }));
+
+export const getNameSchema = (t: TFunction) =>
+  z.string().min(2, { message: t("nameMin", { count: 2 }) });
+
+export const getConfirmPasswordSchema = (t: TFunction) =>
+  z.string().min(1, { message: t("confirmPasswordRequired") });
 
 export const getLoginSchema = (t: TFunction) =>
   z.object({

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 
+import { Dropdown, type MenuProps } from "antd";
 import { Moon, Sun } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -10,12 +11,6 @@ import { useTranslation } from "react-i18next";
 import { AppDrawer } from "@/components/common/AppDrawer";
 import { AuthButtons } from "@/components/common/AuthButtons";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { env } from "@/env";
 import { useLanguage } from "@/hooks/use-language";
 import { useTheme } from "@/hooks/use-theme";
@@ -75,6 +70,23 @@ export const AppHeader = () => {
     });
   };
 
+  const languageItems: MenuProps["items"] = [
+    {
+      key: "en",
+      label: "English",
+      onClick: () => {
+        handleChangeLanguage("en");
+      },
+    },
+    {
+      key: "tr",
+      label: "Türkçe",
+      onClick: () => {
+        handleChangeLanguage("tr");
+      },
+    },
+  ];
+
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4 sm:px-6 lg:px-8 xl:px-12">
       <div className="mx-auto flex h-16 w-full max-w-[1920px] items-center justify-between">
@@ -110,30 +122,14 @@ export const AppHeader = () => {
             <span className="sr-only">{t("common:ui.toggleTheme", "Toggle theme")}</span>
           </Button>
 
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
+          <Dropdown menu={{ items: languageItems }} trigger={["click"]} placement="bottomRight">
+            <span>
               <Button variant="ghost" size="sm" className="w-9 px-0">
                 {currentLocale.toUpperCase()}
                 <span className="sr-only">{t("common:ui.toggleLanguage", "Toggle language")}</span>
               </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem
-                onClick={() => {
-                  handleChangeLanguage("en");
-                }}
-              >
-                English
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => {
-                  handleChangeLanguage("tr");
-                }}
-              >
-                Türkçe
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+            </span>
+          </Dropdown>
 
           <AuthButtons user={user} />
         </div>

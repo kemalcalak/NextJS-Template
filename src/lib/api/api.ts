@@ -1,5 +1,4 @@
 import axios from "axios";
-import { toast } from "sonner";
 
 import { env } from "@/env";
 import i18n from "@/i18n/config";
@@ -12,6 +11,7 @@ import {
   protectedRoutes,
   matchesRoute,
 } from "@/lib/config/routes";
+import { toast } from "@/lib/toast";
 import { useAuthStore } from "@/stores/auth.store";
 
 import type { AxiosInstance, AxiosError, AxiosResponse, InternalAxiosRequestConfig } from "axios";

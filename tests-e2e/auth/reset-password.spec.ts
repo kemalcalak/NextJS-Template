@@ -25,8 +25,8 @@ for (const locale of LOCALES) {
     test("should show validation errors on password mismatch", async ({ page }) => {
       await page.goto(`/${locale}/reset-password?token=valid-token`);
 
-      await page.fill('input[name="password"]', "NewPass123!");
-      await page.fill('input[name="confirmPassword"]', "OtherPass123!");
+      await page.fill("input#password", "NewPass123!");
+      await page.fill("input#confirmPassword", "OtherPass123!");
       await page.click('button[type="submit"]');
 
       await expect(
@@ -51,8 +51,8 @@ for (const locale of LOCALES) {
 
       // pressSequentially — webkit can drop values from bare page.fill() on
       // controlled RHF inputs.
-      await page.locator('input[name="password"]').pressSequentially("NewPass123!");
-      await page.locator('input[name="confirmPassword"]').pressSequentially("NewPass123!");
+      await page.locator("input#password").pressSequentially("NewPass123!");
+      await page.locator("input#confirmPassword").pressSequentially("NewPass123!");
       await page.click('button[type="submit"]');
 
       await expect(page.getByText(s.auth.resetPassword.successTitle).first()).toBeVisible();
@@ -70,8 +70,8 @@ for (const locale of LOCALES) {
 
       await page.goto(`/${locale}/reset-password?token=invalid-token`);
 
-      await page.locator('input[name="password"]').pressSequentially("NewPass123!");
-      await page.locator('input[name="confirmPassword"]').pressSequentially("NewPass123!");
+      await page.locator("input#password").pressSequentially("NewPass123!");
+      await page.locator("input#confirmPassword").pressSequentially("NewPass123!");
       await page.click('button[type="submit"]');
 
       await expect(
@@ -84,12 +84,12 @@ for (const locale of LOCALES) {
 
     test("should toggle password visibility", async ({ page }) => {
       await page.goto(`/${locale}/reset-password?token=valid-token`);
-      const passwordInput = page.locator('input[name="password"]');
+      const passwordInput = page.locator("input#password");
 
       await expect(passwordInput).toHaveAttribute("type", "password");
-      await page.click('button[aria-label*="password"i]');
+      await page.locator(".ant-input-password-icon").first().click();
       await expect(passwordInput).toHaveAttribute("type", "text");
-      await page.click('button[aria-label*="password"i]');
+      await page.locator(".ant-input-password-icon").first().click();
       await expect(passwordInput).toHaveAttribute("type", "password");
     });
   });

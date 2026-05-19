@@ -1,5 +1,6 @@
 "use client";
 
+import { Select } from "antd";
 import { Search, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
@@ -14,13 +15,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 
 // Re-export so existing import sites (e.g. UsersContent) keep working without
 // reaching into `users-filters-config` directly. The constants are already
@@ -57,10 +51,9 @@ export function UsersFilters({
   return (
     <Card className="border-border/50 bg-card/60">
       <CardContent className="flex flex-col gap-3 p-4 md:flex-row md:flex-wrap md:items-center">
-        <div className="relative w-full md:flex-1 md:min-w-50">
-          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+        <div className="w-full md:flex-1 md:min-w-50">
           <Input
-            className="pl-9"
+            prefix={<Search className="h-4 w-4 text-muted-foreground" />}
             placeholder={t("users.filters.searchPlaceholder")}
             value={search}
             onChange={(event) => {
@@ -69,60 +62,45 @@ export function UsersFilters({
           />
         </div>
         <div className="grid grid-cols-2 gap-2 md:contents">
-          <Select
+          <Select<string>
             value={role}
-            onValueChange={(value) => {
+            onChange={(value) => {
               if (isUsersRoleFilter(value)) onRoleChange(value);
             }}
-          >
-            <SelectTrigger
-              aria-label={t("users.filters.role")}
-              className="w-full md:w-fit md:min-w-35"
-            >
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">{t("users.filters.roleAny")}</SelectItem>
-              <SelectItem value="admin">{t("users.role.admin")}</SelectItem>
-              <SelectItem value="user">{t("users.role.user")}</SelectItem>
-            </SelectContent>
-          </Select>
-          <Select
+            aria-label={t("users.filters.role")}
+            className="w-full md:w-fit md:min-w-35"
+            options={[
+              { value: "all", label: t("users.filters.roleAny") },
+              { value: "admin", label: t("users.role.admin") },
+              { value: "user", label: t("users.role.user") },
+            ]}
+          />
+          <Select<string>
             value={status}
-            onValueChange={(value) => {
+            onChange={(value) => {
               if (isUsersStatusFilter(value)) onStatusChange(value);
             }}
-          >
-            <SelectTrigger
-              aria-label={t("users.filters.status")}
-              className="w-full md:w-fit md:min-w-35"
-            >
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">{t("users.filters.statusAny")}</SelectItem>
-              <SelectItem value="active">{t("users.filters.statusActive")}</SelectItem>
-              <SelectItem value="inactive">{t("users.filters.statusInactive")}</SelectItem>
-            </SelectContent>
-          </Select>
-          <Select
+            aria-label={t("users.filters.status")}
+            className="w-full md:w-fit md:min-w-35"
+            options={[
+              { value: "all", label: t("users.filters.statusAny") },
+              { value: "active", label: t("users.filters.statusActive") },
+              { value: "inactive", label: t("users.filters.statusInactive") },
+            ]}
+          />
+          <Select<string>
             value={verified}
-            onValueChange={(value) => {
+            onChange={(value) => {
               if (isUsersVerifiedFilter(value)) onVerifiedChange(value);
             }}
-          >
-            <SelectTrigger
-              aria-label={t("users.filters.verified")}
-              className="w-full md:w-fit md:min-w-35"
-            >
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">{t("users.filters.verifiedAny")}</SelectItem>
-              <SelectItem value="yes">{t("users.filters.verifiedYes")}</SelectItem>
-              <SelectItem value="no">{t("users.filters.verifiedNo")}</SelectItem>
-            </SelectContent>
-          </Select>
+            aria-label={t("users.filters.verified")}
+            className="w-full md:w-fit md:min-w-35"
+            options={[
+              { value: "all", label: t("users.filters.verifiedAny") },
+              { value: "yes", label: t("users.filters.verifiedYes") },
+              { value: "no", label: t("users.filters.verifiedNo") },
+            ]}
+          />
           {hasFilters ? (
             <Button variant="ghost" size="sm" onClick={onReset} className="w-full md:w-auto">
               <X className="h-4 w-4" />

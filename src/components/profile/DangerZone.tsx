@@ -2,60 +2,47 @@
 
 import { useState } from "react";
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { AlertTriangle, Loader2, Lock } from "lucide-react";
+import { Form, Modal } from "antd";
+import { AlertTriangle, Lock } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useDeactivateMe } from "@/hooks/api/use-users";
 import { useLanguage } from "@/hooks/use-language";
 import { ROUTES, getLocalizedPath } from "@/lib/config/routes";
-import { getDeactivateAccountSchema, type DeactivateAccountFormValues } from "@/schemas/user";
+import { zodFieldRule } from "@/lib/validation/zodToAntdRule";
+import { getRequiredPasswordSchema } from "@/schemas/auth";
+import { type DeactivateAccountFormValues } from "@/schemas/user";
 import { useAuthStore } from "@/stores/auth.store";
 
 export const DangerZone = () => {
   const { t } = useTranslation(["account", "validation"]);
+  const { t: tv } = useTranslation("validation");
   const [open, setOpen] = useState(false);
   const { mutate: deactivate, isPending } = useDeactivateMe();
   const logout = useAuthStore((s) => s.logout);
   const router = useRouter();
   const { language } = useLanguage();
+  const [form] = Form.useForm<DeactivateAccountFormValues>();
+  const acknowledge = Form.useWatch("acknowledge", form);
 
-  const form = useForm<DeactivateAccountFormValues>({
-    resolver: zodResolver(getDeactivateAccountSchema(t)),
-    defaultValues: { password: "", acknowledge: false },
-  });
+  const handleClose = () => {
+    if (isPending) return;
+    setOpen(false);
+    form.resetFields();
+  };
 
-  const onSubmit = (values: DeactivateAccountFormValues) => {
+  const onFinish = (values: DeactivateAccountFormValues) => {
     deactivate(
       { password: values.password, lang: language },
       {
         onSuccess: () => {
           setOpen(false);
-          form.reset();
+          form.resetFields();
           logout();
           router.push(getLocalizedPath(ROUTES.login, language));
         },
@@ -83,98 +70,75 @@ export const DangerZone = () => {
         </Button>
       </CardContent>
 
-      <AlertDialog
+      <Modal
         open={open}
-        onOpenChange={(next) => {
-          if (!isPending) setOpen(next);
-        }}
+        onCancel={handleClose}
+        title={
+          <span className="flex items-center gap-2">
+            <AlertTriangle className="h-5 w-5 text-destructive" />
+            {t("account:deactivate.dialog.title")}
+          </span>
+        }
+        footer={null}
+        destroyOnHidden
       >
-        <AlertDialogContent>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-              <AlertDialogHeader>
-                <AlertDialogTitle className="flex items-center gap-2">
-                  <AlertTriangle className="h-5 w-5 text-destructive" />
-                  {t("account:deactivate.dialog.title")}
-                </AlertDialogTitle>
-                <AlertDialogDescription>
-                  {t("account:deactivate.dialog.description")}
-                </AlertDialogDescription>
-              </AlertDialogHeader>
+        <p className="mb-4 text-sm text-muted-foreground">
+          {t("account:deactivate.dialog.description")}
+        </p>
 
-              <FormField
-                control={form.control}
-                name="password"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t("account:deactivate.dialog.passwordLabel")}</FormLabel>
-                    <div className="relative">
-                      <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                      <FormControl>
-                        <Input
-                          type="password"
-                          placeholder="••••••••"
-                          className="pl-10"
-                          autoComplete="current-password"
-                          disabled={isPending}
-                          {...field}
-                        />
-                      </FormControl>
-                    </div>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+        <Form<DeactivateAccountFormValues>
+          form={form}
+          layout="vertical"
+          onFinish={onFinish}
+          initialValues={{ password: "", acknowledge: false }}
+          requiredMark={false}
+          className="space-y-4"
+        >
+          <Form.Item
+            name="password"
+            label={t("account:deactivate.dialog.passwordLabel")}
+            rules={[zodFieldRule(getRequiredPasswordSchema(tv))]}
+          >
+            <Input
+              type="password"
+              placeholder="••••••••"
+              prefix={<Lock className="h-4 w-4 text-muted-foreground" />}
+              autoComplete="current-password"
+              disabled={isPending}
+            />
+          </Form.Item>
 
-              <FormField
-                control={form.control}
-                name="acknowledge"
-                render={({ field }) => (
-                  <FormItem className="flex flex-row items-start gap-3 space-y-0">
-                    <FormControl>
-                      <Checkbox
-                        checked={field.value}
-                        onCheckedChange={(checked) => {
-                          field.onChange(checked === true);
-                        }}
-                        disabled={isPending}
-                      />
-                    </FormControl>
-                    <div className="space-y-1 leading-none">
-                      <FormLabel className="text-sm">
-                        {t("account:deactivate.dialog.acknowledgeLabel")}
-                      </FormLabel>
-                      <FormMessage />
-                    </div>
-                  </FormItem>
-                )}
-              />
+          <Form.Item
+            name="acknowledge"
+            valuePropName="checked"
+            rules={[
+              {
+                validator: (_rule, value: boolean) => {
+                  if (!value) {
+                    return Promise.reject(new Error(tv("deactivateAcknowledgeRequired")));
+                  }
+                  return Promise.resolve();
+                },
+              },
+            ]}
+          >
+            <Checkbox disabled={isPending}>
+              {t("account:deactivate.dialog.acknowledgeLabel")}
+            </Checkbox>
+          </Form.Item>
 
-              <AlertDialogFooter>
-                <AlertDialogCancel disabled={isPending} type="button">
-                  {t("account:deactivate.dialog.cancel")}
-                </AlertDialogCancel>
-                <AlertDialogAction asChild>
-                  <Button
-                    type="submit"
-                    variant="destructive"
-                    disabled={isPending || !form.formState.isValid}
-                  >
-                    {isPending ? (
-                      <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        {t("account:deactivate.dialog.submitting")}
-                      </>
-                    ) : (
-                      t("account:deactivate.dialog.confirm")
-                    )}
-                  </Button>
-                </AlertDialogAction>
-              </AlertDialogFooter>
-            </form>
-          </Form>
-        </AlertDialogContent>
-      </AlertDialog>
+          <div className="flex justify-end gap-2 pt-2">
+            <Button type="button" variant="outline" onClick={handleClose} disabled={isPending}>
+              {t("account:deactivate.dialog.cancel")}
+            </Button>
+            <Button type="submit" variant="destructive" loading={isPending} disabled={!acknowledge}>
+              {isPending
+                ? t("account:deactivate.dialog.submitting")
+                : t("account:deactivate.dialog.confirm")}
+            </Button>
+          </div>
+        </Form>
+      </Modal>
     </Card>
   );
 };

@@ -1,19 +1,12 @@
 "use client";
 
+import { Drawer } from "antd";
 import { Menu, User as UserIcon, LogOut, LayoutDashboard, Home, ShieldCheck } from "lucide-react";
 import { useRouter, usePathname } from "next/navigation";
 import { useTranslation } from "react-i18next";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import {
-  Drawer,
-  DrawerContent,
-  DrawerDescription,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerTrigger,
-} from "@/components/ui/drawer";
 import { env } from "@/env";
 import { useLanguage } from "@/hooks/use-language";
 import {
@@ -113,35 +106,37 @@ export const AppDrawer = ({
   };
 
   return (
-    <Drawer direction="left" open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
-      <DrawerTrigger asChild>
-        <Button variant="ghost" size="sm" className="w-9 px-0 md:hidden">
-          <Menu className="h-5 w-5" />
-          <span className="sr-only">{t("common:ui.toggleMenu")}</span>
-        </Button>
-      </DrawerTrigger>
-      <DrawerContent
-        className="right-auto top-0 mt-0 h-screen w-[85vw] max-w-sm rounded-none border-r outline-none"
-        onOpenAutoFocus={(e) => {
-          const content = e.currentTarget as HTMLElement;
-          const title = content?.querySelector<HTMLElement>("[data-slot='drawer-title']");
-          if (title) title.focus();
-          e.preventDefault();
+    <>
+      <Button
+        variant="ghost"
+        size="sm"
+        className="w-9 px-0 md:hidden"
+        onClick={() => {
+          setIsMobileMenuOpen(true);
         }}
       >
-        <DrawerHeader className="text-left border-b pb-6 px-6 pt-8">
-          <DrawerTitle
-            data-slot="drawer-title"
-            className="text-2xl font-bold tracking-tight text-primary outline-none"
-            tabIndex={-1}
-          >
+        <Menu className="h-5 w-5" />
+        <span className="sr-only">{t("common:ui.toggleMenu")}</span>
+      </Button>
+      <Drawer
+        open={isMobileMenuOpen}
+        onClose={() => {
+          setIsMobileMenuOpen(false);
+        }}
+        placement="left"
+        styles={{
+          wrapper: { width: "85vw", maxWidth: "24rem" },
+          body: { padding: 0 },
+          header: { padding: "2rem 1.5rem 1.5rem" },
+        }}
+        title={
+          <span className="text-2xl font-bold tracking-tight text-primary">
             {env.NEXT_PUBLIC_APP_NAME}
-          </DrawerTitle>
-          <DrawerDescription className="sr-only">
-            {t("common:ui.drawerDescription")}
-          </DrawerDescription>
-        </DrawerHeader>
-        <div className="flex flex-col gap-6 p-6 h-full overflow-y-auto">
+          </span>
+        }
+        classNames={{ wrapper: "max-w-sm" }}
+      >
+        <div className="flex h-full flex-col gap-6 p-6 overflow-y-auto">
           {user && <UserProfile user={user} />}
 
           <div className="flex flex-col gap-3">
@@ -221,7 +216,7 @@ export const AppDrawer = ({
             )}
           </div>
         </div>
-      </DrawerContent>
-    </Drawer>
+      </Drawer>
+    </>
   );
 };

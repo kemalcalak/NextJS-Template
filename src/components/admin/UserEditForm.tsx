@@ -2,18 +2,16 @@
 
 import { useEffect } from "react";
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2, Save } from "lucide-react";
-import { useForm } from "react-hook-form";
+import { Form } from "antd";
+import { Save } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 import { UserEditFormFields } from "@/components/admin/UserEditFormFields";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Form } from "@/components/ui/form";
 import type { AdminUser, AdminUserUpdatePayload } from "@/lib/types/admin";
 import { SystemRole } from "@/lib/types/user";
-import { getAdminUserUpdateSchema, type AdminUserUpdateFormValues } from "@/schemas/admin";
+import { type AdminUserUpdateFormValues } from "@/schemas/admin";
 
 interface UserEditFormProps {
   user: AdminUser;
@@ -32,22 +30,17 @@ const userToFormValues = (user: AdminUser): AdminUserUpdateFormValues => ({
 });
 
 export function UserEditForm({ user, isSelf, isSaving, onSubmit }: UserEditFormProps) {
-  const { t } = useTranslation(["admin", "validation"]);
-
-  const form = useForm<AdminUserUpdateFormValues>({
-    resolver: zodResolver(getAdminUserUpdateSchema(t)),
-    defaultValues: userToFormValues(user),
-  });
+  const { t } = useTranslation("admin");
+  const [form] = Form.useForm<AdminUserUpdateFormValues>();
+  const initialValues = userToFormValues(user);
 
   useEffect(() => {
     // Reset when the underlying user changes (navigating between detail pages).
-    // `form` is deliberately excluded — RHF re-creates handlers on every render,
-    // which would stomp user edits mid-form on any parent re-render.
-    form.reset(userToFormValues(user));
+    form.setFieldsValue(userToFormValues(user));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user.id]);
 
-  const handleSubmit = form.handleSubmit((values) => {
+  const onFinish = (values: AdminUserUpdateFormValues) => {
     // Self-edit must not alter role, is_active, or is_verified even if DevTools
     // re-enables the disabled inputs. Backend guards this too; belt-and-braces.
     // Email is never in the payload — admins cannot change identity.
@@ -62,39 +55,40 @@ export function UserEditForm({ user, isSelf, isSaving, onSubmit }: UserEditFormP
       payload.is_verified = values.is_verified;
     }
     onSubmit(payload);
-  });
+  };
 
   return (
     <Card className="border-border/50 bg-card/60">
       <CardHeader>
-        <CardTitle className="text-base">{t("admin:userDetail.editTitle")}</CardTitle>
-        <CardDescription>{t("admin:userDetail.editDescription")}</CardDescription>
+        <CardTitle className="text-base">{t("userDetail.editTitle")}</CardTitle>
+        <CardDescription>{t("userDetail.editDescription")}</CardDescription>
       </CardHeader>
       <CardContent>
-        <Form {...form}>
-          <form onSubmit={handleSubmit} className="grid gap-4">
-            <UserEditFormFields form={form} isSelf={isSelf} />
-            <div className="flex flex-wrap justify-end gap-2 pt-2">
-              <Button
-                type="button"
-                variant="ghost"
-                onClick={() => {
-                  form.reset();
-                }}
-                disabled={isSaving}
-              >
-                {t("admin:userDetail.cancel")}
-              </Button>
-              <Button type="submit" disabled={isSaving}>
-                {isSaving ? (
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                ) : (
-                  <Save className="mr-2 h-4 w-4" />
-                )}
-                {isSaving ? t("admin:userDetail.saving") : t("admin:userDetail.save")}
-              </Button>
-            </div>
-          </form>
+        <Form<AdminUserUpdateFormValues>
+          form={form}
+          layout="vertical"
+          onFinish={onFinish}
+          initialValues={initialValues}
+          requiredMark={false}
+          className="grid gap-4"
+        >
+          <UserEditFormFields isSelf={isSelf} />
+          <div className="flex flex-wrap justify-end gap-2 pt-2">
+            <Button
+              type="button"
+              variant="ghost"
+              onClick={() => {
+                form.resetFields();
+              }}
+              disabled={isSaving}
+            >
+              {t("userDetail.cancel")}
+            </Button>
+            <Button type="submit" loading={isSaving}>
+              {!isSaving && <Save className="mr-2 h-4 w-4" />}
+              {isSaving ? t("userDetail.saving") : t("userDetail.save")}
+            </Button>
+          </div>
         </Form>
       </CardContent>
     </Card>

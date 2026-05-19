@@ -119,7 +119,7 @@ for (const locale of LOCALES) {
       await page.getByRole("button", { name: s.account.deactivate.cta }).click();
 
       await page.getByLabel(s.account.deactivate.dialog.passwordLabel).fill("Password123!");
-      await page.getByRole("checkbox").check();
+      await page.getByText(s.account.deactivate.dialog.acknowledgeLabel).click();
 
       await page
         .getByRole("button", {
@@ -167,10 +167,10 @@ for (const locale of LOCALES) {
       });
 
       await page.goto(`/${locale}/login`);
-      const emailInput = page.locator('input[name="email"]');
+      const emailInput = page.locator("input#email");
       await emailInput.waitFor({ state: "visible", timeout: 60_000 });
       await emailInput.pressSequentially("jane@example.com");
-      await page.locator('input[name="password"]').pressSequentially("Password123!");
+      await page.locator("input#password").pressSequentially("Password123!");
       await page.click('button[type="submit"]');
 
       await expect(page).toHaveURL(new RegExp(`.*/${locale}/account-deactivated`));

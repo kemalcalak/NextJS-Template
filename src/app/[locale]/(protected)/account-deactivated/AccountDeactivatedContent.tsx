@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-import { AlertTriangle, Loader2, LogOut, ShieldCheck } from "lucide-react";
+import { AlertTriangle, LogOut, ShieldCheck } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 
@@ -20,20 +20,10 @@ import { useLogoutMutation } from "@/hooks/api/use-auth";
 import { useReactivateMe } from "@/hooks/api/use-users";
 import { useLanguage } from "@/hooks/use-language";
 import { getLocalizedPath, ROUTES } from "@/lib/config/routes";
+import { formatLongDateTime } from "@/lib/format-date";
 import { useAuthStore } from "@/stores/auth.store";
 
 const MILLIS_IN_DAY = 1000 * 60 * 60 * 24;
-
-const formatScheduledAt = (iso: string, locale: string): string => {
-  try {
-    return new Intl.DateTimeFormat(locale, {
-      dateStyle: "long",
-      timeStyle: "short",
-    }).format(new Date(iso));
-  } catch {
-    return iso;
-  }
-};
 
 export const AccountDeactivatedContent = () => {
   const { t } = useTranslation(["account"]);
@@ -91,7 +81,7 @@ export const AccountDeactivatedContent = () => {
           </p>
           <p className="text-sm text-muted-foreground">
             {t("account:deactivated.scheduledAt", {
-              date: formatScheduledAt(scheduledAt, language),
+              date: formatLongDateTime(scheduledAt),
             })}
           </p>
           <p className="text-sm text-muted-foreground">
@@ -101,34 +91,25 @@ export const AccountDeactivatedContent = () => {
         <CardFooter className="flex flex-col gap-2 sm:flex-row sm:justify-center">
           <Button
             onClick={onReactivate}
-            disabled={isReactivating || isLoggingOut}
+            loading={isReactivating}
+            disabled={isLoggingOut}
             className="w-full sm:w-auto"
           >
-            {isReactivating ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                {t("account:deactivated.reactivating")}
-              </>
-            ) : (
-              <>
-                <ShieldCheck className="mr-2 h-4 w-4" />
-                {t("account:deactivated.reactivate")}
-              </>
-            )}
+            {!isReactivating && <ShieldCheck className="mr-2 h-4 w-4" />}
+            {isReactivating
+              ? t("account:deactivated.reactivating")
+              : t("account:deactivated.reactivate")}
           </Button>
           <Button
             variant="outline"
             onClick={() => {
               logout();
             }}
-            disabled={isReactivating || isLoggingOut}
+            loading={isLoggingOut}
+            disabled={isReactivating}
             className="w-full sm:w-auto"
           >
-            {isLoggingOut ? (
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            ) : (
-              <LogOut className="mr-2 h-4 w-4" />
-            )}
+            {!isLoggingOut && <LogOut className="mr-2 h-4 w-4" />}
             {t("account:deactivated.logout")}
           </Button>
         </CardFooter>

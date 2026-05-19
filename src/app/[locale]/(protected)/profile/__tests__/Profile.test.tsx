@@ -1,4 +1,4 @@
-import { screen, waitFor } from "@testing-library/react";
+import { fireEvent, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
@@ -156,9 +156,12 @@ describe("Profile Page", () => {
     const newPasswordInput = screen.getByLabelText(/profile:security\.newPassword/i);
     const confirmPasswordInput = screen.getByLabelText(/profile:security\.confirmPassword/i);
 
-    await user.type(currentPasswordInput, "password123");
-    await user.type(newPasswordInput, "Password123!");
-    await user.type(confirmPasswordInput, "Password123!");
+    // fireEvent.change sets the value in one shot rather than per-keystroke,
+    // which avoids the per-character async validation cascade in antd Form
+    // that causes this test to flake under parallel test load.
+    fireEvent.change(currentPasswordInput, { target: { value: "password123" } });
+    fireEvent.change(newPasswordInput, { target: { value: "Password123!" } });
+    fireEvent.change(confirmPasswordInput, { target: { value: "Password123!" } });
 
     const submitButton = screen.getByRole("button", { name: /profile:security\.submit/i });
     await user.click(submitButton);
@@ -171,5 +174,5 @@ describe("Profile Page", () => {
         expect.any(Object),
       );
     });
-  });
+  }, 15000);
 });

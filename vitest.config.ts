@@ -13,5 +13,10 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
     exclude: ["node_modules", "dist", ".next", "tests-e2e"],
+    // antd's CSS-in-JS engine and portal-rendered overlays (Modal, Drawer,
+    // notification) flake under parallel JSDOM workers — multiple style sheets
+    // get injected into shared global state. Run files sequentially so antd
+    // tokens, registries, and portal mounts stay isolated per file.
+    fileParallelism: false,
   },
 });

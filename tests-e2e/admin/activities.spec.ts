@@ -78,8 +78,12 @@ for (const locale of LOCALES) {
       await page.goto(`/${locale}/admin/activities`);
       await expect(page.getByRole("heading", { name: s.activities.title })).toBeVisible();
 
-      await page.getByLabel(s.activities.filters.type).click();
-      await page.getByRole("option", { name: s.activities.type.login }).click();
+      await page
+        .locator(".ant-select")
+        .filter({ has: page.locator(`[aria-label="${s.activities.filters.type}"]`) })
+        .locator(".ant-select-content")
+        .click();
+      await page.locator(`.ant-select-item-option[title="${s.activities.type.login}"]`).click();
 
       await expect.poll(() => captured.at(-1) ?? "").toContain("activity_type=login");
     });
@@ -93,8 +97,12 @@ for (const locale of LOCALES) {
 
       await expect(page.getByRole("button", { name: s.activities.filters.reset })).toHaveCount(0);
 
-      await page.getByLabel(s.activities.filters.status).click();
-      await page.getByRole("option", { name: s.activities.status.failure }).click();
+      await page
+        .locator(".ant-select")
+        .filter({ has: page.locator(`[aria-label="${s.activities.filters.status}"]`) })
+        .locator(".ant-select-content")
+        .click();
+      await page.locator(`.ant-select-item-option[title="${s.activities.status.failure}"]`).click();
 
       const resetButton = page.getByRole("button", { name: s.activities.filters.reset });
       await expect(resetButton).toBeVisible();

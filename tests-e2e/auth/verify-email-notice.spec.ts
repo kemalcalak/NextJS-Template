@@ -14,7 +14,7 @@ for (const locale of LOCALES) {
       await expect(page).toHaveURL(
         new RegExp(`.*verify-email-notice.*email=${encodeURIComponent(testEmail)}`),
       );
-      await expect(page.locator('input[name="email"]')).toHaveValue(testEmail);
+      await expect(page.locator("input#email")).toHaveValue(testEmail);
 
       await expect(page.getByRole("link", { name: s.auth.verifyEmail.backToLogin })).toBeVisible();
 
@@ -34,7 +34,7 @@ for (const locale of LOCALES) {
     test("should not redirect if email parameter is missing", async ({ page }) => {
       await page.goto(`/${locale}/verify-email-notice`);
       await expect(page).toHaveURL(/.*verify-email-notice/);
-      await expect(page.locator('input[name="email"]')).toHaveValue("");
+      await expect(page.locator("input#email")).toHaveValue("");
     });
   });
 }
