@@ -8,7 +8,11 @@ import { Input } from "@/components/ui/input";
 import { zodFieldRule } from "@/lib/validation/zodToAntdRule";
 import { getAdminUserUpdateSchema } from "@/schemas/admin";
 
-export function UserEditFormFields({ isSelf }: { isSelf: boolean }) {
+interface UserEditFormFieldsProps {
+  isSelf: boolean;
+}
+
+export function UserEditFormFields({ isSelf }: UserEditFormFieldsProps) {
   const { t } = useTranslation(["admin", "validation"]);
   const schema = getAdminUserUpdateSchema(t);
   const firstNameRule = zodFieldRule(schema.shape.first_name);

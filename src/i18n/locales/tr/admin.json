@@ -86,7 +86,7 @@
       "menu": "Satır işlemleri",
       "suspend": "Askıya al",
       "unsuspend": "Askıyı kaldır",
-      "resetPassword": "Şifre sıfırlama gönder",
+      "changePassword": "Şifreyi sıfırla",
       "delete": "Kullanıcıyı sil"
     }
   },
@@ -120,8 +120,7 @@
     "save": "Değişiklikleri kaydet",
     "saving": "Kaydediliyor...",
     "cancel": "İptal",
-    "resetPassword": "Şifre sıfırlama gönder",
-    "resetting": "Gönderiliyor...",
+    "changePassword": "Şifreyi sıfırla",
     "suspend": "Hesabı askıya al",
     "unsuspend": "Askıyı kaldır",
     "delete": "Kullanıcıyı sil",
@@ -137,9 +136,9 @@
     "unsuspendTitle": "Bu askı kaldırılsın mı?",
     "unsuspendDescription": "Hesap yeniden etkinleşir ve kullanıcının erişimi geri yüklenir.",
     "unsuspendConfirm": "Askıyı kaldır",
-    "resetTitle": "Şifre sıfırlama gönderilsin mi?",
-    "resetDescription": "Kullanıcı e-posta ile güvenli bir bağlantı alır. Yeni şifreyi asla göremezsiniz.",
-    "resetConfirm": "Sıfırlama e-postası gönder",
+    "changePasswordTitle": "Şifre sıfırlansın mı?",
+    "changePasswordDescription": "Kullanıcının şifresi bilinmeyen bir değere döndürülür. Yeniden erişim için giriş sayfasındaki 'Şifremi Unuttum' bağlantısını kullanması gerekir. Yeni şifreyi siz görmezsiniz.",
+    "changePasswordConfirm": "Sıfırla",
     "cancel": "İptal"
   },
   "activities": {

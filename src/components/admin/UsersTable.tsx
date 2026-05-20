@@ -47,11 +47,11 @@ const buildRowMenu = (
         },
       },
   {
-    key: "reset",
+    key: "change-password",
     icon: <KeyRound className="h-4 w-4" />,
-    label: t("users.rowActions.resetPassword"),
+    label: t("users.rowActions.changePassword"),
     onClick: () => {
-      onAction("reset", user);
+      onAction("change-password", user);
     },
   },
   { type: "divider" },

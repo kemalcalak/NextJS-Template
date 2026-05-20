@@ -1,14 +1,14 @@
 import { useTranslation } from "react-i18next";
 
 import {
+  useChangeAdminUserPassword,
   useDeleteAdminUser,
-  useResetAdminUserPassword,
   useSuspendAdminUser,
   useUnsuspendAdminUser,
 } from "@/hooks/api/use-admin";
 import type { AdminUser } from "@/lib/types/admin";
 
-export type UserActionKind = "suspend" | "unsuspend" | "delete" | "reset";
+export type UserActionKind = "suspend" | "unsuspend" | "delete" | "change-password";
 
 interface RunOptions {
   onSuccess?: () => void;
@@ -21,7 +21,7 @@ export function useUserActions() {
   const suspend = useSuspendAdminUser();
   const unsuspend = useUnsuspendAdminUser();
   const remove = useDeleteAdminUser();
-  const resetPassword = useResetAdminUserPassword();
+  const changePassword = useChangeAdminUserPassword();
 
   const run = (kind: UserActionKind, user: AdminUser, opts?: RunOptions) => {
     switch (kind) {
@@ -34,14 +34,14 @@ export function useUserActions() {
       case "delete":
         remove.mutate(user.id, opts);
         return;
-      case "reset":
-        resetPassword.mutate({ id: user.id, lang: i18n.language }, opts);
+      case "change-password":
+        changePassword.mutate({ id: user.id, lang: i18n.language }, opts);
         return;
     }
   };
 
   const isLoading =
-    suspend.isPending || unsuspend.isPending || remove.isPending || resetPassword.isPending;
+    suspend.isPending || unsuspend.isPending || remove.isPending || changePassword.isPending;
 
   return { run, isLoading };
 }

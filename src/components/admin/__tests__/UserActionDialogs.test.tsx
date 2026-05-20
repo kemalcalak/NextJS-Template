@@ -19,7 +19,7 @@ describe("UserActionDialogs", () => {
   it.each([
     ["suspend", "suspendTitle", "suspendConfirm"] as const,
     ["unsuspend", "unsuspendTitle", "unsuspendConfirm"] as const,
-    ["reset", "resetTitle", "resetConfirm"] as const,
+    ["change-password", "changePasswordTitle", "changePasswordConfirm"] as const,
     ["delete", "deleteTitle", "deleteConfirm"] as const,
   ])("shows the %s dialog with its title and confirm label", (kind, title, confirmKey) => {
     render(

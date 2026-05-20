@@ -58,16 +58,16 @@ describe("UserDangerZone", () => {
     renderZone({ isSelf: true });
     expect(screen.getByRole("button", { name: /admin:userDetail\.suspend/ })).toBeDisabled();
     expect(screen.getByRole("button", { name: /admin:userDetail\.delete/ })).toBeDisabled();
-    // Reset-password stays enabled — an admin may want to rotate their own secrets.
-    expect(screen.getByRole("button", { name: /admin:userDetail\.resetPassword/ })).toBeEnabled();
+    // Change-password stays enabled — an admin may want to rotate their own secrets.
+    expect(screen.getByRole("button", { name: /admin:userDetail\.changePassword/ })).toBeEnabled();
   });
 
   it("invokes onAction with the correct kind when buttons are clicked", () => {
     const props = renderZone();
-    fireEvent.click(screen.getByRole("button", { name: /admin:userDetail\.resetPassword/ }));
+    fireEvent.click(screen.getByRole("button", { name: /admin:userDetail\.changePassword/ }));
     fireEvent.click(screen.getByRole("button", { name: /admin:userDetail\.suspend/ }));
     fireEvent.click(screen.getByRole("button", { name: /admin:userDetail\.delete/ }));
-    expect(props.onAction).toHaveBeenCalledWith("reset");
+    expect(props.onAction).toHaveBeenCalledWith("change-password");
     expect(props.onAction).toHaveBeenCalledWith("suspend");
     expect(props.onAction).toHaveBeenCalledWith("delete");
   });

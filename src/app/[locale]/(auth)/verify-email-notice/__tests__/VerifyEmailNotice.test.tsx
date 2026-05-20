@@ -15,7 +15,6 @@ vi.mock("@/hooks/api/use-auth", () => ({
 // Mock next/navigation
 const mockPush = vi.fn();
 const mockReplace = vi.fn();
-const mockSearchParams = new URLSearchParams();
 vi.mock("next/navigation", () => ({
   useRouter: () => ({
     push: mockPush,
@@ -24,13 +23,14 @@ vi.mock("next/navigation", () => ({
   }),
   usePathname: () => "/auth/verify-email-notice",
   useParams: () => ({ locale: "en" }),
-  useSearchParams: () => mockSearchParams,
 }));
+
+const PENDING_EMAIL_KEY = "pendingVerifyEmail";
 
 describe("VerifyEmailNoticeContent Component", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    mockSearchParams.delete("email");
+    window.sessionStorage.removeItem(PENDING_EMAIL_KEY);
     vi.mocked(useResendVerificationMutation).mockReturnValue({
       mutate: mockResendEmail,
       isPending: false,
@@ -50,9 +50,9 @@ describe("VerifyEmailNoticeContent Component", () => {
     } as unknown as ReturnType<typeof useResendVerificationMutation>);
   });
 
-  it("redirects to login if email is missing in search params", async () => {
+  it("redirects to login if no pending email is stored", async () => {
     renderWithProviders(<VerifyEmailNoticeContent />);
-    // The component has a replace call in useEffect if email is missing
+    // The component reads sessionStorage on mount and replaces to /login when empty.
     await waitFor(() => {
       expect(mockReplace).toHaveBeenCalled();
     });
@@ -60,7 +60,7 @@ describe("VerifyEmailNoticeContent Component", () => {
 
   it("renders the email correctly and it is read-only", () => {
     const testEmail = "test@example.com";
-    mockSearchParams.set("email", testEmail);
+    window.sessionStorage.setItem(PENDING_EMAIL_KEY, testEmail);
     renderWithProviders(<VerifyEmailNoticeContent />);
 
     const emailInput = screen.getByLabelText(/auth:login\.emailLabel/i);
@@ -70,7 +70,7 @@ describe("VerifyEmailNoticeContent Component", () => {
 
   it("calls resendEmail when button is clicked", async () => {
     const testEmail = "test@example.com";
-    mockSearchParams.set("email", testEmail);
+    window.sessionStorage.setItem(PENDING_EMAIL_KEY, testEmail);
     renderWithProviders(<VerifyEmailNoticeContent />);
 
     const resendButton = screen.getByRole("button", { name: /auth:verifyEmail\.resendButton/i });
@@ -83,7 +83,7 @@ describe("VerifyEmailNoticeContent Component", () => {
 
   it("shows success message after successful resend", () => {
     const testEmail = "test@example.com";
-    mockSearchParams.set("email", testEmail);
+    window.sessionStorage.setItem(PENDING_EMAIL_KEY, testEmail);
 
     vi.mocked(useResendVerificationMutation).mockReturnValue({
       mutate: mockResendEmail,
@@ -96,9 +96,18 @@ describe("VerifyEmailNoticeContent Component", () => {
     expect(screen.getByText(/auth:verifyEmail\.resendSuccess/i)).toBeInTheDocument();
   });
 
+  it("clears the pending email when 'back to login' is clicked", () => {
+    const testEmail = "test@example.com";
+    window.sessionStorage.setItem(PENDING_EMAIL_KEY, testEmail);
+    renderWithProviders(<VerifyEmailNoticeContent />);
+
+    fireEvent.click(screen.getByRole("link", { name: /auth:verifyEmail\.backToLogin/i }));
+    expect(window.sessionStorage.getItem(PENDING_EMAIL_KEY)).toBeNull();
+  });
+
   it("shows loading state when resending", () => {
     const testEmail = "test@example.com";
-    mockSearchParams.set("email", testEmail);
+    window.sessionStorage.setItem(PENDING_EMAIL_KEY, testEmail);
 
     vi.mocked(useResendVerificationMutation).mockReturnValue({
       mutate: mockResendEmail,

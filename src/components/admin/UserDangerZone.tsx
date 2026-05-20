@@ -28,12 +28,12 @@ export function UserDangerZone({ user, isSelf, disabled, onAction }: UserDangerZ
         <Button
           variant="outline"
           onClick={() => {
-            onAction("reset");
+            onAction("change-password");
           }}
           disabled={disabled}
         >
           <KeyRound className="mr-2 h-4 w-4" />
-          {t("userDetail.resetPassword")}
+          {t("userDetail.changePassword")}
         </Button>
         {user.suspended_at ? (
           <Button

@@ -48,8 +48,8 @@ export const adminApi = {
   deleteUser: (id: string): Promise<MessageResponse> =>
     api.delete<MessageResponse, MessageResponse>(`/admin/users/${id}`),
 
-  resetPassword: (id: string, lang: string): Promise<MessageResponse> =>
-    api.post<MessageResponse, MessageResponse>(`/admin/users/${id}/reset-password`, undefined, {
+  changePassword: (id: string, lang: string): Promise<MessageResponse> =>
+    api.post<MessageResponse, MessageResponse>(`/admin/users/${id}/change-password`, undefined, {
       params: { lang },
     }),
 
