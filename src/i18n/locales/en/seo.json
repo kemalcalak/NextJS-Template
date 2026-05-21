@@ -55,6 +55,10 @@
     "title": "User Details",
     "description": "Edit a user, manage their status, and review their activity log."
   },
+  "adminFiles": {
+    "title": "File Management",
+    "description": "Review, filter, and delete uploaded files across the platform."
+  },
   "adminActivities": {
     "title": "Activity Log",
     "description": "Browse audit events across all users."

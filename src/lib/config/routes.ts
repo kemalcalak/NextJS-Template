@@ -18,6 +18,7 @@ export const ROUTES = {
   adminLogin: "/admin/login",
   adminDashboard: "/admin/dashboard",
   adminUsers: "/admin/users",
+  adminFiles: "/admin/files",
   adminActivities: "/admin/activities",
 } as const;
 
@@ -36,6 +37,7 @@ export const protectedRoutes = [
   ROUTES.profile,
   ROUTES.adminDashboard,
   ROUTES.adminUsers,
+  ROUTES.adminFiles,
   ROUTES.adminActivities,
   ROUTES.accountSuspended,
 ];
@@ -78,6 +80,7 @@ export const adminRoutes = [
   ROUTES.adminLogin,
   ROUTES.adminDashboard,
   ROUTES.adminUsers,
+  ROUTES.adminFiles,
   ROUTES.adminActivities,
 ];
 

@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 
-import { Activity, LayoutDashboard, ShieldCheck, Users } from "lucide-react";
+import { Activity, Images, LayoutDashboard, ShieldCheck, Users } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
@@ -83,6 +83,12 @@ export function AdminShell({ children }: AdminShellProps) {
       label: t("shell.nav.users"),
       href: ROUTES.adminUsers,
       icon: Users,
+    },
+    {
+      key: "files",
+      label: t("shell.nav.files"),
+      href: ROUTES.adminFiles,
+      icon: Images,
     },
     {
       key: "activities",
