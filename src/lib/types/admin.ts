@@ -13,7 +13,7 @@ export type ActivityType =
   | "export"
   | "invite";
 
-export type ResourceType = "user" | "auth";
+export type ResourceType = "user" | "auth" | "file";
 
 export type ActivityStatus = "success" | "failure";
 

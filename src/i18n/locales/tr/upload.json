@@ -1,0 +1,11 @@
+{
+  "upload": "Yükle",
+  "replace": "Değiştir",
+  "remove": "Kaldır",
+  "preview": "Önizle",
+  "imageHint": "JPG, PNG, WebP veya GIF · en fazla {{size}}",
+  "errors": {
+    "invalid_type": "Desteklenmeyen dosya türü. JPG, PNG, WebP veya GIF kullanın.",
+    "too_large": "Dosya çok büyük. En fazla {{size}} olabilir."
+  }
+}

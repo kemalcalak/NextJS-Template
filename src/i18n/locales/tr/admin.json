@@ -142,6 +142,37 @@
     "changePasswordConfirm": "Sıfırla",
     "cancel": "İptal"
   },
+  "files": {
+    "title": "Dosyalar",
+    "subtitle": "Yüklenen dosyaları inceleyin, filtreleyin ve silin.",
+    "filters": {
+      "uploaderPlaceholder": "Yükleyen ID'sine göre filtrele",
+      "type": "Tür",
+      "typeAny": "Tüm türler",
+      "reset": "Filtreleri temizle"
+    },
+    "columns": {
+      "file": "Dosya",
+      "type": "Tür",
+      "size": "Boyut",
+      "uploadedBy": "Yükleyen",
+      "created": "Oluşturulma",
+      "actions": "İşlemler"
+    },
+    "rowActions": {
+      "preview": "Önizle",
+      "delete": "Dosyayı sil"
+    },
+    "unnamed": "Adsız",
+    "empty": "Seçili filtrelerle eşleşen dosya yok.",
+    "loading": "Dosyalar yükleniyor...",
+    "confirmDelete": {
+      "title": "Bu dosya silinsin mi?",
+      "description": "Bu işlem dosyayı depolamadan kalıcı olarak siler. Bir kullanıcının profil fotoğrafıysa o avatar temizlenir. Bu işlem geri alınamaz.",
+      "confirm": "Dosyayı sil",
+      "cancel": "İptal"
+    }
+  },
   "activities": {
     "title": "Aktivite günlüğü",
     "subtitle": "Platform genelinde denetlenen tüm olaylar.",
@@ -179,7 +210,8 @@
     },
     "resource": {
       "user": "Kullanıcı",
-      "auth": "Kimlik"
+      "auth": "Kimlik",
+      "file": "Dosya"
     },
     "empty": "Seçili filtrelerle eşleşen aktivite yok.",
     "loading": "Aktiviteler yükleniyor..."

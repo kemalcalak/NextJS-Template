@@ -142,6 +142,37 @@
     "changePasswordConfirm": "Force reset",
     "cancel": "Cancel"
   },
+  "files": {
+    "title": "Files",
+    "subtitle": "Review, filter, and remove uploaded files.",
+    "filters": {
+      "uploaderPlaceholder": "Filter by uploader ID",
+      "type": "Type",
+      "typeAny": "Any type",
+      "reset": "Clear filters"
+    },
+    "columns": {
+      "file": "File",
+      "type": "Type",
+      "size": "Size",
+      "uploadedBy": "Uploaded by",
+      "created": "Created",
+      "actions": "Actions"
+    },
+    "rowActions": {
+      "preview": "Preview",
+      "delete": "Delete file"
+    },
+    "unnamed": "Untitled",
+    "empty": "No files match the current filters.",
+    "loading": "Loading files...",
+    "confirmDelete": {
+      "title": "Delete this file?",
+      "description": "This permanently removes the file from storage. If it is a user's avatar, that avatar will be cleared. This cannot be undone.",
+      "confirm": "Delete file",
+      "cancel": "Cancel"
+    }
+  },
   "activities": {
     "title": "Activity log",
     "subtitle": "Every audited event across the platform.",
@@ -179,7 +210,8 @@
     },
     "resource": {
       "user": "User",
-      "auth": "Auth"
+      "auth": "Auth",
+      "file": "File"
     },
     "empty": "No activity matches the current filters.",
     "loading": "Loading activity..."

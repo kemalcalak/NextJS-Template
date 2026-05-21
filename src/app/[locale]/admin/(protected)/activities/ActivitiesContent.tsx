@@ -35,7 +35,7 @@ const ACTIVITY_TYPES = [
   "invite",
 ] as const satisfies readonly ActivityType[];
 
-const RESOURCE_TYPES = ["user", "auth"] as const satisfies readonly ResourceType[];
+const RESOURCE_TYPES = ["user", "auth", "file"] as const satisfies readonly ResourceType[];
 const STATUS_OPTIONS = ["success", "failure"] as const satisfies readonly ActivityStatus[];
 
 type TypeFilter = "all" | ActivityType;
