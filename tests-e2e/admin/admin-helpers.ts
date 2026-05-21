@@ -1,4 +1,5 @@
 import type { AdminActivity, AdminUser } from "@/lib/types/admin";
+import type { AdminFileListItem } from "@/lib/types/file";
 import { SystemRole } from "@/lib/types/user";
 
 import type { Locale } from "./admin-strings";
@@ -133,6 +134,39 @@ export const mockAdminUserDetail = async (page: Page, user: AdminUser): Promise<
       status: 200,
       contentType: "application/json",
       body: JSON.stringify(user),
+    });
+  });
+};
+
+export const adminFile: AdminFileListItem = {
+  id: "file-1",
+  url: "https://res.cloudinary.com/test/image/upload/report.png",
+  public_id: "uploads/report",
+  content_type: "image/png",
+  size: 4096,
+  filename: "report.png",
+  uploaded_by_id: "user-1",
+  uploaded_by: { id: "user-1", email: "user@test.com", first_name: "Usain", last_name: "User" },
+  created_at: "2026-01-05T00:00:00Z",
+};
+
+export const mockAdminFilesList = async (
+  page: Page,
+  files: AdminFileListItem[],
+  total: number = files.length,
+): Promise<void> => {
+  await page.route(/.*\/api\/v1\/admin\/files(\?.*)?$/, async (route) => {
+    if (route.request().method() !== "GET") {
+      await route.fallback();
+      return;
+    }
+    const url = new URL(route.request().url());
+    const skip = Number(url.searchParams.get("skip") ?? "0");
+    const limit = Number(url.searchParams.get("limit") ?? "50");
+    await route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({ data: files, total, skip, limit }),
     });
   });
 };
