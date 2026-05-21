@@ -146,7 +146,7 @@
     "title": "Dosyalar",
     "subtitle": "Yüklenen dosyaları inceleyin, filtreleyin ve silin.",
     "filters": {
-      "uploaderPlaceholder": "Yükleyen ID'sine göre filtrele",
+      "uploaderPlaceholder": "Yükleyen adı veya e-postasına göre ara",
       "type": "Tür",
       "typeAny": "Tüm türler",
       "reset": "Filtreleri temizle"
@@ -176,6 +176,7 @@
   "activities": {
     "title": "Aktivite günlüğü",
     "subtitle": "Platform genelinde denetlenen tüm olaylar.",
+    "refresh": "Yenile",
     "filters": {
       "type": "Tür",
       "typeAny": "Tüm türler",

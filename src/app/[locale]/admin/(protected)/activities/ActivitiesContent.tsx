@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 
 import { Select } from "antd";
-import { X } from "lucide-react";
+import { RefreshCw, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 import { ActivityTable } from "@/components/admin/ActivityTable";
@@ -18,6 +18,7 @@ import type {
   AdminActivityListParams,
   ResourceType,
 } from "@/lib/types/admin";
+import { cn } from "@/lib/utils";
 
 // Option arrays mirror the FastAPI StrEnums in
 // app/schemas/user_activity.py (ActivityType, ResourceType, ActivityStatus).
@@ -68,7 +69,7 @@ export function ActivitiesContent() {
     [skip, pageSize, type, resource, status],
   );
 
-  const { data, isLoading } = useAdminActivities(params);
+  const { data, isLoading, isFetching, refetch } = useAdminActivities(params);
 
   const resetFilters = () => {
     setType("all");
@@ -148,6 +149,17 @@ export function ActivitiesContent() {
                 {t("activities.filters.reset")}
               </Button>
             ) : null}
+            <Button
+              variant="outline"
+              disabled={isFetching}
+              onClick={() => {
+                void refetch();
+              }}
+              className="w-full md:ml-auto md:w-auto"
+            >
+              <RefreshCw className={cn("h-4 w-4", isFetching && "animate-spin")} />
+              {t("activities.refresh")}
+            </Button>
           </div>
         </CardContent>
       </Card>

@@ -7,7 +7,7 @@ import { StatusBadge } from "@/components/admin/StatusBadge";
 import { formatBytes } from "@/components/common/file-upload/file-upload-utils";
 import { Button } from "@/components/ui/button";
 import { formatDate } from "@/lib/format-date";
-import type { AdminFileListItem } from "@/lib/types/file";
+import type { AdminFileListItem, AdminFileUploader } from "@/lib/types/file";
 
 interface FilesTableProps {
   rows: AdminFileListItem[];
@@ -17,6 +17,9 @@ interface FilesTableProps {
 }
 
 const isImage = (contentType: string) => contentType.startsWith("image/");
+
+const fullName = (uploader: AdminFileUploader) =>
+  `${uploader.first_name ?? ""} ${uploader.last_name ?? ""}`.trim();
 
 export function FilesTable({ rows, isLoading, onPreview, onDelete }: FilesTableProps) {
   const { t } = useTranslation("admin");
@@ -37,6 +40,8 @@ export function FilesTable({ rows, isLoading, onPreview, onDelete }: FilesTableP
         <tbody className="divide-y divide-border">
           {rows.map((file) => {
             const image = isImage(file.content_type);
+            const uploader = file.uploaded_by;
+            const uploaderName = uploader ? fullName(uploader) : "";
             return (
               <tr key={file.id} className="hover:bg-muted/30 transition-colors">
                 <td className="px-4 py-3">
@@ -73,8 +78,17 @@ export function FilesTable({ rows, isLoading, onPreview, onDelete }: FilesTableP
                 <td className="whitespace-nowrap px-4 py-3 text-xs text-muted-foreground">
                   {formatBytes(file.size)}
                 </td>
-                <td className="px-4 py-3 font-mono text-xs text-muted-foreground">
-                  {file.uploaded_by_id ? file.uploaded_by_id.slice(0, 8) : "—"}
+                <td className="px-4 py-3">
+                  {uploader ? (
+                    <div className="min-w-0">
+                      <p className="truncate text-sm">{uploaderName || uploader.email}</p>
+                      {uploaderName ? (
+                        <p className="truncate text-xs text-muted-foreground">{uploader.email}</p>
+                      ) : null}
+                    </div>
+                  ) : (
+                    <span className="text-xs text-muted-foreground">—</span>
+                  )}
                 </td>
                 <td className="whitespace-nowrap px-4 py-3 text-xs text-muted-foreground">
                   {formatDate(file.created_at)}

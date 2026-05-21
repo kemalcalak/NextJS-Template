@@ -19,33 +19,33 @@ export function FilesContent() {
   const { t } = useTranslation("admin");
 
   const [contentType, setContentType] = useState("all");
-  const [uploadedByInput, setUploadedByInput] = useState("");
+  const [uploaderSearch, setUploaderSearch] = useState("");
   const [skip, setSkip] = useState(0);
   const [pageSize, setPageSize] = useState<number>(DEFAULT_PAGE_SIZE);
   const [pendingDelete, setPendingDelete] = useState<AdminFileListItem | null>(null);
   const [previewFile, setPreviewFile] = useState<AdminFileListItem | null>(null);
   const [previewOpen, setPreviewOpen] = useState(false);
 
-  const uploadedBy = useDebounce(uploadedByInput, 250);
+  const uploader = useDebounce(uploaderSearch, 250);
 
   const params = useMemo<AdminFileListParams>(
     () => ({
       skip,
       limit: pageSize,
       content_type: contentType === "all" ? undefined : contentType,
-      uploaded_by: uploadedBy.trim() || undefined,
+      uploader: uploader.trim() || undefined,
     }),
-    [skip, pageSize, contentType, uploadedBy],
+    [skip, pageSize, contentType, uploader],
   );
 
   const { data, isLoading, isFetching } = useAdminFiles(params);
   const deleteFile = useDeleteAdminFile();
 
-  const hasFilters = contentType !== "all" || uploadedByInput !== "";
+  const hasFilters = contentType !== "all" || uploaderSearch !== "";
 
   const resetFilters = () => {
     setContentType("all");
-    setUploadedByInput("");
+    setUploaderSearch("");
     setSkip(0);
   };
 
@@ -79,9 +79,9 @@ export function FilesContent() {
           setContentType(value);
           setSkip(0);
         }}
-        uploadedBy={uploadedByInput}
-        onUploadedByChange={(value) => {
-          setUploadedByInput(value);
+        uploader={uploaderSearch}
+        onUploaderChange={(value) => {
+          setUploaderSearch(value);
           setSkip(0);
         }}
         onReset={resetFilters}

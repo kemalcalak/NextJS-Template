@@ -126,7 +126,7 @@ export const AppDrawer = ({
         closable={false}
         styles={{
           wrapper: { width: "85vw", maxWidth: "24rem" },
-          content: { background: "var(--background)" },
+          section: { background: "var(--background)" },
           body: { padding: 0 },
           header: {
             padding: "2rem 1.5rem 1.5rem",

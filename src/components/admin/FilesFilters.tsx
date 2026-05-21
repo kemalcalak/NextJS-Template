@@ -16,8 +16,8 @@ const FILE_CONTENT_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"
 interface FilesFiltersProps {
   contentType: string;
   onContentTypeChange: (value: string) => void;
-  uploadedBy: string;
-  onUploadedByChange: (value: string) => void;
+  uploader: string;
+  onUploaderChange: (value: string) => void;
   onReset: () => void;
   hasFilters: boolean;
 }
@@ -25,8 +25,8 @@ interface FilesFiltersProps {
 export function FilesFilters({
   contentType,
   onContentTypeChange,
-  uploadedBy,
-  onUploadedByChange,
+  uploader,
+  onUploaderChange,
   onReset,
   hasFilters,
 }: FilesFiltersProps) {
@@ -39,9 +39,9 @@ export function FilesFilters({
           <Input
             prefix={<Search className="h-4 w-4 text-muted-foreground" />}
             placeholder={t("files.filters.uploaderPlaceholder")}
-            value={uploadedBy}
+            value={uploader}
             onChange={(event) => {
-              onUploadedByChange(event.target.value);
+              onUploaderChange(event.target.value);
             }}
           />
         </div>

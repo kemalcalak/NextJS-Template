@@ -10,6 +10,15 @@ export interface FilePublic {
   created_at: string;
 }
 
+// Resolved uploader identity embedded in admin file rows, so the UI can show
+// who uploaded each file and search by name/email.
+export interface AdminFileUploader {
+  id: string;
+  email: string;
+  first_name: string | null;
+  last_name: string | null;
+}
+
 // Admin file-management row. Exposes the internal fields (`public_id`,
 // `uploaded_by_id`) that `FilePublic` hides, since admins audit raw uploads.
 export interface AdminFileListItem {
@@ -20,6 +29,7 @@ export interface AdminFileListItem {
   size: number;
   filename: string | null;
   uploaded_by_id: string | null;
+  uploaded_by: AdminFileUploader | null;
   created_at: string;
 }
 
@@ -34,5 +44,5 @@ export interface AdminFileListParams {
   skip?: number;
   limit?: number;
   content_type?: string;
-  uploaded_by?: string;
+  uploader?: string;
 }

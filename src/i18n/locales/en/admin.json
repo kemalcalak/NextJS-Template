@@ -146,7 +146,7 @@
     "title": "Files",
     "subtitle": "Review, filter, and remove uploaded files.",
     "filters": {
-      "uploaderPlaceholder": "Filter by uploader ID",
+      "uploaderPlaceholder": "Search by uploader name or email",
       "type": "Type",
       "typeAny": "Any type",
       "reset": "Clear filters"
@@ -176,6 +176,7 @@
   "activities": {
     "title": "Activity log",
     "subtitle": "Every audited event across the platform.",
+    "refresh": "Refresh",
     "filters": {
       "type": "Type",
       "typeAny": "Any type",
