@@ -32,10 +32,7 @@ interface AppDrawerProps {
 const UserProfile = ({ user }: { user: NonNullable<User> }) => (
   <div className="flex items-center gap-4 p-4 rounded-xl bg-muted/50 border">
     <Avatar className="h-12 w-12 border shadow-sm">
-      <AvatarImage
-        src={`https://api.dicebear.com/9.x/avataaars/svg?seed=${user.email}`}
-        alt={user.email}
-      />
+      {user.avatar_file?.url && <AvatarImage src={user.avatar_file.url} alt={user.email} />}
       <AvatarFallback className="bg-primary/10 text-primary">
         {user.first_name?.charAt(0).toUpperCase() || <UserIcon className="h-5 w-5" />}
       </AvatarFallback>

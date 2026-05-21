@@ -7,6 +7,7 @@ import { usePathname } from "next/navigation";
 import { useTranslation } from "react-i18next";
 
 import { StatusBadge, UserStatusBadge } from "@/components/admin/StatusBadge";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import type { UserActionKind } from "@/hooks/api/use-user-actions";
 import { ROUTES, getLocaleFromPath, getLocalizedPath } from "@/lib/config/routes";
@@ -95,9 +96,14 @@ export function UsersTable({ rows, isLoading, currentUserId, onAction }: UsersTa
                     href={getLocalizedPath(`${ROUTES.adminUsers}/${user.id}`, currentLocale)}
                     className="flex items-center gap-3 group"
                   >
-                    <div className="flex size-9 items-center justify-center rounded-full bg-muted text-xs font-medium uppercase text-muted-foreground">
-                      {(user.first_name?.[0] ?? user.email[0]).toUpperCase()}
-                    </div>
+                    <Avatar className="size-9">
+                      {user.avatar_file?.url && (
+                        <AvatarImage src={user.avatar_file.url} alt={user.email} />
+                      )}
+                      <AvatarFallback className="text-xs uppercase">
+                        {(user.first_name?.[0] ?? user.email[0]).toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
                     <div className="min-w-0">
                       <p className="truncate text-sm font-medium group-hover:text-primary">
                         {user.first_name || user.last_name
