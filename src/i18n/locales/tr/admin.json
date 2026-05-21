@@ -93,6 +93,11 @@
   },
   "userDetail": {
     "backToUsers": "Kullanıcılara dön",
+    "avatarTitle": "Profil fotoğrafı",
+    "avatarDescription": "Bu kullanıcının avatarını yükleyin, değiştirin veya kaldırın.",
+    "removeAvatarTitle": "Bu avatar kaldırılsın mı?",
+    "removeAvatarDescription": "Bu işlem fotoğrafı depolamadan kalıcı olarak siler ve kullanıcının avatarını temizler. Geri alınamaz.",
+    "removeAvatarConfirm": "Avatarı kaldır",
     "overviewTitle": "Hesap özeti",
     "overviewDescription": "Bu kullanıcıya ait temel bilgiler ve durum.",
     "overview": {

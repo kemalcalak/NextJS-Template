@@ -93,6 +93,11 @@
   },
   "userDetail": {
     "backToUsers": "Back to users",
+    "avatarTitle": "Profile photo",
+    "avatarDescription": "Upload, replace, or remove this user's avatar.",
+    "removeAvatarTitle": "Remove this avatar?",
+    "removeAvatarDescription": "This permanently deletes the photo from storage and clears the user's avatar. This cannot be undone.",
+    "removeAvatarConfirm": "Remove avatar",
     "overviewTitle": "Account overview",
     "overviewDescription": "Basic information and status for this user.",
     "overview": {

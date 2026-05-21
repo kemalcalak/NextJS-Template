@@ -70,6 +70,7 @@ export interface AdminUserUpdatePayload {
   role?: SystemRole;
   is_active?: boolean;
   is_verified?: boolean;
+  avatar_file_id?: string | null;
 }
 
 export interface AdminUserUpdateResponse {

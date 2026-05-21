@@ -11,9 +11,11 @@ import { useTranslation } from "react-i18next";
 import { ActivityTable } from "@/components/admin/ActivityTable";
 import { StatusBadge, UserStatusBadge } from "@/components/admin/StatusBadge";
 import { UserActionDialogs } from "@/components/admin/UserActionDialogs";
+import { UserAvatarCard } from "@/components/admin/UserAvatarCard";
 import { UserDangerZone } from "@/components/admin/UserDangerZone";
 import { UserEditForm } from "@/components/admin/UserEditForm";
 import { UserOverviewCard } from "@/components/admin/UserOverviewCard";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAdminUser, useAdminUserActivities, useUpdateAdminUser } from "@/hooks/api/use-admin";
 import { useUserActions, type UserActionKind } from "@/hooks/api/use-user-actions";
@@ -78,12 +80,22 @@ export function UserDetailContent({ userId }: { userId: string }) {
             <ArrowLeft className="h-3.5 w-3.5" />
             {t("userDetail.backToUsers")}
           </Link>
-          <h1 className="mt-2 text-2xl font-semibold tracking-tight md:text-3xl">
-            {user.first_name || user.last_name
-              ? `${user.first_name ?? ""} ${user.last_name ?? ""}`.trim()
-              : user.email}
-          </h1>
-          <p className="text-sm text-muted-foreground">{user.email}</p>
+          <div className="mt-2 flex items-center gap-4">
+            <Avatar className="size-14 border shadow-sm">
+              {user.avatar_file?.url && <AvatarImage src={user.avatar_file.url} alt={user.email} />}
+              <AvatarFallback className="text-lg uppercase">
+                {(user.first_name?.[0] ?? user.email[0]).toUpperCase()}
+              </AvatarFallback>
+            </Avatar>
+            <div className="min-w-0">
+              <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">
+                {user.first_name || user.last_name
+                  ? `${user.first_name ?? ""} ${user.last_name ?? ""}`.trim()
+                  : user.email}
+              </h1>
+              <p className="text-sm text-muted-foreground">{user.email}</p>
+            </div>
+          </div>
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <StatusBadge tone={user.role === SystemRole.ADMIN ? "primary" : "muted"}>
@@ -102,7 +114,10 @@ export function UserDetailContent({ userId }: { userId: string }) {
             onSubmit={handleSave}
           />
         </div>
-        <UserOverviewCard user={user} />
+        <div className="space-y-6">
+          <UserAvatarCard user={user} />
+          <UserOverviewCard user={user} />
+        </div>
       </div>
 
       <UserDangerZone user={user} isSelf={isSelf} disabled={isActionLoading} onAction={setAction} />
