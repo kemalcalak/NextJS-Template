@@ -137,7 +137,7 @@ export function AvatarUpload({
           src={value.url}
           alt=""
           style={{ display: "none" }}
-          preview={{ visible: previewOpen, onVisibleChange: setPreviewOpen }}
+          preview={{ open: previewOpen, onOpenChange: setPreviewOpen }}
         />
       )}
 
