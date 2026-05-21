@@ -68,8 +68,10 @@ const NavLink = ({
       onClick(href);
     }}
   >
-    <Icon className={cn("mr-3 h-4 w-4", active ? "text-primary" : "text-muted-foreground")} />
-    {label}
+    <span className="flex w-full items-center">
+      <Icon className={cn("mr-3 h-4 w-4", active ? "text-primary" : "text-muted-foreground")} />
+      {label}
+    </span>
   </Button>
 );
 
