@@ -1,0 +1,50 @@
+import type { MessageResponse } from "@/lib/types/auth";
+import type {
+  AdminFileListItem,
+  AdminFileListParams,
+  AdminFileListResponse,
+  FilePublic,
+} from "@/lib/types/file";
+
+import api from "../api";
+import { pruneParams } from "./admin";
+
+import type { AxiosProgressEvent, AxiosRequestHeaders } from "axios";
+
+export const filesApi = {
+  upload: (file: File, onProgress?: (percent: number) => void): Promise<FilePublic> => {
+    const formData = new FormData();
+    formData.append("file", file);
+    return api.post<FilePublic, FilePublic>("/upload", formData, {
+      // Strip the instance's default JSON Content-Type so the browser sets
+      // multipart/form-data with the correct boundary. Without this, axios
+      // would JSON-stringify the FormData and the upload would fail.
+      transformRequest: [
+        (data: FormData, headers: AxiosRequestHeaders) => {
+          headers.delete("Content-Type");
+          return data;
+        },
+      ],
+      onUploadProgress: onProgress
+        ? (event: AxiosProgressEvent) => {
+            if (event.total) {
+              onProgress(Math.round((event.loaded / event.total) * 100));
+            }
+          }
+        : undefined,
+    });
+  },
+};
+
+export const adminFilesApi = {
+  list: (params?: AdminFileListParams): Promise<AdminFileListResponse> =>
+    api.get<AdminFileListResponse, AdminFileListResponse>("/admin/files", {
+      params: pruneParams(params),
+    }),
+
+  get: (id: string): Promise<AdminFileListItem> =>
+    api.get<AdminFileListItem, AdminFileListItem>(`/admin/files/${id}`),
+
+  delete: (id: string): Promise<MessageResponse> =>
+    api.delete<MessageResponse, MessageResponse>(`/admin/files/${id}`),
+};

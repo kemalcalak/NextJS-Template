@@ -15,7 +15,7 @@ import api from "../api";
 // Drop undefined / empty-string keys so axios doesn't serialize them onto the
 // URL. Generic over the caller's param type so we don't have to widen admin
 // request shapes to `Record<string, unknown>` just to satisfy the helper.
-const pruneParams = <T extends object>(params?: T): Partial<T> | undefined => {
+export const pruneParams = <T extends object>(params?: T): Partial<T> | undefined => {
   if (!params) return undefined;
   const result: Partial<T> = {};
   let hasEntry = false;
