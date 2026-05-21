@@ -1,3 +1,5 @@
+import type { FilePublic } from "./file";
+
 export enum SystemRole {
   ADMIN = "admin",
   USER = "user",
@@ -17,6 +19,7 @@ export interface User {
   deactivated_at: string | null;
   deletion_scheduled_at: string | null;
   suspended_at: string | null;
+  avatar_file?: FilePublic | null;
 }
 
 export interface UserUpdateResponse {
