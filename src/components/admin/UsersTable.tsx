@@ -78,11 +78,11 @@ export function UsersTable({ rows, isLoading, currentUserId, onAction }: UsersTa
       <table className="w-full text-left text-sm">
         <thead className="bg-muted/50 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
           <tr>
-            <th className="px-4 py-3">{t("users.columns.user")}</th>
-            <th className="px-4 py-3">{t("users.columns.role")}</th>
-            <th className="px-4 py-3">{t("users.columns.status")}</th>
-            <th className="px-4 py-3">{t("users.columns.verified")}</th>
-            <th className="px-4 py-3">{t("users.columns.created")}</th>
+            <th className="px-4 py-3 text-start">{t("users.columns.user")}</th>
+            <th className="px-4 py-3 text-center">{t("users.columns.role")}</th>
+            <th className="px-4 py-3 text-center">{t("users.columns.status")}</th>
+            <th className="px-4 py-3 text-center">{t("users.columns.verified")}</th>
+            <th className="px-4 py-3 text-center">{t("users.columns.created")}</th>
             <th className="px-4 py-3 text-right">{t("users.columns.actions")}</th>
           </tr>
         </thead>
@@ -91,7 +91,7 @@ export function UsersTable({ rows, isLoading, currentUserId, onAction }: UsersTa
             const isSelf = currentUserId === user.id;
             return (
               <tr key={user.id} className="hover:bg-muted/30 transition-colors">
-                <td className="px-4 py-3">
+                <td className="px-4 py-3 text-start">
                   <Link
                     href={getLocalizedPath(`${ROUTES.adminUsers}/${user.id}`, currentLocale)}
                     className="flex items-center gap-3 group"
@@ -114,18 +114,18 @@ export function UsersTable({ rows, isLoading, currentUserId, onAction }: UsersTa
                     </div>
                   </Link>
                 </td>
-                <td className="px-4 py-3">
+                <td className="px-4 py-3 text-center">
                   <StatusBadge tone={user.role === SystemRole.ADMIN ? "primary" : "muted"}>
                     {t(`users.role.${user.role}` as const)}
                   </StatusBadge>
                 </td>
-                <td className="px-4 py-3">
+                <td className="px-4 py-3 text-center">
                   <UserStatusBadge user={user} />
                 </td>
-                <td className="px-4 py-3 text-xs text-muted-foreground">
+                <td className="px-4 py-3 text-center text-xs text-muted-foreground">
                   {user.is_verified ? "✓" : "—"}
                 </td>
-                <td className="whitespace-nowrap px-4 py-3 text-xs text-muted-foreground">
+                <td className="whitespace-nowrap px-4 py-3 text-center text-xs text-muted-foreground">
                   {formatDate(user.created_at)}
                 </td>
                 <td className="px-4 py-3 text-right">
