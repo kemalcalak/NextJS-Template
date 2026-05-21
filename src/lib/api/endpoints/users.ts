@@ -1,6 +1,6 @@
 import api from "../api";
 
-import type { User, UserUpdateResponse } from "../../types/user";
+import type { UpdateMePayload, User, UserUpdateResponse } from "../../types/user";
 
 export const usersApi = {
   getAll: (): Promise<User[]> => api.get<User[], User[]>("/users"),
@@ -9,7 +9,7 @@ export const usersApi = {
   update: (id: string, data: Partial<Omit<User, "id">>): Promise<User> =>
     api.put<User, User>(`/users/${id}`, data),
   delete: (id: string): Promise<void> => api.delete(`/users/${id}`),
-  updateMe: async (data: Partial<Omit<User, "id" | "role" | "email">>): Promise<User> => {
+  updateMe: async (data: UpdateMePayload): Promise<User> => {
     const response = await api.patch<UserUpdateResponse, UserUpdateResponse>("/users/me", data);
     return response.user;
   },

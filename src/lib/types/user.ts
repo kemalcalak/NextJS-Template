@@ -26,3 +26,14 @@ export interface UserUpdateResponse {
   user: User;
   message: string;
 }
+
+// Fields a user may change on their own account via PATCH /users/me. Distinct
+// from `User` because the avatar is attached by id (`avatar_file_id`), whereas
+// the response embeds the resolved `avatar_file` object.
+export interface UpdateMePayload {
+  first_name?: string | null;
+  last_name?: string | null;
+  email?: string | null;
+  title?: string | null;
+  avatar_file_id?: string | null;
+}
