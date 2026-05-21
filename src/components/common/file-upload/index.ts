@@ -1,3 +1,4 @@
+export { AvatarUpload } from "./AvatarUpload";
 export { FileUpload } from "./FileUpload";
 export {
   DEFAULT_IMAGE_TYPES,

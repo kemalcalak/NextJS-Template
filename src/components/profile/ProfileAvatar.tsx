@@ -3,7 +3,7 @@
 import { ImageIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
-import { FileUpload } from "@/components/common/file-upload";
+import { AvatarUpload } from "@/components/common/file-upload";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useUpdateMe } from "@/hooks/api/use-users";
 import type { FilePublic } from "@/lib/types/file";
@@ -14,10 +14,9 @@ export const ProfileAvatar = () => {
   const { user, setUser } = useAuthStore();
   const { mutate: updateMe } = useUpdateMe();
 
-  const handleChange = (files: FilePublic[]) => {
-    const avatar = files[0] ?? null;
+  const handleChange = (file: FilePublic | null) => {
     updateMe(
-      { avatar_file_id: avatar?.id ?? null },
+      { avatar_file_id: file?.id ?? null },
       {
         onSuccess: (updatedUser) => {
           setUser(updatedUser);
@@ -35,12 +34,8 @@ export const ProfileAvatar = () => {
         </CardTitle>
         <CardDescription>{t("avatar.description")}</CardDescription>
       </CardHeader>
-      <div className="px-6 pb-6">
-        <FileUpload
-          value={user?.avatar_file ? [user.avatar_file] : []}
-          onChange={handleChange}
-          maxCount={1}
-        />
+      <div className="px-6 pb-6 flex justify-center">
+        <AvatarUpload value={user?.avatar_file ?? null} onChange={handleChange} />
       </div>
     </Card>
   );
