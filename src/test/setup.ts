@@ -124,9 +124,12 @@ beforeAll(() => {
 
 // Reset any request handlers that we may add during the tests,
 // so they don't affect other tests.
-afterEach(() => {
+afterEach(async () => {
   server.resetHandlers();
   cleanup();
+  await new Promise<void>((resolve) => {
+    setImmediate(resolve);
+  });
 });
 
 // Clean up after the tests are finished.
