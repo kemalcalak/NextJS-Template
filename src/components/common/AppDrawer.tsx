@@ -62,7 +62,7 @@ const NavLink = ({
     variant={active ? "secondary" : "ghost"}
     className={cn(
       "w-full justify-start h-11 rounded-xl font-medium transition-all px-4",
-      active && "bg-primary/10 text-primary hover:bg-primary/15",
+      active && "bg-primary/10! text-primary! hover:bg-primary/15!",
     )}
     onClick={() => {
       onClick(href);
@@ -123,10 +123,16 @@ export const AppDrawer = ({
           setIsMobileMenuOpen(false);
         }}
         placement="left"
+        closable={false}
         styles={{
           wrapper: { width: "85vw", maxWidth: "24rem" },
+          content: { background: "var(--background)" },
           body: { padding: 0 },
-          header: { padding: "2rem 1.5rem 1.5rem" },
+          header: {
+            padding: "2rem 1.5rem 1.5rem",
+            background: "var(--background)",
+            borderBottom: "1px solid var(--border)",
+          },
         }}
         title={
           <span className="text-2xl font-bold tracking-tight text-primary">
@@ -135,7 +141,7 @@ export const AppDrawer = ({
         }
         classNames={{ wrapper: "max-w-sm" }}
       >
-        <div className="flex h-full flex-col gap-6 p-6 overflow-y-auto">
+        <div className="flex h-full flex-col gap-6 p-6 overflow-y-auto bg-background text-foreground">
           {user && <UserProfile user={user} />}
 
           <div className="flex flex-col gap-3">
