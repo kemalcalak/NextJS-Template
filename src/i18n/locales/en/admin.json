@@ -189,6 +189,8 @@
       "resourceAny": "Any resource",
       "status": "Status",
       "statusAny": "Any status",
+      "statusCode": "Status code",
+      "statusCodeAny": "Any code",
       "reset": "Clear filters"
     },
     "columns": {

@@ -38,10 +38,15 @@ const ACTIVITY_TYPES = [
 
 const RESOURCE_TYPES = ["user", "auth", "file"] as const satisfies readonly ResourceType[];
 const STATUS_OPTIONS = ["success", "failure"] as const satisfies readonly ActivityStatus[];
+// Curated set of HTTP codes the audit log actually emits (200 success default
+// plus the failure codes raised across auth/users). Kept as a const-tuple so
+// the dropdown and the param type stay in lockstep.
+const STATUS_CODE_OPTIONS = [200, 400, 401, 403, 404, 409, 500] as const;
 
 type TypeFilter = "all" | ActivityType;
 type ResourceFilter = "all" | ResourceType;
 type StatusFilter = "all" | ActivityStatus;
+type StatusCodeFilter = "all" | (typeof STATUS_CODE_OPTIONS)[number];
 
 const isTypeFilter = (value: string): value is TypeFilter =>
   value === "all" || (ACTIVITY_TYPES as readonly string[]).includes(value);
@@ -49,12 +54,20 @@ const isResourceFilter = (value: string): value is ResourceFilter =>
   value === "all" || (RESOURCE_TYPES as readonly string[]).includes(value);
 const isStatusFilter = (value: string): value is StatusFilter =>
   value === "all" || (STATUS_OPTIONS as readonly string[]).includes(value);
+const parseStatusCodeFilter = (value: string): StatusCodeFilter | null => {
+  if (value === "all") return "all";
+  const code = Number(value);
+  return (STATUS_CODE_OPTIONS as readonly number[]).includes(code)
+    ? (code as StatusCodeFilter)
+    : null;
+};
 
 export function ActivitiesContent() {
   const { t } = useTranslation("admin");
   const [type, setType] = useState<TypeFilter>("all");
   const [resource, setResource] = useState<ResourceFilter>("all");
   const [status, setStatus] = useState<StatusFilter>("all");
+  const [statusCode, setStatusCode] = useState<StatusCodeFilter>("all");
   const [skip, setSkip] = useState(0);
   const [pageSize, setPageSize] = useState<number>(DEFAULT_PAGE_SIZE);
 
@@ -65,8 +78,9 @@ export function ActivitiesContent() {
       activity_type: type === "all" ? undefined : type,
       resource_type: resource === "all" ? undefined : resource,
       status: status === "all" ? undefined : status,
+      status_code: statusCode === "all" ? undefined : statusCode,
     }),
-    [skip, pageSize, type, resource, status],
+    [skip, pageSize, type, resource, status, statusCode],
   );
 
   const { data, isLoading, isFetching, refetch } = useAdminActivities(params);
@@ -75,10 +89,12 @@ export function ActivitiesContent() {
     setType("all");
     setResource("all");
     setStatus("all");
+    setStatusCode("all");
     setSkip(0);
   };
 
-  const hasFilters = type !== "all" || resource !== "all" || status !== "all";
+  const hasFilters =
+    type !== "all" || resource !== "all" || status !== "all" || statusCode !== "all";
 
   return (
     <div className="space-y-6">
@@ -140,6 +156,24 @@ export function ActivitiesContent() {
                 ...STATUS_OPTIONS.map((v) => ({
                   value: v,
                   label: t(`activities.status.${v}` as const),
+                })),
+              ]}
+            />
+            <Select<string>
+              value={String(statusCode)}
+              onChange={(value) => {
+                const next = parseStatusCodeFilter(value);
+                if (next === null) return;
+                setStatusCode(next);
+                setSkip(0);
+              }}
+              aria-label={t("activities.filters.statusCode")}
+              className="w-full md:w-fit md:min-w-35"
+              options={[
+                { value: "all", label: t("activities.filters.statusCodeAny") },
+                ...STATUS_CODE_OPTIONS.map((c) => ({
+                  value: String(c),
+                  label: String(c),
                 })),
               ]}
             />

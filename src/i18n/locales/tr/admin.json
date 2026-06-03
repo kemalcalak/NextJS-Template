@@ -189,6 +189,8 @@
       "resourceAny": "Tüm kaynaklar",
       "status": "Durum",
       "statusAny": "Tüm durumlar",
+      "statusCode": "Durum kodu",
+      "statusCodeAny": "Tüm kodlar",
       "reset": "Filtreleri temizle"
     },
     "columns": {
