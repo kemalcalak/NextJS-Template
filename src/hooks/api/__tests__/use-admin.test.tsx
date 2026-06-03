@@ -42,6 +42,7 @@ const mockActivity: AdminActivity = {
   resource_id: null,
   details: {},
   status: "success",
+  status_code: 200,
   ip_address: "127.0.0.1",
   user_agent: "test",
   created_at: "2026-04-19T12:00:00Z",

@@ -86,6 +86,7 @@ export interface AdminActivity {
   resource_id: string | null;
   details: ActivityDetails;
   status: ActivityStatus;
+  status_code: number | null;
   ip_address: string | null;
   user_agent: string | null;
   created_at: string;
@@ -105,6 +106,7 @@ export interface AdminActivityListParams {
   activity_type?: ActivityType;
   resource_type?: ResourceType;
   status?: ActivityStatus;
+  status_code?: number;
   date_from?: string;
   date_to?: string;
 }
