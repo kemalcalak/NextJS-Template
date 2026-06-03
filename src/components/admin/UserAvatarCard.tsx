@@ -11,11 +11,15 @@ import { useUpdateAdminUser } from "@/hooks/api/use-admin";
 import type { AdminUser } from "@/lib/types/admin";
 import type { FilePublic } from "@/lib/types/file";
 
+interface UserAvatarCardProps {
+  user: AdminUser;
+}
+
 // Admin-side avatar editor for a target user. Setting/replacing applies
 // immediately; removing is destructive (the backend purges the file from
 // Cloudinary + DB), so it is confirmed via a modal first. The detail cache
 // update from useUpdateAdminUser refreshes the header avatar.
-export function UserAvatarCard({ user }: { user: AdminUser }) {
+export function UserAvatarCard({ user }: UserAvatarCardProps) {
   const { t } = useTranslation("admin");
   const update = useUpdateAdminUser();
   const [confirmRemove, setConfirmRemove] = useState(false);

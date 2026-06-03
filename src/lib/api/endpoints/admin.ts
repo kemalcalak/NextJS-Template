@@ -1,3 +1,4 @@
+import api from "@/lib/api/api";
 import type {
   AdminActivityListParams,
   AdminActivityListResponse,
@@ -9,8 +10,6 @@ import type {
   AdminUserUpdateResponse,
 } from "@/lib/types/admin";
 import type { MessageResponse } from "@/lib/types/auth";
-
-import api from "../api";
 
 // Drop undefined / empty-string keys so axios doesn't serialize them onto the
 // URL. Generic over the caller's param type so we don't have to widen admin

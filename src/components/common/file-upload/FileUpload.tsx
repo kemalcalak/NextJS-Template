@@ -78,9 +78,9 @@ export function FileUpload({
     onSuccess,
     onError,
   }) => {
-    if (typeof file === "string") return;
+    if (!(file instanceof File)) return;
     upload.mutate(
-      { file: file as File, onProgress: (percent) => onProgress?.({ percent }) },
+      { file, onProgress: (percent) => onProgress?.({ percent }) },
       {
         onSuccess: (uploaded) => onSuccess?.(uploaded),
         onError: (err) => onError?.(err instanceof Error ? err : new Error(String(err))),

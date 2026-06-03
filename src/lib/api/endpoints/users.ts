@@ -1,6 +1,5 @@
-import api from "../api";
-
-import type { UpdateMePayload, User, UserUpdateResponse } from "../../types/user";
+import api from "@/lib/api/api";
+import type { UpdateMePayload, User, UserUpdateResponse } from "@/lib/types/user";
 
 export const usersApi = {
   getAll: (): Promise<User[]> => api.get<User[], User[]>("/users"),

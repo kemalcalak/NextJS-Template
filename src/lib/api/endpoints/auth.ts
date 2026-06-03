@@ -1,3 +1,4 @@
+import api from "@/lib/api/api";
 import type {
   AuthResponse,
   ForgotPasswordPayload,
@@ -9,8 +10,6 @@ import type {
   ChangePasswordPayload,
 } from "@/lib/types/auth";
 import type { User } from "@/stores/auth.store";
-
-import api from "../api";
 
 export const authService = {
   getMe: (): Promise<NonNullable<User>> => {

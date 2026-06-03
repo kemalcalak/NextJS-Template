@@ -1,3 +1,5 @@
+import api from "@/lib/api/api";
+import { pruneParams } from "@/lib/api/endpoints/admin";
 import type { MessageResponse } from "@/lib/types/auth";
 import type {
   AdminFileListItem,
@@ -5,9 +7,6 @@ import type {
   AdminFileListResponse,
   FilePublic,
 } from "@/lib/types/file";
-
-import api from "../api";
-import { pruneParams } from "./admin";
 
 import type { AxiosProgressEvent, AxiosRequestHeaders } from "axios";
 
