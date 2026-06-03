@@ -116,10 +116,7 @@ export const AuthButtons = ({ user, onNavigate }: AuthButtonsProps) => {
       <span>
         <Button variant="ghost" className="relative h-10 w-10 rounded-full">
           <Avatar className="h-10 w-10">
-            <AvatarImage
-              src={`https://api.dicebear.com/9.x/avataaars/svg?seed=${user.email}`}
-              alt={user.email}
-            />
+            {user.avatar_file?.url && <AvatarImage src={user.avatar_file.url} alt={user.email} />}
             <AvatarFallback>
               {user.first_name?.charAt(0).toUpperCase() || <UserIcon className="h-4 w-4" />}
             </AvatarFallback>

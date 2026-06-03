@@ -54,6 +54,9 @@ export function AntdProvider({ children, locale }: AntdProviderProps) {
         token: {
           colorPrimary: tokens.primary,
           colorError: tokens.error,
+          // Elevated overlays (dropdowns, modals, notifications, popovers) so
+          // they match the app's surface color instead of antd's default.
+          colorBgElevated: tokens.bgElevated,
           borderRadius: 10,
           fontFamily: "var(--font-geist-sans)",
         },

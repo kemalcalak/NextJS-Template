@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 
-import { Activity, LayoutDashboard, ShieldCheck, Users } from "lucide-react";
+import { Activity, Images, LayoutDashboard, ShieldCheck, Users } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
@@ -85,6 +85,12 @@ export function AdminShell({ children }: AdminShellProps) {
       icon: Users,
     },
     {
+      key: "files",
+      label: t("shell.nav.files"),
+      href: ROUTES.adminFiles,
+      icon: Images,
+    },
+    {
       key: "activities",
       label: t("shell.nav.activities"),
       href: ROUTES.adminActivities,
@@ -111,13 +117,13 @@ export function AdminShell({ children }: AdminShellProps) {
                 key={item.key}
                 href={href}
                 className={cn(
-                  "flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
+                  "flex shrink-0 items-center gap-2 whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium transition-all",
                   active
-                    ? "bg-primary/10 text-primary"
+                    ? "bg-primary/10 text-primary ring-1 ring-primary/30 shadow-[0_0_12px_-2px_var(--primary)] hover:bg-primary/15"
                     : "text-muted-foreground hover:bg-muted hover:text-foreground",
                 )}
               >
-                <Icon className="h-4 w-4" />
+                <Icon className="h-4 w-4 shrink-0" />
                 <span>{item.label}</span>
               </Link>
             );

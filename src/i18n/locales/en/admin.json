@@ -15,6 +15,7 @@
     "nav": {
       "dashboard": "Dashboard",
       "users": "Users",
+      "files": "Files",
       "activities": "Activity log"
     },
     "signedInAs": "Signed in as",
@@ -92,6 +93,11 @@
   },
   "userDetail": {
     "backToUsers": "Back to users",
+    "avatarTitle": "Profile photo",
+    "avatarDescription": "Upload, replace, or remove this user's avatar.",
+    "removeAvatarTitle": "Remove this avatar?",
+    "removeAvatarDescription": "This permanently deletes the photo from storage and clears the user's avatar. This cannot be undone.",
+    "removeAvatarConfirm": "Remove avatar",
     "overviewTitle": "Account overview",
     "overviewDescription": "Basic information and status for this user.",
     "overview": {
@@ -141,9 +147,41 @@
     "changePasswordConfirm": "Force reset",
     "cancel": "Cancel"
   },
+  "files": {
+    "title": "Files",
+    "subtitle": "Review, filter, and remove uploaded files.",
+    "filters": {
+      "uploaderPlaceholder": "Search by uploader name or email",
+      "type": "Type",
+      "typeAny": "Any type",
+      "reset": "Clear filters"
+    },
+    "columns": {
+      "file": "File",
+      "type": "Type",
+      "size": "Size",
+      "uploadedBy": "Uploaded by",
+      "created": "Created",
+      "actions": "Actions"
+    },
+    "rowActions": {
+      "preview": "Preview",
+      "delete": "Delete file"
+    },
+    "unnamed": "Untitled",
+    "empty": "No files match the current filters.",
+    "loading": "Loading files...",
+    "confirmDelete": {
+      "title": "Delete this file?",
+      "description": "This permanently removes the file from storage. If it is a user's avatar, that avatar will be cleared. This cannot be undone.",
+      "confirm": "Delete file",
+      "cancel": "Cancel"
+    }
+  },
   "activities": {
     "title": "Activity log",
     "subtitle": "Every audited event across the platform.",
+    "refresh": "Refresh",
     "filters": {
       "type": "Type",
       "typeAny": "Any type",
@@ -178,7 +216,8 @@
     },
     "resource": {
       "user": "User",
-      "auth": "Auth"
+      "auth": "Auth",
+      "file": "File"
     },
     "empty": "No activity matches the current filters.",
     "loading": "Loading activity..."

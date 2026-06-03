@@ -1,0 +1,22 @@
+import { buildMetadata, validateLocale } from "@/lib/seo/metadata";
+
+import { FilesContent } from "./FilesContent";
+
+import type { Metadata } from "next";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  return buildMetadata({
+    locale: validateLocale(locale),
+    pageKey: "adminFiles",
+    pathname: "/admin/files",
+  });
+}
+
+export default function AdminFilesPage() {
+  return <FilesContent />;
+}

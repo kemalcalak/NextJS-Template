@@ -7,6 +7,7 @@ import { User, Shield } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { useTranslation } from "react-i18next";
 
+import { ProfileAvatar } from "@/components/profile/ProfileAvatar";
 import { ProfileInfoTab } from "@/components/profile/ProfileInfoTab";
 import { SecurityTab } from "@/components/profile/SecurityTab";
 
@@ -64,7 +65,10 @@ export function ProfileContent() {
               exit={{ opacity: 0, x: -20 }}
               transition={{ duration: 0.2 }}
             >
-              <ProfileInfoTab />
+              <div className="space-y-6">
+                <ProfileAvatar />
+                <ProfileInfoTab />
+              </div>
             </motion.div>
           )}
 

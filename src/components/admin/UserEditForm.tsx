@@ -58,22 +58,22 @@ export function UserEditForm({ user, isSelf, isSaving, onSubmit }: UserEditFormP
   };
 
   return (
-    <Card className="border-border/50 bg-card/60">
+    <Card className="flex h-full flex-col border-border/50 bg-card/60">
       <CardHeader>
         <CardTitle className="text-base">{t("userDetail.editTitle")}</CardTitle>
         <CardDescription>{t("userDetail.editDescription")}</CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className="flex flex-1 flex-col">
         <Form<AdminUserUpdateFormValues>
           form={form}
           layout="vertical"
           onFinish={onFinish}
           initialValues={initialValues}
           requiredMark={false}
-          className="grid gap-4"
+          className="flex flex-1 flex-col gap-4"
         >
           <UserEditFormFields isSelf={isSelf} />
-          <div className="flex flex-wrap justify-end gap-2 pt-2">
+          <div className="mt-auto flex flex-wrap justify-end gap-2 pt-2">
             <Button
               type="button"
               variant="ghost"

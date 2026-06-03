@@ -63,11 +63,15 @@ export const darkColors: ThemeColors = {
 export const lightAntdTokens = {
   primary: "#1c2e4a",
   error: "#c8442a",
+  // Elevated overlay surface (dropdowns, modals, notifications) — hex of the
+  // `card` oklch above so antd overlays match the app theme.
+  bgElevated: "#ffffff",
 } as const;
 
 export const darkAntdTokens = {
   primary: "#d4b06a",
   error: "#d97757",
+  bgElevated: "#051f33",
 } as const;
 
 const camelToKebab = (key: string): string => key.replace(/[A-Z]/g, (m) => `-${m.toLowerCase()}`);

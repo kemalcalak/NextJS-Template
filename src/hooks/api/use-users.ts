@@ -1,7 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { usersApi } from "@/lib/api/endpoints/users";
-import type { User } from "@/lib/types/user";
+import type { UpdateMePayload, User } from "@/lib/types/user";
 
 // Query keys
 export const userKeys = {
@@ -74,7 +74,7 @@ export const useDeleteUser = () => {
 export const useUpdateMe = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (data: Partial<Omit<User, "id" | "role" | "email">>) => usersApi.updateMe(data),
+    mutationFn: (data: UpdateMePayload) => usersApi.updateMe(data),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: userKeys.detail(data.id) });
       queryClient.invalidateQueries({ queryKey: ["users", "me"] });

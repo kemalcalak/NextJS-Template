@@ -13,7 +13,7 @@ export type ActivityType =
   | "export"
   | "invite";
 
-export type ResourceType = "user" | "auth";
+export type ResourceType = "user" | "auth" | "file";
 
 export type ActivityStatus = "success" | "failure";
 
@@ -70,6 +70,7 @@ export interface AdminUserUpdatePayload {
   role?: SystemRole;
   is_active?: boolean;
   is_verified?: boolean;
+  avatar_file_id?: string | null;
 }
 
 export interface AdminUserUpdateResponse {

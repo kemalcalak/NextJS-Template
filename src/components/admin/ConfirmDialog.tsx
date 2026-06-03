@@ -29,6 +29,7 @@ export function ConfirmDialog({
     <Modal
       open={open}
       title={title}
+      centered
       onCancel={() => {
         if (!isLoading) onOpenChange(false);
       }}

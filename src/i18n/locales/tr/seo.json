@@ -55,6 +55,10 @@
     "title": "Kullanıcı Detayı",
     "description": "Bir kullanıcıyı düzenleyin, durumunu yönetin ve aktivite geçmişini inceleyin."
   },
+  "adminFiles": {
+    "title": "Dosya Yönetimi",
+    "description": "Platformdaki yüklenen dosyaları inceleyin, filtreleyin ve silin."
+  },
   "adminActivities": {
     "title": "Aktivite Günlüğü",
     "description": "Tüm kullanıcılara ait denetim olaylarını görüntüleyin."
