@@ -197,6 +197,7 @@
       "type": "Type",
       "resource": "Resource",
       "status": "Status",
+      "statusCode": "Code",
       "details": "Details"
     },
     "status": {

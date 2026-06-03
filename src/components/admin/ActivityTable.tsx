@@ -13,6 +13,15 @@ import { cn } from "@/lib/utils";
 
 type ScalarJson = string | number | boolean | null;
 
+// Map an HTTP status code to a badge tone: 2xx success, 4xx client-error
+// (warning), 5xx server-error (danger), anything else neutral.
+const statusCodeTone = (code: number): "success" | "warning" | "danger" | "muted" => {
+  if (code >= 500) return "danger";
+  if (code >= 400) return "warning";
+  if (code >= 200 && code < 300) return "success";
+  return "muted";
+};
+
 const isScalar = (value: JsonValue): value is ScalarJson =>
   value === null ||
   typeof value === "string" ||
@@ -107,6 +116,7 @@ export function ActivityTable({
             <th className="px-4 py-3">{t("activities.columns.type")}</th>
             <th className="px-4 py-3">{t("activities.columns.resource")}</th>
             <th className="px-4 py-3">{t("activities.columns.status")}</th>
+            <th className="px-4 py-3">{t("activities.columns.statusCode")}</th>
             <th className="px-4 py-3">{t("activities.columns.details")}</th>
           </tr>
         </thead>
@@ -129,6 +139,15 @@ export function ActivityTable({
                 <StatusBadge tone={row.status === "success" ? "success" : "danger"}>
                   {t(`activities.status.${row.status}`)}
                 </StatusBadge>
+              </td>
+              <td className="px-4 py-3">
+                {row.status_code === null ? (
+                  <span className="text-muted-foreground/60">—</span>
+                ) : (
+                  <StatusBadge tone={statusCodeTone(row.status_code)}>
+                    <span className="font-mono">{row.status_code}</span>
+                  </StatusBadge>
+                )}
               </td>
               <td className="px-4 py-3 align-top text-xs text-muted-foreground">
                 <ActivityDetails details={row.details} />

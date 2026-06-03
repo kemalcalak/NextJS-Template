@@ -197,6 +197,7 @@
       "type": "Tür",
       "resource": "Kaynak",
       "status": "Durum",
+      "statusCode": "Kod",
       "details": "Detaylar"
     },
     "status": {
