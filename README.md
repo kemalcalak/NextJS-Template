@@ -50,6 +50,7 @@ The API proxy is pre-configured in `next.config.ts` to forward requests from you
 - **HTTP Client:** [Axios](https://axios-http.com/) with centralized API configuration and interceptors.
 - **Styling & UI:** [Tailwind CSS 4](https://tailwindcss.com/) with [Radix UI](https://www.radix-ui.com/) primitives and [shadcn](https://ui.shadcn.com/) integration for pre-built accessible components.
 - **Forms & Validation:** [React Hook Form](https://react-hook-form.com/) combined with [Zod](https://zod.dev/) for schema-based, type-safe validation.
+- **File Uploads & Avatars:** Reusable `FileUpload` (multi-file) and `AvatarUpload` components (built on Ant Design's `Upload`) with upload progress and client-side type/size validation mirroring the backend limits. A `useUploadFile` hook powers profile and admin avatar management, plus an admin file-management page (`/admin/files`) with uploader and content-type filters.
 - **Code Quality:** ESLint 9 and Prettier pre-configured for consistent code style and formatting.
 - **Pre-commit Hooks:** [Husky](https://typicode.github.io/husky/) + [lint-staged](https://github.com/lint-staged/lint-staged) auto-run ESLint + Prettier on staged files before every commit.
 - **Error Tracking:** [Sentry](https://sentry.io/) integration for client, server, and edge runtimes. Skipped automatically when no DSN is provided.
@@ -206,7 +207,7 @@ Configuration lives in `lint-staged.config.mjs`, `.husky/pre-commit`, and `.husk
 │   │   └── ...           # Additional routes, API handlers, etc.
 │   ├── components/       # Reusable UI components organized by feature
 │   │   ├── auth/         # Authentication-related components
-│   │   ├── common/       # Common/shared components (Header, Footer, etc.)
+│   │   ├── common/       # Shared components (Header, Footer, file-upload/, etc.)
 │   │   ├── profile/      # Profile-related components
 │   │   └── ui/           # Base UI primitives (Button, Input, Dialog, etc.)
 │   ├── hooks/            # Custom React hooks (useAuth, useTheme, etc.)
@@ -277,6 +278,7 @@ This template comes with a fully configured `react-i18next` setup supporting **E
    ├── auth.json
    ├── common.json
    ├── validation.json
+   ├── upload.json
    └── ...
    ```
 
