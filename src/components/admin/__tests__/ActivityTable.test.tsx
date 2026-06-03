@@ -63,4 +63,14 @@ describe("ActivityTable", () => {
     render(<ActivityTable rows={[makeRow({ user_id: "abcdef0123456789" })]} />);
     expect(screen.getByText("abcdef01")).toBeInTheDocument();
   });
+
+  it("renders the HTTP status_code as a badge", () => {
+    render(<ActivityTable rows={[makeRow({ status_code: 401 })]} />);
+    expect(screen.getByText("401")).toBeInTheDocument();
+  });
+
+  it("shows an em-dash when status_code is null", () => {
+    render(<ActivityTable rows={[makeRow({ status_code: null, details: { reason: "x" } })]} />);
+    expect(screen.getByText("—")).toBeInTheDocument();
+  });
 });
