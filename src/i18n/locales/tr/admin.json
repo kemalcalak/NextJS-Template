@@ -189,6 +189,8 @@
       "resourceAny": "Tüm kaynaklar",
       "status": "Durum",
       "statusAny": "Tüm durumlar",
+      "statusCode": "Durum kodu",
+      "statusCodeAny": "Tüm kodlar",
       "reset": "Filtreleri temizle"
     },
     "columns": {
@@ -197,6 +199,7 @@
       "type": "Tür",
       "resource": "Kaynak",
       "status": "Durum",
+      "statusCode": "Kod",
       "details": "Detaylar"
     },
     "status": {

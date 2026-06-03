@@ -12,6 +12,7 @@ const makeRow = (overrides: Partial<AdminActivity> = {}): AdminActivity => ({
   resource_id: null,
   details: { reason: "ok" },
   status: "success",
+  status_code: 200,
   ip_address: "127.0.0.1",
   user_agent: "test",
   created_at: "2026-04-19T12:00:00Z",
@@ -61,5 +62,15 @@ describe("ActivityTable", () => {
   it("renders first 8 chars of user_id for each row when showing users", () => {
     render(<ActivityTable rows={[makeRow({ user_id: "abcdef0123456789" })]} />);
     expect(screen.getByText("abcdef01")).toBeInTheDocument();
+  });
+
+  it("renders the HTTP status_code as a badge", () => {
+    render(<ActivityTable rows={[makeRow({ status_code: 401 })]} />);
+    expect(screen.getByText("401")).toBeInTheDocument();
+  });
+
+  it("shows an em-dash when status_code is null", () => {
+    render(<ActivityTable rows={[makeRow({ status_code: null, details: { reason: "x" } })]} />);
+    expect(screen.getByText("—")).toBeInTheDocument();
   });
 });

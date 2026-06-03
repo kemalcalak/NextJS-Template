@@ -14,6 +14,7 @@ const baseActivity: AdminActivity = {
   resource_id: null,
   details: { reason: "ok" },
   status: "success",
+  status_code: 200,
   ip_address: "127.0.0.1",
   user_agent: "pw",
   created_at: "2026-04-19T12:00:00Z",
@@ -24,6 +25,7 @@ const badLogin: AdminActivity = {
   id: "a-2",
   activity_type: "login",
   status: "failure",
+  status_code: 401,
   details: { reason: "invalid_password" },
   created_at: "2026-04-19T12:05:00Z",
 };
@@ -108,6 +110,24 @@ for (const locale of LOCALES) {
       await expect(resetButton).toBeVisible();
       await resetButton.click();
       await expect(resetButton).toHaveCount(0);
+    });
+
+    test("changing the status_code filter re-queries with the new param", async ({ page }) => {
+      await injectSession(page, adminUser, locale);
+      await mockMe(page, adminUser);
+      const captured = await captureActivitiesRequests(page, [baseActivity]);
+
+      await page.goto(`/${locale}/admin/activities`);
+      await expect(page.getByRole("heading", { name: s.activities.title })).toBeVisible();
+
+      await page
+        .locator(".ant-select")
+        .filter({ has: page.locator(`[aria-label="${s.activities.filters.statusCode}"]`) })
+        .locator(".ant-select-content")
+        .click();
+      await page.locator('.ant-select-item-option[title="401"]').click();
+
+      await expect.poll(() => captured.at(-1) ?? "").toContain("status_code=401");
     });
   });
 }
