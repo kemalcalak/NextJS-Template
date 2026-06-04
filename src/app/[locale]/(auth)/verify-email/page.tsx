@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 
+import { ROUTES } from "@/lib/config/routes";
 import { buildMetadata, validateLocale } from "@/lib/seo/metadata";
 
 import { VerifyEmailContent } from "./VerifyEmailContent";
@@ -15,7 +16,7 @@ export async function generateMetadata({
   return buildMetadata({
     locale: validateLocale(locale),
     pageKey: "verifyEmail",
-    pathname: "/auth/verify-email",
+    pathname: ROUTES.verifyEmail,
   });
 }
 

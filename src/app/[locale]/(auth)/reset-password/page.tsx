@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 
+import { ROUTES } from "@/lib/config/routes";
 import { buildMetadata, validateLocale } from "@/lib/seo/metadata";
 
 import { ResetPasswordContent } from "./ResetPasswordContent";
@@ -15,7 +16,7 @@ export async function generateMetadata({
   return buildMetadata({
     locale: validateLocale(locale),
     pageKey: "resetPassword",
-    pathname: "/auth/reset-password",
+    pathname: ROUTES.resetPassword,
   });
 }
 

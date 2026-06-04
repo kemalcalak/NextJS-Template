@@ -43,19 +43,17 @@ test.describe("SEO and Metadata Validation", () => {
   const locales = ["en", "tr"];
   const pages = [
     { key: "home", route: "/" },
-    { key: "login", route: "/login", seoPath: "/auth/login" },
-    { key: "register", route: "/register", seoPath: "/auth/register" },
-    { key: "forgot-password", route: "/forgot-password", seoPath: "/auth/forgot-password" },
+    { key: "login", route: "/login" },
+    { key: "register", route: "/register" },
+    { key: "forgot-password", route: "/forgot-password" },
     {
       key: "reset-password",
       route: "/reset-password?token=fake",
-      seoPath: "/auth/reset-password",
     },
-    { key: "verify-email", route: "/verify-email?token=fake", seoPath: "/auth/verify-email" },
+    { key: "verify-email", route: "/verify-email?token=fake" },
     {
       key: "verify-email-notice",
       route: "/verify-email-notice",
-      seoPath: "/auth/verify-email-notice",
       // Pending email lives in sessionStorage now, not the URL — seed it so
       // the page renders instead of redirecting to /login.
       setup: async (page: Page) => {
@@ -81,8 +79,10 @@ test.describe("SEO and Metadata Validation", () => {
         }
 
         const fullRoute = `/${locale}${pageInfo.route === "/" ? "" : pageInfo.route}`;
-        // The pathname used in generateMetadata code
-        const seoPathname = pageInfo.seoPath || pageInfo.route.split("?")[0];
+        // The pathname used in generateMetadata code (route groups like
+        // (auth) are not part of the URL, so the canonical path equals the
+        // route without its query string).
+        const seoPathname = pageInfo.route.split("?")[0];
         const canonicalPath = `/${locale}${seoPathname === "/" ? "/" : seoPathname}`;
 
         await page.goto(fullRoute);
