@@ -1,5 +1,4 @@
 import { renderHook, act } from "@testing-library/react";
-import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
@@ -9,13 +8,9 @@ vi.mock("react-i18next", () => ({
   useTranslation: vi.fn(),
 }));
 
-vi.mock("next/navigation", () => ({
-  useRouter: vi.fn(),
-}));
-
 describe("useLanguage", () => {
   const mockChangeLanguage = vi.fn();
-  const mockPush = vi.fn();
+  const mockPushState = vi.fn();
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -34,14 +29,7 @@ describe("useLanguage", () => {
       ready: true,
     } as unknown as ReturnType<typeof useTranslation>);
 
-    vi.mocked(useRouter).mockReturnValue({
-      push: mockPush,
-      replace: vi.fn(),
-      back: vi.fn(),
-      forward: vi.fn(),
-      refresh: vi.fn(),
-      prefetch: vi.fn(),
-    } as unknown as ReturnType<typeof useRouter>);
+    vi.spyOn(window.history, "pushState").mockImplementation(mockPushState);
 
     // Mock window.location
     Object.defineProperty(window, "location", {
@@ -63,7 +51,7 @@ describe("useLanguage", () => {
     });
 
     expect(mockChangeLanguage).toHaveBeenCalledWith("tr");
-    expect(mockPush).toHaveBeenCalledWith("/tr/dashboard");
+    expect(mockPushState).toHaveBeenCalledWith(null, "", "/tr/dashboard");
     expect(document.cookie).toContain("NEXT_LOCALE=tr");
   });
 
@@ -75,6 +63,6 @@ describe("useLanguage", () => {
       result.current.changeLanguage("tr");
     });
 
-    expect(mockPush).toHaveBeenCalledWith("/tr/profile");
+    expect(mockPushState).toHaveBeenCalledWith(null, "", "/tr/profile");
   });
 });
