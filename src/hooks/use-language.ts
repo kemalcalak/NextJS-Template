@@ -1,11 +1,9 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 
 export const useLanguage = () => {
   const { i18n } = useTranslation();
-  const router = useRouter();
 
   const changeLanguage = (lng: string, callback?: () => void) => {
     void i18n.changeLanguage(lng);
@@ -15,7 +13,9 @@ export const useLanguage = () => {
       callback();
     }
 
-    // Replace full reload with router.push
+    // Update the URL's locale segment via the native History API so Next.js
+    // does NOT run a route transition. This avoids the `[locale]/loading.tsx`
+    // Suspense fallback; the text already switched instantly via i18n above.
     const currentPath = window.location.pathname;
     let newPath: string;
 
@@ -27,7 +27,7 @@ export const useLanguage = () => {
       newPath = `/${lng}${currentPath}`;
     }
 
-    router.push(newPath || `/${lng}`);
+    window.history.replaceState(null, "", newPath || `/${lng}`);
   };
 
   return { language: i18n.language, changeLanguage };
