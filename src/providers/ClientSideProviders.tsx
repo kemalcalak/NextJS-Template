@@ -2,10 +2,13 @@
 
 import { useEffect, useState } from "react";
 
+import { usePathname } from "next/navigation";
+
 import { AuthHydrator } from "@/components/auth/AuthHydrator";
 import { ErrorBoundary } from "@/components/common/ErrorBoundary";
 import { LoadingScreen } from "@/components/common/LoadingScreen";
 import i18n from "@/i18n/config";
+import { getLocaleFromPath } from "@/lib/config/routes";
 
 import { AntdProvider } from "./AntdProvider";
 import { QueryProvider } from "./QueryProvider";
@@ -30,6 +33,7 @@ export function ClientSideProviders({
   // locale. This costs one frame of LoadingScreen flash; any alternative
   // reading i18n.language during render would flicker hydration warnings.
   const [initialSync, setInitialSync] = useState(false);
+  const pathname = usePathname();
 
   useEffect(() => {
     if (i18n.language === locale) {
@@ -45,6 +49,20 @@ export function ClientSideProviders({
       cancelled = true;
     };
   }, [locale]);
+
+  // Keep i18n and the <html lang> attribute in sync with the URL locale on
+  // every client-side navigation. The locale switch uses the History API
+  // (no RSC re-render), and browser back/forward only changes the URL — so
+  // neither i18n.language nor the server-rendered `lang` attribute would
+  // update without this effect. Deriving from usePathname() (which Next.js
+  // keeps in sync with pushState/replaceState) covers all three cases.
+  useEffect(() => {
+    const urlLocale = getLocaleFromPath(pathname);
+    if (i18n.language !== urlLocale) {
+      void i18n.changeLanguage(urlLocale);
+    }
+    document.documentElement.lang = urlLocale;
+  }, [pathname]);
 
   const loadingMessage = loadingMessages[locale] || loadingMessages.en;
 

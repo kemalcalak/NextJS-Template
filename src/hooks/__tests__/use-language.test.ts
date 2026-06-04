@@ -10,7 +10,7 @@ vi.mock("react-i18next", () => ({
 
 describe("useLanguage", () => {
   const mockChangeLanguage = vi.fn();
-  const mockReplaceState = vi.fn();
+  const mockPushState = vi.fn();
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -29,7 +29,7 @@ describe("useLanguage", () => {
       ready: true,
     } as unknown as ReturnType<typeof useTranslation>);
 
-    vi.spyOn(window.history, "replaceState").mockImplementation(mockReplaceState);
+    vi.spyOn(window.history, "pushState").mockImplementation(mockPushState);
 
     // Mock window.location
     Object.defineProperty(window, "location", {
@@ -51,7 +51,7 @@ describe("useLanguage", () => {
     });
 
     expect(mockChangeLanguage).toHaveBeenCalledWith("tr");
-    expect(mockReplaceState).toHaveBeenCalledWith(null, "", "/tr/dashboard");
+    expect(mockPushState).toHaveBeenCalledWith(null, "", "/tr/dashboard");
     expect(document.cookie).toContain("NEXT_LOCALE=tr");
   });
 
@@ -63,6 +63,6 @@ describe("useLanguage", () => {
       result.current.changeLanguage("tr");
     });
 
-    expect(mockReplaceState).toHaveBeenCalledWith(null, "", "/tr/profile");
+    expect(mockPushState).toHaveBeenCalledWith(null, "", "/tr/profile");
   });
 });
