@@ -83,7 +83,7 @@ test.describe("SEO and Metadata Validation", () => {
         // (auth) are not part of the URL, so the canonical path equals the
         // route without its query string).
         const seoPathname = pageInfo.route.split("?")[0];
-        const canonicalPath = `/${locale}${seoPathname === "/" ? "/" : seoPathname}`;
+        const canonicalPath = `/${locale}${seoPathname === "/" ? "" : seoPathname}`;
 
         await page.goto(fullRoute);
 
@@ -108,7 +108,7 @@ test.describe("SEO and Metadata Validation", () => {
           const alternate = page.locator(`link[rel="alternate"][hreflang="${targetLocale}"]`);
           await expect(alternate).toBeAttached();
 
-          const targetCanonicalPath = `/${targetLocale}${seoPathname === "/" ? "/" : seoPathname}`;
+          const targetCanonicalPath = `/${targetLocale}${seoPathname === "/" ? "" : seoPathname}`;
           const escapedTargetCanonicalPath = targetCanonicalPath.replace(/\//g, "\\/");
 
           await expect(alternate).toHaveAttribute(
