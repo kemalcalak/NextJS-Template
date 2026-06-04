@@ -1,6 +1,7 @@
 import { screen, waitFor, act } from "@testing-library/react";
 import { describe, it, expect, beforeEach, vi } from "vitest";
 
+import { getLocalizedPath, ROUTES } from "@/lib/config/routes";
 import { SystemRole } from "@/lib/types/user";
 import { useAuthStore } from "@/stores/auth.store";
 import { renderWithProviders } from "@/test/test-utils";
@@ -40,7 +41,7 @@ vi.mock("next/navigation", () => ({
     push: vi.fn(),
     replace: vi.fn(),
   }),
-  usePathname: () => "/",
+  usePathname: () => getLocalizedPath(ROUTES.home, "en"),
   useParams: () => ({ locale: "en" }),
 }));
 

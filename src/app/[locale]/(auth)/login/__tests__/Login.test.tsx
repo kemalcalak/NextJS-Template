@@ -2,6 +2,7 @@ import { screen, fireEvent, waitFor } from "@testing-library/react";
 import { http, HttpResponse } from "msw";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
+import { getLocalizedPath, ROUTES } from "@/lib/config/routes";
 import { server } from "@/test/msw/server";
 import { renderWithProviders } from "@/test/test-utils";
 
@@ -15,7 +16,7 @@ vi.mock("next/navigation", () => ({
     replace: vi.fn(),
     prefetch: vi.fn(),
   }),
-  usePathname: () => "/auth/login",
+  usePathname: () => getLocalizedPath(ROUTES.login, "en"),
   useParams: () => ({ locale: "en" }),
 }));
 

@@ -2,6 +2,7 @@ import { fireEvent, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
+import { getLocalizedPath, ROUTES } from "@/lib/config/routes";
 import { renderWithProviders } from "@/test/test-utils";
 
 import { ProfileContent } from "../ProfileContent";
@@ -41,7 +42,7 @@ vi.mock("next/navigation", () => ({
     push: vi.fn(),
     replace: vi.fn(),
   }),
-  usePathname: () => "/profile",
+  usePathname: () => getLocalizedPath(ROUTES.profile, "en"),
   useParams: () => ({ locale: "en" }),
 }));
 
