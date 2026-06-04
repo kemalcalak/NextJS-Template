@@ -2,6 +2,7 @@ import { screen, fireEvent, waitFor } from "@testing-library/react";
 import { vi, describe, it, expect, beforeEach } from "vitest";
 
 import { useResendVerificationMutation } from "@/hooks/api/use-auth";
+import { getLocalizedPath, ROUTES } from "@/lib/config/routes";
 import { renderWithProviders } from "@/test/test-utils";
 
 import { VerifyEmailNoticeContent } from "../VerifyEmailNoticeContent";
@@ -21,7 +22,7 @@ vi.mock("next/navigation", () => ({
     replace: mockReplace,
     prefetch: vi.fn(),
   }),
-  usePathname: () => "/auth/verify-email-notice",
+  usePathname: () => getLocalizedPath(ROUTES.verifyEmailNotice, "en"),
   useParams: () => ({ locale: "en" }),
 }));
 

@@ -1,3 +1,4 @@
+import { ROUTES } from "@/lib/config/routes";
 import { buildMetadata, validateLocale } from "@/lib/seo/metadata";
 
 import { HomeContent } from "./HomeContent";
@@ -13,7 +14,7 @@ export async function generateMetadata({
   return buildMetadata({
     locale: validateLocale(locale),
     pageKey: "home",
-    pathname: "/",
+    pathname: ROUTES.home,
   });
 }
 

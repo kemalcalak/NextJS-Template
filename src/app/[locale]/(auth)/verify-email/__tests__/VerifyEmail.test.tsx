@@ -2,6 +2,7 @@ import { screen, waitFor } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
 import { authService } from "@/lib/api/endpoints/auth";
+import { getLocalizedPath, ROUTES } from "@/lib/config/routes";
 import { renderWithProviders } from "@/test/test-utils";
 
 import { VerifyEmailContent } from "../VerifyEmailContent";
@@ -20,7 +21,7 @@ vi.mock("next/navigation", () => ({
     push: vi.fn(),
     replace: vi.fn(),
   }),
-  usePathname: () => "/auth/verify-email",
+  usePathname: () => getLocalizedPath(ROUTES.verifyEmail, "en"),
   useParams: () => ({ locale: "en" }),
   useSearchParams: () => mockSearchParams,
 }));

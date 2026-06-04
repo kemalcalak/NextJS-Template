@@ -4,6 +4,7 @@ import { screen, fireEvent, waitFor } from "@testing-library/react";
 import { vi, describe, it, expect, beforeEach } from "vitest";
 
 import { authService } from "@/lib/api/endpoints/auth";
+import { getLocalizedPath, ROUTES } from "@/lib/config/routes";
 import { renderWithProviders } from "@/test/test-utils";
 
 import { ForgotPasswordContent } from "../ForgotPasswordContent";
@@ -22,7 +23,7 @@ vi.mock("next/navigation", () => ({
     replace: vi.fn(),
     prefetch: vi.fn(),
   }),
-  usePathname: () => "/auth/forgot-password",
+  usePathname: () => getLocalizedPath(ROUTES.forgotPassword, "en"),
   useParams: () => ({ locale: "en" }),
 }));
 

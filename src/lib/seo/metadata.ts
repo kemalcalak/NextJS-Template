@@ -55,12 +55,18 @@ export function buildMetadata(options: BuildMetadataOptions): Metadata {
 
   const { title, description } = resolvePageMeta(locale, pageKey, overrides);
 
+  // Normalize the home path ("/") to "" so the canonical URL is .../en
+  // (no trailing slash), matching the sitemap entry produced by
+  // getLocalizedPath(ROUTES.home, locale). Without this the home page would
+  // advertise .../en/ as canonical while the sitemap lists .../en.
+  const normalizedPath = pathname === "/" ? "" : pathname;
+
   // Canonical URL for this locale
-  const canonicalUrl = `${BASE_URL}/${locale}${pathname}`;
+  const canonicalUrl = `${BASE_URL}/${locale}${normalizedPath}`;
 
   // Build alternate language URLs for hreflang
   const alternateLanguages = SUPPORTED_LOCALES.reduce<Record<string, string>>((acc, lang) => {
-    acc[lang] = `${BASE_URL}/${lang}${pathname}`;
+    acc[lang] = `${BASE_URL}/${lang}${normalizedPath}`;
     return acc;
   }, {});
 

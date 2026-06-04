@@ -1,3 +1,4 @@
+import { ROUTES } from "@/lib/config/routes";
 import { buildMetadata, validateLocale } from "@/lib/seo/metadata";
 
 import { RegisterContent } from "./RegisterContent";
@@ -13,7 +14,7 @@ export async function generateMetadata({
   return buildMetadata({
     locale: validateLocale(locale),
     pageKey: "register",
-    pathname: "/auth/register",
+    pathname: ROUTES.register,
   });
 }
 
