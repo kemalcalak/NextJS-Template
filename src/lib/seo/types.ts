@@ -11,6 +11,7 @@ export type SeoPageKey =
   | "accountSuspended"
   | "dashboard"
   | "profile"
+  | "support"
   | "adminLogin"
   | "adminDashboard"
   | "adminUsers"

@@ -39,6 +39,10 @@
     "title": "Profil Ayarları",
     "description": "Kişisel profilinizi, tercihlerinizi ve hesap ayarlarınızı görüntüleyin ve düzenleyin."
   },
+  "support": {
+    "title": "Destek",
+    "description": "Destek talebi açın ve her konuda ekibimizle yazışın."
+  },
   "adminLogin": {
     "title": "Yönetici Girişi",
     "description": "Kullanıcıları yönetmek ve aktiviteleri görüntülemek için yönetim paneline giriş yapın."

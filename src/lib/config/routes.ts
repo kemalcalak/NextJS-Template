@@ -14,6 +14,7 @@ export const ROUTES = {
   accountSuspended: "/account-suspended",
   dashboard: "/dashboard",
   profile: "/profile",
+  support: "/support",
   logout: "/logout",
   adminLogin: "/admin/login",
   adminDashboard: "/admin/dashboard",
@@ -35,6 +36,7 @@ export const getLocalizedPath = (path: string, locale: string): string => {
 export const protectedRoutes = [
   ROUTES.dashboard,
   ROUTES.profile,
+  ROUTES.support,
   ROUTES.adminDashboard,
   ROUTES.adminUsers,
   ROUTES.adminFiles,
