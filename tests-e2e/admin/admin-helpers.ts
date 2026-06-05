@@ -145,6 +145,7 @@ export const adminFile: AdminFileListItem = {
   content_type: "image/png",
   size: 4096,
   filename: "report.png",
+  category: "general",
   uploaded_by_id: "user-1",
   uploaded_by: { id: "user-1", email: "user@test.com", first_name: "Usain", last_name: "User" },
   created_at: "2026-01-05T00:00:00Z",

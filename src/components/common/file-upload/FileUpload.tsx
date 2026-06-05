@@ -8,7 +8,7 @@ import { useTranslation } from "react-i18next";
 
 import { useUploadFile } from "@/hooks/api/use-files";
 import { toast } from "@/lib/toast";
-import type { FilePublic } from "@/lib/types/file";
+import type { FileCategory, FilePublic } from "@/lib/types/file";
 
 import {
   DEFAULT_IMAGE_TYPES,
@@ -32,6 +32,9 @@ interface FileUploadProps {
   allowedTypes?: readonly string[];
   maxSizeBytes?: number;
   className?: string;
+  // Cloudinary bucket the upload is tagged with. Defaults to "general"
+  // server-side; pass "support_attachment" for ticket attachments.
+  category?: FileCategory;
 }
 
 const toUploadFile = (file: FilePublic): UploadFile => ({
@@ -50,6 +53,7 @@ export function FileUpload({
   allowedTypes = DEFAULT_IMAGE_TYPES,
   maxSizeBytes = DEFAULT_MAX_UPLOAD_SIZE,
   className,
+  category,
 }: FileUploadProps) {
   const { t } = useTranslation("upload");
   const upload = useUploadFile();
@@ -80,7 +84,7 @@ export function FileUpload({
   }) => {
     if (!(file instanceof File)) return;
     upload.mutate(
-      { file, onProgress: (percent) => onProgress?.({ percent }) },
+      { file, category, onProgress: (percent) => onProgress?.({ percent }) },
       {
         onSuccess: (uploaded) => onSuccess?.(uploaded),
         onError: (err) => onError?.(err instanceof Error ? err : new Error(String(err))),

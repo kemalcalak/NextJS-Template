@@ -5,15 +5,23 @@ import type {
   AdminFileListItem,
   AdminFileListParams,
   AdminFileListResponse,
+  FileCategory,
   FilePublic,
 } from "@/lib/types/file";
 
 import type { AxiosProgressEvent, AxiosRequestHeaders } from "axios";
 
 export const filesApi = {
-  upload: (file: File, onProgress?: (percent: number) => void): Promise<FilePublic> => {
+  upload: (
+    file: File,
+    onProgress?: (percent: number) => void,
+    category?: FileCategory,
+  ): Promise<FilePublic> => {
     const formData = new FormData();
     formData.append("file", file);
+    // Tag the upload so it lands in the right Cloudinary bucket. Omitted -> the
+    // backend defaults to "general".
+    if (category) formData.append("category", category);
     return api.post<FilePublic, FilePublic>("/upload", formData, {
       // Strip the instance's default JSON Content-Type so the browser sets
       // multipart/form-data with the correct boundary. Without this, axios

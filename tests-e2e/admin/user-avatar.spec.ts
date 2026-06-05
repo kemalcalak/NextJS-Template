@@ -19,6 +19,7 @@ const userWithAvatar: AdminUser = {
     content_type: "image/png",
     size: 2048,
     filename: "u.png",
+    category: "general",
     created_at: "2026-01-03T00:00:00Z",
   },
 };

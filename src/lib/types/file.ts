@@ -1,3 +1,15 @@
+// Logical bucket a file belongs to. Mirrors the backend `FileCategory` enum and
+// doubles as the Cloudinary sub-folder name (`<category>/<user_id>/...`). Single
+// source of truth — reference by name (`FILE_CATEGORY.USER_PROFILE_PHOTO`)
+// instead of repeating the string literal at every upload site.
+export const FILE_CATEGORY = {
+  GENERAL: "general",
+  USER_PROFILE_PHOTO: "user_profile_photo",
+  SUPPORT_ATTACHMENT: "support_attachment",
+} as const;
+
+export type FileCategory = (typeof FILE_CATEGORY)[keyof typeof FILE_CATEGORY];
+
 // Public file metadata returned by the upload endpoint and embedded in user
 // payloads (e.g. avatar_file). Mirrors the backend `FilePublic` schema — the
 // internal Cloudinary `public_id` and uploader id are intentionally absent.
@@ -7,6 +19,7 @@ export interface FilePublic {
   content_type: string;
   size: number;
   filename: string | null;
+  category: FileCategory;
   created_at: string;
 }
 
@@ -28,6 +41,7 @@ export interface AdminFileListItem {
   content_type: string;
   size: number;
   filename: string | null;
+  category: FileCategory;
   uploaded_by_id: string | null;
   uploaded_by: AdminFileUploader | null;
   created_at: string;
@@ -45,4 +59,5 @@ export interface AdminFileListParams {
   limit?: number;
   content_type?: string;
   uploader?: string;
+  category?: FileCategory;
 }

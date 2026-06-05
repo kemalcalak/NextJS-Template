@@ -18,6 +18,7 @@ const mockFile: FilePublic = {
   content_type: "image/png",
   size: 1234,
   filename: "a.png",
+  category: "general",
   created_at: "2026-01-01T00:00:00Z",
 };
 
