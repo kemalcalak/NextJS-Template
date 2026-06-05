@@ -40,6 +40,15 @@
       "cannot_delete_self": "Administrators cannot delete themselves.",
       "cannot_demote_last_admin": "You cannot demote the last active administrator.",
       "cannot_delete_last_admin": "You cannot delete the last active administrator."
+    },
+    "support": {
+      "ticket_not_found": "Ticket not found.",
+      "ticket_access_denied": "You don't have access to this ticket.",
+      "ticket_already_closed": "This ticket is closed and can't receive new replies.",
+      "attachment_not_found": "An attached file could not be found.",
+      "attachment_not_owned": "You can only attach files you uploaded yourself.",
+      "attachment_wrong_category": "That file can't be used as a support attachment.",
+      "invalid_assigned_admin": "Tickets can only be assigned to an administrator."
     }
   }
 }

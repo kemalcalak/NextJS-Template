@@ -1,0 +1,64 @@
+{
+  "nav": "Destek",
+  "list": {
+    "title": "Destek",
+    "subtitle": "Destek talepleriniz ve görüşmeleriniz.",
+    "newTicket": "Yeni talep",
+    "empty": "Henüz hiç talebiniz yok.",
+    "unread": "{{count}} okunmamış",
+    "columns": {
+      "subject": "Konu",
+      "status": "Durum",
+      "updated": "Son hareket"
+    }
+  },
+  "new": {
+    "title": "Yeni destek talebi",
+    "subjectLabel": "Konu",
+    "subjectPlaceholder": "Sorununuzun kısa özeti",
+    "bodyLabel": "Mesaj",
+    "bodyPlaceholder": "Sorununuzu ayrıntılı anlatın…",
+    "attachments": "Ekler",
+    "submit": "Talep oluştur",
+    "cancel": "Vazgeç"
+  },
+  "detail": {
+    "back": "Taleplere dön",
+    "replyPlaceholder": "Bir yanıt yazın…",
+    "send": "Gönder",
+    "close": "Talebi kapat",
+    "closedNotice": "Bu talep kapatıldı.",
+    "you": "Siz",
+    "supportTeam": "Destek",
+    "attachments": "Ekler",
+    "empty": "Henüz mesaj yok."
+  },
+  "status": {
+    "open": "Açık",
+    "pending": "Beklemede",
+    "answered": "Yanıtlandı",
+    "closed": "Kapalı"
+  },
+  "priority": {
+    "low": "Düşük",
+    "normal": "Normal",
+    "high": "Yüksek"
+  },
+  "admin": {
+    "title": "Destek kuyruğu",
+    "subtitle": "Tüm kullanıcıların destek talepleri.",
+    "searchPlaceholder": "Konu veya kullanıcı ara…",
+    "filters": {
+      "status": "Durum",
+      "priority": "Öncelik",
+      "all": "Tümü"
+    },
+    "assignee": "Atanan",
+    "unassigned": "Atanmamış",
+    "assignToMe": "Bana ata",
+    "owner": "Açan",
+    "reply": "Yanıtla",
+    "updateStatus": "Durum",
+    "updatePriority": "Öncelik"
+  }
+}

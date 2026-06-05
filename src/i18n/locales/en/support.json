@@ -1,0 +1,64 @@
+{
+  "nav": "Support",
+  "list": {
+    "title": "Support",
+    "subtitle": "Your support tickets and conversations.",
+    "newTicket": "New ticket",
+    "empty": "You don't have any tickets yet.",
+    "unread": "{{count}} unread",
+    "columns": {
+      "subject": "Subject",
+      "status": "Status",
+      "updated": "Last activity"
+    }
+  },
+  "new": {
+    "title": "New support ticket",
+    "subjectLabel": "Subject",
+    "subjectPlaceholder": "Brief summary of your issue",
+    "bodyLabel": "Message",
+    "bodyPlaceholder": "Describe your issue in detail…",
+    "attachments": "Attachments",
+    "submit": "Create ticket",
+    "cancel": "Cancel"
+  },
+  "detail": {
+    "back": "Back to tickets",
+    "replyPlaceholder": "Write a reply…",
+    "send": "Send",
+    "close": "Close ticket",
+    "closedNotice": "This ticket is closed.",
+    "you": "You",
+    "supportTeam": "Support",
+    "attachments": "Attachments",
+    "empty": "No messages yet."
+  },
+  "status": {
+    "open": "Open",
+    "pending": "Pending",
+    "answered": "Answered",
+    "closed": "Closed"
+  },
+  "priority": {
+    "low": "Low",
+    "normal": "Normal",
+    "high": "High"
+  },
+  "admin": {
+    "title": "Support queue",
+    "subtitle": "All support tickets across users.",
+    "searchPlaceholder": "Search subject or user…",
+    "filters": {
+      "status": "Status",
+      "priority": "Priority",
+      "all": "All"
+    },
+    "assignee": "Assignee",
+    "unassigned": "Unassigned",
+    "assignToMe": "Assign to me",
+    "owner": "Opened by",
+    "reply": "Reply",
+    "updateStatus": "Status",
+    "updatePriority": "Priority"
+  }
+}

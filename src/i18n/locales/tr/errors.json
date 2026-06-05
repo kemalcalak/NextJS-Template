@@ -40,6 +40,15 @@
       "cannot_delete_self": "Yöneticiler kendilerini silemez.",
       "cannot_demote_last_admin": "Son aktif yöneticinin rolünü düşüremezsiniz.",
       "cannot_delete_last_admin": "Son aktif yöneticiyi silemezsiniz."
+    },
+    "support": {
+      "ticket_not_found": "Talep bulunamadı.",
+      "ticket_access_denied": "Bu talebe erişiminiz yok.",
+      "ticket_already_closed": "Bu talep kapatıldı ve yeni yanıt alamaz.",
+      "attachment_not_found": "Eklenen bir dosya bulunamadı.",
+      "attachment_not_owned": "Yalnızca kendi yüklediğiniz dosyaları ekleyebilirsiniz.",
+      "attachment_wrong_category": "Bu dosya destek eki olarak kullanılamaz.",
+      "invalid_assigned_admin": "Talepler yalnızca bir yöneticiye atanabilir."
     }
   }
 }
