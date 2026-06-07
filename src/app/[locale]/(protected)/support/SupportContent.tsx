@@ -38,7 +38,7 @@ export function SupportContent() {
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="mx-auto w-full max-w-480 space-y-6 p-4 sm:p-6 lg:p-8 xl:p-12">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">{t("list.title")}</h1>
@@ -54,14 +54,18 @@ export function SupportContent() {
         </Button>
       </div>
 
-      <Segmented
-        options={statusOptions}
-        value={status}
-        onChange={(value) => {
-          setStatus(value as StatusFilter);
-          setSkip(0);
-        }}
-      />
+      {/* Scrolls instead of cramming the five filters on narrow screens. */}
+      <div className="-mx-1 overflow-x-auto px-1">
+        <Segmented
+          size="large"
+          options={statusOptions}
+          value={status}
+          onChange={(value) => {
+            setStatus(value as StatusFilter);
+            setSkip(0);
+          }}
+        />
+      </div>
 
       <Card className="border-border/50 bg-card/60">
         <CardContent className="p-0">

@@ -1,4 +1,4 @@
-import { render, screen, within } from "@testing-library/react";
+import { fireEvent, render, screen, within } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
 import { MessageThread } from "@/components/support/MessageThread";
@@ -61,5 +61,23 @@ describe("MessageThread", () => {
     expect(link).toHaveAttribute("href", file.url);
     const image = within(link).getByRole("img");
     expect(image).toHaveAttribute("src", file.url);
+  });
+
+  it("reveals the jump-to-latest button only when scrolled up", () => {
+    const { container } = render(
+      <MessageThread messages={[msg(), msg({ id: "m-2" })]} viewerRole="user" />,
+    );
+    const scroller = container.querySelector(".overflow-y-auto");
+    if (!scroller) throw new Error("scroll container not found");
+
+    // jsdom has no layout, so fake an overflowing, scrolled-up container.
+    Object.defineProperty(scroller, "scrollHeight", { value: 1000, configurable: true });
+    Object.defineProperty(scroller, "clientHeight", { value: 300, configurable: true });
+    Object.defineProperty(scroller, "scrollTop", { value: 0, configurable: true, writable: true });
+    fireEvent.scroll(scroller);
+
+    expect(
+      screen.getByRole("button", { name: /support:detail\.jumpToLatest/ }),
+    ).toBeInTheDocument();
   });
 });

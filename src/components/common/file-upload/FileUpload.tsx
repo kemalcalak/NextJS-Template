@@ -3,9 +3,10 @@
 import { useEffect, useState } from "react";
 
 import { Upload } from "antd";
-import { Plus } from "lucide-react";
+import { Paperclip, Plus } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
+import { Button } from "@/components/ui/button";
 import { useUploadFile } from "@/hooks/api/use-files";
 import { toast } from "@/lib/toast";
 import type { FileCategory, FilePublic } from "@/lib/types/file";
@@ -35,6 +36,10 @@ interface FileUploadProps {
   // Cloudinary bucket the upload is tagged with. Defaults to "general"
   // server-side; pass "support_attachment" for ticket attachments.
   category?: FileCategory;
+  // "tiles" (default): large picture-circle tiles, e.g. the avatar uploader.
+  // "compact": a small paperclip trigger + a slim file list, for inline use in
+  // a chat composer where the big tile would dominate.
+  variant?: "tiles" | "compact";
 }
 
 const toUploadFile = (file: FilePublic): UploadFile => ({
@@ -54,6 +59,7 @@ export function FileUpload({
   maxSizeBytes = DEFAULT_MAX_UPLOAD_SIZE,
   className,
   category,
+  variant = "tiles",
 }: FileUploadProps) {
   const { t } = useTranslation("upload");
   const upload = useUploadFile();
@@ -106,11 +112,12 @@ export function FileUpload({
   };
 
   const canAddMore = maxCount === undefined || fileList.length < maxCount;
+  const isCompact = variant === "compact";
 
   return (
     <Upload
       className={className}
-      listType="picture-circle"
+      listType={isCompact ? "picture" : "picture-circle"}
       fileList={fileList}
       accept={allowedTypes.join(",")}
       disabled={disabled || readOnly}
@@ -119,12 +126,19 @@ export function FileUpload({
       onChange={handleChange}
       showUploadList={{ showRemoveIcon: !readOnly, showPreviewIcon: true }}
     >
-      {!readOnly && canAddMore && (
-        <span className="flex flex-col items-center gap-1 text-xs">
-          <Plus className="size-5" />
-          {t("upload")}
-        </span>
-      )}
+      {!readOnly &&
+        canAddMore &&
+        (isCompact ? (
+          <Button type="button" variant="ghost" size="sm" disabled={disabled || readOnly}>
+            <Paperclip className="h-4 w-4" />
+            {t("upload")}
+          </Button>
+        ) : (
+          <span className="flex flex-col items-center gap-1 text-xs">
+            <Plus className="size-5" />
+            {t("upload")}
+          </span>
+        ))}
     </Upload>
   );
 }

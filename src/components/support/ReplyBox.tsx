@@ -41,7 +41,7 @@ export function ReplyBox({ onSubmit, isPending }: ReplyBoxProps) {
     <Form form={form} onFinish={onFinish} className="space-y-3">
       <Form.Item name="body" rules={[zodFieldRule(schema.shape.body)]} className="mb-0">
         <Input.TextArea
-          rows={3}
+          rows={2}
           placeholder={t("detail.replyPlaceholder")}
           maxLength={10000}
           disabled={isPending}
@@ -53,6 +53,7 @@ export function ReplyBox({ onSubmit, isPending }: ReplyBoxProps) {
           onChange={setFiles}
           category={FILE_CATEGORY.SUPPORT_ATTACHMENT}
           disabled={isPending}
+          variant="compact"
         />
         <Button type="submit" loading={isPending}>
           <Send className="h-4 w-4" />

@@ -30,6 +30,8 @@
     "send": "Send",
     "close": "Close ticket",
     "closedNotice": "This ticket is closed.",
+    "adminClosedNotice": "This ticket is closed. Reopen it to reply.",
+    "jumpToLatest": "Jump to latest",
     "you": "You",
     "supportTeam": "Support",
     "attachments": "Attachments",
@@ -61,6 +63,7 @@
       "requester": "Opened by",
       "status": "Status",
       "priority": "Priority",
+      "assignee": "Assignee",
       "updated": "Last activity"
     },
     "loading": "Loading tickets…",

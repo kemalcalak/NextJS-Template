@@ -1,5 +1,8 @@
 "use client";
 
+import { useEffect } from "react";
+
+import { useQueryClient } from "@tanstack/react-query";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -11,7 +14,7 @@ import { ReplyBox } from "@/components/support/ReplyBox";
 import { TicketPriorityBadge, TicketStatusBadge } from "@/components/support/TicketStatusBadge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useAdminReplyTicket, useAdminTicket } from "@/hooks/api/use-support";
+import { adminSupportKeys, useAdminReplyTicket, useAdminTicket } from "@/hooks/api/use-support";
 import { useTicketRealtime } from "@/hooks/use-support-realtime";
 import { getLocaleFromPath, getLocalizedPath, ROUTES } from "@/lib/config/routes";
 
@@ -22,11 +25,22 @@ interface AdminTicketDetailContentProps {
 export function AdminTicketDetailContent({ ticketId }: AdminTicketDetailContentProps) {
   const { t } = useTranslation("support");
   const locale = getLocaleFromPath(usePathname());
+  const queryClient = useQueryClient();
   const { data: ticket, isLoading } = useAdminTicket(ticketId);
   const reply = useAdminReplyTicket(ticketId);
 
-  // Live updates: customer replies and edits by other admins stream in.
-  useTicketRealtime(ticketId, "admin");
+  // Live updates: customer replies and edits by other admins stream in via the
+  // shared support socket while this ticket's detail is open.
+  useTicketRealtime(ticketId);
+
+  // Opening a ticket marks its thread read on the server; refresh the queue so
+  // its unread badge clears without a manual reload. Keyed on the loaded id so
+  // it fires once per ticket, not on every background refetch.
+  const loadedTicketId = ticket?.id;
+  useEffect(() => {
+    if (!loadedTicketId) return;
+    void queryClient.invalidateQueries({ queryKey: adminSupportKeys.listPrefix });
+  }, [loadedTicketId, queryClient]);
 
   const backLink = (
     <Link
@@ -59,12 +73,13 @@ export function AdminTicketDetailContent({ ticketId }: AdminTicketDetailContentP
 
   const customerName =
     [ticket.user.first_name, ticket.user.last_name].filter(Boolean).join(" ") || ticket.user.email;
+  const isClosed = ticket.status === "closed";
 
   return (
-    <div className="space-y-6">
-      {backLink}
-
-      <div className="space-y-2">
+    <div className="flex h-[calc(100dvh-7rem)] flex-col gap-6">
+      {/* Pinned header */}
+      <div className="shrink-0 space-y-2">
+        {backLink}
         <h1 className="text-2xl font-semibold tracking-tight">{ticket.subject}</h1>
         <div className="flex flex-wrap items-center gap-2">
           <TicketStatusBadge status={ticket.status} />
@@ -75,10 +90,11 @@ export function AdminTicketDetailContent({ ticketId }: AdminTicketDetailContentP
         </div>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-3">
-        <div className="space-y-4 lg:col-span-2">
-          <Card className="border-border/50 bg-card/60">
-            <CardContent className="p-0">
+      <div className="grid min-h-0 flex-1 gap-6 lg:grid-cols-3">
+        {/* Thread scrolls; composer pinned beneath it */}
+        <div className="flex min-h-0 flex-col gap-4 lg:col-span-2">
+          <Card className="flex min-h-0 flex-1 flex-col overflow-hidden border-border/50 bg-card/60">
+            <CardContent className="min-h-0 flex-1 p-0">
               <MessageThread
                 messages={ticket.messages}
                 viewerRole="admin"
@@ -86,10 +102,18 @@ export function AdminTicketDetailContent({ ticketId }: AdminTicketDetailContentP
               />
             </CardContent>
           </Card>
-          <ReplyBox onSubmit={reply.mutateAsync} isPending={reply.isPending} />
+          <div className="shrink-0">
+            {isClosed ? (
+              <p className="text-center text-sm text-muted-foreground">
+                {t("detail.adminClosedNotice")}
+              </p>
+            ) : (
+              <ReplyBox onSubmit={reply.mutateAsync} isPending={reply.isPending} />
+            )}
+          </div>
         </div>
 
-        <div className="space-y-4">
+        <div className="overflow-y-auto lg:col-span-1">
           <TicketAdminControls ticket={ticket} />
         </div>
       </div>
