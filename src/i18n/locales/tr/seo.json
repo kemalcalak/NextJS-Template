@@ -67,6 +67,14 @@
     "title": "Aktivite Günlüğü",
     "description": "Tüm kullanıcılara ait denetim olaylarını görüntüleyin."
   },
+  "adminSupport": {
+    "title": "Destek Kuyruğu",
+    "description": "Kullanıcı destek taleplerini inceleyin ve yanıtlayın."
+  },
+  "adminTicketDetail": {
+    "title": "Talep",
+    "description": "Bir destek talebini görüntüleyin, yanıtlayın ve durumunu güncelleyin."
+  },
   "notFound": {
     "title": "Sayfa Bulunamadı",
     "description": "Aradığınız sayfa mevcut değil veya taşınmış olabilir."

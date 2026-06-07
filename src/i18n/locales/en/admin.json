@@ -16,7 +16,8 @@
       "dashboard": "Dashboard",
       "users": "Users",
       "files": "Files",
-      "activities": "Activity log"
+      "activities": "Activity log",
+      "support": "Support"
     },
     "signedInAs": "Signed in as",
     "exit": "Exit admin",

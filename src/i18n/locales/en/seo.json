@@ -67,6 +67,14 @@
     "title": "Activity Log",
     "description": "Browse audit events across all users."
   },
+  "adminSupport": {
+    "title": "Support Queue",
+    "description": "Review and respond to user support tickets."
+  },
+  "adminTicketDetail": {
+    "title": "Ticket",
+    "description": "View a support ticket, reply, and update its status."
+  },
   "notFound": {
     "title": "Page Not Found",
     "description": "The page you are looking for does not exist or may have been moved."

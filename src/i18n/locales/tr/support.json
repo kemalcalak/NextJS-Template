@@ -53,7 +53,23 @@
     "filters": {
       "status": "Durum",
       "priority": "Öncelik",
-      "all": "Tümü"
+      "all": "Tümü",
+      "reset": "Sıfırla"
+    },
+    "columns": {
+      "subject": "Konu",
+      "requester": "Açan",
+      "status": "Durum",
+      "priority": "Öncelik",
+      "updated": "Son hareket"
+    },
+    "loading": "Talepler yükleniyor…",
+    "empty": "Mevcut filtrelere uygun talep yok.",
+    "controls": {
+      "title": "Talebi yönet",
+      "status": "Durum",
+      "priority": "Öncelik",
+      "save": "Değişiklikleri kaydet"
     },
     "assignee": "Atanan",
     "unassigned": "Atanmamış",

@@ -18,6 +18,8 @@ export type SeoPageKey =
   | "adminUserDetail"
   | "adminFiles"
   | "adminActivities"
+  | "adminSupport"
+  | "adminTicketDetail"
   | "notFound"
   | "error";
 

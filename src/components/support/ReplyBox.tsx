@@ -8,32 +8,33 @@ import { useTranslation } from "react-i18next";
 
 import { FileUpload } from "@/components/common/file-upload";
 import { Button } from "@/components/ui/button";
-import { useReplyTicket } from "@/hooks/api/use-support";
 import { FILE_CATEGORY, type FilePublic } from "@/lib/types/file";
+import type { MessageCreatePayload } from "@/lib/types/support";
 import { zodFieldRule } from "@/lib/validation/zodToAntdRule";
 import { getReplySchema, type ReplyFormValues } from "@/schemas/support";
 
 interface ReplyBoxProps {
-  ticketId: string;
+  // The parent owns the mutation (user vs admin reply endpoint); ReplyBox just
+  // collects the draft and resets once the submit resolves.
+  onSubmit: (payload: MessageCreatePayload) => Promise<unknown>;
+  isPending: boolean;
 }
 
-export function ReplyBox({ ticketId }: ReplyBoxProps) {
+export function ReplyBox({ onSubmit, isPending }: ReplyBoxProps) {
   const { t } = useTranslation(["support", "validation"]);
   const [form] = Form.useForm<ReplyFormValues>();
   const [files, setFiles] = useState<FilePublic[]>([]);
-  const { mutate: reply, isPending } = useReplyTicket(ticketId);
   const schema = getReplySchema(t);
 
   const onFinish = (values: ReplyFormValues) => {
-    reply(
-      { body: values.body, attachment_file_ids: files.map((file) => file.id) },
-      {
-        onSuccess: () => {
-          form.resetFields();
-          setFiles([]);
-        },
-      },
-    );
+    void onSubmit({ body: values.body, attachment_file_ids: files.map((file) => file.id) })
+      .then(() => {
+        form.resetFields();
+        setFiles([]);
+      })
+      .catch(() => {
+        // The global toast surfaces the error; keep the draft for a retry.
+      });
   };
 
   return (

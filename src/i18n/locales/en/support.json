@@ -53,7 +53,23 @@
     "filters": {
       "status": "Status",
       "priority": "Priority",
-      "all": "All"
+      "all": "All",
+      "reset": "Reset"
+    },
+    "columns": {
+      "subject": "Subject",
+      "requester": "Opened by",
+      "status": "Status",
+      "priority": "Priority",
+      "updated": "Last activity"
+    },
+    "loading": "Loading tickets…",
+    "empty": "No tickets match the current filters.",
+    "controls": {
+      "title": "Manage ticket",
+      "status": "Status",
+      "priority": "Priority",
+      "save": "Save changes"
     },
     "assignee": "Assignee",
     "unassigned": "Unassigned",

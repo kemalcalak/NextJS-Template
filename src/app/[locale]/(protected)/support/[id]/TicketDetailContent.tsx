@@ -11,7 +11,7 @@ import { TicketPriorityBadge, TicketStatusBadge } from "@/components/support/Tic
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useCloseTicket, useMyTicket } from "@/hooks/api/use-support";
+import { useCloseTicket, useMyTicket, useReplyTicket } from "@/hooks/api/use-support";
 import { useTicketRealtime } from "@/hooks/use-support-realtime";
 import { getLocaleFromPath, getLocalizedPath, ROUTES } from "@/lib/config/routes";
 
@@ -24,6 +24,7 @@ export function TicketDetailContent({ ticketId }: TicketDetailContentProps) {
   const locale = getLocaleFromPath(usePathname());
   const { data: ticket, isLoading } = useMyTicket(ticketId);
   const { mutate: closeTicket, isPending: isClosing } = useCloseTicket(ticketId);
+  const reply = useReplyTicket(ticketId);
 
   // Live updates: admin replies and status changes stream into the cache.
   useTicketRealtime(ticketId, "user");
@@ -93,7 +94,7 @@ export function TicketDetailContent({ ticketId }: TicketDetailContentProps) {
       {isClosed ? (
         <p className="text-center text-sm text-muted-foreground">{t("detail.closedNotice")}</p>
       ) : (
-        <ReplyBox ticketId={ticketId} />
+        <ReplyBox onSubmit={reply.mutateAsync} isPending={reply.isPending} />
       )}
     </div>
   );

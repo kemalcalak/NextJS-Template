@@ -16,7 +16,8 @@
       "dashboard": "Panel",
       "users": "Kullanıcılar",
       "files": "Dosyalar",
-      "activities": "Aktivite günlüğü"
+      "activities": "Aktivite günlüğü",
+      "support": "Destek"
     },
     "signedInAs": "Giriş yapılan hesap",
     "exit": "Yönetimden çık",
