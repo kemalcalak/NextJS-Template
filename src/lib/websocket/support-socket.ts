@@ -27,6 +27,10 @@ export const buildWsUrl = (path: string): string => {
 
 export interface SupportSocket {
   close: () => void;
+  // Follow / stop following a multiplexed topic (e.g. `ticket:{id}`). The set of
+  // active subscriptions is replayed automatically after a reconnect.
+  subscribe: (topic: string) => void;
+  unsubscribe: (topic: string) => void;
 }
 
 interface SocketOptions {
@@ -34,8 +38,10 @@ interface SocketOptions {
 }
 
 // Open a self-healing WebSocket to `path`. Cookies on the backend origin ride
-// the handshake automatically, so no token is passed here. Returns a handle
-// whose `close()` stops the socket and cancels any pending reconnect.
+// the handshake automatically, so no token is passed here. The socket is
+// multiplexed: it auto-receives its feed and can `subscribe()` to ticket
+// threads on demand. Returns a handle whose `close()` stops the socket and
+// cancels any pending reconnect.
 export const createReconnectingSocket = (
   path: string,
   { onEvent }: SocketOptions,
@@ -44,6 +50,15 @@ export const createReconnectingSocket = (
   let reconnectTimer: ReturnType<typeof setTimeout> | null = null;
   let failures = 0;
   let closedByCaller = false;
+  // Topics the caller wants to follow; replayed on every (re)connect so a drop
+  // doesn't silently lose the ticket thread the user is viewing.
+  const subscriptions = new Set<string>();
+
+  const sendCommand = (action: "subscribe" | "unsubscribe", topic: string) => {
+    if (socket?.readyState === WebSocket.OPEN) {
+      socket.send(JSON.stringify({ action, topic }));
+    }
+  };
 
   const scheduleReconnect = () => {
     if (closedByCaller || failures >= MAX_CONSECUTIVE_FAILURES) return;
@@ -58,6 +73,10 @@ export const createReconnectingSocket = (
     socket.onopen = () => {
       // A live connection clears the failure streak so later drops still retry.
       failures = 0;
+      // Replay subscriptions so a reconnect restores the followed ticket.
+      for (const topic of subscriptions) {
+        sendCommand("subscribe", topic);
+      }
     };
 
     socket.onmessage = (message) => {
@@ -86,6 +105,14 @@ export const createReconnectingSocket = (
       closedByCaller = true;
       if (reconnectTimer) clearTimeout(reconnectTimer);
       socket?.close();
+    },
+    subscribe: (topic: string) => {
+      subscriptions.add(topic);
+      sendCommand("subscribe", topic);
+    },
+    unsubscribe: (topic: string) => {
+      subscriptions.delete(topic);
+      sendCommand("unsubscribe", topic);
     },
   };
 };

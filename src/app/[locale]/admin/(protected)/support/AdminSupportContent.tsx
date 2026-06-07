@@ -15,7 +15,6 @@ import { SupportTicketsTable } from "@/components/admin/SupportTicketsTable";
 import { Card, CardContent } from "@/components/ui/card";
 import { useAdminTickets } from "@/hooks/api/use-support";
 import { useDebounce } from "@/hooks/use-debounce";
-import { useAdminSupportFeed } from "@/hooks/use-support-realtime";
 
 export function AdminSupportContent() {
   const { t } = useTranslation("support");
@@ -40,9 +39,6 @@ export function AdminSupportContent() {
   );
 
   const { data, isLoading, isFetching } = useAdminTickets(params);
-
-  // Live queue: new tickets and status changes refresh the list.
-  useAdminSupportFeed();
 
   const hasFilters = searchInput !== "" || status !== "all" || priority !== "all";
 

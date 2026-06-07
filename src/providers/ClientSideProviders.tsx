@@ -12,6 +12,7 @@ import { getLocaleFromPath } from "@/lib/config/routes";
 
 import { AntdProvider } from "./AntdProvider";
 import { QueryProvider } from "./QueryProvider";
+import { SupportRealtimeProvider } from "./SupportRealtimeProvider";
 import { ThemeProvider } from "./ThemeProvider";
 
 const loadingMessages: Record<string, string> = {
@@ -74,7 +75,9 @@ export function ClientSideProviders({
         ) : (
           <QueryProvider>
             <AuthHydrator>
-              <ErrorBoundary>{children}</ErrorBoundary>
+              <SupportRealtimeProvider>
+                <ErrorBoundary>{children}</ErrorBoundary>
+              </SupportRealtimeProvider>
             </AuthHydrator>
           </QueryProvider>
         )}
