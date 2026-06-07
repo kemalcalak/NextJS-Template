@@ -20,6 +20,12 @@ const requesterLabel = (ticket: AdminTicketListItem): string => {
   return name || ticket.user.email;
 };
 
+const assigneeName = (ticket: AdminTicketListItem): string | null => {
+  const admin = ticket.assigned_admin;
+  if (!admin) return null;
+  return [admin.first_name, admin.last_name].filter(Boolean).join(" ") || admin.email;
+};
+
 export function SupportTicketsTable({ rows, isLoading }: SupportTicketsTableProps) {
   const { t } = useTranslation("support");
   const locale = getLocaleFromPath(usePathname());
@@ -33,6 +39,7 @@ export function SupportTicketsTable({ rows, isLoading }: SupportTicketsTableProp
             <th className="px-4 py-3 font-medium">{t("admin.columns.requester")}</th>
             <th className="px-4 py-3 font-medium">{t("admin.columns.status")}</th>
             <th className="px-4 py-3 font-medium">{t("admin.columns.priority")}</th>
+            <th className="px-4 py-3 font-medium">{t("admin.columns.assignee")}</th>
             <th className="px-4 py-3 text-center font-medium">{t("admin.columns.updated")}</th>
             <th className="px-4 py-3" />
           </tr>
@@ -59,6 +66,11 @@ export function SupportTicketsTable({ rows, isLoading }: SupportTicketsTableProp
                 <td className="px-4 py-3">
                   <TicketPriorityBadge priority={ticket.priority} />
                 </td>
+                <td className="px-4 py-3 text-muted-foreground">
+                  {assigneeName(ticket) ?? (
+                    <span className="text-xs italic opacity-70">{t("admin.unassigned")}</span>
+                  )}
+                </td>
                 <td className="whitespace-nowrap px-4 py-3 text-center text-xs text-muted-foreground">
                   {formatDate(ticket.last_message_at)}
                 </td>
@@ -75,7 +87,7 @@ export function SupportTicketsTable({ rows, isLoading }: SupportTicketsTableProp
           })}
           {rows.length === 0 ? (
             <tr>
-              <td colSpan={6} className="px-4 py-12 text-center text-sm text-muted-foreground">
+              <td colSpan={7} className="px-4 py-12 text-center text-sm text-muted-foreground">
                 {isLoading ? t("admin.loading") : t("admin.empty")}
               </td>
             </tr>

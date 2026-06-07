@@ -4,6 +4,7 @@ import type {
   AdminTicketDetail,
   AdminTicketListParams,
   AdminTicketListResponse,
+  AdminTicketResponse,
   AdminTicketUpdatePayload,
   MessageCreatePayload,
   SupportMessageResponse,
@@ -51,6 +52,6 @@ export const adminSupportApi = {
       payload,
     ),
 
-  updateTicket: (id: string, payload: AdminTicketUpdatePayload): Promise<AdminTicketDetail> =>
-    api.patch<AdminTicketDetail, AdminTicketDetail>(`/admin/support/tickets/${id}`, payload),
+  updateTicket: (id: string, payload: AdminTicketUpdatePayload): Promise<AdminTicketResponse> =>
+    api.patch<AdminTicketResponse, AdminTicketResponse>(`/admin/support/tickets/${id}`, payload),
 };

@@ -118,8 +118,10 @@ export const useUpdateAdminTicket = (ticketId: string) => {
   return useMutation({
     mutationFn: (payload: AdminTicketUpdatePayload) =>
       adminSupportApi.updateTicket(ticketId, payload),
-    onSuccess: (ticket) => {
-      queryClient.setQueryData(adminSupportKeys.detail(ticketId), ticket);
+    // The success notification is driven by the backend `message` via the axios
+    // response interceptor — no manual toast here.
+    onSuccess: (response) => {
+      queryClient.setQueryData(adminSupportKeys.detail(ticketId), response.ticket);
       queryClient.invalidateQueries({ queryKey: adminSupportKeys.listPrefix });
     },
   });

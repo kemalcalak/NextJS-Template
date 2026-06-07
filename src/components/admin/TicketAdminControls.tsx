@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { Form, Select } from "antd";
 import { useTranslation } from "react-i18next";
@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAdminUsers } from "@/hooks/api/use-admin";
 import { useUpdateAdminTicket } from "@/hooks/api/use-support";
+import { useDebounce } from "@/hooks/use-debounce";
 import {
   TICKET_PRIORITIES,
   TICKET_STATUSES,
@@ -27,12 +28,31 @@ interface ControlsFormValues {
   assigned_admin_id: string;
 }
 
+// Admins are loaded a page at a time; the dropdown grows the window as the
+// admin scrolls (and searches by name/email server-side).
+const ADMIN_PAGE_SIZE = 20;
+
 export function TicketAdminControls({ ticket }: { ticket: AdminTicketDetail }) {
   const { t } = useTranslation("support");
   const [form] = Form.useForm<ControlsFormValues>();
   const currentUserId = useAuthStore((state) => state.user?.id ?? null);
   const { mutate: update, isPending } = useUpdateAdminTicket(ticket.id);
-  const { data: admins } = useAdminUsers({ role: SystemRole.ADMIN, limit: 100 });
+
+  const [adminSearch, setAdminSearch] = useState("");
+  const [adminLimit, setAdminLimit] = useState(ADMIN_PAGE_SIZE);
+  const debouncedAdminSearch = useDebounce(adminSearch, 300);
+  const { data: admins } = useAdminUsers({
+    role: SystemRole.ADMIN,
+    search: debouncedAdminSearch.trim() || undefined,
+    limit: adminLimit,
+  });
+
+  // A new search resets the loaded window back to the first page (done here
+  // rather than in an effect to keep the reset paired with the input change).
+  const handleAdminSearch = (value: string) => {
+    setAdminSearch(value);
+    setAdminLimit(ADMIN_PAGE_SIZE);
+  };
 
   // Re-seed the form whenever the ticket's server state changes (e.g. a
   // realtime update or another admin's edit).
@@ -44,10 +64,25 @@ export function TicketAdminControls({ ticket }: { ticket: AdminTicketDetail }) {
     });
   }, [form, ticket.id, ticket.status, ticket.priority, ticket.assigned_admin_id]);
 
-  const assigneeOptions = [
-    { value: "", label: t("admin.unassigned") },
-    ...(admins?.data ?? []).map((admin) => ({ value: admin.id, label: admin.email })),
-  ];
+  const loadedAdmins = admins?.data ?? [];
+  const hasMoreAdmins = loadedAdmins.length < (admins?.total ?? 0);
+
+  const onAdminScroll = (event: React.UIEvent<HTMLDivElement>) => {
+    const el = event.currentTarget;
+    if (hasMoreAdmins && el.scrollHeight - el.scrollTop - el.clientHeight < 24) {
+      setAdminLimit((current) => current + ADMIN_PAGE_SIZE);
+    }
+  };
+
+  const assigneeOptions = useMemo(() => {
+    const opts = (admins?.data ?? []).map((admin) => ({ value: admin.id, label: admin.email }));
+    // Keep the current assignee visible even when it's outside the loaded page.
+    const current = ticket.assigned_admin;
+    if (current && !opts.some((o) => o.value === current.id)) {
+      opts.unshift({ value: current.id, label: current.email });
+    }
+    return [{ value: "", label: t("admin.unassigned") }, ...opts];
+  }, [admins?.data, ticket.assigned_admin, t]);
 
   const onFinish = (values: ControlsFormValues) => {
     const payload: AdminTicketUpdatePayload = {
@@ -59,7 +94,11 @@ export function TicketAdminControls({ ticket }: { ticket: AdminTicketDetail }) {
   };
 
   const assignToMe = () => {
-    if (currentUserId) form.setFieldValue("assigned_admin_id", currentUserId);
+    if (!currentUserId) return;
+    // Reflect the choice in the form, then persist it immediately (partial
+    // PATCH) so the admin doesn't also have to hit "Save changes".
+    form.setFieldValue("assigned_admin_id", currentUserId);
+    update({ assigned_admin_id: currentUserId });
   };
 
   return (
@@ -90,7 +129,11 @@ export function TicketAdminControls({ ticket }: { ticket: AdminTicketDetail }) {
             />
           </Form.Item>
           <Form.Item name="assigned_admin_id" label={t("admin.assignee")}>
-            <Select options={assigneeOptions} />
+            <Select
+              showSearch={{ filterOption: false, onSearch: handleAdminSearch }}
+              onPopupScroll={onAdminScroll}
+              options={assigneeOptions}
+            />
           </Form.Item>
           <div className="flex items-center justify-between gap-2">
             <Button type="button" variant="outline" size="sm" onClick={assignToMe}>

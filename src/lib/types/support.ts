@@ -70,6 +70,7 @@ export interface SupportTicketUser {
 
 export interface AdminTicketListItem extends SupportTicketListItem {
   assigned_admin_id: string | null;
+  assigned_admin: SupportTicketUser | null;
   user: SupportTicketUser;
 }
 
@@ -82,6 +83,7 @@ export interface AdminTicketListResponse {
 
 export interface AdminTicketDetail extends SupportTicketDetail {
   assigned_admin_id: string | null;
+  assigned_admin: SupportTicketUser | null;
   user: SupportTicketUser;
 }
 
@@ -130,6 +132,11 @@ export interface SupportTicketResponse {
 
 export interface SupportMessageResponse {
   data: SupportMessage;
+  message: string;
+}
+
+export interface AdminTicketResponse {
+  ticket: AdminTicketDetail;
   message: string;
 }
 

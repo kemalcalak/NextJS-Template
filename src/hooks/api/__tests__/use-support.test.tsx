@@ -57,6 +57,7 @@ const mockTicketDetail: SupportTicketDetail = {
 const mockAdminTicketDetail: AdminTicketDetail = {
   ...mockTicketDetail,
   assigned_admin_id: null,
+  assigned_admin: null,
   user: { id: "u-1", email: "user@test.com", first_name: "Jane", last_name: "Doe" },
 };
 
@@ -279,7 +280,10 @@ describe("useUpdateAdminTicket", () => {
     server.use(
       http.patch("*/api/v1/admin/support/tickets/t-1", async ({ request }) => {
         requestBody = await request.json();
-        return HttpResponse.json(updated);
+        return HttpResponse.json({
+          ticket: updated,
+          message: "success.support.admin_ticket_updated",
+        });
       }),
     );
     const queryClient = cacheClient();
