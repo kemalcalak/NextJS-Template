@@ -22,6 +22,14 @@ const statusCodeTone = (code: number): "success" | "warning" | "danger" | "muted
   return "muted";
 };
 
+// Prefer the actor's name, then email; fall back to a short id when the user
+// row is missing (e.g. a since-deleted account).
+const actorLabel = (row: AdminActivity): string => {
+  const actor = row.user;
+  if (!actor) return row.user_id.slice(0, 8);
+  return [actor.first_name, actor.last_name].filter(Boolean).join(" ") || actor.email;
+};
+
 const isScalar = (value: JsonValue): value is ScalarJson =>
   value === null ||
   typeof value === "string" ||
@@ -127,9 +135,7 @@ export function ActivityTable({
                 {formatDateTime(row.created_at)}
               </td>
               {showUser ? (
-                <td className="px-4 py-3 font-mono text-xs text-muted-foreground">
-                  {row.user_id.slice(0, 8)}
-                </td>
+                <td className="px-4 py-3 text-xs text-muted-foreground">{actorLabel(row)}</td>
               ) : null}
               <td className="px-4 py-3 font-medium">{t(`activities.type.${row.activity_type}`)}</td>
               <td className="px-4 py-3 text-muted-foreground">

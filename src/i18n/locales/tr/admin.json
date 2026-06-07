@@ -192,6 +192,8 @@
       "statusAny": "Tüm durumlar",
       "statusCode": "Durum kodu",
       "statusCodeAny": "Tüm kodlar",
+      "user": "Kullanıcı",
+      "userSearch": "İsim veya e-posta ara…",
       "reset": "Filtreleri temizle"
     },
     "columns": {
@@ -221,7 +223,8 @@
     "resource": {
       "user": "Kullanıcı",
       "auth": "Kimlik",
-      "file": "Dosya"
+      "file": "Dosya",
+      "support_ticket": "Destek talebi"
     },
     "empty": "Seçili filtrelerle eşleşen aktivite yok.",
     "loading": "Aktiviteler yükleniyor..."

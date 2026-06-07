@@ -192,6 +192,8 @@
       "statusAny": "Any status",
       "statusCode": "Status code",
       "statusCodeAny": "Any code",
+      "user": "User",
+      "userSearch": "Search by name or email…",
       "reset": "Clear filters"
     },
     "columns": {
@@ -221,7 +223,8 @@
     "resource": {
       "user": "User",
       "auth": "Auth",
-      "file": "File"
+      "file": "File",
+      "support_ticket": "Support ticket"
     },
     "empty": "No activity matches the current filters.",
     "loading": "Loading activity..."

@@ -37,6 +37,7 @@ const mockAdmin: AdminUser = {
 const mockActivity: AdminActivity = {
   id: "a-1",
   user_id: "admin-1",
+  user: null,
   activity_type: "login",
   resource_type: "auth",
   resource_id: null,
@@ -102,7 +103,7 @@ describe("useAdminUser", () => {
 describe("useAdminActivities", () => {
   it("fetches the activities list", async () => {
     server.use(
-      http.get("*/api/v1/admin/activities", () =>
+      http.post("*/api/v1/admin/activities/search", () =>
         HttpResponse.json({ data: [mockActivity], total: 1, skip: 0, limit: 25 }),
       ),
     );

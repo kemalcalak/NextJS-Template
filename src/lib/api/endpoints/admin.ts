@@ -61,10 +61,13 @@ export const adminApi = {
       { params: pruneParams(params) },
     ),
 
+  // Filters + pagination ride the POST body (the audit log query grew enough
+  // filters that a body is cleaner than a long query string).
   listActivities: (params?: AdminActivityListParams): Promise<AdminActivityListResponse> =>
-    api.get<AdminActivityListResponse, AdminActivityListResponse>("/admin/activities", {
-      params: pruneParams(params),
-    }),
+    api.post<AdminActivityListResponse, AdminActivityListResponse>(
+      "/admin/activities/search",
+      pruneParams(params) ?? {},
+    ),
 
   getStats: (): Promise<AdminStats> => api.get<AdminStats, AdminStats>("/admin/stats"),
 };
