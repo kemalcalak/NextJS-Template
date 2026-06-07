@@ -5,6 +5,8 @@
     "subtitle": "Destek talepleriniz ve görüşmeleriniz.",
     "newTicket": "Yeni talep",
     "empty": "Henüz hiç talebiniz yok.",
+    "loading": "Talepler yükleniyor…",
+    "notFound": "Talep bulunamadı.",
     "unread": "{{count}} okunmamış",
     "columns": {
       "subject": "Konu",

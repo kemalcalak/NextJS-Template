@@ -5,6 +5,8 @@
     "subtitle": "Your support tickets and conversations.",
     "newTicket": "New ticket",
     "empty": "You don't have any tickets yet.",
+    "loading": "Loading tickets…",
+    "notFound": "Ticket not found.",
     "unread": "{{count}} unread",
     "columns": {
       "subject": "Subject",
