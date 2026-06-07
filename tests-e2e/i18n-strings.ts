@@ -6,6 +6,7 @@ import enDashboard from "../src/i18n/locales/en/dashboard.json";
 import enHome from "../src/i18n/locales/en/home.json";
 import enProfile from "../src/i18n/locales/en/profile.json";
 import enSeo from "../src/i18n/locales/en/seo.json";
+import enSupport from "../src/i18n/locales/en/support.json";
 import enUpload from "../src/i18n/locales/en/upload.json";
 import trAccount from "../src/i18n/locales/tr/account.json";
 import trAdmin from "../src/i18n/locales/tr/admin.json";
@@ -15,6 +16,7 @@ import trDashboard from "../src/i18n/locales/tr/dashboard.json";
 import trHome from "../src/i18n/locales/tr/home.json";
 import trProfile from "../src/i18n/locales/tr/profile.json";
 import trSeo from "../src/i18n/locales/tr/seo.json";
+import trSupport from "../src/i18n/locales/tr/support.json";
 import trUpload from "../src/i18n/locales/tr/upload.json";
 
 // Locales in E2E coverage. Keep the list explicit so reports pair 1:1 with
@@ -32,6 +34,7 @@ const bundles = {
     home: trHome,
     profile: trProfile,
     seo: trSeo,
+    support: trSupport,
     upload: trUpload,
   },
   en: {
@@ -43,6 +46,7 @@ const bundles = {
     home: enHome,
     profile: enProfile,
     seo: enSeo,
+    support: enSupport,
     upload: enUpload,
   },
 } as const;

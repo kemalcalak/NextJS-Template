@@ -153,7 +153,7 @@ describe("useTicketRealtime", () => {
       ({ id }: { id: string | undefined }) => {
         useTicketRealtime(id, "user");
       },
-      { wrapper: wrapper(client), initialProps: { id: undefined } },
+      { wrapper: wrapper(client), initialProps: { id: undefined as string | undefined } },
     );
     expect(sockets).toHaveLength(0);
 
