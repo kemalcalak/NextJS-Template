@@ -76,7 +76,7 @@ export const ProfileInfoTab = () => {
 
         {isEditing && (
           <div className="px-6 pb-6 flex flex-col sm:flex-row gap-3">
-            <Button type="submit" loading={isLoading} className="flex-1 sm:flex-none min-w-[120px]">
+            <Button type="submit" loading={isLoading} className="flex-1 sm:flex-none min-w-30">
               {isLoading ? t("info.submitting") : t("info.submit")}
             </Button>
             <Button

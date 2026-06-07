@@ -56,7 +56,7 @@ export function ErrorPage({ error, reset }: ErrorPageProps) {
       {process.env.NODE_ENV !== "production" && error && (
         <div className="mt-12 w-full max-w-2xl overflow-hidden rounded-lg bg-muted p-4 text-left font-mono text-[10px] sm:text-xs border border-border">
           <p className="mb-2 font-bold text-destructive">Stack Trace (Dev only):</p>
-          <div className="max-h-[200px] overflow-auto custom-scrollbar">
+          <div className="max-h-50 overflow-auto custom-scrollbar">
             <pre className="whitespace-pre-wrap break-all">
               {error instanceof Error ? error.stack : JSON.stringify(error, null, 2)}
             </pre>

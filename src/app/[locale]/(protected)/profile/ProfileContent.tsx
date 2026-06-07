@@ -38,7 +38,7 @@ export function ProfileContent() {
 
   return (
     <div className="p-4 sm:p-6 lg:p-8 xl:p-12">
-      <div className="mx-auto w-full max-w-[1920px] space-y-8">
+      <div className="mx-auto w-full max-w-480 space-y-8">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
