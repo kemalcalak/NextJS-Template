@@ -1,4 +1,4 @@
-import type { AdminActivity } from "@/lib/types/admin";
+import type { AdminActivity, AdminActivityListParams } from "@/lib/types/admin";
 
 import { test, expect } from "../base-test";
 import { adminUser, injectSession, mockMe } from "./admin-helpers";
@@ -9,6 +9,7 @@ import type { Page } from "@playwright/test";
 const baseActivity: AdminActivity = {
   id: "a-1",
   user_id: "admin-1",
+  user: null,
   activity_type: "login",
   resource_type: "auth",
   resource_id: null,
@@ -30,12 +31,15 @@ const badLogin: AdminActivity = {
   created_at: "2026-04-19T12:05:00Z",
 };
 
-// Captures every query-string the activities list is called with, so tests
-// can assert that filter state propagates to the request.
-const captureActivitiesRequests = async (page: Page, rows: AdminActivity[]): Promise<string[]> => {
-  const captured: string[] = [];
-  await page.route(/.*\/api\/v1\/admin\/activities(\?.*)?$/, async (route) => {
-    captured.push(new URL(route.request().url()).search);
+// Captures every POST search body the activities list sends, so tests can
+// assert that filter state propagates into the request payload.
+const captureActivitiesRequests = async (
+  page: Page,
+  rows: AdminActivity[],
+): Promise<AdminActivityListParams[]> => {
+  const captured: AdminActivityListParams[] = [];
+  await page.route(/.*\/api\/v1\/admin\/activities\/search$/, async (route) => {
+    captured.push((route.request().postDataJSON() ?? {}) as AdminActivityListParams);
     await route.fulfill({
       status: 200,
       contentType: "application/json",
@@ -87,7 +91,20 @@ for (const locale of LOCALES) {
         .click();
       await page.locator(`.ant-select-item-option[title="${s.activities.type.login}"]`).click();
 
-      await expect.poll(() => captured.at(-1) ?? "").toContain("activity_type=login");
+      await expect.poll(() => captured.at(-1)?.activity_type ?? "").toBe("login");
+    });
+
+    test("typing in the user search re-queries with user_search", async ({ page }) => {
+      await injectSession(page, adminUser, locale);
+      await mockMe(page, adminUser);
+      const captured = await captureActivitiesRequests(page, [baseActivity]);
+
+      await page.goto(`/${locale}/admin/activities`);
+      await expect(page.getByRole("heading", { name: s.activities.title })).toBeVisible();
+
+      await page.getByLabel(s.activities.filters.user).fill("ada");
+
+      await expect.poll(() => captured.at(-1)?.user_search ?? "").toBe("ada");
     });
 
     test("reset button appears after a filter is set and clears state", async ({ page }) => {
@@ -127,7 +144,7 @@ for (const locale of LOCALES) {
         .click();
       await page.locator('.ant-select-item-option[title="401"]').click();
 
-      await expect.poll(() => captured.at(-1) ?? "").toContain("status_code=401");
+      await expect.poll(() => captured.at(-1)?.status_code ?? 0).toBe(401);
     });
   });
 }

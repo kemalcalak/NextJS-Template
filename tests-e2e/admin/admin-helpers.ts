@@ -93,7 +93,8 @@ export const mockAdminActivities = async (
   rows: AdminActivity[] = [],
 ): Promise<void> => {
   const payload = JSON.stringify({ data: rows, total: rows.length, skip: 0, limit: 25 });
-  await page.route(/.*\/api\/v1\/admin\/activities(\?.*)?$/, async (route) => {
+  // Global log is now a POST search; the per-user endpoint stays a GET.
+  await page.route(/.*\/api\/v1\/admin\/activities\/search$/, async (route) => {
     await route.fulfill({ status: 200, contentType: "application/json", body: payload });
   });
   await page.route(/.*\/api\/v1\/admin\/users\/[^/]+\/activities(\?.*)?$/, async (route) => {

@@ -73,13 +73,21 @@ const owner = { id: "user-1", email: "user@test.com", first_name: "Usain", last_
 export const adminTicketListItem: AdminTicketListItem = {
   ...ticketListItem,
   assigned_admin_id: null,
+  assigned_admin: null,
   user: owner,
 };
 
 export const adminTicketDetail: AdminTicketDetail = {
   ...ticketDetail,
   assigned_admin_id: null,
+  assigned_admin: null,
   user: owner,
+};
+
+export const closedAdminTicketDetail: AdminTicketDetail = {
+  ...adminTicketDetail,
+  status: "closed",
+  closed_at: "2026-01-02T00:00:00Z",
 };
 
 // --- Route mocks (user) -----------------------------------------------------
@@ -190,7 +198,10 @@ export const mockAdminTicketDetail = async (
       await route.fulfill({
         status: 200,
         contentType: "application/json",
-        body: JSON.stringify({ ...detail, ...body }),
+        body: JSON.stringify({
+          ticket: { ...detail, ...body },
+          message: "success.support.admin_ticket_updated",
+        }),
       });
     } else {
       await route.fallback();
