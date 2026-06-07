@@ -43,7 +43,7 @@ export function UserDetailContent({ userId }: { userId: string }) {
   if (isLoading || !user) {
     return (
       <div className="flex h-40 items-center justify-center gap-2 text-sm text-muted-foreground">
-        <Spin size="small" />
+        <Spin />
         {t("users.loading")}
       </div>
     );

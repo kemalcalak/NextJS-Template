@@ -129,7 +129,7 @@ export function FileUpload({
       {!readOnly &&
         canAddMore &&
         (isCompact ? (
-          <Button type="button" variant="ghost" size="sm" disabled={disabled || readOnly}>
+          <Button type="button" variant="ghost" disabled={disabled || readOnly}>
             <Paperclip className="h-4 w-4" />
             {t("upload")}
           </Button>

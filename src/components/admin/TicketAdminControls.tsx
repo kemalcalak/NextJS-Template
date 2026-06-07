@@ -136,7 +136,7 @@ export function TicketAdminControls({ ticket }: { ticket: AdminTicketDetail }) {
             />
           </Form.Item>
           <div className="flex items-center justify-between gap-2">
-            <Button type="button" variant="outline" size="sm" onClick={assignToMe}>
+            <Button type="button" variant="outline" onClick={assignToMe}>
               {t("admin.assignToMe")}
             </Button>
             <Button type="submit" loading={isPending}>

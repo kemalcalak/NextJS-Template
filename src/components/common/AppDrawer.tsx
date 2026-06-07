@@ -164,7 +164,6 @@ export const AppDrawer = ({
     <>
       <Button
         variant="ghost"
-        size="sm"
         className="w-9 px-0 md:hidden"
         onClick={() => {
           setIsMobileMenuOpen(true);

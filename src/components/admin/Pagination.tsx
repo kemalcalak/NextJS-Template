@@ -35,18 +35,19 @@ export function AdminPagination({
 
   return (
     <div className="flex flex-col items-center justify-between gap-3 border-t pt-4 sm:flex-row">
-      <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground">
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-muted-foreground">
         <span>{t("users.pagination.showing", { from, to, total })}</span>
         {onPageSizeChange ? (
           <div className="flex items-center gap-2">
             <span>{t("users.pagination.rowsPerPage")}</span>
             <Select
               value={limit}
-              size="small"
               onChange={(value: number) => {
                 onPageSizeChange(value);
               }}
               aria-label={t("users.pagination.rowsPerPage")}
+              style={{ width: 80 }}
+              popupMatchSelectWidth={false}
               options={pageSizeOptions.map((option) => ({ value: option, label: String(option) }))}
             />
           </div>
@@ -55,7 +56,6 @@ export function AdminPagination({
       <div className="flex items-center gap-2">
         <Button
           variant="outline"
-          size="sm"
           disabled={!canPrev}
           onClick={() => {
             onChange(Math.max(0, skip - limit));
@@ -64,12 +64,11 @@ export function AdminPagination({
           <ChevronLeft className="h-4 w-4" />
           {t("users.pagination.previous")}
         </Button>
-        <span className="text-xs text-muted-foreground">
+        <span className="text-muted-foreground">
           {t("users.pagination.page", { page, total: totalPages })}
         </span>
         <Button
           variant="outline"
-          size="sm"
           disabled={!canNext}
           onClick={() => {
             onChange(skip + limit);
