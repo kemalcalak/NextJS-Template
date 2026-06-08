@@ -66,9 +66,6 @@ export function FilesTable({ rows, isLoading, onPreview, onDelete }: FilesTableP
                       <p className="truncate text-sm font-medium">
                         {file.filename ?? t("files.unnamed")}
                       </p>
-                      <p className="truncate font-mono text-xs text-muted-foreground">
-                        {file.id.slice(0, 8)}
-                      </p>
                     </div>
                   </div>
                 </td>
