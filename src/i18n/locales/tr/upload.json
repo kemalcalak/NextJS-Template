@@ -3,6 +3,9 @@
   "replace": "Değiştir",
   "remove": "Kaldır",
   "preview": "Önizle",
+  "save": "Kaydet",
+  "discard": "Vazgeç",
+  "selectedHint": "Onayladığınızda yüklenecek.",
   "imageHint": "JPG, PNG, WebP veya GIF · en fazla {{size}}",
   "errors": {
     "invalid_type": "Desteklenmeyen dosya türü. JPG, PNG, WebP veya GIF kullanın.",

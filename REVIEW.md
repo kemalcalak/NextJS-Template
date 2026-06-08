@@ -143,6 +143,13 @@ Yeni feature: page → `app/[locale]/{f}/page.tsx`, schema → `schemas/{f}.ts`,
 - **E2E**: [tests-e2e/](tests-e2e) `*.spec.ts`. API çağrıları **her zaman mock** (`page.route("**/api/v1/...", route => route.fulfill(...))`). Gerçek backend'e vurmak yasak.
 - **Unit**: `*.test.tsx` kaynak ağacı içinde `__tests__/` veya `src/test/`. Vitest + Testing Library + MSW. Test wrapper [src/test/test-utils.tsx](src/test/test-utils.tsx) — `renderWithProviders`/`createWrapper`; her testte yeni `QueryClient` (`retry: false, gcTime: 0`).
 
+### 3.12 Dosya yükleme (deferred / önizleme-önce)
+
+- **Dosya seçimi anında yükleme yapılmaz.** Kullanıcı dosya seçtiğinde yalnızca **yerel önizleme** gösterilir (object URL); `POST /upload` çağrılmaz. Yükleme yalnızca kullanıcı **onayladığında** (Gönder / Tamam / Kaydet) tetiklenir.
+- **Onay sırası kesin:** (1) dosyalar önce `files` tablosuna yazılır — Cloudinary + DB, [`filesApi.upload`](src/lib/api/endpoints/files.ts) → `POST /upload` → `FilePublic`; (2) dönen `FilePublic.id`'lerle **sonra** ilgili kaynak oluşturulur/güncellenir: ticket `attachment_file_ids` ([NewTicketModal.tsx](src/components/support/NewTicketModal.tsx)), mesaj `attachment_file_ids` ([ReplyBox.tsx](src/components/support/ReplyBox.tsx)), avatar `avatar_file_id` ([ProfileAvatar.tsx](src/components/profile/ProfileAvatar.tsx)).
+- **Gerekçe — orphan kayıt yok:** iptal edilen veya gönderilmeyen seçim DB/Cloudinary'ye hiç yazılmaz. Pick anında upload, onaylanmadan yetim `files` satırı + Cloudinary asset bırakır.
+- **Mekanizma:** çok-dosyalı [FileUpload](src/components/common/file-upload/FileUpload.tsx) submit anında imperatif `flush(): Promise<FilePublic[]>` ile yükler; tekil [AvatarUpload](src/components/common/file-upload/AvatarUpload.tsx) "Kaydet" ile. `flush` başarısız olursa ilgili mutation **çalıştırılmaz** (draft korunur).
+
 ---
 
 ## 4. Anti-Pattern'ler (kaçınılır)
@@ -168,6 +175,7 @@ Yeni feature: page → `app/[locale]/{f}/page.tsx`, schema → `schemas/{f}.ts`,
 19. **RHF / `useForm` (RHF) / `zodResolver` / `Controller` / shadcn `Form*` (`FormField`/`FormItem`/`FormControl`/`FormMessage`) / `sonner` geri ekleme** — antd `Form` + `Form.useForm` + `zodFieldRule` + `@/lib/toast` köprüsü standardı. **Blocker.**
 20. **antd'in statik imperative API'leri** (`notification.*` / `message.*` / `Modal.confirm` / `Modal.info`/`success`/`error`/`warning`) doğrudan import — React ağacının dışında çalışır, **ConfigProvider / theme token / dark mode kaybolur**. Toast için [`@/lib/toast`](src/lib/toast.ts) köprüsü zorunlu.
 21. **Confirm/dialog için `Modal.confirm` kullanma** — bu projede **declarative JSX `<Modal open={...} onOk onCancel>`** standardı. Örnek paylaşımlı bileşen: [components/admin/ConfirmDialog.tsx](src/components/admin/ConfirmDialog.tsx). Yeni confirm akışlarında bunu kullan veya aynı pattern'i izle.
+22. **Dosya seçilir seçilmez upload** (antd `customRequest` / `onChange` anında `POST /upload`) — kullanıcı onayı olmadan orphan `files`+Cloudinary kaydı. Upload submit/confirm'e ertelenmeli (kural [3.12](#312-dosya-yükleme-deferred--önizleme-önce)).
 
 ---
 
@@ -215,6 +223,7 @@ Yeni feature: page → `app/[locale]/{f}/page.tsx`, schema → `schemas/{f}.ts`,
 - **`_retry`/`refreshPromise` deduplikasyonunu değiştirme** ([api.ts:115-147, 184, 195-198](src/lib/api/api.ts)) — sonsuz refresh.
 - **`AuthHydrator`'daki `sessionRequestInFlight` guard'ını kaldırma** ([AuthHydrator.tsx:23-27](src/components/auth/AuthHydrator.tsx)).
 - **`/auth/*` refresh atlama mantığını değiştirme** ([api.ts:32-33](src/lib/api/api.ts)) — login/register 401 sonsuz refresh döngüsü.
+- **Upload pick anında yapılıyor** (submit/confirm yerine) veya **ilgili kaynak file id'den önce / id olmadan güncelleniyor** — sıra: önce `files`'a yaz, sonra ilgili kaynağı güncelle (kural [3.12](#312-dosya-yükleme-deferred--önizleme-önce)).
 
 ### 5.5 Form
 
@@ -304,4 +313,4 @@ Bu maddeleri **flag etme**:
 
 ---
 
-Son güncelleme: 2026-05-19.
+Son güncelleme: 2026-06-08.

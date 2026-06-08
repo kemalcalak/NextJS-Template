@@ -1,5 +1,5 @@
 export { AvatarUpload } from "./AvatarUpload";
-export { FileUpload } from "./FileUpload";
+export { FileUpload, type FileUploadHandle } from "./FileUpload";
 export {
   DEFAULT_IMAGE_TYPES,
   DEFAULT_MAX_UPLOAD_SIZE,

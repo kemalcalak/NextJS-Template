@@ -1,9 +1,9 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { Image } from "antd";
-import { Eye, ImageIcon, Loader2, Trash2, Upload } from "lucide-react";
+import { Check, Eye, ImageIcon, Loader2, Trash2, Upload, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 import { Button } from "@/components/ui/button";
@@ -28,6 +28,70 @@ interface AvatarUploadProps {
   className?: string;
 }
 
+interface AvatarActionsProps {
+  hasPending: boolean;
+  hasValue: boolean;
+  interactive: boolean;
+  saving: boolean;
+  onSave: () => void;
+  onDiscard: () => void;
+  onPreview: () => void;
+  onPick: () => void;
+  onRemove: () => void;
+}
+
+// Save/Discard while a file is pending; Preview/Replace/Remove once it is saved.
+// Extracted so the main component stays within the per-function line budget.
+function AvatarActions({
+  hasPending,
+  hasValue,
+  interactive,
+  saving,
+  onSave,
+  onDiscard,
+  onPreview,
+  onPick,
+  onRemove,
+}: AvatarActionsProps) {
+  const { t } = useTranslation("upload");
+
+  if (hasPending) {
+    return (
+      <>
+        <Button onClick={onSave} disabled={!interactive}>
+          <Check className="size-4" />
+          {t("save")}
+        </Button>
+        <Button variant="outline" onClick={onDiscard} disabled={saving}>
+          <X className="size-4" />
+          {t("discard")}
+        </Button>
+      </>
+    );
+  }
+
+  return (
+    <>
+      {hasValue && (
+        <Button variant="secondary" onClick={onPreview} disabled={saving}>
+          <Eye className="size-4" />
+          {t("preview")}
+        </Button>
+      )}
+      <Button variant="outline" onClick={onPick} disabled={!interactive}>
+        <Upload className="size-4" />
+        {hasValue ? t("replace") : t("upload")}
+      </Button>
+      {hasValue && (
+        <Button variant="destructive" onClick={onRemove} disabled={!interactive}>
+          <Trash2 className="size-4" />
+          {t("remove")}
+        </Button>
+      )}
+    </>
+  );
+}
+
 export function AvatarUpload({
   value,
   onChange,
@@ -40,12 +104,31 @@ export function AvatarUpload({
   const inputRef = useRef<HTMLInputElement>(null);
   const [previewOpen, setPreviewOpen] = useState(false);
   const [progress, setProgress] = useState(0);
+  // The picked-but-not-yet-saved file plus its local object URL. Nothing is sent
+  // to Cloudinary/DB until the user presses Save (deferred upload — REVIEW
+  // §3.12), so a cancelled selection never leaves an orphan file record.
+  const [pendingFile, setPendingFile] = useState<File | null>(null);
+  const [pendingUrl, setPendingUrl] = useState<string | null>(null);
   const upload = useUploadFile();
 
   const interactive = !disabled && !upload.isPending;
+  const displayUrl = pendingUrl ?? value?.url ?? null;
+
+  // Revoke the local preview URL when it changes or on unmount to avoid leaks.
+  useEffect(() => {
+    if (!pendingUrl) return;
+    return () => {
+      URL.revokeObjectURL(pendingUrl);
+    };
+  }, [pendingUrl]);
 
   const openPicker = () => {
     if (interactive) inputRef.current?.click();
+  };
+
+  const clearPending = () => {
+    setPendingFile(null);
+    setPendingUrl(null);
   };
 
   const handleFile = (file: File | undefined) => {
@@ -55,15 +138,22 @@ export function AvatarUpload({
       toast.error(t(`errors.${validationError}`, { size: formatBytes(maxSizeBytes) }));
       return;
     }
+    // Hold the file locally and show a preview; defer the upload to Save.
+    setPendingFile(file);
+    setPendingUrl(URL.createObjectURL(file));
+  };
+
+  const handleSave = () => {
+    if (!pendingFile) return;
     setProgress(0);
-    // Every avatar — whether uploaded from the user's own profile or by an
-    // admin editing a user — is tagged as a profile photo, so it buckets into
-    // the user_profile_photo Cloudinary folder and is filterable in the files
+    // Every avatar is tagged as a profile photo so it buckets into the
+    // user_profile_photo Cloudinary folder and stays filterable in the files
     // table. Enforced here so no caller can forget the category.
     upload.mutate(
-      { file, category: FILE_CATEGORY.USER_PROFILE_PHOTO, onProgress: setProgress },
+      { file: pendingFile, category: FILE_CATEGORY.USER_PROFILE_PHOTO, onProgress: setProgress },
       {
         onSuccess: (uploaded) => {
+          clearPending();
           onChange?.(uploaded);
         },
         onSettled: () => {
@@ -76,7 +166,7 @@ export function AvatarUpload({
   return (
     <div className={cn("flex flex-col items-center gap-3", className)}>
       <div className="relative size-28">
-        {value?.url ? (
+        {displayUrl ? (
           <button
             type="button"
             onClick={() => {
@@ -86,7 +176,7 @@ export function AvatarUpload({
             aria-label={t("preview")}
             className="size-28 overflow-hidden rounded-full border border-border"
           >
-            <img src={value.url} alt="" className="size-full object-cover" />
+            <img src={displayUrl} alt="" className="size-full object-cover" />
           </button>
         ) : (
           <div className="flex size-28 items-center justify-center rounded-full border border-border bg-muted">
@@ -102,43 +192,30 @@ export function AvatarUpload({
       </div>
 
       <div className="flex items-center gap-2">
-        {value && (
-          <Button
-            variant="secondary"
-            onClick={() => {
-              setPreviewOpen(true);
-            }}
-            disabled={upload.isPending}
-          >
-            <Eye className="size-4" />
-            {t("preview")}
-          </Button>
-        )}
-        <Button variant="outline" onClick={openPicker} disabled={!interactive}>
-          <Upload className="size-4" />
-          {value ? t("replace") : t("upload")}
-        </Button>
-        {value && (
-          <Button
-            variant="destructive"
-            onClick={() => {
-              onChange?.(null);
-            }}
-            disabled={!interactive}
-          >
-            <Trash2 className="size-4" />
-            {t("remove")}
-          </Button>
-        )}
+        <AvatarActions
+          hasPending={Boolean(pendingFile)}
+          hasValue={Boolean(value)}
+          interactive={interactive}
+          saving={upload.isPending}
+          onSave={handleSave}
+          onDiscard={clearPending}
+          onPreview={() => {
+            setPreviewOpen(true);
+          }}
+          onPick={openPicker}
+          onRemove={() => {
+            onChange?.(null);
+          }}
+        />
       </div>
 
       <p className="text-xs text-muted-foreground">
-        {t("imageHint", { size: formatBytes(maxSizeBytes) })}
+        {pendingFile ? t("selectedHint") : t("imageHint", { size: formatBytes(maxSizeBytes) })}
       </p>
 
-      {value?.url && (
+      {displayUrl && (
         <Image
-          src={value.url}
+          src={displayUrl}
           alt=""
           style={{ display: "none" }}
           preview={{ open: previewOpen, onOpenChange: setPreviewOpen }}

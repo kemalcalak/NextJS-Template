@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useImperativeHandle, useRef, useState, type Ref } from "react";
 
 import { Upload } from "antd";
 import { Paperclip, Plus } from "lucide-react";
@@ -20,38 +20,38 @@ import {
 
 import type { UploadFile, UploadProps } from "antd";
 
+export interface FileUploadHandle {
+  // Upload every staged file to Cloudinary/DB and return the stored records in
+  // list order. Rejects (uploading nothing further) if any upload fails, so the
+  // caller keeps the draft for a retry. Call from the parent's submit handler,
+  // then create the resource with the returned ids (deferred upload, REVIEW §3.12).
+  flush: () => Promise<FilePublic[]>;
+  // Drop all staged files. Call after a successful submit.
+  reset: () => void;
+  // Whether any file is currently staged.
+  hasFiles: () => boolean;
+}
+
 interface FileUploadProps {
-  value?: FilePublic[];
-  onChange?: (files: FilePublic[]) => void;
-  // Cap the number of files; pass 1 for a single avatar. Undefined = unlimited.
+  // Imperative handle for the parent to flush staged uploads on submit.
+  ref?: Ref<FileUploadHandle>;
+  // Cap the number of files; pass 1 for a single attachment. Undefined = unlimited.
   maxCount?: number;
   readOnly?: boolean;
   disabled?: boolean;
-  // MIME whitelist. Defaults to images (the only type the backend accepts
-  // today); pass video/* etc. once the backend supports them — the upload,
-  // validation and progress logic here is already type-agnostic.
+  // MIME whitelist. Defaults to images (the only type the backend accepts today).
   allowedTypes?: readonly string[];
   maxSizeBytes?: number;
   className?: string;
-  // Cloudinary bucket the upload is tagged with. Defaults to "general"
-  // server-side; pass "support_attachment" for ticket attachments.
+  // Cloudinary bucket the upload is tagged with. Defaults to "general" server-side.
   category?: FileCategory;
-  // "tiles" (default): large picture-circle tiles, e.g. the avatar uploader.
-  // "compact": a small paperclip trigger + a slim file list, for inline use in
-  // a chat composer where the big tile would dominate.
+  // "tiles" (default): large picture-circle tiles. "compact": a small paperclip
+  // trigger + slim list, for inline use in a chat composer.
   variant?: "tiles" | "compact";
 }
 
-const toUploadFile = (file: FilePublic): UploadFile => ({
-  uid: file.id,
-  name: file.filename ?? file.id,
-  status: "done",
-  url: file.url,
-});
-
 export function FileUpload({
-  value = [],
-  onChange,
+  ref,
   maxCount,
   readOnly = false,
   disabled = false,
@@ -63,15 +63,60 @@ export function FileUpload({
 }: FileUploadProps) {
   const { t } = useTranslation("upload");
   const upload = useUploadFile();
-  const [fileList, setFileList] = useState<UploadFile[]>(() => value.map(toUploadFile));
+  const [fileList, setFileList] = useState<UploadFile[]>([]);
+  // Stored records keyed by list-item uid, so a retry after a downstream failure
+  // reuses the already-uploaded file instead of sending it to Cloudinary again.
+  const uploadedRef = useRef<Map<string, FilePublic>>(new Map());
 
-  // Re-sync the visible list only when the external file set actually changes
-  // (keyed on ids), so an in-flight upload's progress isn't wiped on re-render.
-  const valueKey = value.map((file) => file.id).join(",");
-  useEffect(() => {
-    setFileList(value.map(toUploadFile));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [valueKey]);
+  const patchItem = (uid: string, patch: Partial<UploadFile>) => {
+    setFileList((list) => list.map((file) => (file.uid === uid ? { ...file, ...patch } : file)));
+  };
+
+  useImperativeHandle(
+    ref,
+    () => ({
+      hasFiles: () => fileList.length > 0,
+      reset: () => {
+        setFileList([]);
+        uploadedRef.current.clear();
+      },
+      flush: async () => {
+        const stored: FilePublic[] = [];
+        for (const item of fileList) {
+          const cached = uploadedRef.current.get(item.uid);
+          if (cached) {
+            stored.push(cached);
+            continue;
+          }
+          const file = item.originFileObj;
+          if (!file) continue;
+          let uploaded: FilePublic;
+          try {
+            uploaded = await upload.mutateAsync({
+              file,
+              category,
+              onProgress: (percent) => {
+                patchItem(item.uid, { percent, status: "uploading" });
+              },
+            });
+          } catch (error) {
+            // Mark the failed item so it doesn't hang in the "uploading" state;
+            // it stays in the list (with its originFileObj) so re-submitting
+            // retries it without re-picking. Re-throw to abort the parent submit.
+            patchItem(item.uid, { status: "error", percent: 0 });
+            throw error;
+          }
+          uploadedRef.current.set(item.uid, uploaded);
+          patchItem(item.uid, { status: "done", percent: 100 });
+          stored.push(uploaded);
+        }
+        return stored;
+      },
+    }),
+    // `upload` (the mutation) is stable across renders; flush reads fileList and
+    // category, so both must stay in the dependency list.
+    [fileList, category, upload],
+  );
 
   const beforeUpload: NonNullable<UploadProps["beforeUpload"]> = (file) => {
     const validationError = validateFile(file, allowedTypes, maxSizeBytes);
@@ -79,36 +124,18 @@ export function FileUpload({
       toast.error(t(`errors.${validationError}`, { size: formatBytes(maxSizeBytes) }));
       return Upload.LIST_IGNORE;
     }
-    return true;
-  };
-
-  const customRequest: NonNullable<UploadProps["customRequest"]> = ({
-    file,
-    onProgress,
-    onSuccess,
-    onError,
-  }) => {
-    if (!(file instanceof File)) return;
-    upload.mutate(
-      { file, category, onProgress: (percent) => onProgress?.({ percent }) },
-      {
-        onSuccess: (uploaded) => onSuccess?.(uploaded),
-        onError: (err) => onError?.(err instanceof Error ? err : new Error(String(err))),
-      },
-    );
+    // Returning false keeps the file in the list as a local preview without
+    // uploading — the upload is deferred to flush() on submit.
+    return false;
   };
 
   const handleChange: NonNullable<UploadProps["onChange"]> = (info) => {
     setFileList(info.fileList);
-    // Notify the parent only once every file has settled (none uploading).
-    if (info.fileList.some((file) => file.status === "uploading")) return;
-    const files = info.fileList
-      .filter((file) => file.status === "done")
-      .map(
-        (file) => (file.response as FilePublic | undefined) ?? value.find((v) => v.id === file.uid),
-      )
-      .filter((file): file is FilePublic => Boolean(file));
-    onChange?.(files);
+    // Forget cached uploads for files the user removed from the list.
+    const liveUids = new Set(info.fileList.map((file) => file.uid));
+    for (const uid of [...uploadedRef.current.keys()]) {
+      if (!liveUids.has(uid)) uploadedRef.current.delete(uid);
+    }
   };
 
   const canAddMore = maxCount === undefined || fileList.length < maxCount;
@@ -122,7 +149,6 @@ export function FileUpload({
       accept={allowedTypes.join(",")}
       disabled={disabled || readOnly}
       beforeUpload={beforeUpload}
-      customRequest={customRequest}
       onChange={handleChange}
       showUploadList={{ showRemoveIcon: !readOnly, showPreviewIcon: true }}
     >

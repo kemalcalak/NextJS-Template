@@ -83,16 +83,50 @@ describe("AvatarUpload", () => {
     expect(onChange).not.toHaveBeenCalled();
   });
 
-  it("uploads a valid file and reports the stored file via onChange", async () => {
-    server.use(http.post("*/api/v1/upload", () => HttpResponse.json(mockFile, { status: 201 })));
+  it("stages a picked file for preview without uploading", async () => {
+    const uploadSpy = vi.fn(() => HttpResponse.json(mockFile, { status: 201 }));
+    server.use(http.post("*/api/v1/upload", uploadSpy));
     const onChange = vi.fn();
     const user = userEvent.setup();
     const { container } = renderWithProviders(<AvatarUpload value={null} onChange={onChange} />);
 
     await user.upload(fileInput(container), new File(["x"], "a.png", { type: "image/png" }));
 
+    // Picking only stages the file locally — Save/Discard appear, but no upload
+    // and no onChange fire until the user confirms.
+    expect(await screen.findByRole("button", { name: /upload:save/ })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /upload:discard/ })).toBeInTheDocument();
+    expect(uploadSpy).not.toHaveBeenCalled();
+    expect(onChange).not.toHaveBeenCalled();
+  });
+
+  it("uploads on save and reports the stored file via onChange", async () => {
+    server.use(http.post("*/api/v1/upload", () => HttpResponse.json(mockFile, { status: 201 })));
+    const onChange = vi.fn();
+    const user = userEvent.setup();
+    const { container } = renderWithProviders(<AvatarUpload value={null} onChange={onChange} />);
+
+    await user.upload(fileInput(container), new File(["x"], "a.png", { type: "image/png" }));
+    await user.click(await screen.findByRole("button", { name: /upload:save/ }));
+
     await waitFor(() => {
       expect(onChange).toHaveBeenCalledWith(mockFile);
     });
+  });
+
+  it("discards a staged file without uploading", async () => {
+    const uploadSpy = vi.fn(() => HttpResponse.json(mockFile, { status: 201 }));
+    server.use(http.post("*/api/v1/upload", uploadSpy));
+    const onChange = vi.fn();
+    const user = userEvent.setup();
+    const { container } = renderWithProviders(<AvatarUpload value={null} onChange={onChange} />);
+
+    await user.upload(fileInput(container), new File(["x"], "a.png", { type: "image/png" }));
+    await user.click(await screen.findByRole("button", { name: /upload:discard/ }));
+
+    expect(uploadSpy).not.toHaveBeenCalled();
+    expect(onChange).not.toHaveBeenCalled();
+    // Back to the empty state with only the upload action.
+    expect(screen.getByRole("button", { name: /upload:upload/ })).toBeInTheDocument();
   });
 });

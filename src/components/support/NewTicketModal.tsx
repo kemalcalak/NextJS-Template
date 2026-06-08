@@ -1,16 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 import { Form, Input, Modal } from "antd";
 import { usePathname, useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 
-import { FileUpload } from "@/components/common/file-upload";
+import { FileUpload, type FileUploadHandle } from "@/components/common/file-upload";
 import { Button } from "@/components/ui/button";
 import { useCreateTicket } from "@/hooks/api/use-support";
 import { getLocaleFromPath, getLocalizedPath, ROUTES } from "@/lib/config/routes";
-import { FILE_CATEGORY, type FilePublic } from "@/lib/types/file";
+import { FILE_CATEGORY } from "@/lib/types/file";
 import { zodFieldRule } from "@/lib/validation/zodToAntdRule";
 import { getCreateTicketSchema, type CreateTicketFormValues } from "@/schemas/support";
 
@@ -22,30 +22,47 @@ interface NewTicketModalProps {
 export function NewTicketModal({ open, onOpenChange }: NewTicketModalProps) {
   const { t } = useTranslation(["support", "validation"]);
   const [form] = Form.useForm<CreateTicketFormValues>();
-  const [files, setFiles] = useState<FilePublic[]>([]);
+  const uploadRef = useRef<FileUploadHandle>(null);
+  const [isUploading, setIsUploading] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
   const { mutate: createTicket, isPending } = useCreateTicket();
   const schema = getCreateTicketSchema(t);
 
+  const busy = isUploading || isPending;
+
   const close = () => {
-    if (isPending) return;
+    if (busy) return;
     form.resetFields();
-    setFiles([]);
+    uploadRef.current?.reset();
     onOpenChange(false);
   };
 
-  const onFinish = (values: CreateTicketFormValues) => {
+  const onFinish = async (values: CreateTicketFormValues) => {
+    // Persist attachments first (Cloudinary + files table), then create the
+    // ticket with the returned ids — deferred upload, REVIEW §3.12. A failed
+    // upload (global toast) aborts before the ticket is created, keeping drafts.
+    let attachmentFileIds: string[];
+    try {
+      setIsUploading(true);
+      const uploaded = (await uploadRef.current?.flush()) ?? [];
+      attachmentFileIds = uploaded.map((file) => file.id);
+    } catch {
+      return;
+    } finally {
+      setIsUploading(false);
+    }
+
     createTicket(
       {
         subject: values.subject,
         body: values.body,
-        attachment_file_ids: files.map((file) => file.id),
+        attachment_file_ids: attachmentFileIds,
       },
       {
         onSuccess: (response) => {
           form.resetFields();
-          setFiles([]);
+          uploadRef.current?.reset();
           onOpenChange(false);
           router.push(
             getLocalizedPath(
@@ -66,7 +83,7 @@ export function NewTicketModal({ open, onOpenChange }: NewTicketModalProps) {
       width={520}
       destroyOnHidden
       onCancel={close}
-      mask={{ closable: !isPending }}
+      mask={{ closable: !busy }}
       footer={null}
     >
       <Form form={form} layout="vertical" onFinish={onFinish} requiredMark={false} className="mt-4">
@@ -75,7 +92,7 @@ export function NewTicketModal({ open, onOpenChange }: NewTicketModalProps) {
           label={t("new.subjectLabel")}
           rules={[zodFieldRule(schema.shape.subject)]}
         >
-          <Input placeholder={t("new.subjectPlaceholder")} maxLength={200} disabled={isPending} />
+          <Input placeholder={t("new.subjectPlaceholder")} maxLength={200} disabled={busy} />
         </Form.Item>
 
         <Form.Item name="body" label={t("new.bodyLabel")} rules={[zodFieldRule(schema.shape.body)]}>
@@ -83,24 +100,19 @@ export function NewTicketModal({ open, onOpenChange }: NewTicketModalProps) {
             rows={5}
             placeholder={t("new.bodyPlaceholder")}
             maxLength={10000}
-            disabled={isPending}
+            disabled={busy}
           />
         </Form.Item>
 
         <Form.Item label={t("new.attachments")}>
-          <FileUpload
-            value={files}
-            onChange={setFiles}
-            category={FILE_CATEGORY.SUPPORT_ATTACHMENT}
-            disabled={isPending}
-          />
+          <FileUpload ref={uploadRef} category={FILE_CATEGORY.SUPPORT_ATTACHMENT} disabled={busy} />
         </Form.Item>
 
         <div className="mt-2 flex justify-end gap-2">
-          <Button variant="outline" type="button" onClick={close} disabled={isPending}>
+          <Button variant="outline" type="button" onClick={close} disabled={busy}>
             {t("new.cancel")}
           </Button>
-          <Button type="submit" loading={isPending}>
+          <Button type="submit" loading={busy}>
             {t("new.submit")}
           </Button>
         </div>

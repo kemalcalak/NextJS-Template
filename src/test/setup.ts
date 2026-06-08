@@ -56,6 +56,11 @@ class ResizeObserverMock {
 
 window.ResizeObserver = ResizeObserverMock;
 
+// jsdom does not implement object URLs; the file-upload components create one to
+// preview a picked file locally before the deferred upload (REVIEW §3.12).
+URL.createObjectURL = vi.fn(() => "blob:mock");
+URL.revokeObjectURL = vi.fn();
+
 // Mock next/navigation
 vi.mock("next/navigation", () => ({
   useRouter: () => ({

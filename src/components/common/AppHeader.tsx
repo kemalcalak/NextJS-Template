@@ -114,11 +114,13 @@ export const AppHeader = () => {
 
         <div className="hidden md:flex items-center gap-2">
           <Button variant="ghost" className="w-9 px-0" onClick={toggleTheme}>
-            {mounted && resolvedTheme === "dark" ? (
-              <Sun className="h-4 w-4" />
-            ) : (
-              <Moon className="h-4 w-4" />
-            )}
+            <span className="flex rounded-lg border border-border/50 bg-background p-1.5 shadow-sm">
+              {mounted && resolvedTheme === "dark" ? (
+                <Sun className="h-3.5 w-3.5 text-orange-500" />
+              ) : (
+                <Moon className="h-3.5 w-3.5 text-blue-500" />
+              )}
+            </span>
             <span className="sr-only">{t("common:ui.toggleTheme", "Toggle theme")}</span>
           </Button>
 
