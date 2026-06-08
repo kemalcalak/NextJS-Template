@@ -162,12 +162,14 @@ export const AppDrawer = ({
     <>
       <Button
         variant="ghost"
-        className="w-9 px-0 md:hidden"
+        className="h-auto px-0 md:hidden"
         onClick={() => {
           setIsMobileMenuOpen(true);
         }}
       >
-        <Menu className="h-5 w-5" />
+        <span className="flex rounded-lg border border-border/50 bg-background p-1.5 shadow-sm">
+          <Menu className="h-5 w-5 text-foreground" />
+        </span>
         <span className="sr-only">{t("common:ui.toggleMenu")}</span>
       </Button>
       <Drawer
