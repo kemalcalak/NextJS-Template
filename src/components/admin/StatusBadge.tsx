@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import type { AdminUser } from "@/lib/types/admin";
 import { cn } from "@/lib/utils";
 
-type Tone = "success" | "warning" | "danger" | "muted" | "primary";
+type Tone = "success" | "warning" | "danger" | "muted" | "primary" | "info";
 
 const TONE_CLASSES: Record<Tone, string> = {
   success: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20",
@@ -13,6 +13,7 @@ const TONE_CLASSES: Record<Tone, string> = {
   danger: "bg-destructive/10 text-destructive border-destructive/20",
   muted: "bg-muted text-muted-foreground border-border",
   primary: "bg-primary/10 text-primary border-primary/20",
+  info: "bg-sky-500/10 text-sky-600 dark:text-sky-400 border-sky-500/20",
 };
 
 export function StatusBadge({

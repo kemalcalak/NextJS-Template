@@ -7,6 +7,7 @@ import type { AdminActivity } from "@/lib/types/admin";
 const makeRow = (overrides: Partial<AdminActivity> = {}): AdminActivity => ({
   id: "a-1",
   user_id: "user-123",
+  user: null,
   activity_type: "login",
   resource_type: "auth",
   resource_id: null,
@@ -59,9 +60,35 @@ describe("ActivityTable", () => {
     expect(screen.queryByText(/admin:activities\.columns\.user/)).not.toBeInTheDocument();
   });
 
-  it("renders first 8 chars of user_id for each row when showing users", () => {
-    render(<ActivityTable rows={[makeRow({ user_id: "abcdef0123456789" })]} />);
+  it("falls back to the first 8 chars of user_id when no actor is embedded", () => {
+    render(<ActivityTable rows={[makeRow({ user_id: "abcdef0123456789", user: null })]} />);
     expect(screen.getByText("abcdef01")).toBeInTheDocument();
+  });
+
+  it("shows the actor's name when the activity embeds a user", () => {
+    render(
+      <ActivityTable
+        rows={[
+          makeRow({
+            user: { id: "u-1", email: "ada@test.com", first_name: "Ada", last_name: "Admin" },
+          }),
+        ]}
+      />,
+    );
+    expect(screen.getByText("Ada Admin")).toBeInTheDocument();
+  });
+
+  it("shows the actor's email when no name is set", () => {
+    render(
+      <ActivityTable
+        rows={[
+          makeRow({
+            user: { id: "u-2", email: "noname@test.com", first_name: null, last_name: null },
+          }),
+        ]}
+      />,
+    );
+    expect(screen.getByText("noname@test.com")).toBeInTheDocument();
   });
 
   it("renders the HTTP status_code as a badge", () => {

@@ -25,6 +25,13 @@
       "user_unsuspended": "Askı kaldırıldı. Kullanıcı tekrar giriş yapabilir.",
       "user_deleted": "Kullanıcı kalıcı olarak silindi.",
       "password_changed": "Kullanıcının şifresi sıfırlandı. Kendisine e-posta ile bildirildi; yeniden erişim için 'Şifremi Unuttum' akışını kullanması gerekiyor."
+    },
+    "support": {
+      "ticket_created": "Destek talebiniz oluşturuldu.",
+      "ticket_closed": "Talep kapatıldı.",
+      "message_sent": "Mesaj gönderildi.",
+      "admin_ticket_updated": "Talep güncellendi.",
+      "admin_ticket_replied": "Yanıt gönderildi."
     }
   }
 }

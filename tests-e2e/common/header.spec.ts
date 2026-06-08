@@ -131,6 +131,12 @@ for (const locale of LOCALES) {
           .getByRole("menuitem", { name: new RegExp(reEscape(s.common.nav.profile), "i") })
           .first(),
       ).toBeVisible();
+      // Desktop parity with the mobile drawer: Support is reachable from here.
+      await expect(
+        page
+          .getByRole("menuitem", { name: new RegExp(reEscape(s.common.nav.support), "i") })
+          .first(),
+      ).toBeVisible();
     });
 
     test("should toggle theme via header", async ({ page }) => {

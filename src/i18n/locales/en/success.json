@@ -25,6 +25,13 @@
       "user_unsuspended": "Suspension lifted. The user can sign in again.",
       "user_deleted": "User permanently deleted.",
       "password_changed": "User's password has been reset. They'll be notified by email and must use the 'Forgot Password' flow to regain access."
+    },
+    "support": {
+      "ticket_created": "Your support ticket has been created.",
+      "ticket_closed": "Ticket closed.",
+      "message_sent": "Message sent.",
+      "admin_ticket_updated": "Ticket updated.",
+      "admin_ticket_replied": "Reply sent."
     }
   }
 }

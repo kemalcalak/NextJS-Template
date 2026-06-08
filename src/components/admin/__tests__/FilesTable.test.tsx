@@ -13,6 +13,7 @@ const imageRow: AdminFileListItem = {
   content_type: "image/png",
   size: 2048,
   filename: "photo.png",
+  category: "general",
   uploaded_by_id: "u-1",
   uploaded_by: { id: "u-1", email: "ali@test.com", first_name: "Ali", last_name: "Kemal" },
   created_at: "2026-01-01T00:00:00Z",

@@ -81,12 +81,12 @@ export function DashboardContent() {
       </div>
 
       <div className="flex flex-wrap gap-2">
-        <Button asChild variant="outline" size="sm">
+        <Button asChild variant="outline">
           <Link href={getLocalizedPath(ROUTES.adminUsers, currentLocale)}>
             {t("dashboard.viewAllUsers")}
           </Link>
         </Button>
-        <Button asChild variant="outline" size="sm">
+        <Button asChild variant="outline">
           <Link href={getLocalizedPath(ROUTES.adminActivities, currentLocale)}>
             {t("dashboard.viewAllActivity")}
           </Link>

@@ -13,7 +13,7 @@ export type ActivityType =
   | "export"
   | "invite";
 
-export type ResourceType = "user" | "auth" | "file";
+export type ResourceType = "user" | "auth" | "file" | "support_ticket";
 
 export type ActivityStatus = "success" | "failure";
 
@@ -78,9 +78,17 @@ export interface AdminUserUpdateResponse {
   message: string;
 }
 
+export interface ActivityActor {
+  id: string;
+  email: string;
+  first_name: string | null;
+  last_name: string | null;
+}
+
 export interface AdminActivity {
   id: string;
   user_id: string;
+  user: ActivityActor | null;
   activity_type: ActivityType;
   resource_type: ResourceType;
   resource_id: string | null;
@@ -103,6 +111,7 @@ export interface AdminActivityListParams {
   skip?: number;
   limit?: number;
   user_id?: string;
+  user_search?: string;
   activity_type?: ActivityType;
   resource_type?: ResourceType;
   status?: ActivityStatus;

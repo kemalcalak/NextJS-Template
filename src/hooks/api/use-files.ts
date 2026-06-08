@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient, keepPreviousData } from "@tanstack/react-query";
 
 import { adminFilesApi, filesApi } from "@/lib/api/endpoints/files";
-import type { AdminFileListParams } from "@/lib/types/file";
+import type { AdminFileListParams, FileCategory } from "@/lib/types/file";
 
 import { adminKeys } from "./use-admin";
 
@@ -17,13 +17,15 @@ export const fileKeys = {
 interface UploadVariables {
   file: File;
   onProgress?: (percent: number) => void;
+  category?: FileCategory;
 }
 
 // Upload is a building block — it returns the stored FilePublic and lets the
 // caller decide what to attach it to (e.g. a user avatar). No cache writes here.
 export const useUploadFile = () =>
   useMutation({
-    mutationFn: ({ file, onProgress }: UploadVariables) => filesApi.upload(file, onProgress),
+    mutationFn: ({ file, onProgress, category }: UploadVariables) =>
+      filesApi.upload(file, onProgress, category),
   });
 
 export const useAdminFiles = (params?: AdminFileListParams) =>

@@ -88,8 +88,8 @@ export const AppHeader = () => {
   ];
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4 sm:px-6 lg:px-8 xl:px-12">
-      <div className="mx-auto flex h-16 w-full max-w-[1920px] items-center justify-between">
+    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60 px-4 sm:px-6 lg:px-8 xl:px-12">
+      <div className="mx-auto flex h-16 w-full max-w-480 items-center justify-between">
         <div className="flex items-center gap-2">
           <Link
             href={getLocalizedPath(ROUTES.home, currentLocale)}
@@ -113,7 +113,7 @@ export const AppHeader = () => {
         )}
 
         <div className="hidden md:flex items-center gap-2">
-          <Button variant="ghost" size="sm" className="w-9 px-0" onClick={toggleTheme}>
+          <Button variant="ghost" className="w-9 px-0" onClick={toggleTheme}>
             {mounted && resolvedTheme === "dark" ? (
               <Sun className="h-4 w-4" />
             ) : (
@@ -124,7 +124,7 @@ export const AppHeader = () => {
 
           <Dropdown menu={{ items: languageItems }} trigger={["click"]} placement="bottomRight">
             <span>
-              <Button variant="ghost" size="sm" className="w-9 px-0">
+              <Button variant="ghost" className="w-9 px-0">
                 {currentLocale.toUpperCase()}
                 <span className="sr-only">{t("common:ui.toggleLanguage", "Toggle language")}</span>
               </Button>

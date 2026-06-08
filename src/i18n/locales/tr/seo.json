@@ -39,6 +39,10 @@
     "title": "Profil Ayarları",
     "description": "Kişisel profilinizi, tercihlerinizi ve hesap ayarlarınızı görüntüleyin ve düzenleyin."
   },
+  "support": {
+    "title": "Destek",
+    "description": "Destek talebi açın ve her konuda ekibimizle yazışın."
+  },
   "adminLogin": {
     "title": "Yönetici Girişi",
     "description": "Kullanıcıları yönetmek ve aktiviteleri görüntülemek için yönetim paneline giriş yapın."
@@ -62,6 +66,14 @@
   "adminActivities": {
     "title": "Aktivite Günlüğü",
     "description": "Tüm kullanıcılara ait denetim olaylarını görüntüleyin."
+  },
+  "adminSupport": {
+    "title": "Destek Kuyruğu",
+    "description": "Kullanıcı destek taleplerini inceleyin ve yanıtlayın."
+  },
+  "adminTicketDetail": {
+    "title": "Talep",
+    "description": "Bir destek talebini görüntüleyin, yanıtlayın ve durumunu güncelleyin."
   },
   "notFound": {
     "title": "Sayfa Bulunamadı",

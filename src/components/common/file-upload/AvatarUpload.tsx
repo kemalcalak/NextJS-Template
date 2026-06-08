@@ -9,7 +9,7 @@ import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { useUploadFile } from "@/hooks/api/use-files";
 import { toast } from "@/lib/toast";
-import type { FilePublic } from "@/lib/types/file";
+import { FILE_CATEGORY, type FilePublic } from "@/lib/types/file";
 import { cn } from "@/lib/utils";
 
 import {
@@ -56,8 +56,12 @@ export function AvatarUpload({
       return;
     }
     setProgress(0);
+    // Every avatar — whether uploaded from the user's own profile or by an
+    // admin editing a user — is tagged as a profile photo, so it buckets into
+    // the user_profile_photo Cloudinary folder and is filterable in the files
+    // table. Enforced here so no caller can forget the category.
     upload.mutate(
-      { file, onProgress: setProgress },
+      { file, category: FILE_CATEGORY.USER_PROFILE_PHOTO, onProgress: setProgress },
       {
         onSuccess: (uploaded) => {
           onChange?.(uploaded);

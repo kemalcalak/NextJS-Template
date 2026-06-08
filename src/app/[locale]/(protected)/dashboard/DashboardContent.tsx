@@ -11,7 +11,7 @@ export function DashboardContent() {
 
   return (
     <div className="p-4 sm:p-6 lg:p-8 xl:p-12">
-      <div className="mx-auto w-full max-w-[1920px] space-y-8">
+      <div className="mx-auto w-full max-w-480 space-y-8">
         <div>
           <h1 className="text-3xl font-bold tracking-tight text-foreground">
             {t("title", "Dashboard")}
@@ -36,14 +36,14 @@ export function DashboardContent() {
             </div>
             {/* Example skeleton for loading items */}
             <div className="bg-card p-6 rounded-xl shadow-sm border border-border space-y-3">
-              <Skeleton className="h-4 w-[200px]" />
-              <Skeleton className="h-4 w-[150px]" />
-              <Skeleton className="h-4 w-[180px]" />
+              <Skeleton className="h-4 w-50" />
+              <Skeleton className="h-4 w-37.5" />
+              <Skeleton className="h-4 w-45" />
             </div>
             <div className="bg-card p-6 rounded-xl shadow-sm border border-border space-y-3">
-              <Skeleton className="h-4 w-[100px]" />
-              <Skeleton className="h-4 w-[250px]" />
-              <Skeleton className="h-4 w-[200px]" />
+              <Skeleton className="h-4 w-25" />
+              <Skeleton className="h-4 w-62.5" />
+              <Skeleton className="h-4 w-50" />
             </div>
           </div>
         )}

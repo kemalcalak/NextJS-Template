@@ -1,0 +1,86 @@
+{
+  "nav": "Destek",
+  "list": {
+    "title": "Destek",
+    "subtitle": "Destek talepleriniz ve görüşmeleriniz.",
+    "newTicket": "Yeni talep",
+    "searchPlaceholder": "Konuya göre ara…",
+    "empty": "Henüz hiç talebiniz yok.",
+    "loading": "Talepler yükleniyor…",
+    "notFound": "Talep bulunamadı.",
+    "unread": "{{count}} okunmamış",
+    "columns": {
+      "subject": "Konu",
+      "status": "Durum",
+      "updated": "Son hareket"
+    }
+  },
+  "new": {
+    "title": "Yeni destek talebi",
+    "subjectLabel": "Konu",
+    "subjectPlaceholder": "Sorununuzun kısa özeti",
+    "bodyLabel": "Mesaj",
+    "bodyPlaceholder": "Sorununuzu ayrıntılı anlatın…",
+    "attachments": "Ekler",
+    "submit": "Talep oluştur",
+    "cancel": "Vazgeç"
+  },
+  "detail": {
+    "back": "Taleplere dön",
+    "replyPlaceholder": "Bir yanıt yazın…",
+    "send": "Gönder",
+    "close": "Talebi kapat",
+    "closedNotice": "Bu talep kapatıldı.",
+    "adminClosedNotice": "Bu talep kapalı. Yanıtlamak için yeniden açın.",
+    "jumpToLatest": "En alta in",
+    "you": "Siz",
+    "supportTeam": "Destek",
+    "attachments": "Ekler",
+    "empty": "Henüz mesaj yok."
+  },
+  "status": {
+    "open": "Açık",
+    "pending": "Beklemede",
+    "answered": "Yanıtlandı",
+    "closed": "Kapalı"
+  },
+  "priority": {
+    "low": "Düşük",
+    "normal": "Normal",
+    "high": "Yüksek"
+  },
+  "admin": {
+    "title": "Destek kuyruğu",
+    "subtitle": "Tüm kullanıcıların destek talepleri.",
+    "searchPlaceholder": "Konu veya kullanıcı ara…",
+    "filters": {
+      "status": "Durum",
+      "priority": "Öncelik",
+      "all": "Tümü",
+      "reset": "Sıfırla"
+    },
+    "columns": {
+      "subject": "Konu",
+      "requester": "Açan",
+      "status": "Durum",
+      "priority": "Öncelik",
+      "assignee": "Atanan",
+      "updated": "Son hareket"
+    },
+    "loading": "Talepler yükleniyor…",
+    "empty": "Mevcut filtrelere uygun talep yok.",
+    "controls": {
+      "title": "Talebi yönet",
+      "status": "Durum",
+      "priority": "Öncelik",
+      "save": "Değişiklikleri kaydet"
+    },
+    "assignee": "Atanan",
+    "unassigned": "Atanmamış",
+    "assignToMe": "Bana ata",
+    "owner": "Açan",
+    "reply": "Yanıtla",
+    "updateStatus": "Durum",
+    "updatePriority": "Öncelik"
+  }
+}

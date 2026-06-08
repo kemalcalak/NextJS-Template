@@ -39,6 +39,10 @@
     "title": "Profile",
     "description": "View and edit your personal profile, preferences, and account settings."
   },
+  "support": {
+    "title": "Support",
+    "description": "Open a support ticket and chat with our team about any issue."
+  },
   "adminLogin": {
     "title": "Admin Sign In",
     "description": "Sign in to the administration area to manage users and view activity."
@@ -62,6 +66,14 @@
   "adminActivities": {
     "title": "Activity Log",
     "description": "Browse audit events across all users."
+  },
+  "adminSupport": {
+    "title": "Support Queue",
+    "description": "Review and respond to user support tickets."
+  },
+  "adminTicketDetail": {
+    "title": "Ticket",
+    "description": "View a support ticket, reply, and update its status."
   },
   "notFound": {
     "title": "Page Not Found",

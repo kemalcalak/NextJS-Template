@@ -14,12 +14,14 @@ export const ROUTES = {
   accountSuspended: "/account-suspended",
   dashboard: "/dashboard",
   profile: "/profile",
+  support: "/support",
   logout: "/logout",
   adminLogin: "/admin/login",
   adminDashboard: "/admin/dashboard",
   adminUsers: "/admin/users",
   adminFiles: "/admin/files",
   adminActivities: "/admin/activities",
+  adminSupport: "/admin/support",
 } as const;
 
 /**
@@ -35,10 +37,12 @@ export const getLocalizedPath = (path: string, locale: string): string => {
 export const protectedRoutes = [
   ROUTES.dashboard,
   ROUTES.profile,
+  ROUTES.support,
   ROUTES.adminDashboard,
   ROUTES.adminUsers,
   ROUTES.adminFiles,
   ROUTES.adminActivities,
+  ROUTES.adminSupport,
   ROUTES.accountSuspended,
 ];
 
@@ -82,6 +86,7 @@ export const adminRoutes = [
   ROUTES.adminUsers,
   ROUTES.adminFiles,
   ROUTES.adminActivities,
+  ROUTES.adminSupport,
 ];
 
 export const isAdminPath = (path: string) => adminRoutes.some((route) => matchesRoute(path, route));

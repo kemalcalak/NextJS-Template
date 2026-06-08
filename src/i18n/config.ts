@@ -15,6 +15,7 @@ import enHome from "./locales/en/home.json";
 import enProfile from "./locales/en/profile.json";
 import enSeo from "./locales/en/seo.json";
 import enSuccess from "./locales/en/success.json";
+import enSupport from "./locales/en/support.json";
 import enUpload from "./locales/en/upload.json";
 import enValidation from "./locales/en/validation.json";
 import trAccount from "./locales/tr/account.json";
@@ -27,6 +28,7 @@ import trHome from "./locales/tr/home.json";
 import trProfile from "./locales/tr/profile.json";
 import trSeo from "./locales/tr/seo.json";
 import trSuccess from "./locales/tr/success.json";
+import trSupport from "./locales/tr/support.json";
 import trUpload from "./locales/tr/upload.json";
 import trValidation from "./locales/tr/validation.json";
 
@@ -43,6 +45,7 @@ const resources = {
     seo: enSeo,
     account: enAccount,
     admin: enAdmin,
+    support: enSupport,
     upload: enUpload,
   },
   tr: {
@@ -57,6 +60,7 @@ const resources = {
     seo: trSeo,
     account: trAccount,
     admin: trAdmin,
+    support: trSupport,
     upload: trUpload,
   },
 };
@@ -82,6 +86,7 @@ i18n
       "seo",
       "account",
       "admin",
+      "support",
       "upload",
     ],
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { Dropdown, type MenuProps } from "antd";
-import { LayoutDashboard, LogOut, ShieldCheck, User as UserIcon } from "lucide-react";
+import { LayoutDashboard, LifeBuoy, LogOut, ShieldCheck, User as UserIcon } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
@@ -93,6 +93,14 @@ export const AuthButtons = ({ user, onNavigate }: AuthButtonsProps) => {
       label: t("common:nav.profile", "Profile"),
       onClick: () => {
         navigate(ROUTES.profile);
+      },
+    },
+    {
+      key: "support",
+      icon: <LifeBuoy className="h-4 w-4" />,
+      label: t("common:nav.support", "Support"),
+      onClick: () => {
+        navigate(ROUTES.support);
       },
     },
     { type: "divider" },

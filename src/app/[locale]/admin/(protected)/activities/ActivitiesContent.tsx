@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 
 import { Select } from "antd";
-import { RefreshCw, X } from "lucide-react";
+import { RefreshCw, Search, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 import { ActivityTable } from "@/components/admin/ActivityTable";
@@ -11,7 +11,9 @@ import { AdminPagination } from "@/components/admin/Pagination";
 import { DEFAULT_PAGE_SIZE } from "@/components/admin/pagination-config";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import { useAdminActivities } from "@/hooks/api/use-admin";
+import { useDebounce } from "@/hooks/use-debounce";
 import type {
   ActivityStatus,
   ActivityType,
@@ -19,6 +21,8 @@ import type {
   ResourceType,
 } from "@/lib/types/admin";
 import { cn } from "@/lib/utils";
+
+import type { TFunction } from "i18next";
 
 // Option arrays mirror the FastAPI StrEnums in
 // app/schemas/user_activity.py (ActivityType, ResourceType, ActivityStatus).
@@ -36,7 +40,12 @@ const ACTIVITY_TYPES = [
   "invite",
 ] as const satisfies readonly ActivityType[];
 
-const RESOURCE_TYPES = ["user", "auth", "file"] as const satisfies readonly ResourceType[];
+const RESOURCE_TYPES = [
+  "user",
+  "auth",
+  "file",
+  "support_ticket",
+] as const satisfies readonly ResourceType[];
 const STATUS_OPTIONS = ["success", "failure"] as const satisfies readonly ActivityStatus[];
 // Curated set of HTTP codes the audit log actually emits (200 success default
 // plus the failure codes raised across auth/users). Kept as a const-tuple so
@@ -62,25 +71,49 @@ const parseStatusCodeFilter = (value: string): StatusCodeFilter | null => {
     : null;
 };
 
+// Built outside the component so the render function stays lean; each mirrors
+// its const-tuple plus the leading "any" option.
+const typeOptions = (t: TFunction) => [
+  { value: "all", label: t("activities.filters.typeAny") },
+  ...ACTIVITY_TYPES.map((v) => ({ value: v, label: t(`activities.type.${v}`) })),
+];
+const resourceOptions = (t: TFunction) => [
+  { value: "all", label: t("activities.filters.resourceAny") },
+  ...RESOURCE_TYPES.map((v) => ({ value: v, label: t(`activities.resource.${v}`) })),
+];
+const statusOptions = (t: TFunction) => [
+  { value: "all", label: t("activities.filters.statusAny") },
+  ...STATUS_OPTIONS.map((v) => ({ value: v, label: t(`activities.status.${v}`) })),
+];
+const statusCodeOptions = (t: TFunction) => [
+  { value: "all", label: t("activities.filters.statusCodeAny") },
+  ...STATUS_CODE_OPTIONS.map((c) => ({ value: String(c), label: String(c) })),
+];
+
 export function ActivitiesContent() {
   const { t } = useTranslation("admin");
   const [type, setType] = useState<TypeFilter>("all");
   const [resource, setResource] = useState<ResourceFilter>("all");
   const [status, setStatus] = useState<StatusFilter>("all");
   const [statusCode, setStatusCode] = useState<StatusCodeFilter>("all");
+  // Free-text search over the acting user's name/email (server-side ILIKE).
+  const [userSearch, setUserSearch] = useState("");
   const [skip, setSkip] = useState(0);
   const [pageSize, setPageSize] = useState<number>(DEFAULT_PAGE_SIZE);
+
+  const debouncedUserSearch = useDebounce(userSearch, 300);
 
   const params = useMemo<AdminActivityListParams>(
     () => ({
       skip,
       limit: pageSize,
+      user_search: debouncedUserSearch.trim() || undefined,
       activity_type: type === "all" ? undefined : type,
       resource_type: resource === "all" ? undefined : resource,
       status: status === "all" ? undefined : status,
       status_code: statusCode === "all" ? undefined : statusCode,
     }),
-    [skip, pageSize, type, resource, status, statusCode],
+    [skip, pageSize, debouncedUserSearch, type, resource, status, statusCode],
   );
 
   const { data, isLoading, isFetching, refetch } = useAdminActivities(params);
@@ -90,11 +123,16 @@ export function ActivitiesContent() {
     setResource("all");
     setStatus("all");
     setStatusCode("all");
+    setUserSearch("");
     setSkip(0);
   };
 
   const hasFilters =
-    type !== "all" || resource !== "all" || status !== "all" || statusCode !== "all";
+    type !== "all" ||
+    resource !== "all" ||
+    status !== "all" ||
+    statusCode !== "all" ||
+    userSearch.trim() !== "";
 
   return (
     <div className="space-y-6">
@@ -117,13 +155,7 @@ export function ActivitiesContent() {
               }}
               aria-label={t("activities.filters.type")}
               className="w-full md:w-fit md:min-w-35"
-              options={[
-                { value: "all", label: t("activities.filters.typeAny") },
-                ...ACTIVITY_TYPES.map((v) => ({
-                  value: v,
-                  label: t(`activities.type.${v}` as const),
-                })),
-              ]}
+              options={typeOptions(t)}
             />
             <Select<string>
               value={resource}
@@ -134,13 +166,7 @@ export function ActivitiesContent() {
               }}
               aria-label={t("activities.filters.resource")}
               className="w-full md:w-fit md:min-w-35"
-              options={[
-                { value: "all", label: t("activities.filters.resourceAny") },
-                ...RESOURCE_TYPES.map((v) => ({
-                  value: v,
-                  label: t(`activities.resource.${v}` as const),
-                })),
-              ]}
+              options={resourceOptions(t)}
             />
             <Select<string>
               value={status}
@@ -151,13 +177,7 @@ export function ActivitiesContent() {
               }}
               aria-label={t("activities.filters.status")}
               className="w-full md:w-fit md:min-w-35"
-              options={[
-                { value: "all", label: t("activities.filters.statusAny") },
-                ...STATUS_OPTIONS.map((v) => ({
-                  value: v,
-                  label: t(`activities.status.${v}` as const),
-                })),
-              ]}
+              options={statusOptions(t)}
             />
             <Select<string>
               value={String(statusCode)}
@@ -169,32 +189,38 @@ export function ActivitiesContent() {
               }}
               aria-label={t("activities.filters.statusCode")}
               className="w-full md:w-fit md:min-w-35"
-              options={[
-                { value: "all", label: t("activities.filters.statusCodeAny") },
-                ...STATUS_CODE_OPTIONS.map((c) => ({
-                  value: String(c),
-                  label: String(c),
-                })),
-              ]}
+              options={statusCodeOptions(t)}
             />
-            {hasFilters ? (
-              <Button variant="ghost" size="sm" onClick={resetFilters} className="w-full md:w-auto">
-                <X className="h-4 w-4" />
-                {t("activities.filters.reset")}
-              </Button>
-            ) : null}
-            <Button
-              variant="outline"
-              disabled={isFetching}
-              onClick={() => {
-                void refetch();
-              }}
-              className="w-full md:ml-auto md:w-auto"
-            >
-              <RefreshCw className={cn("h-4 w-4", isFetching && "animate-spin")} />
-              {t("activities.refresh")}
-            </Button>
           </div>
+          <div className="w-full md:flex-1 md:min-w-50">
+            <Input
+              value={userSearch}
+              prefix={<Search className="h-4 w-4 text-muted-foreground" />}
+              placeholder={t("activities.filters.userSearch")}
+              aria-label={t("activities.filters.user")}
+              onChange={(event) => {
+                setUserSearch(event.target.value);
+                setSkip(0);
+              }}
+            />
+          </div>
+          {hasFilters ? (
+            <Button variant="ghost" onClick={resetFilters} className="w-full md:w-auto">
+              <X className="h-4 w-4" />
+              {t("activities.filters.reset")}
+            </Button>
+          ) : null}
+          <Button
+            variant="outline"
+            disabled={isFetching}
+            onClick={() => {
+              void refetch();
+            }}
+            className="w-full md:w-auto"
+          >
+            <RefreshCw className={cn("h-4 w-4", isFetching && "animate-spin")} />
+            {t("activities.refresh")}
+          </Button>
         </CardContent>
       </Card>
 

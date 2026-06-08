@@ -11,12 +11,15 @@ export type SeoPageKey =
   | "accountSuspended"
   | "dashboard"
   | "profile"
+  | "support"
   | "adminLogin"
   | "adminDashboard"
   | "adminUsers"
   | "adminUserDetail"
   | "adminFiles"
   | "adminActivities"
+  | "adminSupport"
+  | "adminTicketDetail"
   | "notFound"
   | "error";
 

@@ -1,7 +1,15 @@
 "use client";
 
 import { Drawer } from "antd";
-import { Menu, User as UserIcon, LogOut, LayoutDashboard, Home, ShieldCheck } from "lucide-react";
+import {
+  Menu,
+  User as UserIcon,
+  LogOut,
+  LayoutDashboard,
+  Home,
+  LifeBuoy,
+  ShieldCheck,
+} from "lucide-react";
 import { useRouter, usePathname } from "next/navigation";
 import { useTranslation } from "react-i18next";
 
@@ -29,7 +37,11 @@ interface AppDrawerProps {
   setIsMobileMenuOpen: (open: boolean) => void;
 }
 
-const UserProfile = ({ user }: { user: NonNullable<User> }) => (
+interface UserProfileProps {
+  user: NonNullable<User>;
+}
+
+const UserProfile = ({ user }: UserProfileProps) => (
   <div className="flex items-center gap-4 p-4 rounded-xl bg-muted/50 border">
     <Avatar className="h-12 w-12 border shadow-sm">
       {user.avatar_file?.url && <AvatarImage src={user.avatar_file.url} alt={user.email} />}
@@ -45,19 +57,15 @@ const UserProfile = ({ user }: { user: NonNullable<User> }) => (
   </div>
 );
 
-const NavLink = ({
-  href,
-  icon: Icon,
-  label,
-  active,
-  onClick,
-}: {
+interface NavLinkProps {
   href: string;
   icon: React.ElementType;
   label: string;
   active: boolean;
   onClick: (href: string) => void;
-}) => (
+}
+
+const NavLink = ({ href, icon: Icon, label, active, onClick }: NavLinkProps) => (
   <Button
     variant={active ? "secondary" : "ghost"}
     className={cn(
@@ -74,6 +82,52 @@ const NavLink = ({
     </span>
   </Button>
 );
+
+// Nav links shown only to authenticated users. Extracted so the AppDrawer
+// component itself stays under the max-lines-per-function budget.
+interface AuthedNavLinksProps {
+  user: NonNullable<User>;
+  isActive: (path: string) => boolean;
+  navigate: (href: string) => void;
+}
+
+const AuthedNavLinks = ({ user, isActive, navigate }: AuthedNavLinksProps) => {
+  const { t } = useTranslation();
+  return (
+    <>
+      {user.role === SystemRole.ADMIN && (
+        <NavLink
+          href={ROUTES.adminDashboard}
+          icon={ShieldCheck}
+          label={t("admin:shell.title", "Administration")}
+          active={isActive(ROUTES.adminDashboard)}
+          onClick={navigate}
+        />
+      )}
+      <NavLink
+        href={ROUTES.dashboard}
+        icon={LayoutDashboard}
+        label={t("common:nav.dashboard")}
+        active={isActive(ROUTES.dashboard)}
+        onClick={navigate}
+      />
+      <NavLink
+        href={ROUTES.profile}
+        icon={UserIcon}
+        label={t("common:nav.profile")}
+        active={isActive(ROUTES.profile)}
+        onClick={navigate}
+      />
+      <NavLink
+        href={ROUTES.support}
+        icon={LifeBuoy}
+        label={t("common:nav.support")}
+        active={isActive(ROUTES.support)}
+        onClick={navigate}
+      />
+    </>
+  );
+};
 
 export const AppDrawer = ({
   theme,
@@ -108,7 +162,6 @@ export const AppDrawer = ({
     <>
       <Button
         variant="ghost"
-        size="sm"
         className="w-9 px-0 md:hidden"
         onClick={() => {
           setIsMobileMenuOpen(true);
@@ -152,33 +205,7 @@ export const AppDrawer = ({
               active={isActive(ROUTES.home)}
               onClick={navigate}
             />
-            {user && (
-              <>
-                {user.role === SystemRole.ADMIN && (
-                  <NavLink
-                    href={ROUTES.adminDashboard}
-                    icon={ShieldCheck}
-                    label={t("admin:shell.title", "Administration")}
-                    active={isActive(ROUTES.adminDashboard)}
-                    onClick={navigate}
-                  />
-                )}
-                <NavLink
-                  href={ROUTES.dashboard}
-                  icon={LayoutDashboard}
-                  label={t("common:nav.dashboard")}
-                  active={isActive(ROUTES.dashboard)}
-                  onClick={navigate}
-                />
-                <NavLink
-                  href={ROUTES.profile}
-                  icon={UserIcon}
-                  label={t("common:nav.profile")}
-                  active={isActive(ROUTES.profile)}
-                  onClick={navigate}
-                />
-              </>
-            )}
+            {user && <AuthedNavLinks user={user} isActive={isActive} navigate={navigate} />}
           </div>
 
           <div className="mt-auto pt-6 border-t flex flex-col gap-6 pb-6">

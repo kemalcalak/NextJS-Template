@@ -14,6 +14,9 @@ export const env = createEnv({
   client: {
     NEXT_PUBLIC_API_URL: z.url().default("http://localhost:8000"),
     NEXT_PUBLIC_API_PREFIX: z.string().default("/api/v1"),
+    // Optional explicit WebSocket origin. When unset it's derived from
+    // NEXT_PUBLIC_API_URL (http -> ws, https -> wss).
+    NEXT_PUBLIC_WS_URL: z.url().optional(),
     NEXT_PUBLIC_APP_NAME: z.string().default("NextJS Template"),
     NEXT_PUBLIC_APP_URL: z.url().default("http://localhost:3000"),
     NEXT_PUBLIC_SENTRY_DSN: z.url().optional(),
@@ -27,6 +30,7 @@ export const env = createEnv({
     SENTRY_AUTH_TOKEN: process.env.SENTRY_AUTH_TOKEN,
     NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
     NEXT_PUBLIC_API_PREFIX: process.env.NEXT_PUBLIC_API_PREFIX,
+    NEXT_PUBLIC_WS_URL: process.env.NEXT_PUBLIC_WS_URL,
     NEXT_PUBLIC_APP_NAME: process.env.NEXT_PUBLIC_APP_NAME,
     NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
     NEXT_PUBLIC_SENTRY_DSN: process.env.NEXT_PUBLIC_SENTRY_DSN,
