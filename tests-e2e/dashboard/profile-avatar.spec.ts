@@ -113,6 +113,10 @@ for (const locale of LOCALES) {
         buffer: PNG_BUFFER,
       });
 
+      // Picking only stages a local preview (deferred upload); the user must
+      // confirm with Save before anything hits Cloudinary/DB.
+      await page.getByRole("button", { name: su.save, exact: true }).click();
+
       // After upload + attach, the editor switches to the replace/remove state.
       // `exact` avoids matching the theme/language toggles (e.g. tr "Değiştir"
       // is a substring of "Temayı Değiştir" / "Dili Değiştir").
