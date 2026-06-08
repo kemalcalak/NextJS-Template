@@ -1,5 +1,6 @@
 import { env } from "@/env";
 import type { RealtimeEvent } from "@/lib/types/support";
+import { realtimeEventSchema } from "@/schemas/support";
 
 // Backoff bounds for reconnection. We start at 1s and double up to 15s.
 const RECONNECT_BASE_MS = 1000;
@@ -80,14 +81,29 @@ export const createReconnectingSocket = (
     };
 
     socket.onmessage = (message) => {
+      let raw: unknown;
       try {
-        onEvent(JSON.parse(message.data as string) as RealtimeEvent);
+        raw = JSON.parse(message.data as string);
       } catch {
-        // Ignore frames that aren't valid event JSON.
+        // Ignore frames that aren't valid JSON.
+        return;
+      }
+      // Validate the frame at runtime; silently drop anything that isn't a
+      // well-formed realtime event rather than feeding it into the cache.
+      const parsed = realtimeEventSchema.safeParse(raw);
+      if (parsed.success) {
+        onEvent(parsed.data);
       }
     };
 
-    socket.onclose = () => {
+    socket.onclose = (event) => {
+      // Intentional/terminal closes must NOT reconnect: 1000 (normal) is our own
+      // `close()`, 1008 (policy) and 4403 are the server refusing auth/ownership.
+      // `onopen` resets `failures`, so without this guard a server that accepts
+      // then closes on policy would loop forever — the failure cap never trips.
+      if (event.code === 1000 || event.code === 1008 || event.code === 4403) {
+        return;
+      }
       failures += 1;
       scheduleReconnect();
     };

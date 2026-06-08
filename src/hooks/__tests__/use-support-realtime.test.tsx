@@ -3,15 +3,17 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { useTicketRealtime } from "@/hooks/use-support-realtime";
 
-// The hook is a thin lifecycle wrapper over the shared realtime provider; mock
-// the provider so we can assert the subscribe/unsubscribe calls directly.
+// The hook is a thin lifecycle wrapper over the shared realtime store; mock the
+// store so we can assert the subscribe/unsubscribe calls directly.
 const { subscribeTicket, unsubscribeTicket } = vi.hoisted(() => ({
   subscribeTicket: vi.fn(),
   unsubscribeTicket: vi.fn(),
 }));
 
-vi.mock("@/providers/support-realtime-context", () => ({
-  useSupportRealtime: () => ({ subscribeTicket, unsubscribeTicket }),
+vi.mock("@/stores/support-realtime.store", () => ({
+  useSupportRealtimeStore: (
+    selector: (s: { subscribeTicket: unknown; unsubscribeTicket: unknown }) => unknown,
+  ) => selector({ subscribeTicket, unsubscribeTicket }),
 }));
 
 afterEach(() => {

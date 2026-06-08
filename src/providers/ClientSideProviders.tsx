@@ -12,7 +12,7 @@ import { getLocaleFromPath } from "@/lib/config/routes";
 
 import { AntdProvider } from "./AntdProvider";
 import { QueryProvider } from "./QueryProvider";
-import { SupportRealtimeProvider } from "./SupportRealtimeProvider";
+import { SupportRealtimeBridge } from "./SupportRealtimeBridge";
 import { ThemeProvider } from "./ThemeProvider";
 
 const loadingMessages: Record<string, string> = {
@@ -75,9 +75,8 @@ export function ClientSideProviders({
         ) : (
           <QueryProvider>
             <AuthHydrator>
-              <SupportRealtimeProvider>
-                <ErrorBoundary>{children}</ErrorBoundary>
-              </SupportRealtimeProvider>
+              <SupportRealtimeBridge />
+              <ErrorBoundary>{children}</ErrorBoundary>
             </AuthHydrator>
           </QueryProvider>
         )}
