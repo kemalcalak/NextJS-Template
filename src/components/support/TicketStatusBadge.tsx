@@ -23,12 +23,20 @@ const PRIORITY_TONE = {
   high: "danger",
 } as const;
 
-export function TicketStatusBadge({ status }: { status: TicketStatus }) {
+interface TicketStatusBadgeProps {
+  status: TicketStatus;
+}
+
+export function TicketStatusBadge({ status }: TicketStatusBadgeProps) {
   const { t } = useTranslation("support");
   return <StatusBadge tone={STATUS_TONE[status]}>{t(`status.${status}`)}</StatusBadge>;
 }
 
-export function TicketPriorityBadge({ priority }: { priority: TicketPriority }) {
+interface TicketPriorityBadgeProps {
+  priority: TicketPriority;
+}
+
+export function TicketPriorityBadge({ priority }: TicketPriorityBadgeProps) {
   const { t } = useTranslation("support");
   return <StatusBadge tone={PRIORITY_TONE[priority]}>{t(`priority.${priority}`)}</StatusBadge>;
 }

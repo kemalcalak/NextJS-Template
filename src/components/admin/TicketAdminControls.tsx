@@ -32,7 +32,11 @@ interface ControlsFormValues {
 // admin scrolls (and searches by name/email server-side).
 const ADMIN_PAGE_SIZE = 20;
 
-export function TicketAdminControls({ ticket }: { ticket: AdminTicketDetail }) {
+interface TicketAdminControlsProps {
+  ticket: AdminTicketDetail;
+}
+
+export function TicketAdminControls({ ticket }: TicketAdminControlsProps) {
   const { t } = useTranslation("support");
   const [form] = Form.useForm<ControlsFormValues>();
   const currentUserId = useAuthStore((state) => state.user?.id ?? null);

@@ -46,7 +46,7 @@ export function AdminPagination({
                 onPageSizeChange(value);
               }}
               aria-label={t("users.pagination.rowsPerPage")}
-              style={{ width: 80 }}
+              className="w-20"
               popupMatchSelectWidth={false}
               options={pageSizeOptions.map((option) => ({ value: option, label: String(option) }))}
             />

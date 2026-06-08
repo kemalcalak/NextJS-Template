@@ -37,7 +37,11 @@ interface AppDrawerProps {
   setIsMobileMenuOpen: (open: boolean) => void;
 }
 
-const UserProfile = ({ user }: { user: NonNullable<User> }) => (
+interface UserProfileProps {
+  user: NonNullable<User>;
+}
+
+const UserProfile = ({ user }: UserProfileProps) => (
   <div className="flex items-center gap-4 p-4 rounded-xl bg-muted/50 border">
     <Avatar className="h-12 w-12 border shadow-sm">
       {user.avatar_file?.url && <AvatarImage src={user.avatar_file.url} alt={user.email} />}
@@ -53,19 +57,15 @@ const UserProfile = ({ user }: { user: NonNullable<User> }) => (
   </div>
 );
 
-const NavLink = ({
-  href,
-  icon: Icon,
-  label,
-  active,
-  onClick,
-}: {
+interface NavLinkProps {
   href: string;
   icon: React.ElementType;
   label: string;
   active: boolean;
   onClick: (href: string) => void;
-}) => (
+}
+
+const NavLink = ({ href, icon: Icon, label, active, onClick }: NavLinkProps) => (
   <Button
     variant={active ? "secondary" : "ghost"}
     className={cn(
@@ -85,15 +85,13 @@ const NavLink = ({
 
 // Nav links shown only to authenticated users. Extracted so the AppDrawer
 // component itself stays under the max-lines-per-function budget.
-const AuthedNavLinks = ({
-  user,
-  isActive,
-  navigate,
-}: {
+interface AuthedNavLinksProps {
   user: NonNullable<User>;
   isActive: (path: string) => boolean;
   navigate: (href: string) => void;
-}) => {
+}
+
+const AuthedNavLinks = ({ user, isActive, navigate }: AuthedNavLinksProps) => {
   const { t } = useTranslation();
   return (
     <>
