@@ -2,7 +2,15 @@
 
 import { useEffect } from "react";
 
-import { Activity, Images, LayoutDashboard, ShieldCheck, Ticket, Users } from "lucide-react";
+import {
+  Activity,
+  Images,
+  LayoutDashboard,
+  ShieldCheck,
+  Ticket,
+  UserCog,
+  Users,
+} from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
@@ -10,6 +18,13 @@ import { useTranslation } from "react-i18next";
 import { LoadingScreen } from "@/components/common/LoadingScreen";
 import { Button } from "@/components/ui/button";
 import { useAccountEvents } from "@/hooks/useAccountEvents";
+import {
+  useCanReadActivities,
+  useCanReadFiles,
+  useCanReadSupport,
+  useCanReadUsers,
+  useIsSuperadmin,
+} from "@/hooks/usePermissions";
 import {
   ROUTES,
   getLocaleFromPath,
@@ -37,6 +52,13 @@ export function AdminShell({ children }: AdminShellProps) {
 
   // Live RBAC: refetch /users/me when a superadmin changes this admin's grants.
   useAccountEvents();
+
+  // Per-section visibility. Superadmins pass every check via their role.
+  const canReadUsers = useCanReadUsers();
+  const canReadFiles = useCanReadFiles();
+  const canReadActivities = useCanReadActivities();
+  const canReadSupport = useCanReadSupport();
+  const isSuperadmin = useIsSuperadmin();
   const currentLocale = getLocaleFromPath(pathname);
   const pathWithoutLocale = getPathWithoutLocale(pathname);
 
@@ -46,7 +68,7 @@ export function AdminShell({ children }: AdminShellProps) {
   useEffect(() => {
     if (!isSessionInitialized) return;
     if (!isAuthenticated) return;
-    if (user && user.role !== SystemRole.ADMIN) {
+    if (user && user.role !== SystemRole.ADMIN && user.role !== SystemRole.SUPERADMIN) {
       router.replace(getLocalizedPath(ROUTES.dashboard, currentLocale));
     }
   }, [isSessionInitialized, isAuthenticated, user, router, currentLocale]);
@@ -55,7 +77,7 @@ export function AdminShell({ children }: AdminShellProps) {
     return <LoadingScreen />;
   }
 
-  if (user.role !== SystemRole.ADMIN) {
+  if (user.role !== SystemRole.ADMIN && user.role !== SystemRole.SUPERADMIN) {
     return (
       <div className="flex min-h-[60vh] items-center justify-center p-8">
         <div className="max-w-md text-center">
@@ -81,32 +103,44 @@ export function AdminShell({ children }: AdminShellProps) {
       label: t("shell.nav.dashboard"),
       href: ROUTES.adminDashboard,
       icon: LayoutDashboard,
+      show: true,
     },
     {
       key: "users",
       label: t("shell.nav.users"),
       href: ROUTES.adminUsers,
       icon: Users,
+      show: canReadUsers,
+    },
+    {
+      key: "admins",
+      label: t("shell.nav.admins"),
+      href: ROUTES.adminAdmins,
+      icon: UserCog,
+      show: isSuperadmin,
     },
     {
       key: "files",
       label: t("shell.nav.files"),
       href: ROUTES.adminFiles,
       icon: Images,
+      show: canReadFiles,
     },
     {
       key: "activities",
       label: t("shell.nav.activities"),
       href: ROUTES.adminActivities,
       icon: Activity,
+      show: canReadActivities,
     },
     {
       key: "support",
       label: t("shell.nav.support"),
       href: ROUTES.adminSupport,
       icon: Ticket,
+      show: canReadSupport,
     },
-  ];
+  ].filter((item) => item.show);
 
   return (
     <div className="mx-auto flex w-full max-w-480 flex-col gap-6 p-4 md:flex-row md:p-6 lg:p-8 xl:p-12">
