@@ -90,13 +90,22 @@ export function FileUpload({
           }
           const file = item.originFileObj;
           if (!file) continue;
-          const uploaded = await upload.mutateAsync({
-            file,
-            category,
-            onProgress: (percent) => {
-              patchItem(item.uid, { percent, status: "uploading" });
-            },
-          });
+          let uploaded: FilePublic;
+          try {
+            uploaded = await upload.mutateAsync({
+              file,
+              category,
+              onProgress: (percent) => {
+                patchItem(item.uid, { percent, status: "uploading" });
+              },
+            });
+          } catch (error) {
+            // Mark the failed item so it doesn't hang in the "uploading" state;
+            // it stays in the list (with its originFileObj) so re-submitting
+            // retries it without re-picking. Re-throw to abort the parent submit.
+            patchItem(item.uid, { status: "error", percent: 0 });
+            throw error;
+          }
           uploadedRef.current.set(item.uid, uploaded);
           patchItem(item.uid, { status: "done", percent: 100 });
           stored.push(uploaded);
