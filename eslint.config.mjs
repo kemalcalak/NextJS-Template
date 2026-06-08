@@ -169,6 +169,29 @@ export default defineConfig([
       "no-console": ["warn", { allow: ["warn", "error"] }],
       "no-debugger": "error",
       "no-alert": "warn",
+      // Form stack is locked to antd Form + Form.useForm + zodFieldRule
+      // (REVIEW.md §3.7). React Hook Form and its resolvers (incl. zodResolver
+      // from @hookform/resolvers/zod) were removed — reintroducing them is a
+      // blocker, so fail the build instead of relying on review to catch it.
+      "no-restricted-imports": [
+        "error",
+        {
+          paths: [
+            {
+              name: "react-hook-form",
+              message:
+                "RHF was removed. Use antd Form + Form.useForm + zodFieldRule instead (REVIEW.md §3.7).",
+            },
+          ],
+          patterns: [
+            {
+              group: ["@hookform/*"],
+              message:
+                "zodResolver/@hookform was removed. Bridge the Zod schema via zodFieldRule instead (REVIEW.md §3.7).",
+            },
+          ],
+        },
+      ],
       "no-var": "error",
       "prefer-const": "warn",
       "prefer-arrow-callback": "warn",
