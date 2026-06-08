@@ -93,6 +93,7 @@ export interface SupportTicketListParams {
   skip?: number;
   limit?: number;
   status?: TicketStatus;
+  search?: string;
 }
 
 export interface AdminTicketListParams {

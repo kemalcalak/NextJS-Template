@@ -4,6 +4,7 @@
     "title": "Destek",
     "subtitle": "Destek talepleriniz ve görüşmeleriniz.",
     "newTicket": "Yeni talep",
+    "searchPlaceholder": "Konuya göre ara…",
     "empty": "Henüz hiç talebiniz yok.",
     "loading": "Talepler yükleniyor…",
     "notFound": "Talep bulunamadı.",

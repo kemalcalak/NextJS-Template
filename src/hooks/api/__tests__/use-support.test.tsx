@@ -107,6 +107,23 @@ describe("useMyTickets", () => {
     });
     expect(requestedUrl).toContain("status=open");
   });
+
+  it("forwards the subject search to the query string", async () => {
+    let requestedUrl = "";
+    server.use(
+      http.get("*/api/v1/support/tickets", ({ request }) => {
+        requestedUrl = request.url;
+        return HttpResponse.json({ data: [], total: 0, skip: 0, limit: 20 });
+      }),
+    );
+    const { result } = renderHook(() => useMyTickets({ search: "payment" }), {
+      wrapper: createWrapper(),
+    });
+    await waitFor(() => {
+      expect(result.current.isSuccess).toBe(true);
+    });
+    expect(requestedUrl).toContain("search=payment");
+  });
 });
 
 describe("useMyTicket", () => {
