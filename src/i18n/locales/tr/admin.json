@@ -10,6 +10,10 @@
     "submitting": "Giriş yapılıyor...",
     "backToApp": "Ana uygulamaya dön"
   },
+  "permissionDenied": {
+    "title": "Yetki gerekli",
+    "description": "Bu bölümü görüntüleme yetkiniz yok. Erişim için bir superadmin'den yetki isteyin."
+  },
   "shell": {
     "title": "Yönetim",
     "nav": {

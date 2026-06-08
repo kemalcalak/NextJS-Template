@@ -10,6 +10,10 @@
     "submitting": "Signing in...",
     "backToApp": "Back to the main app"
   },
+  "permissionDenied": {
+    "title": "Permission required",
+    "description": "You don't have permission to view this section. Ask a superadmin to grant access."
+  },
   "shell": {
     "title": "Administration",
     "nav": {
