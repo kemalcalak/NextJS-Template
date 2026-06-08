@@ -9,6 +9,7 @@ import { useTranslation } from "react-i18next";
 
 import { LoadingScreen } from "@/components/common/LoadingScreen";
 import { Button } from "@/components/ui/button";
+import { useAccountEvents } from "@/hooks/useAccountEvents";
 import {
   ROUTES,
   getLocaleFromPath,
@@ -33,6 +34,9 @@ export function AdminShell({ children }: AdminShellProps) {
   const isSessionInitialized = useAuthStore((state) => state.isSessionInitialized);
   const pathname = usePathname();
   const router = useRouter();
+
+  // Live RBAC: refetch /users/me when a superadmin changes this admin's grants.
+  useAccountEvents();
   const currentLocale = getLocaleFromPath(pathname);
   const pathWithoutLocale = getPathWithoutLocale(pathname);
 
