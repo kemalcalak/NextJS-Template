@@ -60,7 +60,9 @@ describe("MessageThread", () => {
     const link = screen.getByRole("link");
     expect(link).toHaveAttribute("href", file.url);
     const image = within(link).getByRole("img");
-    expect(image).toHaveAttribute("src", file.url);
+    // next/image rewrites src to the optimizer URL, so assert the original
+    // file url survives as the encoded `url` param rather than matching raw.
+    expect(image.getAttribute("src")).toContain(encodeURIComponent(file.url));
   });
 
   it("reveals the jump-to-latest button only when scrolled up", () => {

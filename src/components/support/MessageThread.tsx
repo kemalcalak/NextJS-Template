@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 
 import { ChevronDown } from "lucide-react";
+import Image from "next/image";
 import { useTranslation } from "react-i18next";
 
 import { formatDateTime } from "@/lib/format-date";
@@ -102,15 +103,20 @@ export function MessageThread({ messages, viewerRole, counterpartLabel }: Messag
                   {message.attachments.length > 0 ? (
                     <div className="mt-2 flex flex-wrap gap-2">
                       {message.attachments.map((attachment) => (
+                        // Plain <a>, not next/link: this points at an external
+                        // Cloudinary file URL opened in a new tab — Link is for
+                        // internal client-side navigation, not cross-origin downloads.
                         <a
                           key={attachment.id}
                           href={attachment.file.url}
                           target="_blank"
                           rel="noreferrer"
                         >
-                          <img
+                          <Image
                             src={attachment.file.url}
                             alt={attachment.file.filename ?? ""}
+                            width={80}
+                            height={80}
                             className="h-20 w-20 rounded-lg object-cover"
                           />
                         </a>

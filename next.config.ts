@@ -47,6 +47,11 @@ const nextConfig: NextConfig = {
   // 127.0.0.1:3000, so without this entry the HMR websocket fails and
   // downstream hydration can stall on the loading.tsx fallback.
   allowedDevOrigins: ["127.0.0.1"],
+  // Remote hosts next/image may optimise. Cloudinary serves uploaded support
+  // attachments and avatars; mirror this in the CSP img-src above.
+  images: {
+    remotePatterns: [{ protocol: "https", hostname: "res.cloudinary.com" }],
+  },
   env: {
     NEXT_PUBLIC_APP_NAME: process.env.NEXT_PUBLIC_APP_NAME,
     NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
