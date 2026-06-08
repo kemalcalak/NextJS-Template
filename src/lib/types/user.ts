@@ -1,6 +1,8 @@
 import type { FilePublic } from "./file";
+import type { Permission } from "./permissions";
 
 export enum SystemRole {
+  SUPERADMIN = "superadmin",
   ADMIN = "admin",
   USER = "user",
 }
@@ -20,6 +22,9 @@ export interface User {
   deletion_scheduled_at: string | null;
   suspended_at: string | null;
   avatar_file?: FilePublic | null;
+  // Present only for admin accounts (omitted entirely for regular users and
+  // superadmins). The grant set powering the per-permission UI gates.
+  permissions?: Permission[];
 }
 
 export interface UserUpdateResponse {
