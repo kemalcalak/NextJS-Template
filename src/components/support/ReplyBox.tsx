@@ -1,14 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 import { Form, Input } from "antd";
 import { Send } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
-import { FileUpload } from "@/components/common/file-upload";
+import { FileUpload, type FileUploadHandle } from "@/components/common/file-upload";
 import { Button } from "@/components/ui/button";
-import { FILE_CATEGORY, type FilePublic } from "@/lib/types/file";
+import { FILE_CATEGORY } from "@/lib/types/file";
 import type { MessageCreatePayload } from "@/lib/types/support";
 import { zodFieldRule } from "@/lib/validation/zodToAntdRule";
 import { getReplySchema, type ReplyFormValues } from "@/schemas/support";
@@ -23,18 +23,34 @@ interface ReplyBoxProps {
 export function ReplyBox({ onSubmit, isPending }: ReplyBoxProps) {
   const { t } = useTranslation(["support", "validation"]);
   const [form] = Form.useForm<ReplyFormValues>();
-  const [files, setFiles] = useState<FilePublic[]>([]);
+  const uploadRef = useRef<FileUploadHandle>(null);
+  const [isUploading, setIsUploading] = useState(false);
   const schema = getReplySchema(t);
 
-  const onFinish = (values: ReplyFormValues) => {
-    void onSubmit({ body: values.body, attachment_file_ids: files.map((file) => file.id) })
-      .then(() => {
-        form.resetFields();
-        setFiles([]);
-      })
-      .catch(() => {
-        // The global toast surfaces the error; keep the draft for a retry.
-      });
+  const busy = isPending || isUploading;
+
+  const onFinish = async (values: ReplyFormValues) => {
+    // Persist attachments first (Cloudinary + files table), then send the reply
+    // with the returned ids — deferred upload, REVIEW §3.12. A failed upload
+    // aborts before the reply is sent, keeping the draft for a retry.
+    let attachmentFileIds: string[];
+    try {
+      setIsUploading(true);
+      const uploaded = (await uploadRef.current?.flush()) ?? [];
+      attachmentFileIds = uploaded.map((file) => file.id);
+    } catch {
+      return;
+    } finally {
+      setIsUploading(false);
+    }
+
+    try {
+      await onSubmit({ body: values.body, attachment_file_ids: attachmentFileIds });
+      form.resetFields();
+      uploadRef.current?.reset();
+    } catch {
+      // The global toast surfaces the error; keep the draft for a retry.
+    }
   };
 
   return (
@@ -44,18 +60,17 @@ export function ReplyBox({ onSubmit, isPending }: ReplyBoxProps) {
           rows={2}
           placeholder={t("detail.replyPlaceholder")}
           maxLength={10000}
-          disabled={isPending}
+          disabled={busy}
         />
       </Form.Item>
       <div className="flex items-center justify-between gap-3">
         <FileUpload
-          value={files}
-          onChange={setFiles}
+          ref={uploadRef}
           category={FILE_CATEGORY.SUPPORT_ATTACHMENT}
-          disabled={isPending}
+          disabled={busy}
           variant="compact"
         />
-        <Button type="submit" loading={isPending}>
+        <Button type="submit" loading={busy}>
           <Send className="h-4 w-4" />
           {t("detail.send")}
         </Button>
