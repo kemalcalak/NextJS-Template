@@ -8,8 +8,14 @@ import { ConfirmDialog } from "@/components/admin/ConfirmDialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useAdmins, useDemoteAdmin, usePermissionCatalog } from "@/hooks/api/use-admin";
-import { useIsSuperadmin } from "@/hooks/usePermissions";
+import {
+  useAdmins,
+  useDeleteAdmin,
+  useDemoteSuperadmin,
+  usePermissionCatalog,
+  usePromoteSuperadmin,
+} from "@/hooks/api/use-admin";
+import { useIsRootSuperadmin, useIsSuperadmin } from "@/hooks/usePermissions";
 import type { AdminListItem } from "@/lib/types/admin";
 
 import { AdminForbidden } from "../AdminForbidden";
@@ -17,15 +23,32 @@ import { AdminRow } from "./AdminRow";
 import { CreateAdminModal } from "./CreateAdminModal";
 import { EditPermissionsModal } from "./EditPermissionsModal";
 
+type AdminActionKind = "delete" | "promote" | "demote";
+
+interface AdminActionState {
+  kind: AdminActionKind;
+  admin: AdminListItem;
+}
+
+interface AdminAction {
+  i18n: string;
+  destructive: boolean;
+  isPending: boolean;
+  run: (id: string, onDone: () => void) => void;
+}
+
 export function AdminsContent() {
   const { t } = useTranslation("admin");
   const isSuperadmin = useIsSuperadmin();
+  const isRoot = useIsRootSuperadmin();
   const adminsQuery = useAdmins(isSuperadmin);
   const catalogQuery = usePermissionCatalog(isSuperadmin);
-  const demoteMutation = useDemoteAdmin();
+  const deleteMutation = useDeleteAdmin();
+  const promoteMutation = usePromoteSuperadmin();
+  const demoteMutation = useDemoteSuperadmin();
 
   const [editing, setEditing] = useState<AdminListItem | null>(null);
-  const [demoting, setDemoting] = useState<AdminListItem | null>(null);
+  const [action, setAction] = useState<AdminActionState | null>(null);
   const [createOpen, setCreateOpen] = useState(false);
 
   if (!isSuperadmin) return <AdminForbidden />;
@@ -33,6 +56,36 @@ export function AdminsContent() {
   const catalog = catalogQuery.data?.permissions ?? [];
   const admins = adminsQuery.data?.data ?? [];
   const isLoading = adminsQuery.isLoading || catalogQuery.isLoading;
+
+  // One dialog drives all three superadmin-tier confirmations. Each kind maps to
+  // its i18n block, destructive styling, and the mutation that performs it.
+  const actions: Record<AdminActionKind, AdminAction> = {
+    delete: {
+      i18n: "delete",
+      destructive: true,
+      isPending: deleteMutation.isPending,
+      run: (id, onDone) => {
+        deleteMutation.mutate(id, { onSuccess: onDone });
+      },
+    },
+    promote: {
+      i18n: "promoteSuperadmin",
+      destructive: false,
+      isPending: promoteMutation.isPending,
+      run: (id, onDone) => {
+        promoteMutation.mutate(id, { onSuccess: onDone });
+      },
+    },
+    demote: {
+      i18n: "demoteToAdmin",
+      destructive: true,
+      isPending: demoteMutation.isPending,
+      run: (id, onDone) => {
+        demoteMutation.mutate(id, { onSuccess: onDone });
+      },
+    },
+  };
+  const active = action ? actions[action.kind] : null;
 
   let listContent: ReactNode;
   if (isLoading) {
@@ -54,7 +107,21 @@ export function AdminsContent() {
     listContent = (
       <div className="space-y-3">
         {admins.map((admin) => (
-          <AdminRow key={admin.id} admin={admin} onManage={setEditing} onDemote={setDemoting} />
+          <AdminRow
+            key={admin.id}
+            admin={admin}
+            isViewerRoot={isRoot}
+            onManage={setEditing}
+            onDelete={(target) => {
+              setAction({ kind: "delete", admin: target });
+            }}
+            onPromote={(target) => {
+              setAction({ kind: "promote", admin: target });
+            }}
+            onDemoteSuperadmin={(target) => {
+              setAction({ kind: "demote", admin: target });
+            }}
+          />
         ))}
       </div>
     );
@@ -96,22 +163,24 @@ export function AdminsContent() {
       />
 
       <ConfirmDialog
-        open={demoting !== null}
+        open={action !== null}
         onOpenChange={(open) => {
-          if (!open) setDemoting(null);
+          if (!open) setAction(null);
         }}
-        title={t("admins.demote.title")}
-        description={demoting ? t("admins.demote.description", { email: demoting.email }) : ""}
-        confirmLabel={t("admins.demote.confirm")}
-        cancelLabel={t("admins.demote.cancel")}
-        destructive
-        isLoading={demoteMutation.isPending}
+        title={active ? t(`admins.${active.i18n}.title`) : ""}
+        description={
+          action && active
+            ? t(`admins.${active.i18n}.description`, { email: action.admin.email })
+            : ""
+        }
+        confirmLabel={active ? t(`admins.${active.i18n}.confirm`) : ""}
+        cancelLabel={active ? t(`admins.${active.i18n}.cancel`) : ""}
+        destructive={active?.destructive ?? false}
+        isLoading={active?.isPending ?? false}
         onConfirm={() => {
-          if (!demoting) return;
-          demoteMutation.mutate(demoting.id, {
-            onSuccess: () => {
-              setDemoting(null);
-            },
+          if (!action || !active) return;
+          active.run(action.admin.id, () => {
+            setAction(null);
           });
         }}
       />

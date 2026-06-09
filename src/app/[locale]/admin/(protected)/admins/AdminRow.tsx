@@ -9,11 +9,23 @@ import { SystemRole } from "@/lib/types/user";
 
 interface AdminRowProps {
   admin: AdminListItem;
+  // Whether the current viewer is the root superadmin — gates the superadmin-tier
+  // actions (promote an admin to superadmin, demote a superadmin to admin).
+  isViewerRoot: boolean;
   onManage: (admin: AdminListItem) => void;
-  onDemote: (admin: AdminListItem) => void;
+  onDelete: (admin: AdminListItem) => void;
+  onPromote: (admin: AdminListItem) => void;
+  onDemoteSuperadmin: (admin: AdminListItem) => void;
 }
 
-export function AdminRow({ admin, onManage, onDemote }: AdminRowProps) {
+export function AdminRow({
+  admin,
+  isViewerRoot,
+  onManage,
+  onDelete,
+  onPromote,
+  onDemoteSuperadmin,
+}: AdminRowProps) {
   const { t } = useTranslation("admin");
   const fullName = [admin.first_name, admin.last_name].filter(Boolean).join(" ");
   const isSuperadmin = admin.role === SystemRole.SUPERADMIN;
@@ -27,9 +39,27 @@ export function AdminRow({ admin, onManage, onDemote }: AdminRowProps) {
         </div>
 
         {isSuperadmin ? (
-          <span className="rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
-            {t("admins.superadminBadge")}
-          </span>
+          <div className="flex flex-wrap items-center gap-2">
+            {admin.is_root_superadmin ? (
+              <span className="rounded-full bg-amber-500/15 px-3 py-1 text-xs font-semibold text-amber-600">
+                {t("admins.rootBadge")}
+              </span>
+            ) : null}
+            <span className="rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
+              {t("admins.superadminBadge")}
+            </span>
+            {isViewerRoot && !admin.is_root_superadmin ? (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  onDemoteSuperadmin(admin);
+                }}
+              >
+                {t("admins.demoteToAdmin.action")}
+              </Button>
+            ) : null}
+          </div>
         ) : (
           <div className="flex flex-wrap items-center gap-2">
             <span className="text-xs text-muted-foreground">
@@ -44,14 +74,25 @@ export function AdminRow({ admin, onManage, onDemote }: AdminRowProps) {
             >
               {t("admins.managePermissions")}
             </Button>
+            {isViewerRoot ? (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  onPromote(admin);
+                }}
+              >
+                {t("admins.promoteSuperadmin.action")}
+              </Button>
+            ) : null}
             <Button
               variant="outline"
               size="sm"
               onClick={() => {
-                onDemote(admin);
+                onDelete(admin);
               }}
             >
-              {t("admins.demote.action")}
+              {t("admins.delete.action")}
             </Button>
           </div>
         )}
