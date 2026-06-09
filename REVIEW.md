@@ -35,16 +35,19 @@ src/
 ├── app/[locale]/            # Tüm sayfalar locale segmenti altında
 │   ├── (auth)/              # /login /register /forgot-password /reset-password /verify-email
 │   ├── (protected)/         # /dashboard /profile /account-deactivated /account-suspended
-│   ├── admin/               # /admin/login /admin/dashboard /admin/users /admin/activities
+│   ├── admin/(protected)/   # dashboard /users(/[id]) /admins /files /activities /support(/[id])
+│   │                        #   AdminShell (sidebar+guard), PermissionGate, AdminForbidden
+│   ├── admin/login/         # ayrı admin login
 │   └── layout.tsx | page.tsx | error.tsx | loading.tsx | not-found.tsx
-├── components/{ui,auth,common,profile,admin}/
-├── hooks/                   # use-language, use-debounce, use-theme + hooks/api/* (TanStack Query)
+├── components/{ui,auth,common,profile,admin,support}/
+├── hooks/                   # use-*, usePermissions, useAccountEvents + hooks/api/* (TanStack Query)
 ├── i18n/{config.ts, server.ts, locales/{en,tr}/*.json}
 ├── lib/
-│   ├── api/{api.ts, endpoints/{auth,users,admin}.ts}
-│   ├── config/routes.ts     # ROUTES + protectedRoutes/authRoutes/... + getLocalizedPath
+│   ├── api/{api.ts, endpoints/{auth,users,admin,support,files}.ts}
+│   ├── config/routes.ts     # ROUTES + protectedRoutes/authRoutes/adminRoutes/... + getLocalizedPath
 │   ├── seo/                 # metadata helpers
-│   └── types/
+│   ├── websocket/           # self-healing socket'ler (support-socket, account-socket)
+│   └── types/               # user, permissions (RBAC), admin, …
 ├── providers/{ClientSideProviders,QueryProvider,ThemeProvider}.tsx
 ├── schemas/                 # Zod (auth, user, admin) — factory pattern
 ├── stores/                  # Zustand (auth.store.ts)
@@ -140,7 +143,7 @@ Yeni feature: page → `app/[locale]/{f}/page.tsx`, schema → `schemas/{f}.ts`,
 
 ### 3.11 Test
 
-- **E2E**: [tests-e2e/](tests-e2e) `*.spec.ts`. API çağrıları **her zaman mock** (`page.route("**/api/v1/...", route => route.fulfill(...))`). Gerçek backend'e vurmak yasak.
+- **E2E**: [tests-e2e/](tests-e2e) `*.spec.ts`. API çağrıları **her zaman mock**; [base-test.ts](tests-e2e/base-test.ts) mock'lanmamış `**/api/v1/*` HTTP'yi 401 ile bloklar **ve** `page.routeWebSocket(/\/api\/v1\//, …)` ile realtime soketleri yerel yanıtlar — **hiçbir e2e backend'e HTTP veya WebSocket isteği atmaz**. RBAC senaryoları [tests-e2e/admin/rbac.spec.ts](tests-e2e/admin/rbac.spec.ts)'te; mock'lar [admin-helpers.ts](tests-e2e/admin/admin-helpers.ts) (`adminUser` tam izinli, `superadminUser`, `makeAdmin([...])`).
 - **Unit**: `*.test.tsx` kaynak ağacı içinde `__tests__/` veya `src/test/`. Vitest + Testing Library + MSW. Test wrapper [src/test/test-utils.tsx](src/test/test-utils.tsx) — `renderWithProviders`/`createWrapper`; her testte yeni `QueryClient` (`retry: false, gcTime: 0`).
 
 ### 3.12 Dosya yükleme (deferred / önizleme-önce)
@@ -149,6 +152,15 @@ Yeni feature: page → `app/[locale]/{f}/page.tsx`, schema → `schemas/{f}.ts`,
 - **Onay sırası kesin:** (1) dosyalar önce `files` tablosuna yazılır — Cloudinary + DB, [`filesApi.upload`](src/lib/api/endpoints/files.ts) → `POST /upload` → `FilePublic`; (2) dönen `FilePublic.id`'lerle **sonra** ilgili kaynak oluşturulur/güncellenir: ticket `attachment_file_ids` ([NewTicketModal.tsx](src/components/support/NewTicketModal.tsx)), mesaj `attachment_file_ids` ([ReplyBox.tsx](src/components/support/ReplyBox.tsx)), avatar `avatar_file_id` ([ProfileAvatar.tsx](src/components/profile/ProfileAvatar.tsx)).
 - **Gerekçe — orphan kayıt yok:** iptal edilen veya gönderilmeyen seçim DB/Cloudinary'ye hiç yazılmaz. Pick anında upload, onaylanmadan yetim `files` satırı + Cloudinary asset bırakır.
 - **Mekanizma:** çok-dosyalı [FileUpload](src/components/common/file-upload/FileUpload.tsx) submit anında imperatif `flush(): Promise<FilePublic[]>` ile yükler; tekil [AvatarUpload](src/components/common/file-upload/AvatarUpload.tsx) "Kaydet" ile. `flush` başarısız olursa ilgili mutation **çalıştırılmaz** (draft korunur).
+
+### 3.13 RBAC & izin gating
+
+- Roller `SystemRole` (`user`/`admin`/`superadmin`) [lib/types/user.ts](src/lib/types/user.ts); izinler `Permission` (`resource:action`) [lib/types/permissions.ts](src/lib/types/permissions.ts). İzinler `/users/me`'den gelir (yalnızca admin'e) ve auth store'da tutulur.
+- **Tek kaynak [`usePermissions()`](src/hooks/usePermissions.ts)** → `{ isSuperadmin, permissions, has(permission) }` + tekil hook'lar (`useCanReadUsers`, `useCanDeleteUsers`, `useCanUpdateSupport`, …). Superadmin'de `has()` her zaman `true`. **Manuel `user.role === "admin"` / `permissions.includes(...)` karşılaştırması yazılmaz** — hook kullanılır.
+- **Üç katman gating:** (1) **nav** — [AdminShell](<src/app/[locale]/admin/(protected)/AdminShell.tsx>) item'ları izne göre, superadmin ek olarak _Admins_; (2) **route** — admin sayfaları [`<PermissionGate permission={...}>`](<src/app/[locale]/admin/(protected)/PermissionGate.tsx>) ile sarılı, izinsiz `AdminForbidden`; (3) **action** — buton/alanlar `useCan*` ile koşullu. Aksiyon gizliyse [`PermissionNote`](src/components/admin/PermissionNote.tsx) ("istek gönderilmez") gösterilir.
+- **Admin-yönetim sayfası** `/admin/admins` superadmin-only (`useIsSuperadmin`); izin matrisi modal'ı ([PermissionMatrix](<src/app/[locale]/admin/(protected)/admins/PermissionMatrix.tsx>)).
+- **Anlık güncelleme:** account WS ([lib/websocket/account-socket.ts](src/lib/websocket/account-socket.ts) + [hooks/useAccountEvents.ts](src/hooks/useAccountEvents.ts)) `permissions_updated`'da `/users/me` re-fetch eder.
+- Admin/superadmin, user-alanı protected route'larından `/admin`'e yönlendirilir ([UserAreaGuard](<src/app/[locale]/(protected)/UserAreaGuard.tsx>)).
 
 ---
 
@@ -242,7 +254,7 @@ Yeni feature: page → `app/[locale]/{f}/page.tsx`, schema → `schemas/{f}.ts`,
 - **Yeni auth route `authRoutes`'a eklenmemiş** — login'li kullanıcı /login'e dönebilir.
 - **Hardcoded `/login`/`/dashboard`** — `getLocalizedPath(ROUTES.X, locale)`.
 - **Locale segmentini bypass eden `<Link href="/dashboard">`**.
-- **Admin kontrolünü atlama** (`isAdminPath`/`SystemRole.ADMIN` eksik).
+- **Admin / izin kontrolünü atlama:** korumalı admin aksiyonu/sayfası `usePermissions`/`useCan*`/`PermissionGate` ile gate'lenmemiş; superadmin-özel UI `useIsSuperadmin` olmadan; **manuel `user.role` / `permissions.includes(...)` karşılaştırması** (hook kullanılmalı). Kural [3.13](#313-rbac--izin-gating).
 
 ### 5.7 i18n & UX
 
@@ -313,4 +325,4 @@ Bu maddeleri **flag etme**:
 
 ---
 
-Son güncelleme: 2026-06-08.
+Son güncelleme: 2026-06-09.
