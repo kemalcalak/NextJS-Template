@@ -36,6 +36,7 @@
       "lastNameLabel": "Soyad",
       "passwordLabel": "Parola",
       "passwordPlaceholder": "En az 8 karakter",
+      "permissionsLabel": "İzinler",
       "submit": "Admin oluştur",
       "cancel": "İptal"
     },

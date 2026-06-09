@@ -14,8 +14,8 @@ import type { AdminListItem } from "@/lib/types/admin";
 
 import { AdminForbidden } from "../AdminForbidden";
 import { AdminRow } from "./AdminRow";
+import { CreateAdminModal } from "./CreateAdminModal";
 import { EditPermissionsModal } from "./EditPermissionsModal";
-import { PromoteAdminModal } from "./PromoteAdminModal";
 
 export function AdminsContent() {
   const { t } = useTranslation("admin");
@@ -26,7 +26,7 @@ export function AdminsContent() {
 
   const [editing, setEditing] = useState<AdminListItem | null>(null);
   const [demoting, setDemoting] = useState<AdminListItem | null>(null);
-  const [promoteOpen, setPromoteOpen] = useState(false);
+  const [createOpen, setCreateOpen] = useState(false);
 
   if (!isSuperadmin) return <AdminForbidden />;
 
@@ -69,10 +69,10 @@ export function AdminsContent() {
         </div>
         <Button
           onClick={() => {
-            setPromoteOpen(true);
+            setCreateOpen(true);
           }}
         >
-          {t("admins.promote.action")}
+          {t("admins.create.action")}
         </Button>
       </div>
 
@@ -87,11 +87,11 @@ export function AdminsContent() {
         }}
       />
 
-      <PromoteAdminModal
+      <CreateAdminModal
         catalog={catalog}
-        open={promoteOpen}
+        open={createOpen}
         onClose={() => {
-          setPromoteOpen(false);
+          setCreateOpen(false);
         }}
       />
 

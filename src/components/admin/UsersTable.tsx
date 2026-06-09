@@ -29,16 +29,18 @@ interface UsersTableProps {
   onAction: (kind: UserActionKind, user: AdminUser) => void;
 }
 
+interface RowMenuArgs {
+  user: AdminUser;
+  isSelf: boolean;
+  onAction: UsersTableProps["onAction"];
+  t: (key: string) => string;
+  caps: UserActionCaps;
+}
+
 // Build only the row actions the admin is permitted to perform. An item missing
 // here means the admin lacks that permission, so the action is never offered
 // (and no request is ever sent for it).
-const buildRowMenu = (
-  user: AdminUser,
-  isSelf: boolean,
-  onAction: UsersTableProps["onAction"],
-  t: (key: string) => string,
-  caps: UserActionCaps,
-): MenuProps["items"] => {
+const buildRowMenu = ({ user, isSelf, onAction, t, caps }: RowMenuArgs): MenuProps["items"] => {
   const items: NonNullable<MenuProps["items"]> = [];
 
   if (caps.canSuspend) {
@@ -166,7 +168,7 @@ export function UsersTable({ rows, isLoading, currentUserId, caps, onAction }: U
                     </Button>
                     {hasRowActions ? (
                       <Dropdown
-                        menu={{ items: buildRowMenu(user, isSelf, onAction, t, caps) }}
+                        menu={{ items: buildRowMenu({ user, isSelf, onAction, t, caps }) }}
                         trigger={["click"]}
                         placement="bottomRight"
                       >

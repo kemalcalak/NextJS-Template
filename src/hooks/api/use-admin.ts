@@ -6,7 +6,6 @@ import type {
   AdminActivityListParams,
   AdminCreatePayload,
   AdminPermissionsUpdatePayload,
-  AdminPromotePayload,
   AdminUserListParams,
   AdminUserUpdatePayload,
   RootTransferConfirmPayload,
@@ -156,17 +155,6 @@ export const usePermissionCatalog = (enabled = true) =>
     enabled,
     staleTime: Infinity,
   });
-
-export const usePromoteAdmin = () => {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: (payload: AdminPromotePayload) => adminApi.promoteAdmin(payload),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: adminKeys.admins });
-      invalidateUserSurfaces(queryClient);
-    },
-  });
-};
 
 export const useSetAdminPermissions = () => {
   const queryClient = useQueryClient();

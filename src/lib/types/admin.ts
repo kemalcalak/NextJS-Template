@@ -141,11 +141,6 @@ export interface AdminListResponse {
   total: number;
 }
 
-export interface AdminPromotePayload {
-  user_id: string;
-  permissions: Permission[];
-}
-
 // Create a brand-new admin account (replaces the old promote-an-existing-user
 // flow). Mirrors the backend ``AdminCreate`` schema.
 export interface AdminCreatePayload {

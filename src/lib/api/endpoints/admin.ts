@@ -6,7 +6,6 @@ import type {
   AdminListResponse,
   AdminMutationResponse,
   AdminPermissionsUpdatePayload,
-  AdminPromotePayload,
   AdminStats,
   AdminUser,
   AdminUserListParams,
@@ -86,9 +85,6 @@ export const adminApi = {
 
   getPermissionCatalog: (): Promise<PermissionCatalogResponse> =>
     api.get<PermissionCatalogResponse, PermissionCatalogResponse>("/admin/admins/permissions"),
-
-  promoteAdmin: (payload: AdminPromotePayload): Promise<AdminMutationResponse> =>
-    api.post<AdminMutationResponse, AdminMutationResponse>("/admin/admins", payload),
 
   // Create a brand-new admin account (replaces promote-an-existing-user).
   createAdmin: (payload: AdminCreatePayload): Promise<AdminMutationResponse> =>

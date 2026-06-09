@@ -36,6 +36,7 @@
       "lastNameLabel": "Last name",
       "passwordLabel": "Password",
       "passwordPlaceholder": "At least 8 characters",
+      "permissionsLabel": "Permissions",
       "submit": "Create admin",
       "cancel": "Cancel"
     },
