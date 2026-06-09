@@ -14,6 +14,9 @@ export interface User {
   last_name: string | null;
   title: string | null;
   role: SystemRole;
+  // True only for the single root superadmin (the first one seeded). Drives the
+  // root-only admin-tier actions (promote/demote a superadmin, transfer root).
+  is_root_superadmin?: boolean;
   is_active: boolean;
   is_verified: boolean;
   created_at: string;

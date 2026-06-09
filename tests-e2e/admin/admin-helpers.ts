@@ -184,6 +184,7 @@ export const adminListItems: AdminListItem[] = [
     last_name: "Super",
     role: SystemRole.SUPERADMIN,
     is_active: true,
+    is_root_superadmin: true,
     permissions: ALL_PERMISSIONS,
   },
   {
@@ -193,6 +194,7 @@ export const adminListItems: AdminListItem[] = [
     last_name: null,
     role: SystemRole.ADMIN,
     is_active: true,
+    is_root_superadmin: false,
     permissions: [Permission.UsersRead],
   },
 ];

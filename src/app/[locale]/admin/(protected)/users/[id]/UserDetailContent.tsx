@@ -21,7 +21,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { useAdminUser, useAdminUserActivities, useUpdateAdminUser } from "@/hooks/api/use-admin";
 import { useUserActions, type UserActionKind } from "@/hooks/api/use-user-actions";
 import {
-  useCanChangeUserRole,
   useCanDeleteUsers,
   useCanResetUserPassword,
   useCanSuspendUsers,
@@ -47,7 +46,6 @@ export function UserDetailContent({ userId }: { userId: string }) {
   const { run, isLoading: isActionLoading } = useUserActions();
 
   const canWrite = useCanWriteUsers();
-  const canChangeRole = useCanChangeUserRole();
   const dangerCaps = {
     canResetPassword: useCanResetUserPassword(),
     canSuspend: useCanSuspendUsers(),
@@ -128,7 +126,6 @@ export function UserDetailContent({ userId }: { userId: string }) {
               user={user}
               isSelf={isSelf}
               isSaving={update.isPending}
-              canChangeRole={canChangeRole}
               onSubmit={handleSave}
             />
           ) : (

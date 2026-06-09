@@ -5,7 +5,6 @@
 export enum Permission {
   UsersRead = "users:read",
   UsersWrite = "users:write",
-  UsersRole = "users:role",
   UsersDelete = "users:delete",
   UsersSuspend = "users:suspend",
   UsersPasswordReset = "users:password_reset",

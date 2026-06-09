@@ -1,7 +1,5 @@
 import { z } from "zod";
 
-import { SystemRole } from "@/lib/types/user";
-
 import type { TFunction } from "i18next";
 
 // Email is intentionally NOT in this schema. An admin must never be able to
@@ -28,7 +26,6 @@ export const getAdminUserUpdateSchema = (t: TFunction) =>
       .max(100)
       .or(z.literal("")),
     title: z.string().trim().max(100).optional().or(z.literal("")),
-    role: z.enum(SystemRole),
     is_active: z.boolean(),
     is_verified: z.boolean(),
   });

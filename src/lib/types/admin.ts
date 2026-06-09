@@ -69,7 +69,6 @@ export interface AdminUserUpdatePayload {
   first_name?: string | null;
   last_name?: string | null;
   title?: string | null;
-  role?: SystemRole;
   is_active?: boolean;
   is_verified?: boolean;
   avatar_file_id?: string | null;
@@ -133,6 +132,7 @@ export interface AdminListItem {
   last_name: string | null;
   role: SystemRole;
   is_active: boolean;
+  is_root_superadmin: boolean;
   permissions: Permission[];
 }
 
@@ -146,8 +146,27 @@ export interface AdminPromotePayload {
   permissions: Permission[];
 }
 
+// Create a brand-new admin account (replaces the old promote-an-existing-user
+// flow). Mirrors the backend ``AdminCreate`` schema.
+export interface AdminCreatePayload {
+  email: string;
+  first_name?: string | null;
+  last_name?: string | null;
+  password: string;
+  permissions: Permission[];
+}
+
 export interface AdminPermissionsUpdatePayload {
   permissions: Permission[];
+}
+
+// Email-OTP root-superadmin transfer (root only).
+export interface RootTransferRequestPayload {
+  user_id: string;
+}
+
+export interface RootTransferConfirmPayload {
+  code: string;
 }
 
 export interface AdminMutationResponse {

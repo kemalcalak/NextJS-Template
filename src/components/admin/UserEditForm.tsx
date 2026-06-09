@@ -10,14 +10,12 @@ import { UserEditFormFields } from "@/components/admin/UserEditFormFields";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import type { AdminUser, AdminUserUpdatePayload } from "@/lib/types/admin";
-import { SystemRole } from "@/lib/types/user";
 import { type AdminUserUpdateFormValues } from "@/schemas/admin";
 
 interface UserEditFormProps {
   user: AdminUser;
   isSelf: boolean;
   isSaving: boolean;
-  canChangeRole: boolean;
   onSubmit: (payload: AdminUserUpdatePayload) => void;
 }
 
@@ -25,18 +23,11 @@ const userToFormValues = (user: AdminUser): AdminUserUpdateFormValues => ({
   first_name: user.first_name ?? "",
   last_name: user.last_name ?? "",
   title: user.title ?? "",
-  role: user.role ?? SystemRole.USER,
   is_active: user.is_active,
   is_verified: user.is_verified,
 });
 
-export function UserEditForm({
-  user,
-  isSelf,
-  isSaving,
-  canChangeRole,
-  onSubmit,
-}: UserEditFormProps) {
+export function UserEditForm({ user, isSelf, isSaving, onSubmit }: UserEditFormProps) {
   const { t } = useTranslation("admin");
   const [form] = Form.useForm<AdminUserUpdateFormValues>();
   const initialValues = userToFormValues(user);
@@ -57,11 +48,6 @@ export function UserEditForm({
       title: values.title ? values.title : null,
     };
     if (!isSelf) {
-      // Role requires the dedicated users:role permission; only send it when the
-      // admin holds it, otherwise the backend would 403 the whole update.
-      if (canChangeRole) {
-        payload.role = values.role;
-      }
       payload.is_active = values.is_active;
       payload.is_verified = values.is_verified;
     }
@@ -83,7 +69,7 @@ export function UserEditForm({
           requiredMark={false}
           className="flex flex-1 flex-col gap-4"
         >
-          <UserEditFormFields isSelf={isSelf} canChangeRole={canChangeRole} />
+          <UserEditFormFields isSelf={isSelf} />
           <div className="mt-auto flex flex-wrap justify-end gap-2 pt-2">
             <Button
               type="button"

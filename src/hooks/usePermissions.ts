@@ -37,9 +37,14 @@ export function usePermissions(): PermissionsApi {
 
 export const useIsSuperadmin = (): boolean => usePermissions().isSuperadmin;
 
+/** True only for the root superadmin (governs the superadmin-tier actions). */
+export const useIsRootSuperadmin = (): boolean => {
+  const user = useAuthStore((state) => state.user);
+  return user?.is_root_superadmin === true;
+};
+
 export const useCanReadUsers = (): boolean => usePermissions().has(Permission.UsersRead);
 export const useCanWriteUsers = (): boolean => usePermissions().has(Permission.UsersWrite);
-export const useCanChangeUserRole = (): boolean => usePermissions().has(Permission.UsersRole);
 export const useCanDeleteUsers = (): boolean => usePermissions().has(Permission.UsersDelete);
 export const useCanSuspendUsers = (): boolean => usePermissions().has(Permission.UsersSuspend);
 export const useCanResetUserPassword = (): boolean =>
