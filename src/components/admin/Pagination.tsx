@@ -1,11 +1,14 @@
 "use client";
 
+import { useState } from "react";
+
 import { Select } from "antd";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 import { PAGE_SIZE_OPTIONS } from "@/components/admin/pagination-config";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 interface PaginationProps {
   total: number;
@@ -32,6 +35,31 @@ export function AdminPagination({
 
   const canPrev = page > 1;
   const canNext = page < totalPages;
+
+  // Editable "go to page" field. Keep its draft in sync when the page changes
+  // from outside (prev/next, page-size change, data refetch) using React's
+  // render-phase state-adjustment pattern — avoids a setState-in-effect.
+  const [draft, setDraft] = useState(String(page));
+  const [syncedPage, setSyncedPage] = useState(page);
+  if (page !== syncedPage) {
+    setSyncedPage(page);
+    setDraft(String(page));
+  }
+
+  // Parse the draft, clamp to a valid page, and jump there if it changed.
+  // Invalid input snaps the field back to the current page.
+  const commitDraft = () => {
+    const parsed = Number.parseInt(draft, 10);
+    if (Number.isNaN(parsed)) {
+      setDraft(String(page));
+      return;
+    }
+    const target = Math.min(totalPages, Math.max(1, parsed));
+    setDraft(String(target));
+    if (target !== page) {
+      onChange((target - 1) * limit);
+    }
+  };
 
   return (
     <div className="flex flex-col items-center justify-between gap-3 border-t pt-4 sm:flex-row">
@@ -64,8 +92,19 @@ export function AdminPagination({
           <ChevronLeft className="h-4 w-4" />
           {t("users.pagination.previous")}
         </Button>
-        <span className="text-muted-foreground">
-          {t("users.pagination.page", { page, total: totalPages })}
+        <span className="flex shrink-0 items-center gap-1.5 whitespace-nowrap text-muted-foreground">
+          <Input
+            value={draft}
+            inputMode="numeric"
+            aria-label={t("users.pagination.goToPage")}
+            className="w-16 text-center"
+            onChange={(event) => {
+              setDraft(event.target.value);
+            }}
+            onBlur={commitDraft}
+            onPressEnter={commitDraft}
+          />
+          {t("users.pagination.pageOf", { total: totalPages })}
         </span>
         <Button
           variant="outline"

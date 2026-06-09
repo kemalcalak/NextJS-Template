@@ -59,6 +59,39 @@ describe("AdminPagination", () => {
   it("renders the showing/page translation keys for a zero-row table", () => {
     renderWithProviders(<AdminPagination total={0} skip={0} limit={10} onChange={vi.fn()} />);
     expect(screen.getByText(/admin:users\.pagination\.showing/)).toBeInTheDocument();
-    expect(screen.getByText(/admin:users\.pagination\.page/)).toBeInTheDocument();
+    expect(screen.getByText(/admin:users\.pagination\.pageOf/)).toBeInTheDocument();
+  });
+
+  it("jumps to the typed page when Enter is pressed", () => {
+    const onChange = vi.fn();
+    renderWithProviders(<AdminPagination total={500} skip={0} limit={10} onChange={onChange} />);
+
+    const input = screen.getByLabelText(/admin:users\.pagination\.goToPage/);
+    fireEvent.change(input, { target: { value: "12" } });
+    fireEvent.keyDown(input, { key: "Enter", code: "Enter", keyCode: 13 });
+
+    expect(onChange).toHaveBeenCalledWith(110); // (12 - 1) * 10
+  });
+
+  it("clamps an out-of-range page to the last page on blur", () => {
+    const onChange = vi.fn();
+    renderWithProviders(<AdminPagination total={50} skip={0} limit={10} onChange={onChange} />);
+
+    const input = screen.getByLabelText(/admin:users\.pagination\.goToPage/);
+    fireEvent.change(input, { target: { value: "999" } });
+    fireEvent.blur(input);
+
+    expect(onChange).toHaveBeenCalledWith(40); // last page (5) → (5 - 1) * 10
+  });
+
+  it("does not call onChange when the typed page equals the current page", () => {
+    const onChange = vi.fn();
+    renderWithProviders(<AdminPagination total={50} skip={20} limit={10} onChange={onChange} />);
+
+    const input = screen.getByLabelText(/admin:users\.pagination\.goToPage/);
+    fireEvent.change(input, { target: { value: "3" } }); // already on page 3
+    fireEvent.blur(input);
+
+    expect(onChange).not.toHaveBeenCalled();
   });
 });

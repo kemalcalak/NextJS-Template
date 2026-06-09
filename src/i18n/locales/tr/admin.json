@@ -178,7 +178,8 @@
     "pagination": {
       "previous": "Önceki",
       "next": "Sonraki",
-      "page": "Sayfa {{page}} / {{total}}",
+      "pageOf": "/ {{total}}",
+      "goToPage": "Sayfaya git",
       "showing": "{{from}}–{{to}} / {{total}}",
       "rowsPerPage": "Sayfa başına"
     },
