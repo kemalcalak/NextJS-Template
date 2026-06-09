@@ -5,11 +5,13 @@ import { useEffect, useMemo, useState } from "react";
 import { Form, Select } from "antd";
 import { useTranslation } from "react-i18next";
 
+import { PermissionNote } from "@/components/admin/PermissionNote";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAdminUsers } from "@/hooks/api/use-admin";
 import { useUpdateAdminTicket } from "@/hooks/api/use-support";
 import { useDebounce } from "@/hooks/use-debounce";
+import { useCanUpdateSupport, useCanWriteSupport } from "@/hooks/usePermissions";
 import {
   TICKET_PRIORITIES,
   TICKET_STATUSES,
@@ -41,6 +43,9 @@ export function TicketAdminControls({ ticket }: TicketAdminControlsProps) {
   const [form] = Form.useForm<ControlsFormValues>();
   const currentUserId = useAuthStore((state) => state.user?.id ?? null);
   const { mutate: update, isPending } = useUpdateAdminTicket(ticket.id);
+  // status/priority are gated by support:write; (re)assignment by support:update.
+  const canWrite = useCanWriteSupport();
+  const canAssign = useCanUpdateSupport();
 
   const [adminSearch, setAdminSearch] = useState("");
   const [adminLimit, setAdminLimit] = useState(ADMIN_PAGE_SIZE);
@@ -89,11 +94,16 @@ export function TicketAdminControls({ ticket }: TicketAdminControlsProps) {
   }, [admins?.data, ticket.assigned_admin, t]);
 
   const onFinish = (values: ControlsFormValues) => {
-    const payload: AdminTicketUpdatePayload = {
-      status: values.status,
-      priority: values.priority,
-      assigned_admin_id: values.assigned_admin_id || null,
-    };
+    // Only send fields the admin is permitted to change — otherwise the backend
+    // would 403 the whole PATCH (e.g. an unpermitted reassignment).
+    const payload: AdminTicketUpdatePayload = {};
+    if (canWrite) {
+      payload.status = values.status;
+      payload.priority = values.priority;
+    }
+    if (canAssign) {
+      payload.assigned_admin_id = values.assigned_admin_id || null;
+    }
     update(payload);
   };
 
@@ -111,43 +121,61 @@ export function TicketAdminControls({ ticket }: TicketAdminControlsProps) {
         <CardTitle className="text-base">{t("admin.controls.title")}</CardTitle>
       </CardHeader>
       <CardContent>
-        <Form
-          form={form}
-          layout="vertical"
-          requiredMark={false}
-          onFinish={onFinish}
-          initialValues={{
-            status: ticket.status,
-            priority: ticket.priority,
-            assigned_admin_id: ticket.assigned_admin_id ?? "",
-          }}
-        >
-          <Form.Item name="status" label={t("admin.controls.status")}>
-            <Select
-              options={TICKET_STATUSES.map((value) => ({ value, label: t(`status.${value}`) }))}
-            />
-          </Form.Item>
-          <Form.Item name="priority" label={t("admin.controls.priority")}>
-            <Select
-              options={TICKET_PRIORITIES.map((value) => ({ value, label: t(`priority.${value}`) }))}
-            />
-          </Form.Item>
-          <Form.Item name="assigned_admin_id" label={t("admin.assignee")}>
-            <Select
-              showSearch={{ filterOption: false, onSearch: handleAdminSearch }}
-              onPopupScroll={onAdminScroll}
-              options={assigneeOptions}
-            />
-          </Form.Item>
-          <div className="flex items-center justify-between gap-2">
-            <Button type="button" variant="outline" onClick={assignToMe}>
-              {t("admin.assignToMe")}
-            </Button>
-            <Button type="submit" loading={isPending}>
-              {t("admin.controls.save")}
-            </Button>
-          </div>
-        </Form>
+        {!canWrite && !canAssign ? (
+          <PermissionNote />
+        ) : (
+          <Form
+            form={form}
+            layout="vertical"
+            requiredMark={false}
+            onFinish={onFinish}
+            initialValues={{
+              status: ticket.status,
+              priority: ticket.priority,
+              assigned_admin_id: ticket.assigned_admin_id ?? "",
+            }}
+          >
+            {canWrite ? (
+              <>
+                <Form.Item name="status" label={t("admin.controls.status")}>
+                  <Select
+                    options={TICKET_STATUSES.map((value) => ({
+                      value,
+                      label: t(`status.${value}`),
+                    }))}
+                  />
+                </Form.Item>
+                <Form.Item name="priority" label={t("admin.controls.priority")}>
+                  <Select
+                    options={TICKET_PRIORITIES.map((value) => ({
+                      value,
+                      label: t(`priority.${value}`),
+                    }))}
+                  />
+                </Form.Item>
+              </>
+            ) : null}
+            {canAssign ? (
+              <Form.Item name="assigned_admin_id" label={t("admin.assignee")}>
+                <Select
+                  showSearch={{ filterOption: false, onSearch: handleAdminSearch }}
+                  onPopupScroll={onAdminScroll}
+                  options={assigneeOptions}
+                />
+              </Form.Item>
+            ) : null}
+            <div className="flex items-center justify-end gap-2">
+              {canAssign ? (
+                <Button type="button" variant="outline" onClick={assignToMe}>
+                  {t("admin.assignToMe")}
+                </Button>
+              ) : null}
+              <Button type="submit" loading={isPending}>
+                {t("admin.controls.save")}
+              </Button>
+            </div>
+          </Form>
+        )}
       </CardContent>
     </Card>
   );

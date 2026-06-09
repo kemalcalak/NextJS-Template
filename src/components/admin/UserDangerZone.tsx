@@ -8,15 +8,28 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import type { UserActionKind } from "@/hooks/api/use-user-actions";
 import type { AdminUser } from "@/lib/types/admin";
 
+interface UserDangerZoneCaps {
+  canResetPassword: boolean;
+  canSuspend: boolean;
+  canDelete: boolean;
+}
+
 interface UserDangerZoneProps {
   user: AdminUser;
   isSelf: boolean;
   disabled: boolean;
+  caps: UserDangerZoneCaps;
   onAction: (kind: UserActionKind) => void;
 }
 
-export function UserDangerZone({ user, isSelf, disabled, onAction }: UserDangerZoneProps) {
+export function UserDangerZone({ user, isSelf, disabled, caps, onAction }: UserDangerZoneProps) {
   const { t } = useTranslation("admin");
+
+  // Nothing destructive is permitted — omit the section entirely rather than
+  // showing disabled buttons that would never fire a request.
+  if (!caps.canResetPassword && !caps.canSuspend && !caps.canDelete) {
+    return null;
+  }
 
   return (
     <Card data-testid="admin-user-danger-zone" className="border-destructive/30 bg-destructive/5">
@@ -25,49 +38,54 @@ export function UserDangerZone({ user, isSelf, disabled, onAction }: UserDangerZ
         <CardDescription>{t("userDetail.dangerDescription")}</CardDescription>
       </CardHeader>
       <CardContent className="flex flex-wrap gap-2">
-        <Button
-          variant="outline"
-          onClick={() => {
-            onAction("change-password");
-          }}
-          disabled={disabled}
-        >
-          <KeyRound className="mr-2 h-4 w-4" />
-          {t("userDetail.changePassword")}
-        </Button>
-        {user.suspended_at ? (
+        {caps.canResetPassword ? (
           <Button
             variant="outline"
             onClick={() => {
-              onAction("unsuspend");
+              onAction("change-password");
             }}
             disabled={disabled}
           >
-            <RotateCcw className="mr-2 h-4 w-4" />
-            {t("userDetail.unsuspend")}
+            <KeyRound className="mr-2 h-4 w-4" />
+            {t("userDetail.changePassword")}
           </Button>
-        ) : (
+        ) : null}
+        {caps.canSuspend &&
+          (user.suspended_at ? (
+            <Button
+              variant="outline"
+              onClick={() => {
+                onAction("unsuspend");
+              }}
+              disabled={disabled}
+            >
+              <RotateCcw className="mr-2 h-4 w-4" />
+              {t("userDetail.unsuspend")}
+            </Button>
+          ) : (
+            <Button
+              variant="outline"
+              onClick={() => {
+                onAction("suspend");
+              }}
+              disabled={disabled || isSelf}
+            >
+              <Ban className="mr-2 h-4 w-4" />
+              {t("userDetail.suspend")}
+            </Button>
+          ))}
+        {caps.canDelete ? (
           <Button
-            variant="outline"
+            variant="destructive"
             onClick={() => {
-              onAction("suspend");
+              onAction("delete");
             }}
             disabled={disabled || isSelf}
           >
-            <Ban className="mr-2 h-4 w-4" />
-            {t("userDetail.suspend")}
+            <Trash2 className="mr-2 h-4 w-4" />
+            {t("userDetail.delete")}
           </Button>
-        )}
-        <Button
-          variant="destructive"
-          onClick={() => {
-            onAction("delete");
-          }}
-          disabled={disabled || isSelf}
-        >
-          <Trash2 className="mr-2 h-4 w-4" />
-          {t("userDetail.delete")}
-        </Button>
+        ) : null}
       </CardContent>
     </Card>
   );

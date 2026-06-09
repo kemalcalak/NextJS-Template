@@ -8,6 +8,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslation } from "react-i18next";
 
+import { PermissionNote } from "@/components/admin/PermissionNote";
 import { TicketAdminControls } from "@/components/admin/TicketAdminControls";
 import { MessageThread } from "@/components/support/MessageThread";
 import { ReplyBox } from "@/components/support/ReplyBox";
@@ -16,6 +17,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { adminSupportKeys, useAdminReplyTicket, useAdminTicket } from "@/hooks/api/use-support";
 import { useTicketRealtime } from "@/hooks/use-support-realtime";
+import { useCanWriteSupport } from "@/hooks/usePermissions";
 import { getLocaleFromPath, getLocalizedPath, ROUTES } from "@/lib/config/routes";
 
 interface AdminTicketDetailContentProps {
@@ -28,6 +30,7 @@ export function AdminTicketDetailContent({ ticketId }: AdminTicketDetailContentP
   const queryClient = useQueryClient();
   const { data: ticket, isLoading } = useAdminTicket(ticketId);
   const reply = useAdminReplyTicket(ticketId);
+  const canReply = useCanWriteSupport();
 
   // Live updates: customer replies and edits by other admins stream in via the
   // shared support socket while this ticket's detail is open.
@@ -107,9 +110,11 @@ export function AdminTicketDetailContent({ ticketId }: AdminTicketDetailContentP
               <p className="text-center text-sm text-muted-foreground">
                 {t("detail.adminClosedNotice")}
               </p>
-            ) : (
+            ) : null}
+            {!isClosed && canReply ? (
               <ReplyBox onSubmit={reply.mutateAsync} isPending={reply.isPending} />
-            )}
+            ) : null}
+            {!isClosed && !canReply ? <PermissionNote /> : null}
           </div>
         </div>
 

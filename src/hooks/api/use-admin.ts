@@ -55,10 +55,11 @@ export const useAdminUser = (id: string | undefined) =>
     enabled: Boolean(id),
   });
 
-export const useAdminStats = () =>
+export const useAdminStats = (enabled = true) =>
   useQuery({
     queryKey: adminKeys.stats,
     queryFn: () => adminApi.getStats(),
+    enabled,
   });
 
 export const useUpdateAdminUser = () => {

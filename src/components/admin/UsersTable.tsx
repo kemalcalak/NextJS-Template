@@ -15,63 +15,89 @@ import { formatDate } from "@/lib/format-date";
 import type { AdminUser } from "@/lib/types/admin";
 import { SystemRole } from "@/lib/types/user";
 
+interface UserActionCaps {
+  canSuspend: boolean;
+  canResetPassword: boolean;
+  canDelete: boolean;
+}
+
 interface UsersTableProps {
   rows: AdminUser[];
   isLoading: boolean;
   currentUserId: string | null;
+  caps: UserActionCaps;
   onAction: (kind: UserActionKind, user: AdminUser) => void;
 }
 
+// Build only the row actions the admin is permitted to perform. An item missing
+// here means the admin lacks that permission, so the action is never offered
+// (and no request is ever sent for it).
 const buildRowMenu = (
   user: AdminUser,
   isSelf: boolean,
   onAction: UsersTableProps["onAction"],
   t: (key: string) => string,
-): MenuProps["items"] => [
-  user.suspended_at
-    ? {
-        key: "unsuspend",
-        icon: <RotateCcw className="h-4 w-4" />,
-        label: t("users.rowActions.unsuspend"),
-        onClick: () => {
-          onAction("unsuspend", user);
-        },
-      }
-    : {
-        key: "suspend",
-        icon: <Ban className="h-4 w-4" />,
-        label: t("users.rowActions.suspend"),
-        danger: true,
-        disabled: isSelf,
-        onClick: () => {
-          onAction("suspend", user);
-        },
-      },
-  {
-    key: "change-password",
-    icon: <KeyRound className="h-4 w-4" />,
-    label: t("users.rowActions.changePassword"),
-    onClick: () => {
-      onAction("change-password", user);
-    },
-  },
-  { type: "divider" },
-  {
-    key: "delete",
-    icon: <Trash2 className="h-4 w-4" />,
-    label: t("users.rowActions.delete"),
-    danger: true,
-    disabled: isSelf,
-    onClick: () => {
-      onAction("delete", user);
-    },
-  },
-];
+  caps: UserActionCaps,
+): MenuProps["items"] => {
+  const items: NonNullable<MenuProps["items"]> = [];
 
-export function UsersTable({ rows, isLoading, currentUserId, onAction }: UsersTableProps) {
+  if (caps.canSuspend) {
+    items.push(
+      user.suspended_at
+        ? {
+            key: "unsuspend",
+            icon: <RotateCcw className="h-4 w-4" />,
+            label: t("users.rowActions.unsuspend"),
+            onClick: () => {
+              onAction("unsuspend", user);
+            },
+          }
+        : {
+            key: "suspend",
+            icon: <Ban className="h-4 w-4" />,
+            label: t("users.rowActions.suspend"),
+            danger: true,
+            disabled: isSelf,
+            onClick: () => {
+              onAction("suspend", user);
+            },
+          },
+    );
+  }
+
+  if (caps.canResetPassword) {
+    items.push({
+      key: "change-password",
+      icon: <KeyRound className="h-4 w-4" />,
+      label: t("users.rowActions.changePassword"),
+      onClick: () => {
+        onAction("change-password", user);
+      },
+    });
+  }
+
+  if (caps.canDelete) {
+    if (items.length > 0) items.push({ type: "divider" });
+    items.push({
+      key: "delete",
+      icon: <Trash2 className="h-4 w-4" />,
+      label: t("users.rowActions.delete"),
+      danger: true,
+      disabled: isSelf,
+      onClick: () => {
+        onAction("delete", user);
+      },
+    });
+  }
+
+  return items;
+};
+
+export function UsersTable({ rows, isLoading, currentUserId, caps, onAction }: UsersTableProps) {
   const { t } = useTranslation("admin");
   const pathname = usePathname();
   const currentLocale = getLocaleFromPath(pathname);
+  const hasRowActions = caps.canSuspend || caps.canResetPassword || caps.canDelete;
 
   return (
     <div className="overflow-x-auto">
@@ -138,21 +164,23 @@ export function UsersTable({ rows, isLoading, currentUserId, onAction }: UsersTa
                         <ChevronRight className="h-4 w-4" />
                       </Link>
                     </Button>
-                    <Dropdown
-                      menu={{ items: buildRowMenu(user, isSelf, onAction, t) }}
-                      trigger={["click"]}
-                      placement="bottomRight"
-                    >
-                      <span>
-                        <Button
-                          variant="ghost"
-                          size="icon-sm"
-                          aria-label={t("users.rowActions.menu")}
-                        >
-                          <MoreHorizontal className="h-4 w-4" />
-                        </Button>
-                      </span>
-                    </Dropdown>
+                    {hasRowActions ? (
+                      <Dropdown
+                        menu={{ items: buildRowMenu(user, isSelf, onAction, t, caps) }}
+                        trigger={["click"]}
+                        placement="bottomRight"
+                      >
+                        <span>
+                          <Button
+                            variant="ghost"
+                            size="icon-sm"
+                            aria-label={t("users.rowActions.menu")}
+                          >
+                            <MoreHorizontal className="h-4 w-4" />
+                          </Button>
+                        </span>
+                      </Dropdown>
+                    ) : null}
                   </div>
                 </td>
               </tr>

@@ -45,6 +45,7 @@
     "selectAll": "All",
     "searchPlaceholder": "Search sections...",
     "noResults": "No sections match your search.",
+    "restricted": "You don't have permission for this, so it's hidden and no request is sent.",
     "resource": {
       "users": "Users",
       "files": "Files",

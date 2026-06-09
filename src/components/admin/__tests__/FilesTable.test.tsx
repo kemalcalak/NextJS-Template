@@ -26,7 +26,7 @@ const orphanRow: AdminFileListItem = {
   uploaded_by: null,
 };
 
-const makeProps = () => ({ onPreview: vi.fn(), onDelete: vi.fn() });
+const makeProps = () => ({ canDelete: true, onPreview: vi.fn(), onDelete: vi.fn() });
 
 describe("FilesTable", () => {
   it("renders a row with filename and uploader name + email", () => {

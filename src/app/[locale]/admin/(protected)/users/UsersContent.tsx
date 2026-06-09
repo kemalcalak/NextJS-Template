@@ -18,6 +18,11 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useAdminUsers } from "@/hooks/api/use-admin";
 import { useUserActions, type UserActionKind } from "@/hooks/api/use-user-actions";
 import { useDebounce } from "@/hooks/use-debounce";
+import {
+  useCanDeleteUsers,
+  useCanResetUserPassword,
+  useCanSuspendUsers,
+} from "@/hooks/usePermissions";
 import type { AdminUser } from "@/lib/types/admin";
 import { useAuthStore } from "@/stores/auth.store";
 
@@ -54,6 +59,12 @@ export function UsersContent() {
 
   const { data, isLoading, isFetching } = useAdminUsers(params);
   const { run, isLoading: isActionLoading } = useUserActions();
+
+  const caps = {
+    canSuspend: useCanSuspendUsers(),
+    canResetPassword: useCanResetUserPassword(),
+    canDelete: useCanDeleteUsers(),
+  };
 
   const hasFilters = searchInput !== "" || role !== "all" || status !== "all" || verified !== "all";
 
@@ -115,6 +126,7 @@ export function UsersContent() {
             rows={data?.data ?? []}
             isLoading={isLoading && !data}
             currentUserId={currentUserId}
+            caps={caps}
             onAction={(kind, user) => {
               setPending({ kind, user });
             }}

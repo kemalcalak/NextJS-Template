@@ -13,6 +13,7 @@ import { DEFAULT_PAGE_SIZE } from "@/components/admin/pagination-config";
 import { Card, CardContent } from "@/components/ui/card";
 import { useAdminFiles, useDeleteAdminFile } from "@/hooks/api/use-files";
 import { useDebounce } from "@/hooks/use-debounce";
+import { useCanDeleteFiles } from "@/hooks/usePermissions";
 import type { AdminFileListItem, AdminFileListParams } from "@/lib/types/file";
 
 export function FilesContent() {
@@ -40,6 +41,7 @@ export function FilesContent() {
 
   const { data, isLoading, isFetching } = useAdminFiles(params);
   const deleteFile = useDeleteAdminFile();
+  const canDelete = useCanDeleteFiles();
 
   const hasFilters = contentType !== "all" || uploaderSearch !== "";
 
@@ -93,6 +95,7 @@ export function FilesContent() {
           <FilesTable
             rows={data?.data ?? []}
             isLoading={isLoading && !data}
+            canDelete={canDelete}
             onPreview={openPreview}
             onDelete={setPendingDelete}
           />

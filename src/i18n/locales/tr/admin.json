@@ -45,6 +45,7 @@
     "selectAll": "Tümü",
     "searchPlaceholder": "Bölüm ara...",
     "noResults": "Eşleşen bölüm yok.",
+    "restricted": "Bu işlem için yetkiniz yok; gizlendi ve istek gönderilmez.",
     "resource": {
       "users": "Kullanıcılar",
       "files": "Dosyalar",

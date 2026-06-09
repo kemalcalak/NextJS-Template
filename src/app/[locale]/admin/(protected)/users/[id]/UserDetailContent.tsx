@@ -9,6 +9,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 
 import { ActivityTable } from "@/components/admin/ActivityTable";
+import { PermissionNote } from "@/components/admin/PermissionNote";
 import { StatusBadge, UserStatusBadge } from "@/components/admin/StatusBadge";
 import { UserActionDialogs } from "@/components/admin/UserActionDialogs";
 import { UserAvatarCard } from "@/components/admin/UserAvatarCard";
@@ -19,6 +20,13 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAdminUser, useAdminUserActivities, useUpdateAdminUser } from "@/hooks/api/use-admin";
 import { useUserActions, type UserActionKind } from "@/hooks/api/use-user-actions";
+import {
+  useCanChangeUserRole,
+  useCanDeleteUsers,
+  useCanResetUserPassword,
+  useCanSuspendUsers,
+  useCanWriteUsers,
+} from "@/hooks/usePermissions";
 import { ROUTES, getLocaleFromPath, getLocalizedPath } from "@/lib/config/routes";
 import type { AdminUserUpdatePayload } from "@/lib/types/admin";
 import { SystemRole } from "@/lib/types/user";
@@ -37,6 +45,14 @@ export function UserDetailContent({ userId }: { userId: string }) {
   });
   const update = useUpdateAdminUser();
   const { run, isLoading: isActionLoading } = useUserActions();
+
+  const canWrite = useCanWriteUsers();
+  const canChangeRole = useCanChangeUserRole();
+  const dangerCaps = {
+    canResetPassword: useCanResetUserPassword(),
+    canSuspend: useCanSuspendUsers(),
+    canDelete: useCanDeleteUsers(),
+  };
 
   const [action, setAction] = useState<UserActionKind | null>(null);
 
@@ -107,20 +123,39 @@ export function UserDetailContent({ userId }: { userId: string }) {
 
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="lg:col-span-2">
-          <UserEditForm
-            user={user}
-            isSelf={isSelf}
-            isSaving={update.isPending}
-            onSubmit={handleSave}
-          />
+          {canWrite ? (
+            <UserEditForm
+              user={user}
+              isSelf={isSelf}
+              isSaving={update.isPending}
+              canChangeRole={canChangeRole}
+              onSubmit={handleSave}
+            />
+          ) : (
+            <Card className="flex h-full flex-col border-border/50 bg-card/60">
+              <CardHeader>
+                <CardTitle className="text-base">{t("userDetail.editTitle")}</CardTitle>
+                <CardDescription>{t("userDetail.editDescription")}</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <PermissionNote />
+              </CardContent>
+            </Card>
+          )}
         </div>
         <div className="space-y-6">
-          <UserAvatarCard user={user} />
+          {canWrite ? <UserAvatarCard user={user} /> : null}
           <UserOverviewCard user={user} />
         </div>
       </div>
 
-      <UserDangerZone user={user} isSelf={isSelf} disabled={isActionLoading} onAction={setAction} />
+      <UserDangerZone
+        user={user}
+        isSelf={isSelf}
+        disabled={isActionLoading}
+        caps={dangerCaps}
+        onAction={setAction}
+      />
 
       <Card className="border-border/50 bg-card/60">
         <CardHeader>

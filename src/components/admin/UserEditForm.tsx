@@ -17,6 +17,7 @@ interface UserEditFormProps {
   user: AdminUser;
   isSelf: boolean;
   isSaving: boolean;
+  canChangeRole: boolean;
   onSubmit: (payload: AdminUserUpdatePayload) => void;
 }
 
@@ -29,7 +30,13 @@ const userToFormValues = (user: AdminUser): AdminUserUpdateFormValues => ({
   is_verified: user.is_verified,
 });
 
-export function UserEditForm({ user, isSelf, isSaving, onSubmit }: UserEditFormProps) {
+export function UserEditForm({
+  user,
+  isSelf,
+  isSaving,
+  canChangeRole,
+  onSubmit,
+}: UserEditFormProps) {
   const { t } = useTranslation("admin");
   const [form] = Form.useForm<AdminUserUpdateFormValues>();
   const initialValues = userToFormValues(user);
@@ -50,7 +57,11 @@ export function UserEditForm({ user, isSelf, isSaving, onSubmit }: UserEditFormP
       title: values.title ? values.title : null,
     };
     if (!isSelf) {
-      payload.role = values.role;
+      // Role requires the dedicated users:role permission; only send it when the
+      // admin holds it, otherwise the backend would 403 the whole update.
+      if (canChangeRole) {
+        payload.role = values.role;
+      }
       payload.is_active = values.is_active;
       payload.is_verified = values.is_verified;
     }
@@ -72,7 +83,7 @@ export function UserEditForm({ user, isSelf, isSaving, onSubmit }: UserEditFormP
           requiredMark={false}
           className="flex flex-1 flex-col gap-4"
         >
-          <UserEditFormFields isSelf={isSelf} />
+          <UserEditFormFields isSelf={isSelf} canChangeRole={canChangeRole} />
           <div className="mt-auto flex flex-wrap justify-end gap-2 pt-2">
             <Button
               type="button"

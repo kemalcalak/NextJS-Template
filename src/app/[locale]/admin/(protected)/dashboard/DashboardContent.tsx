@@ -5,10 +5,12 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslation } from "react-i18next";
 
+import { PermissionNote } from "@/components/admin/PermissionNote";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useAdminStats } from "@/hooks/api/use-admin";
+import { useCanReadActivities, useCanReadStats, useCanReadUsers } from "@/hooks/usePermissions";
 import { ROUTES, getLocaleFromPath, getLocalizedPath } from "@/lib/config/routes";
 
 const StatCard = ({
@@ -42,7 +44,11 @@ export function DashboardContent() {
   const pathname = usePathname();
   const currentLocale = getLocaleFromPath(pathname);
 
-  const { data: stats, isLoading } = useAdminStats();
+  const canReadStats = useCanReadStats();
+  const canReadUsers = useCanReadUsers();
+  const canReadActivities = useCanReadActivities();
+
+  const { data: stats, isLoading } = useAdminStats(canReadStats);
 
   return (
     <div className="space-y-6">
@@ -53,44 +59,52 @@ export function DashboardContent() {
         <p className="mt-1 text-sm text-muted-foreground">{t("dashboard.subtitle")}</p>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <StatCard
-          label={t("dashboard.stats.totalUsers")}
-          value={stats?.users_total ?? 0}
-          icon={Users}
-          loading={isLoading}
-        />
-        <StatCard
-          label={t("dashboard.stats.activeUsers")}
-          value={stats?.users_active ?? 0}
-          icon={UserCheck}
-          loading={isLoading}
-        />
-        <StatCard
-          label={t("dashboard.stats.admins")}
-          value={stats?.users_admins ?? 0}
-          icon={ShieldCheck}
-          loading={isLoading}
-        />
-        <StatCard
-          label={t("dashboard.stats.activitiesToday")}
-          value={stats?.activities_total ?? 0}
-          icon={Activity}
-          loading={isLoading}
-        />
-      </div>
+      {canReadStats ? (
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <StatCard
+            label={t("dashboard.stats.totalUsers")}
+            value={stats?.users_total ?? 0}
+            icon={Users}
+            loading={isLoading}
+          />
+          <StatCard
+            label={t("dashboard.stats.activeUsers")}
+            value={stats?.users_active ?? 0}
+            icon={UserCheck}
+            loading={isLoading}
+          />
+          <StatCard
+            label={t("dashboard.stats.admins")}
+            value={stats?.users_admins ?? 0}
+            icon={ShieldCheck}
+            loading={isLoading}
+          />
+          <StatCard
+            label={t("dashboard.stats.activitiesToday")}
+            value={stats?.activities_total ?? 0}
+            icon={Activity}
+            loading={isLoading}
+          />
+        </div>
+      ) : (
+        <PermissionNote />
+      )}
 
       <div className="flex flex-wrap gap-2">
-        <Button asChild variant="outline">
-          <Link href={getLocalizedPath(ROUTES.adminUsers, currentLocale)}>
-            {t("dashboard.viewAllUsers")}
-          </Link>
-        </Button>
-        <Button asChild variant="outline">
-          <Link href={getLocalizedPath(ROUTES.adminActivities, currentLocale)}>
-            {t("dashboard.viewAllActivity")}
-          </Link>
-        </Button>
+        {canReadUsers ? (
+          <Button asChild variant="outline">
+            <Link href={getLocalizedPath(ROUTES.adminUsers, currentLocale)}>
+              {t("dashboard.viewAllUsers")}
+            </Link>
+          </Button>
+        ) : null}
+        {canReadActivities ? (
+          <Button asChild variant="outline">
+            <Link href={getLocalizedPath(ROUTES.adminActivities, currentLocale)}>
+              {t("dashboard.viewAllActivity")}
+            </Link>
+          </Button>
+        ) : null}
       </div>
     </div>
   );
