@@ -11,19 +11,16 @@ describe("useMediaQuery", () => {
 
   it("should return initial match state", () => {
     // Mocking window.matchMedia to return matches: true
-    vi.spyOn(window, "matchMedia").mockImplementation(
-      (query) =>
-        ({
-          matches: query === "(min-width: 1024px)",
-          media: query,
-          onchange: null,
-          addListener: vi.fn(),
-          removeListener: vi.fn(),
-          addEventListener: vi.fn(),
-          removeEventListener: vi.fn(),
-          dispatchEvent: vi.fn(),
-        }) as unknown as MediaQueryList,
-    );
+    vi.spyOn(window, "matchMedia").mockImplementation((query) => ({
+      matches: query === "(min-width: 1024px)",
+      media: query,
+      onchange: null,
+      addListener: vi.fn(),
+      removeListener: vi.fn(),
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+      dispatchEvent: vi.fn(),
+    }));
 
     const { result } = renderHook(() => useMediaQuery("(min-width: 1024px)"));
     expect(result.current).toBe(true);

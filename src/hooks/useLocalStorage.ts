@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useCallback } from "react";
 
 export function useLocalStorage<T>(
   key: string,
@@ -18,6 +18,15 @@ export function useLocalStorage<T>(
   }, [initialValue, key]);
 
   const [storedValue, setStoredValue] = useState<T>(readValue);
+  const [prevKey, setPrevKey] = useState(key);
+
+  // Re-read from storage when the key changes, during render — React re-renders
+  // immediately without committing the stale value. Doing this here instead of
+  // in an effect avoids the cascading-render setState-in-effect anti-pattern.
+  if (prevKey !== key) {
+    setPrevKey(key);
+    setStoredValue(readValue());
+  }
 
   const setValue = (value: T | ((val: T) => T)) => {
     try {
@@ -31,10 +40,6 @@ export function useLocalStorage<T>(
       console.error(`Error setting localStorage key “${key}”:`, error);
     }
   };
-
-  useEffect(() => {
-    setStoredValue(readValue());
-  }, [readValue]);
 
   return [storedValue, setValue];
 }

@@ -82,7 +82,7 @@ describe("Authentication Integration", () => {
 
     act(() => {
       useAuthStore.setState({
-        user: mockUser as unknown as NonNullable<typeof mockUser>,
+        user: mockUser,
         isAuthenticated: true,
         isLoading: false,
         isSessionInitialized: true,
