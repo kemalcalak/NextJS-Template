@@ -14,6 +14,54 @@
     "title": "Permission required",
     "description": "You don't have permission to view this section. Ask a superadmin to grant access."
   },
+  "admins": {
+    "title": "Admin management",
+    "subtitle": "Promote users to admin, assign permissions, and revoke access.",
+    "superadminBadge": "Superadmin · full access",
+    "savePermissions": "Save permissions",
+    "managePermissions": "Manage permissions",
+    "permissionCount": "Permissions: {{count}}",
+    "empty": "No admins yet.",
+    "modal": {
+      "title": "Permissions · {{email}}",
+      "cancel": "Cancel"
+    },
+    "promote": {
+      "title": "Promote a user to admin",
+      "emailLabel": "User email",
+      "emailPlaceholder": "user@example.com",
+      "action": "Promote",
+      "notFound": "No user found with that email."
+    },
+    "demote": {
+      "action": "Demote",
+      "title": "Demote admin",
+      "description": "Remove admin access from {{email}} and revoke all their permissions?",
+      "confirm": "Demote",
+      "cancel": "Cancel"
+    }
+  },
+  "permissions": {
+    "selectAll": "All",
+    "searchPlaceholder": "Search sections...",
+    "noResults": "No sections match your search.",
+    "resource": {
+      "users": "Users",
+      "files": "Files",
+      "support": "Support",
+      "activities": "Activities",
+      "stats": "Stats"
+    },
+    "action": {
+      "read": "View",
+      "write": "Edit",
+      "role": "Change role",
+      "delete": "Delete",
+      "suspend": "Suspend",
+      "password_reset": "Reset password",
+      "update": "Assign"
+    }
+  },
   "shell": {
     "title": "Administration",
     "nav": {
@@ -76,6 +124,7 @@
       "suspended": "Suspended"
     },
     "role": {
+      "superadmin": "Superadmin",
       "admin": "Admin",
       "user": "User"
     },

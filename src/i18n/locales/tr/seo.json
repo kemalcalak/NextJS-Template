@@ -59,6 +59,10 @@
     "title": "Kullanıcı Detayı",
     "description": "Bir kullanıcıyı düzenleyin, durumunu yönetin ve aktivite geçmişini inceleyin."
   },
+  "adminAdmins": {
+    "title": "Admin Yönetimi",
+    "description": "Admin atayın, izinleri yönetin ve admin erişimini kaldırın."
+  },
   "adminFiles": {
     "title": "Dosya Yönetimi",
     "description": "Platformdaki yüklenen dosyaları inceleyin, filtreleyin ve silin."

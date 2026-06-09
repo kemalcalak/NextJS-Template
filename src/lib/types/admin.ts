@@ -1,5 +1,7 @@
 import { SystemRole, type User } from "./user";
 
+import type { Permission } from "./permissions";
+
 export { SystemRole };
 
 export type ActivityType =
@@ -118,4 +120,41 @@ export interface AdminActivityListParams {
   status_code?: number;
   date_from?: string;
   date_to?: string;
+}
+
+// --- Admin / RBAC management ------------------------------------------------
+
+// An admin-tier account with the permissions it holds. Superadmins are reported
+// by the backend as holding every permission for display.
+export interface AdminListItem {
+  id: string;
+  email: string;
+  first_name: string | null;
+  last_name: string | null;
+  role: SystemRole;
+  is_active: boolean;
+  permissions: Permission[];
+}
+
+export interface AdminListResponse {
+  data: AdminListItem[];
+  total: number;
+}
+
+export interface AdminPromotePayload {
+  user_id: string;
+  permissions: Permission[];
+}
+
+export interface AdminPermissionsUpdatePayload {
+  permissions: Permission[];
+}
+
+export interface AdminMutationResponse {
+  admin: AdminListItem;
+  message: string;
+}
+
+export interface PermissionCatalogResponse {
+  permissions: Permission[];
 }

@@ -59,6 +59,10 @@
     "title": "User Details",
     "description": "Edit a user, manage their status, and review their activity log."
   },
+  "adminAdmins": {
+    "title": "Admin Management",
+    "description": "Promote admins, assign permissions, and revoke admin access."
+  },
   "adminFiles": {
     "title": "File Management",
     "description": "Review, filter, and delete uploaded files across the platform."

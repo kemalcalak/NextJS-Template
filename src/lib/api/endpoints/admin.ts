@@ -2,12 +2,17 @@ import api from "@/lib/api/api";
 import type {
   AdminActivityListParams,
   AdminActivityListResponse,
+  AdminListResponse,
+  AdminMutationResponse,
+  AdminPermissionsUpdatePayload,
+  AdminPromotePayload,
   AdminStats,
   AdminUser,
   AdminUserListParams,
   AdminUserListResponse,
   AdminUserUpdatePayload,
   AdminUserUpdateResponse,
+  PermissionCatalogResponse,
 } from "@/lib/types/admin";
 import type { MessageResponse } from "@/lib/types/auth";
 
@@ -70,4 +75,27 @@ export const adminApi = {
     ),
 
   getStats: (): Promise<AdminStats> => api.get<AdminStats, AdminStats>("/admin/stats"),
+
+  // --- Admin / RBAC management (superadmin only) ---------------------------
+
+  listAdmins: (): Promise<AdminListResponse> =>
+    api.get<AdminListResponse, AdminListResponse>("/admin/admins"),
+
+  getPermissionCatalog: (): Promise<PermissionCatalogResponse> =>
+    api.get<PermissionCatalogResponse, PermissionCatalogResponse>("/admin/admins/permissions"),
+
+  promoteAdmin: (payload: AdminPromotePayload): Promise<AdminMutationResponse> =>
+    api.post<AdminMutationResponse, AdminMutationResponse>("/admin/admins", payload),
+
+  setAdminPermissions: (
+    id: string,
+    payload: AdminPermissionsUpdatePayload,
+  ): Promise<AdminMutationResponse> =>
+    api.patch<AdminMutationResponse, AdminMutationResponse>(
+      `/admin/admins/${id}/permissions`,
+      payload,
+    ),
+
+  demoteAdmin: (id: string): Promise<MessageResponse> =>
+    api.delete<MessageResponse, MessageResponse>(`/admin/admins/${id}`),
 };

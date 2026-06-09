@@ -39,7 +39,14 @@
       "cannot_modify_self": "Yöneticiler kendi hesaplarını bu panelden değiştiremez.",
       "cannot_delete_self": "Yöneticiler kendilerini silemez.",
       "cannot_demote_last_admin": "Son aktif yöneticinin rolünü düşüremezsiniz.",
-      "cannot_delete_last_admin": "Son aktif yöneticiyi silemezsiniz."
+      "cannot_delete_last_admin": "Son aktif yöneticiyi silemezsiniz.",
+      "cannot_modify_superadmin": "Bir superadmin hesabını yalnızca superadmin değiştirebilir.",
+      "cannot_delete_last_superadmin": "Son aktif superadmin kaldırılamaz.",
+      "only_superadmin": "Bu işlem yalnızca superadmin'lere açıktır.",
+      "not_an_admin": "Bu kullanıcı admin değil.",
+      "already_an_admin": "Bu kullanıcı zaten admin.",
+      "superadmin_role_immutable": "Bir superadmin'in rolü değiştirilemez.",
+      "cannot_change_admin_role": "Bir admin'in rolünü yalnızca superadmin değiştirebilir."
     },
     "support": {
       "ticket_not_found": "Talep bulunamadı.",

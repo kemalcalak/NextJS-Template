@@ -3,6 +3,8 @@ import { useMutation, useQuery, useQueryClient, keepPreviousData } from "@tansta
 import { adminApi } from "@/lib/api/endpoints/admin";
 import type {
   AdminActivityListParams,
+  AdminPermissionsUpdatePayload,
+  AdminPromotePayload,
   AdminUserListParams,
   AdminUserUpdatePayload,
 } from "@/lib/types/admin";
@@ -21,6 +23,8 @@ export const adminKeys = {
   activitiesList: (params?: AdminActivityListParams) =>
     ["admin", "activitiesList", params ?? {}] as const,
   stats: ["admin", "stats"] as const,
+  admins: ["admin", "admins"] as const,
+  permissionCatalog: ["admin", "permissionCatalog"] as const,
 };
 
 type QueryClient = ReturnType<typeof useQueryClient>;
@@ -129,3 +133,53 @@ export const useAdminUserActivities = (
     enabled: Boolean(userId),
     placeholderData: keepPreviousData,
   });
+
+// --- Admin / RBAC management (superadmin only) -----------------------------
+
+export const useAdmins = (enabled = true) =>
+  useQuery({
+    queryKey: adminKeys.admins,
+    queryFn: () => adminApi.listAdmins(),
+    enabled,
+  });
+
+export const usePermissionCatalog = (enabled = true) =>
+  useQuery({
+    queryKey: adminKeys.permissionCatalog,
+    queryFn: () => adminApi.getPermissionCatalog(),
+    enabled,
+    staleTime: Infinity,
+  });
+
+export const usePromoteAdmin = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (payload: AdminPromotePayload) => adminApi.promoteAdmin(payload),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: adminKeys.admins });
+      invalidateUserSurfaces(queryClient);
+    },
+  });
+};
+
+export const useSetAdminPermissions = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, payload }: { id: string; payload: AdminPermissionsUpdatePayload }) =>
+      adminApi.setAdminPermissions(id, payload),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: adminKeys.admins });
+    },
+  });
+};
+
+export const useDemoteAdmin = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => adminApi.demoteAdmin(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: adminKeys.admins });
+      invalidateUserSurfaces(queryClient);
+    },
+  });
+};

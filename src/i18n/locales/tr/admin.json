@@ -14,6 +14,54 @@
     "title": "Yetki gerekli",
     "description": "Bu bölümü görüntüleme yetkiniz yok. Erişim için bir superadmin'den yetki isteyin."
   },
+  "admins": {
+    "title": "Admin yönetimi",
+    "subtitle": "Kullanıcıları admin yapın, izin atayın ve erişimi kaldırın.",
+    "superadminBadge": "Superadmin · tam erişim",
+    "savePermissions": "İzinleri kaydet",
+    "managePermissions": "İzinleri yönet",
+    "permissionCount": "İzinler: {{count}}",
+    "empty": "Henüz admin yok.",
+    "modal": {
+      "title": "İzinler · {{email}}",
+      "cancel": "İptal"
+    },
+    "promote": {
+      "title": "Bir kullanıcıyı admin yap",
+      "emailLabel": "Kullanıcı e-postası",
+      "emailPlaceholder": "kullanici@ornek.com",
+      "action": "Admin yap",
+      "notFound": "Bu e-postaya sahip kullanıcı bulunamadı."
+    },
+    "demote": {
+      "action": "Yetkiyi al",
+      "title": "Admin yetkisini kaldır",
+      "description": "{{email}} kullanıcısının admin erişimi ve tüm izinleri kaldırılsın mı?",
+      "confirm": "Yetkiyi al",
+      "cancel": "İptal"
+    }
+  },
+  "permissions": {
+    "selectAll": "Tümü",
+    "searchPlaceholder": "Bölüm ara...",
+    "noResults": "Eşleşen bölüm yok.",
+    "resource": {
+      "users": "Kullanıcılar",
+      "files": "Dosyalar",
+      "support": "Destek",
+      "activities": "Aktiviteler",
+      "stats": "İstatistikler"
+    },
+    "action": {
+      "read": "Görüntüle",
+      "write": "Düzenle",
+      "role": "Rol değiştir",
+      "delete": "Sil",
+      "suspend": "Askıya al",
+      "password_reset": "Şifre sıfırla",
+      "update": "Ata"
+    }
+  },
   "shell": {
     "title": "Yönetim",
     "nav": {
@@ -76,6 +124,7 @@
       "suspended": "Askıya alınmış"
     },
     "role": {
+      "superadmin": "Superadmin",
       "admin": "Yönetici",
       "user": "Kullanıcı"
     },

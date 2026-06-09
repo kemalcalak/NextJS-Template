@@ -24,7 +24,10 @@
       "user_suspended": "User suspended. They cannot log in until an admin lifts the suspension.",
       "user_unsuspended": "Suspension lifted. The user can sign in again.",
       "user_deleted": "User permanently deleted.",
-      "password_changed": "User's password has been reset. They'll be notified by email and must use the 'Forgot Password' flow to regain access."
+      "password_changed": "User's password has been reset. They'll be notified by email and must use the 'Forgot Password' flow to regain access.",
+      "promoted": "User promoted to admin.",
+      "demoted": "Admin demoted to a regular user.",
+      "permissions_updated": "Permissions updated."
     },
     "support": {
       "ticket_created": "Your support ticket has been created.",
