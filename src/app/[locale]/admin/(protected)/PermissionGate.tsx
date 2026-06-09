@@ -2,7 +2,7 @@
 
 import type { ReactNode } from "react";
 
-import { usePermissions } from "@/hooks/usePermissions";
+import { usePermissions } from "@/hooks/use-permissions";
 import type { Permission } from "@/lib/types/permissions";
 
 import { AdminForbidden } from "./AdminForbidden";

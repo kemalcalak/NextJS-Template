@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useAdminStats } from "@/hooks/api/use-admin";
-import { useCanReadActivities, useCanReadStats, useCanReadUsers } from "@/hooks/usePermissions";
+import { useCanReadActivities, useCanReadStats, useCanReadUsers } from "@/hooks/use-permissions";
 import { ROUTES, getLocaleFromPath, getLocalizedPath } from "@/lib/config/routes";
 
 const StatCard = ({

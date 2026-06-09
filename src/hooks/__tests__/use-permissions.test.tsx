@@ -6,7 +6,7 @@ import {
   useCanReadUsers,
   useIsSuperadmin,
   usePermissions,
-} from "@/hooks/usePermissions";
+} from "@/hooks/use-permissions";
 import { Permission } from "@/lib/types/permissions";
 import { SystemRole, type User } from "@/lib/types/user";
 import { useAuthStore } from "@/stores/auth.store";

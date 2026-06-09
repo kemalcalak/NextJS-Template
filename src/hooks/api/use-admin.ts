@@ -153,6 +153,8 @@ export const usePermissionCatalog = (enabled = true) =>
     queryKey: adminKeys.permissionCatalog,
     queryFn: () => adminApi.getPermissionCatalog(),
     enabled,
+    // The catalog mirrors the backend Permission enum — it never changes within a
+    // session, so it's fetched once and kept fresh forever (no refetch).
     staleTime: Infinity,
   });
 
@@ -163,17 +165,6 @@ export const useSetAdminPermissions = () => {
       adminApi.setAdminPermissions(id, payload),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: adminKeys.admins });
-    },
-  });
-};
-
-export const useDemoteAdmin = () => {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: (id: string) => adminApi.demoteAdmin(id),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: adminKeys.admins });
-      invalidateUserSurfaces(queryClient);
     },
   });
 };

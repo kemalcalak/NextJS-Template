@@ -16,8 +16,8 @@ import { TicketPriorityBadge, TicketStatusBadge } from "@/components/support/Tic
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { adminSupportKeys, useAdminReplyTicket, useAdminTicket } from "@/hooks/api/use-support";
+import { useCanWriteSupport } from "@/hooks/use-permissions";
 import { useTicketRealtime } from "@/hooks/use-support-realtime";
-import { useCanWriteSupport } from "@/hooks/usePermissions";
 import { getLocaleFromPath, getLocalizedPath, ROUTES } from "@/lib/config/routes";
 
 interface AdminTicketDetailContentProps {

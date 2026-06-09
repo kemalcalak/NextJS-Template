@@ -3,6 +3,8 @@
 import { Lock } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
+import { cn } from "@/lib/utils";
+
 interface PermissionNoteProps {
   /** Override the default "you lack permission" copy. */
   text?: string;
@@ -15,9 +17,7 @@ interface PermissionNoteProps {
 export function PermissionNote({ text, className }: PermissionNoteProps) {
   const { t } = useTranslation("admin");
   return (
-    <p
-      className={`flex items-center gap-1.5 text-xs text-muted-foreground ${className ?? ""}`.trim()}
-    >
+    <p className={cn("flex items-center gap-1.5 text-xs text-muted-foreground", className)}>
       <Lock className="h-3.5 w-3.5 shrink-0" />
       {text ?? t("permissions.restricted")}
     </p>

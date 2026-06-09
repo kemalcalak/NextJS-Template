@@ -25,7 +25,7 @@ import {
   useCanResetUserPassword,
   useCanSuspendUsers,
   useCanWriteUsers,
-} from "@/hooks/usePermissions";
+} from "@/hooks/use-permissions";
 import { ROUTES, getLocaleFromPath, getLocalizedPath } from "@/lib/config/routes";
 import type { AdminUserUpdatePayload } from "@/lib/types/admin";
 import { SystemRole } from "@/lib/types/user";

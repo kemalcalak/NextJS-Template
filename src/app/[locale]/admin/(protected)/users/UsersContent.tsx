@@ -22,7 +22,7 @@ import {
   useCanDeleteUsers,
   useCanResetUserPassword,
   useCanSuspendUsers,
-} from "@/hooks/usePermissions";
+} from "@/hooks/use-permissions";
 import type { AdminUser } from "@/lib/types/admin";
 import { useAuthStore } from "@/stores/auth.store";
 

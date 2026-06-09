@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useAdmins, usePermissionCatalog } from "@/hooks/api/use-admin";
-import { useIsRootSuperadmin, useIsSuperadmin } from "@/hooks/usePermissions";
+import { useIsRootSuperadmin, useIsSuperadmin } from "@/hooks/use-permissions";
 import type { AdminListItem } from "@/lib/types/admin";
 import { SystemRole } from "@/lib/types/user";
 

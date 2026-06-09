@@ -17,14 +17,14 @@ import { useTranslation } from "react-i18next";
 
 import { LoadingScreen } from "@/components/common/LoadingScreen";
 import { Button } from "@/components/ui/button";
-import { useAccountEvents } from "@/hooks/useAccountEvents";
+import { useAccountEvents } from "@/hooks/use-account-events";
 import {
   useCanReadActivities,
   useCanReadFiles,
   useCanReadSupport,
   useCanReadUsers,
   useIsSuperadmin,
-} from "@/hooks/usePermissions";
+} from "@/hooks/use-permissions";
 import {
   ROUTES,
   getLocaleFromPath,

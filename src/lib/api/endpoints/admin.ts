@@ -99,10 +99,7 @@ export const adminApi = {
       payload,
     ),
 
-  demoteAdmin: (id: string): Promise<MessageResponse> =>
-    api.delete<MessageResponse, MessageResponse>(`/admin/admins/${id}`),
-
-  // Hard-delete an admin account (the account-deletion replacement for demote).
+  // Hard-delete an admin account.
   deleteAdmin: (id: string): Promise<MessageResponse> =>
     api.delete<MessageResponse, MessageResponse>(`/admin/admins/${id}`),
 

@@ -13,7 +13,7 @@ import { DEFAULT_PAGE_SIZE } from "@/components/admin/pagination-config";
 import { Card, CardContent } from "@/components/ui/card";
 import { useAdminFiles, useDeleteAdminFile } from "@/hooks/api/use-files";
 import { useDebounce } from "@/hooks/use-debounce";
-import { useCanDeleteFiles } from "@/hooks/usePermissions";
+import { useCanDeleteFiles } from "@/hooks/use-permissions";
 import type { AdminFileListItem, AdminFileListParams } from "@/lib/types/file";
 
 export function FilesContent() {

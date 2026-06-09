@@ -11,7 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAdminUsers } from "@/hooks/api/use-admin";
 import { useUpdateAdminTicket } from "@/hooks/api/use-support";
 import { useDebounce } from "@/hooks/use-debounce";
-import { useCanUpdateSupport, useCanWriteSupport } from "@/hooks/usePermissions";
+import { useCanUpdateSupport, useCanWriteSupport } from "@/hooks/use-permissions";
 import {
   TICKET_PRIORITIES,
   TICKET_STATUSES,

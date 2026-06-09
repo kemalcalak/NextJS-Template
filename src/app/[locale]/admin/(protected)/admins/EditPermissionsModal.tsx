@@ -19,17 +19,15 @@ interface EditPermissionsModalProps {
   onClose: () => void;
 }
 
-// Body is a child so `destroyOnHidden` remounts it per open — the matrix state
-// then re-initialises from the selected admin's grants without a sync effect.
-function EditPermissionsBody({
-  admin,
-  catalog,
-  onClose,
-}: {
+interface EditPermissionsBodyProps {
   admin: AdminListItem;
   catalog: Permission[];
   onClose: () => void;
-}) {
+}
+
+// Body is a child so `destroyOnHidden` remounts it per open — the matrix state
+// then re-initialises from the selected admin's grants without a sync effect.
+function EditPermissionsBody({ admin, catalog, onClose }: EditPermissionsBodyProps) {
   const { t } = useTranslation("admin");
   const [permissions, setPermissions] = useState<Permission[]>(admin.permissions);
   const setPermsMutation = useSetAdminPermissions();
