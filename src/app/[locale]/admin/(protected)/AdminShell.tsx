@@ -4,6 +4,7 @@ import { useEffect } from "react";
 
 import {
   Activity,
+  CircleUser,
   Images,
   LayoutDashboard,
   ShieldCheck,
@@ -139,6 +140,13 @@ export function AdminShell({ children }: AdminShellProps) {
       href: ROUTES.adminSupport,
       icon: Ticket,
       show: canReadSupport,
+    },
+    {
+      key: "profile",
+      label: t("shell.nav.profile"),
+      href: ROUTES.adminProfile,
+      icon: CircleUser,
+      show: true,
     },
   ].filter((item) => item.show);
 

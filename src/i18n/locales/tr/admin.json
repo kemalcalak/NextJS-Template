@@ -104,7 +104,8 @@
       "admins": "Adminler",
       "files": "Dosyalar",
       "activities": "Aktivite günlüğü",
-      "support": "Destek"
+      "support": "Destek",
+      "profile": "Profil"
     },
     "signedInAs": "Giriş yapılan hesap",
     "exit": "Yönetimden çık",

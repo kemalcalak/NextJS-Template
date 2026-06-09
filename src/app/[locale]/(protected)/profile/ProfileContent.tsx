@@ -11,7 +11,12 @@ import { ProfileAvatar } from "@/components/profile/ProfileAvatar";
 import { ProfileInfoTab } from "@/components/profile/ProfileInfoTab";
 import { SecurityTab } from "@/components/profile/SecurityTab";
 
-export function ProfileContent() {
+interface ProfileContentProps {
+  // Hidden on the admin-panel profile so admins can't self-deactivate.
+  showDangerZone?: boolean;
+}
+
+export function ProfileContent({ showDangerZone = true }: ProfileContentProps) {
   const { t } = useTranslation("profile");
   const [activeTab, setActiveTab] = useState<"info" | "security">("info");
 
@@ -80,7 +85,7 @@ export function ProfileContent() {
               exit={{ opacity: 0, x: -20 }}
               transition={{ duration: 0.2 }}
             >
-              <SecurityTab />
+              <SecurityTab showDangerZone={showDangerZone} />
             </motion.div>
           )}
         </AnimatePresence>

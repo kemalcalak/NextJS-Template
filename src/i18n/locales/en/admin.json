@@ -104,7 +104,8 @@
       "admins": "Admins",
       "files": "Files",
       "activities": "Activity log",
-      "support": "Support"
+      "support": "Support",
+      "profile": "Profile"
     },
     "signedInAs": "Signed in as",
     "exit": "Exit admin",

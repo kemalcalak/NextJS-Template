@@ -18,7 +18,13 @@ import {
 } from "@/schemas/auth";
 import { type ChangePasswordFormValues } from "@/schemas/user";
 
-export const SecurityTab = () => {
+interface SecurityTabProps {
+  // The admin-panel profile hides self-deactivation (admin lifecycle is managed
+  // by superadmins; a root self-deactivating would orphan the system).
+  showDangerZone?: boolean;
+}
+
+export const SecurityTab = ({ showDangerZone = true }: SecurityTabProps) => {
   const { t } = useTranslation(["profile", "validation"]);
   const { t: tv } = useTranslation("validation");
   const { mutate: changePassword, isPending: isLoading } = useChangePasswordMutation();
@@ -113,7 +119,7 @@ export const SecurityTab = () => {
         </CardContent>
       </Card>
 
-      <DangerZone />
+      {showDangerZone ? <DangerZone /> : null}
     </div>
   );
 };

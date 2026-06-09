@@ -165,5 +165,19 @@ for (const locale of LOCALES) {
       await page.goto(`/${locale}/dashboard`);
       await expect(page).toHaveURL(new RegExp(`.*/${locale}/admin/dashboard`));
     });
+
+    test("an admin can open their own profile inside the panel", async ({ page }) => {
+      const profile = getStrings(locale).profile;
+      await injectSession(page, adminUser, locale);
+      await mockMe(page, adminUser);
+
+      await page.goto(`/${locale}/admin/profile`);
+      // Not bounced out — the profile renders inside the admin shell.
+      await expect(page).toHaveURL(new RegExp(`.*/${locale}/admin/profile`));
+      await expect(page.getByRole("heading", { name: profile.title })).toBeVisible();
+
+      const nav = page.locator("nav").first();
+      await expect(nav.getByRole("link", { name: s.shell.nav.profile, exact: true })).toBeVisible();
+    });
   });
 }
