@@ -85,7 +85,7 @@ for (const locale of LOCALES) {
       await expect(page).toHaveURL(new RegExp(`.*/${locale}/admin/admins`));
       await expect(page.getByRole("heading", { name: s.admins.title })).toBeVisible();
       await expect(
-        page.getByRole("button", { name: s.admins.promote.action }).first(),
+        page.getByRole("button", { name: s.admins.create.action }).first(),
       ).toBeVisible();
       await expect(page.getByText("limited@test.com")).toBeVisible();
 

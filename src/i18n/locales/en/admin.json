@@ -16,8 +16,9 @@
   },
   "admins": {
     "title": "Admin management",
-    "subtitle": "Promote users to admin, assign permissions, and revoke access.",
+    "subtitle": "Create admins, assign permissions, and manage the superadmin tier.",
     "superadminBadge": "Superadmin · full access",
+    "rootBadge": "Root",
     "savePermissions": "Save permissions",
     "managePermissions": "Manage permissions",
     "permissionCount": "Permissions: {{count}}",
@@ -26,18 +27,50 @@
       "title": "Permissions · {{email}}",
       "cancel": "Cancel"
     },
-    "promote": {
-      "title": "Promote a user to admin",
-      "emailLabel": "User email",
-      "emailPlaceholder": "user@example.com",
-      "action": "Promote",
-      "notFound": "No user found with that email."
+    "create": {
+      "action": "Create admin",
+      "title": "Create an admin account",
+      "emailLabel": "Email",
+      "emailPlaceholder": "admin@example.com",
+      "firstNameLabel": "First name",
+      "lastNameLabel": "Last name",
+      "passwordLabel": "Password",
+      "passwordPlaceholder": "At least 8 characters",
+      "submit": "Create admin",
+      "cancel": "Cancel"
     },
-    "demote": {
-      "action": "Demote",
-      "title": "Demote admin",
-      "description": "Remove admin access from {{email}} and revoke all their permissions?",
-      "confirm": "Demote",
+    "delete": {
+      "action": "Delete account",
+      "title": "Delete admin account",
+      "description": "Permanently delete {{email}} and revoke all access? This cannot be undone.",
+      "confirm": "Delete account",
+      "cancel": "Cancel"
+    },
+    "promoteSuperadmin": {
+      "action": "Make superadmin",
+      "title": "Promote to superadmin",
+      "description": "Grant {{email}} full superadmin access? They will implicitly hold every permission.",
+      "confirm": "Make superadmin",
+      "cancel": "Cancel"
+    },
+    "demoteToAdmin": {
+      "action": "Demote to admin",
+      "title": "Demote to admin",
+      "description": "Demote {{email}} back to a plain admin with no permissions?",
+      "confirm": "Demote to admin",
+      "cancel": "Cancel"
+    },
+    "transferRoot": {
+      "action": "Transfer root",
+      "title": "Transfer root superadmin",
+      "description": "Hand your root status to another superadmin. A verification code will be emailed to your address.",
+      "targetLabel": "New root (superadmin)",
+      "targetPlaceholder": "Select a superadmin",
+      "send": "Send code",
+      "sentNote": "We emailed a code to your address. Enter it below within 3 minutes.",
+      "codeLabel": "Verification code",
+      "codePlaceholder": "6-digit code",
+      "confirm": "Confirm transfer",
       "cancel": "Cancel"
     }
   },
@@ -56,7 +89,6 @@
     "action": {
       "read": "View",
       "write": "Edit",
-      "role": "Change role",
       "delete": "Delete",
       "suspend": "Suspend",
       "password_reset": "Reset password",
@@ -165,7 +197,7 @@
       "suspended": "Suspended"
     },
     "editTitle": "Edit user",
-    "editDescription": "Update profile, role, and access.",
+    "editDescription": "Update profile and access.",
     "activityTitle": "Recent activity",
     "activityDescription": "Audit events recorded for this user.",
     "activityEmpty": "No recent activity.",

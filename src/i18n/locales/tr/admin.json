@@ -16,8 +16,9 @@
   },
   "admins": {
     "title": "Admin yönetimi",
-    "subtitle": "Kullanıcıları admin yapın, izin atayın ve erişimi kaldırın.",
+    "subtitle": "Admin oluşturun, izin atayın ve superadmin katmanını yönetin.",
     "superadminBadge": "Superadmin · tam erişim",
+    "rootBadge": "Root",
     "savePermissions": "İzinleri kaydet",
     "managePermissions": "İzinleri yönet",
     "permissionCount": "İzinler: {{count}}",
@@ -26,18 +27,50 @@
       "title": "İzinler · {{email}}",
       "cancel": "İptal"
     },
-    "promote": {
-      "title": "Bir kullanıcıyı admin yap",
-      "emailLabel": "Kullanıcı e-postası",
-      "emailPlaceholder": "kullanici@ornek.com",
-      "action": "Admin yap",
-      "notFound": "Bu e-postaya sahip kullanıcı bulunamadı."
+    "create": {
+      "action": "Admin oluştur",
+      "title": "Admin hesabı oluştur",
+      "emailLabel": "E-posta",
+      "emailPlaceholder": "admin@ornek.com",
+      "firstNameLabel": "Ad",
+      "lastNameLabel": "Soyad",
+      "passwordLabel": "Parola",
+      "passwordPlaceholder": "En az 8 karakter",
+      "submit": "Admin oluştur",
+      "cancel": "İptal"
     },
-    "demote": {
-      "action": "Yetkiyi al",
-      "title": "Admin yetkisini kaldır",
-      "description": "{{email}} kullanıcısının admin erişimi ve tüm izinleri kaldırılsın mı?",
-      "confirm": "Yetkiyi al",
+    "delete": {
+      "action": "Hesabı sil",
+      "title": "Admin hesabını sil",
+      "description": "{{email}} kalıcı olarak silinsin ve tüm erişimi kaldırılsın mı? Bu işlem geri alınamaz.",
+      "confirm": "Hesabı sil",
+      "cancel": "İptal"
+    },
+    "promoteSuperadmin": {
+      "action": "Superadmin yap",
+      "title": "Superadmin'e yükselt",
+      "description": "{{email}} kullanıcısına tam superadmin erişimi verilsin mi? Tüm izinlere otomatik sahip olur.",
+      "confirm": "Superadmin yap",
+      "cancel": "İptal"
+    },
+    "demoteToAdmin": {
+      "action": "Admin'e düşür",
+      "title": "Admin'e düşür",
+      "description": "{{email}} izinsiz bir admin'e düşürülsün mü?",
+      "confirm": "Admin'e düşür",
+      "cancel": "İptal"
+    },
+    "transferRoot": {
+      "action": "Root'u devret",
+      "title": "Ana superadminliği devret",
+      "description": "Root yetkinizi başka bir superadmin'e devredin. E-posta adresinize bir doğrulama kodu gönderilecek.",
+      "targetLabel": "Yeni root (superadmin)",
+      "targetPlaceholder": "Bir superadmin seçin",
+      "send": "Kod gönder",
+      "sentNote": "Adresinize bir kod gönderdik. 3 dakika içinde aşağıya girin.",
+      "codeLabel": "Doğrulama kodu",
+      "codePlaceholder": "6 haneli kod",
+      "confirm": "Devri onayla",
       "cancel": "İptal"
     }
   },
@@ -56,7 +89,6 @@
     "action": {
       "read": "Görüntüle",
       "write": "Düzenle",
-      "role": "Rol değiştir",
       "delete": "Sil",
       "suspend": "Askıya al",
       "password_reset": "Şifre sıfırla",
@@ -165,7 +197,7 @@
       "suspended": "Askıya alındı"
     },
     "editTitle": "Kullanıcıyı düzenle",
-    "editDescription": "Profil, rol ve erişim bilgilerini güncelleyin.",
+    "editDescription": "Profil ve erişim bilgilerini güncelleyin.",
     "activityTitle": "Son aktiviteler",
     "activityDescription": "Bu kullanıcıya ait denetim olayları.",
     "activityEmpty": "Son aktivite yok.",
