@@ -21,6 +21,14 @@ interface UserActionCaps {
   canDelete: boolean;
 }
 
+// Distinct badge tone per role so the three tiers are visually separable in the
+// list (previously superadmin and user both rendered as muted).
+const ROLE_TONE: Record<SystemRole, "primary" | "info" | "muted"> = {
+  [SystemRole.SUPERADMIN]: "primary",
+  [SystemRole.ADMIN]: "info",
+  [SystemRole.USER]: "muted",
+};
+
 interface UsersTableProps {
   rows: AdminUser[];
   isLoading: boolean;
@@ -143,7 +151,7 @@ export function UsersTable({ rows, isLoading, currentUserId, caps, onAction }: U
                   </Link>
                 </td>
                 <td className="px-4 py-3 text-center">
-                  <StatusBadge tone={user.role === SystemRole.ADMIN ? "primary" : "muted"}>
+                  <StatusBadge tone={ROLE_TONE[user.role]}>
                     {t(`users.role.${user.role}` as const)}
                   </StatusBadge>
                 </td>
