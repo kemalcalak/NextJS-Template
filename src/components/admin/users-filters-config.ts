@@ -13,7 +13,7 @@ export type UsersStatusFilter = (typeof USERS_STATUS_FILTERS)[number];
 export const USERS_VERIFIED_FILTERS = ["all", "yes", "no"] as const;
 export type UsersVerifiedFilter = (typeof USERS_VERIFIED_FILTERS)[number];
 
-export const USERS_ROLE_FILTERS = ["all", "admin", "user"] as const;
+export const USERS_ROLE_FILTERS = ["all", "superadmin", "admin", "user"] as const;
 export type UsersRoleFilter = "all" | SystemRole;
 
 export const isUsersStatusFilter = (value: string): value is UsersStatusFilter =>
