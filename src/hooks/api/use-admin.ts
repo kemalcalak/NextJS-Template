@@ -1,11 +1,17 @@
 import { useMutation, useQuery, useQueryClient, keepPreviousData } from "@tanstack/react-query";
 
 import { adminApi } from "@/lib/api/endpoints/admin";
+import { authService } from "@/lib/api/endpoints/auth";
 import type {
   AdminActivityListParams,
+  AdminCreatePayload,
+  AdminPermissionsUpdatePayload,
   AdminUserListParams,
   AdminUserUpdatePayload,
+  RootTransferConfirmPayload,
+  RootTransferRequestPayload,
 } from "@/lib/types/admin";
+import { useAuthStore } from "@/stores/auth.store";
 
 // Each resource type owns a distinct top-level segment so prefix-invalidation
 // never accidentally fans out across resources. `usersList` ≠ `user` ≠
@@ -21,6 +27,8 @@ export const adminKeys = {
   activitiesList: (params?: AdminActivityListParams) =>
     ["admin", "activitiesList", params ?? {}] as const,
   stats: ["admin", "stats"] as const,
+  admins: ["admin", "admins"] as const,
+  permissionCatalog: ["admin", "permissionCatalog"] as const,
 };
 
 type QueryClient = ReturnType<typeof useQueryClient>;
@@ -51,10 +59,11 @@ export const useAdminUser = (id: string | undefined) =>
     enabled: Boolean(id),
   });
 
-export const useAdminStats = () =>
+export const useAdminStats = (enabled = true) =>
   useQuery({
     queryKey: adminKeys.stats,
     queryFn: () => adminApi.getStats(),
+    enabled,
   });
 
 export const useUpdateAdminUser = () => {
@@ -129,3 +138,103 @@ export const useAdminUserActivities = (
     enabled: Boolean(userId),
     placeholderData: keepPreviousData,
   });
+
+// --- Admin / RBAC management (superadmin only) -----------------------------
+
+export const useAdmins = (enabled = true) =>
+  useQuery({
+    queryKey: adminKeys.admins,
+    queryFn: () => adminApi.listAdmins(),
+    enabled,
+  });
+
+export const usePermissionCatalog = (enabled = true) =>
+  useQuery({
+    queryKey: adminKeys.permissionCatalog,
+    queryFn: () => adminApi.getPermissionCatalog(),
+    enabled,
+    // The catalog mirrors the backend Permission enum — it never changes within a
+    // session, so it's fetched once and kept fresh forever (no refetch).
+    staleTime: Infinity,
+  });
+
+export const useSetAdminPermissions = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, payload }: { id: string; payload: AdminPermissionsUpdatePayload }) =>
+      adminApi.setAdminPermissions(id, payload),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: adminKeys.admins });
+    },
+  });
+};
+
+export const useCreateAdmin = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (payload: AdminCreatePayload) => adminApi.createAdmin(payload),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: adminKeys.admins });
+      invalidateUserSurfaces(queryClient);
+    },
+  });
+};
+
+export const useDeleteAdmin = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => adminApi.deleteAdmin(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: adminKeys.admins });
+      invalidateUserSurfaces(queryClient);
+    },
+  });
+};
+
+export const usePromoteSuperadmin = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => adminApi.promoteSuperadmin(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: adminKeys.admins });
+      invalidateUserSurfaces(queryClient);
+    },
+  });
+};
+
+export const useDemoteSuperadmin = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => adminApi.demoteSuperadmin(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: adminKeys.admins });
+      invalidateUserSurfaces(queryClient);
+    },
+  });
+};
+
+// Step 1 of the root transfer: emails an OTP to the current root. No cache
+// changes yet — the handover only happens on confirm.
+export const useTransferRoot = () =>
+  useMutation({
+    mutationFn: (payload: RootTransferRequestPayload) => adminApi.transferRoot(payload),
+  });
+
+export const useConfirmTransferRoot = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (payload: RootTransferConfirmPayload) => adminApi.confirmTransferRoot(payload),
+    onSuccess: async () => {
+      queryClient.invalidateQueries({ queryKey: adminKeys.admins });
+      // The confirming root just lost root status; refresh /me so the store and
+      // every gate update immediately. The WS event does this too — this keeps
+      // it deterministic even when the socket is unavailable.
+      try {
+        const me = await authService.getMe();
+        useAuthStore.getState().setUser(me);
+      } catch {
+        // A failed refresh is reconciled by the auth layer / WS event.
+      }
+    },
+  });
+};

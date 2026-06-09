@@ -33,6 +33,7 @@ const suspended: AdminUser = {
 
 const makeProps = () => ({
   currentUserId: null,
+  caps: { canSuspend: true, canResetPassword: true, canDelete: true },
   onAction: vi.fn(),
 });
 

@@ -10,14 +10,112 @@
     "submitting": "Signing in...",
     "backToApp": "Back to the main app"
   },
+  "permissionDenied": {
+    "title": "Permission required",
+    "description": "You don't have permission to view this section. Ask a superadmin to grant access."
+  },
+  "admins": {
+    "title": "Admin management",
+    "subtitle": "Create admins, assign permissions, and manage the superadmin tier.",
+    "superadminBadge": "Superadmin · full access",
+    "rootBadge": "Root",
+    "savePermissions": "Save permissions",
+    "managePermissions": "Manage permissions",
+    "permissionCount": "Permissions: {{count}}",
+    "empty": "No admins yet.",
+    "modal": {
+      "title": "Permissions · {{email}}",
+      "cancel": "Cancel"
+    },
+    "create": {
+      "action": "Create admin",
+      "title": "Create an admin account",
+      "accountSection": "Account details",
+      "emailLabel": "Email",
+      "emailPlaceholder": "admin@example.com",
+      "firstNameLabel": "First name",
+      "lastNameLabel": "Last name",
+      "passwordLabel": "Password",
+      "passwordPlaceholder": "At least 8 characters",
+      "permissionsLabel": "Permissions",
+      "submit": "Create admin",
+      "cancel": "Cancel"
+    },
+    "delete": {
+      "action": "Delete account",
+      "title": "Delete admin account",
+      "description": "Permanently delete {{email}} and revoke all access? This cannot be undone.",
+      "confirm": "Delete account",
+      "cancel": "Cancel"
+    },
+    "promoteSuperadmin": {
+      "action": "Make superadmin",
+      "title": "Promote to superadmin",
+      "description": "Grant {{email}} full superadmin access? They will implicitly hold every permission.",
+      "confirm": "Make superadmin",
+      "cancel": "Cancel"
+    },
+    "demoteToAdmin": {
+      "action": "Demote to admin",
+      "title": "Demote to admin",
+      "description": "Demote {{email}} back to a plain admin with no permissions?",
+      "confirm": "Demote to admin",
+      "cancel": "Cancel"
+    },
+    "transferRoot": {
+      "action": "Transfer root",
+      "title": "Transfer root superadmin",
+      "description": "Hand your root status to another superadmin. A verification code will be emailed to your address.",
+      "targetLabel": "New root (superadmin)",
+      "targetPlaceholder": "Select a superadmin",
+      "send": "Send code",
+      "sentNote": "We emailed a code to your address. Enter it below within 3 minutes.",
+      "codeLabel": "Verification code",
+      "codePlaceholder": "6-digit code",
+      "confirm": "Confirm transfer",
+      "cancel": "Cancel"
+    }
+  },
+  "permissions": {
+    "selectAll": "All",
+    "searchPlaceholder": "Search sections...",
+    "noResults": "No sections match your search.",
+    "restricted": "You don't have permission for this, so it's hidden and no request is sent.",
+    "resource": {
+      "users": "Users",
+      "files": "Files",
+      "support": "Support",
+      "activities": "Activities",
+      "stats": "Stats"
+    },
+    "action": {
+      "read": "View",
+      "write": "Edit",
+      "delete": "Delete",
+      "suspend": "Suspend",
+      "password_reset": "Reset password",
+      "update": "Assign"
+    }
+  },
   "shell": {
     "title": "Administration",
+    "brandSubtitle": "Admin Panel",
+    "toggleSidebar": "Toggle sidebar",
+    "breadcrumb": "Breadcrumb",
+    "section": {
+      "overview": "Overview",
+      "management": "Management",
+      "monitoring": "Monitoring",
+      "account": "Account"
+    },
     "nav": {
       "dashboard": "Dashboard",
       "users": "Users",
+      "admins": "Admins",
       "files": "Files",
       "activities": "Activity log",
-      "support": "Support"
+      "support": "Support",
+      "profile": "Profile"
     },
     "signedInAs": "Signed in as",
     "exit": "Exit admin",
@@ -71,6 +169,7 @@
       "suspended": "Suspended"
     },
     "role": {
+      "superadmin": "Superadmin",
       "admin": "Admin",
       "user": "User"
     },
@@ -79,7 +178,8 @@
     "pagination": {
       "previous": "Previous",
       "next": "Next",
-      "page": "Page {{page}} of {{total}}",
+      "pageOf": "of {{total}}",
+      "goToPage": "Go to page",
       "showing": "{{from}}–{{to}} of {{total}}",
       "rowsPerPage": "Rows per page"
     },
@@ -110,7 +210,7 @@
       "suspended": "Suspended"
     },
     "editTitle": "Edit user",
-    "editDescription": "Update profile, role, and access.",
+    "editDescription": "Update profile and access.",
     "activityTitle": "Recent activity",
     "activityDescription": "Audit events recorded for this user.",
     "activityEmpty": "No recent activity.",

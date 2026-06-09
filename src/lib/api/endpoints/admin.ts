@@ -2,12 +2,19 @@ import api from "@/lib/api/api";
 import type {
   AdminActivityListParams,
   AdminActivityListResponse,
+  AdminCreatePayload,
+  AdminListResponse,
+  AdminMutationResponse,
+  AdminPermissionsUpdatePayload,
   AdminStats,
   AdminUser,
   AdminUserListParams,
   AdminUserListResponse,
   AdminUserUpdatePayload,
   AdminUserUpdateResponse,
+  PermissionCatalogResponse,
+  RootTransferConfirmPayload,
+  RootTransferRequestPayload,
 } from "@/lib/types/admin";
 import type { MessageResponse } from "@/lib/types/auth";
 
@@ -70,4 +77,47 @@ export const adminApi = {
     ),
 
   getStats: (): Promise<AdminStats> => api.get<AdminStats, AdminStats>("/admin/stats"),
+
+  // --- Admin / RBAC management (superadmin only) ---------------------------
+
+  listAdmins: (): Promise<AdminListResponse> =>
+    api.get<AdminListResponse, AdminListResponse>("/admin/admins"),
+
+  getPermissionCatalog: (): Promise<PermissionCatalogResponse> =>
+    api.get<PermissionCatalogResponse, PermissionCatalogResponse>("/admin/admins/permissions"),
+
+  // Create a brand-new admin account (replaces promote-an-existing-user).
+  createAdmin: (payload: AdminCreatePayload): Promise<AdminMutationResponse> =>
+    api.post<AdminMutationResponse, AdminMutationResponse>("/admin/admins", payload),
+
+  setAdminPermissions: (
+    id: string,
+    payload: AdminPermissionsUpdatePayload,
+  ): Promise<AdminMutationResponse> =>
+    api.patch<AdminMutationResponse, AdminMutationResponse>(
+      `/admin/admins/${id}/permissions`,
+      payload,
+    ),
+
+  // Hard-delete an admin account.
+  deleteAdmin: (id: string): Promise<MessageResponse> =>
+    api.delete<MessageResponse, MessageResponse>(`/admin/admins/${id}`),
+
+  // Admin -> superadmin (root only).
+  promoteSuperadmin: (id: string): Promise<AdminMutationResponse> =>
+    api.post<AdminMutationResponse, AdminMutationResponse>(`/admin/admins/${id}/promote`),
+
+  // Superadmin -> admin (root only).
+  demoteSuperadmin: (id: string): Promise<AdminMutationResponse> =>
+    api.post<AdminMutationResponse, AdminMutationResponse>(`/admin/admins/${id}/demote`),
+
+  // Email-OTP root transfer (root only): request emails an OTP to the root.
+  transferRoot: (payload: RootTransferRequestPayload): Promise<MessageResponse> =>
+    api.post<MessageResponse, MessageResponse>("/admin/admins/transfer-root", payload),
+
+  confirmTransferRoot: (payload: RootTransferConfirmPayload): Promise<AdminMutationResponse> =>
+    api.post<AdminMutationResponse, AdminMutationResponse>(
+      "/admin/admins/transfer-root/confirm",
+      payload,
+    ),
 };

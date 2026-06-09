@@ -29,6 +29,15 @@ export const test = base.extend({
       },
     );
 
+    // page.route() does not cover WebSockets, so realtime sockets (account
+    // events, support feed) would otherwise reach the real backend through the
+    // dev proxy. Intercept API WebSockets and answer them locally — the handler
+    // never calls connectToServer(), so nothing is forwarded to the backend.
+    // Next.js HMR sockets (/_next/...) are intentionally left untouched.
+    await page.routeWebSocket(/\/api\/v1\//, () => {
+      // No-op mock: tests don't assert on realtime frames.
+    });
+
     // eslint-disable-next-line react-hooks/rules-of-hooks
     await use(page);
   },

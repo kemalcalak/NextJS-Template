@@ -16,6 +16,7 @@ export type SeoPageKey =
   | "adminDashboard"
   | "adminUsers"
   | "adminUserDetail"
+  | "adminAdmins"
   | "adminFiles"
   | "adminActivities"
   | "adminSupport"

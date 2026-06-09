@@ -39,7 +39,15 @@
       "cannot_modify_self": "Administrators cannot modify their own account from this panel.",
       "cannot_delete_self": "Administrators cannot delete themselves.",
       "cannot_demote_last_admin": "You cannot demote the last active administrator.",
-      "cannot_delete_last_admin": "You cannot delete the last active administrator."
+      "cannot_delete_last_admin": "You cannot delete the last active administrator.",
+      "cannot_modify_superadmin": "Only a superadmin can modify a superadmin account.",
+      "cannot_delete_last_superadmin": "You cannot remove the last active superadmin.",
+      "only_superadmin": "This action is restricted to superadmins.",
+      "only_root_superadmin": "This action is restricted to the root superadmin.",
+      "not_an_admin": "This user is not an admin.",
+      "not_a_superadmin": "This user is not a superadmin.",
+      "cannot_transfer_to_self": "You cannot transfer root status to yourself.",
+      "superadmin_role_immutable": "A superadmin's role cannot be changed."
     },
     "support": {
       "ticket_not_found": "Ticket not found.",

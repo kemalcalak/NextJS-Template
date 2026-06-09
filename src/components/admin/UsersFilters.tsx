@@ -71,6 +71,7 @@ export function UsersFilters({
             className="w-full md:w-fit md:min-w-35"
             options={[
               { value: "all", label: t("users.filters.roleAny") },
+              { value: "superadmin", label: t("users.role.superadmin") },
               { value: "admin", label: t("users.role.admin") },
               { value: "user", label: t("users.role.user") },
             ]}

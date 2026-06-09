@@ -1,6 +1,8 @@
 import { ROUTES } from "@/lib/config/routes";
 import { buildMetadata, validateLocale } from "@/lib/seo/metadata";
+import { Permission } from "@/lib/types/permissions";
 
+import { PermissionGate } from "../PermissionGate";
 import { AdminSupportContent } from "./AdminSupportContent";
 
 import type { Metadata } from "next";
@@ -19,5 +21,9 @@ export async function generateMetadata({
 }
 
 export default function AdminSupportPage() {
-  return <AdminSupportContent />;
+  return (
+    <PermissionGate permission={Permission.SupportRead}>
+      <AdminSupportContent />
+    </PermissionGate>
+  );
 }

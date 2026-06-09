@@ -1,9 +1,12 @@
-import type { AdminActivity, AdminUser } from "@/lib/types/admin";
+import type { AdminActivity, AdminListItem, AdminUser } from "@/lib/types/admin";
 import type { AdminFileListItem } from "@/lib/types/file";
+import { Permission } from "@/lib/types/permissions";
 import { SystemRole } from "@/lib/types/user";
 
 import type { Locale } from "./admin-strings";
 import type { Page } from "@playwright/test";
+
+const ALL_PERMISSIONS = Object.values(Permission) as Permission[];
 
 export const adminUser: AdminUser = {
   id: "admin-1",
@@ -19,7 +22,41 @@ export const adminUser: AdminUser = {
   deactivated_at: null,
   deletion_scheduled_at: null,
   suspended_at: null,
+  // A fully-permissioned admin so existing specs keep seeing every section.
+  permissions: ALL_PERMISSIONS,
 };
+
+export const superadminUser: AdminUser = {
+  ...adminUser,
+  id: "superadmin-1",
+  email: "superadmin@test.com",
+  first_name: "Sue",
+  last_name: "Super",
+  role: SystemRole.SUPERADMIN,
+  // The seeded root superadmin — unlocks the root-only tier actions.
+  is_root_superadmin: true,
+  // Superadmins bypass grants by role; /users/me omits the list for them.
+  permissions: undefined,
+};
+
+// A second, non-root superadmin: a superadmin who must NOT see the root-only
+// actions (promote/demote a superadmin, transfer root).
+export const nonRootSuperadminUser: AdminUser = {
+  ...superadminUser,
+  id: "superadmin-2",
+  email: "second-super@test.com",
+  first_name: "Sam",
+  last_name: "Second",
+  is_root_superadmin: false,
+};
+
+// A plain admin holding only the given permissions, for RBAC gating specs.
+export const makeAdmin = (permissions: Permission[]): AdminUser => ({
+  ...adminUser,
+  id: "limited-admin-1",
+  email: "limited@test.com",
+  permissions,
+});
 
 export const regularUser: AdminUser = {
   id: "user-1",
@@ -150,6 +187,66 @@ export const adminFile: AdminFileListItem = {
   uploaded_by_id: "user-1",
   uploaded_by: { id: "user-1", email: "user@test.com", first_name: "Usain", last_name: "User" },
   created_at: "2026-01-05T00:00:00Z",
+};
+
+export const adminListItems: AdminListItem[] = [
+  {
+    id: superadminUser.id,
+    email: superadminUser.email,
+    first_name: "Sue",
+    last_name: "Super",
+    role: SystemRole.SUPERADMIN,
+    is_active: true,
+    is_root_superadmin: true,
+    permissions: ALL_PERMISSIONS,
+  },
+  {
+    id: nonRootSuperadminUser.id,
+    email: nonRootSuperadminUser.email,
+    first_name: "Sam",
+    last_name: "Second",
+    role: SystemRole.SUPERADMIN,
+    is_active: true,
+    is_root_superadmin: false,
+    permissions: ALL_PERMISSIONS,
+  },
+  {
+    id: "limited-admin-1",
+    email: "limited@test.com",
+    first_name: null,
+    last_name: null,
+    role: SystemRole.ADMIN,
+    is_active: true,
+    is_root_superadmin: false,
+    permissions: [Permission.UsersRead],
+  },
+];
+
+export const mockPermissionCatalog = async (page: Page): Promise<void> => {
+  await page.route(/.*\/api\/v1\/admin\/admins\/permissions$/, async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({ permissions: ALL_PERMISSIONS }),
+    });
+  });
+};
+
+export const mockAdminsList = async (
+  page: Page,
+  admins: AdminListItem[] = adminListItems,
+): Promise<void> => {
+  await page.route(/.*\/api\/v1\/admin\/admins(\?.*)?$/, async (route) => {
+    if (route.request().method() !== "GET") {
+      await route.fallback();
+      return;
+    }
+    await route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({ data: admins, total: admins.length }),
+    });
+  });
 };
 
 export const mockAdminFilesList = async (

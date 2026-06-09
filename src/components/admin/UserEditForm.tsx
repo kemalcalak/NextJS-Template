@@ -10,7 +10,6 @@ import { UserEditFormFields } from "@/components/admin/UserEditFormFields";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import type { AdminUser, AdminUserUpdatePayload } from "@/lib/types/admin";
-import { SystemRole } from "@/lib/types/user";
 import { type AdminUserUpdateFormValues } from "@/schemas/admin";
 
 interface UserEditFormProps {
@@ -24,7 +23,6 @@ const userToFormValues = (user: AdminUser): AdminUserUpdateFormValues => ({
   first_name: user.first_name ?? "",
   last_name: user.last_name ?? "",
   title: user.title ?? "",
-  role: user.role ?? SystemRole.USER,
   is_active: user.is_active,
   is_verified: user.is_verified,
 });
@@ -50,7 +48,6 @@ export function UserEditForm({ user, isSelf, isSaving, onSubmit }: UserEditFormP
       title: values.title ? values.title : null,
     };
     if (!isSelf) {
-      payload.role = values.role;
       payload.is_active = values.is_active;
       payload.is_verified = values.is_verified;
     }

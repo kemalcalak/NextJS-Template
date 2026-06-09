@@ -1,6 +1,8 @@
 import type { FilePublic } from "./file";
+import type { Permission } from "./permissions";
 
 export enum SystemRole {
+  SUPERADMIN = "superadmin",
   ADMIN = "admin",
   USER = "user",
 }
@@ -12,6 +14,9 @@ export interface User {
   last_name: string | null;
   title: string | null;
   role: SystemRole;
+  // True only for the single root superadmin (the first one seeded). Drives the
+  // root-only admin-tier actions (promote/demote a superadmin, transfer root).
+  is_root_superadmin?: boolean;
   is_active: boolean;
   is_verified: boolean;
   created_at: string;
@@ -20,6 +25,9 @@ export interface User {
   deletion_scheduled_at: string | null;
   suspended_at: string | null;
   avatar_file?: FilePublic | null;
+  // Present only for admin accounts (omitted entirely for regular users and
+  // superadmins). The grant set powering the per-permission UI gates.
+  permissions?: Permission[];
 }
 
 export interface UserUpdateResponse {

@@ -1,5 +1,7 @@
 import { SystemRole, type User } from "./user";
 
+import type { Permission } from "./permissions";
+
 export { SystemRole };
 
 export type ActivityType =
@@ -67,7 +69,6 @@ export interface AdminUserUpdatePayload {
   first_name?: string | null;
   last_name?: string | null;
   title?: string | null;
-  role?: SystemRole;
   is_active?: boolean;
   is_verified?: boolean;
   avatar_file_id?: string | null;
@@ -118,4 +119,56 @@ export interface AdminActivityListParams {
   status_code?: number;
   date_from?: string;
   date_to?: string;
+}
+
+// --- Admin / RBAC management ------------------------------------------------
+
+// An admin-tier account with the permissions it holds. Superadmins are reported
+// by the backend as holding every permission for display.
+export interface AdminListItem {
+  id: string;
+  email: string;
+  first_name: string | null;
+  last_name: string | null;
+  role: SystemRole;
+  is_active: boolean;
+  is_root_superadmin: boolean;
+  permissions: Permission[];
+}
+
+export interface AdminListResponse {
+  data: AdminListItem[];
+  total: number;
+}
+
+// Create a brand-new admin account (replaces the old promote-an-existing-user
+// flow). Mirrors the backend ``AdminCreate`` schema.
+export interface AdminCreatePayload {
+  email: string;
+  first_name?: string | null;
+  last_name?: string | null;
+  password: string;
+  permissions: Permission[];
+}
+
+export interface AdminPermissionsUpdatePayload {
+  permissions: Permission[];
+}
+
+// Email-OTP root-superadmin transfer (root only).
+export interface RootTransferRequestPayload {
+  user_id: string;
+}
+
+export interface RootTransferConfirmPayload {
+  code: string;
+}
+
+export interface AdminMutationResponse {
+  admin: AdminListItem;
+  message: string;
+}
+
+export interface PermissionCatalogResponse {
+  permissions: Permission[];
 }

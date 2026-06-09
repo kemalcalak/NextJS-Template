@@ -1,6 +1,6 @@
 "use client";
 
-import { Form, Select } from "antd";
+import { Form } from "antd";
 import { useTranslation } from "react-i18next";
 
 import { Checkbox } from "@/components/ui/checkbox";
@@ -45,16 +45,7 @@ export function UserEditFormFields({ isSelf }: UserEditFormFieldsProps) {
       >
         <Input />
       </Form.Item>
-      <div className="grid gap-4 md:grid-cols-3">
-        <Form.Item name="role" label={t("admin:userDetail.fields.role")}>
-          <Select
-            disabled={isSelf}
-            options={[
-              { value: "admin", label: t("admin:users.role.admin") },
-              { value: "user", label: t("admin:users.role.user") },
-            ]}
-          />
-        </Form.Item>
+      <div className="grid gap-4 md:grid-cols-2">
         <Form.Item name="is_active" valuePropName="checked" label=" " colon={false}>
           <Checkbox disabled={isSelf}>{t("admin:userDetail.fields.active")}</Checkbox>
         </Form.Item>

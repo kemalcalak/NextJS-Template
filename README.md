@@ -50,7 +50,7 @@ The API proxy is pre-configured in `next.config.ts` to forward requests from you
 - **HTTP Client:** [Axios](https://axios-http.com/) with centralized API configuration and interceptors.
 - **Styling & UI:** [Tailwind CSS 4](https://tailwindcss.com/) with [Radix UI](https://www.radix-ui.com/) primitives and [shadcn](https://ui.shadcn.com/) integration for pre-built accessible components.
 - **Forms & Validation:** [React Hook Form](https://react-hook-form.com/) combined with [Zod](https://zod.dev/) for schema-based, type-safe validation.
-- **File Uploads & Avatars:** Reusable `FileUpload` (multi-file) and `AvatarUpload` components (built on Ant Design's `Upload`) with upload progress and client-side type/size validation mirroring the backend limits. A `useUploadFile` hook powers profile and admin avatar management, plus an admin file-management page (`/admin/files`) with uploader and content-type filters.
+- **File Uploads & Avatars (staged, confirm-to-upload):** Reusable `FileUpload` (multi-file) and `AvatarUpload` components (built on Ant Design's `Upload`) with client-side type/size validation mirroring the backend limits. **Selecting a file does not upload it** — it is held locally with an instant preview and only sent to Cloudinary/DB when the user confirms (Save / form submit), via an imperative flush handle exposed to the parent. A `useUploadFile` hook powers profile and admin avatar management, plus an admin file-management page (`/admin/files`) with uploader and content-type filters.
 - **Code Quality:** ESLint 9 and Prettier pre-configured for consistent code style and formatting.
 - **Pre-commit Hooks:** [Husky](https://typicode.github.io/husky/) + [lint-staged](https://github.com/lint-staged/lint-staged) auto-run ESLint + Prettier on staged files before every commit.
 - **Error Tracking:** [Sentry](https://sentry.io/) integration for client, server, and edge runtimes. Skipped automatically when no DSN is provided.
@@ -61,6 +61,8 @@ The API proxy is pre-configured in `next.config.ts` to forward requests from you
 - **Testing:** Comprehensive test suite setup utilizing **Vitest** for unit/component tests and **Playwright** for End-to-End (E2E) testing.
 - **Mocking:** MSW (Mock Service Worker) for API mocking during testing and development.
 - **Protected Routes:** Built-in auth flow with protected route segments using Next.js conventions.
+- **RBAC / Permission-aware Admin Panel:** A sidebar-shell admin area (`/admin`) with `user` / `admin` / `superadmin` roles, isolated from the user-facing app. A central `usePermissions()` hook (plus per-permission helpers like `useCanDeleteUsers`) drives **nav, route, and action gating** from the `permissions` on `/users/me`; superadmins pass everything by role and get a searchable **permission-matrix** to **create/delete admin accounts** and assign grants — while the **root superadmin** additionally promotes/demotes superadmins and hands over root via **email OTP**. Permission changes apply **instantly** over a WebSocket — no re-login. See [Admin Panel & RBAC](#-admin-panel--rbac).
+- **Support / Ticketing UI + Realtime:** User and admin ticketing screens (open, reply with attachments, status/priority, assignment) with live thread & queue updates over a self-healing WebSocket. See [Support UI](#-support-ticketing-ui).
 
 ---
 
@@ -217,7 +219,8 @@ Configuration lives in `lint-staged.config.mjs`, `.husky/pre-commit`, and `.husk
 │   │   ├── api/          # Centralized API client configuration
 │   │   ├── config/       # App configuration constants
 │   │   ├── seo/          # SEO utilities
-│   │   ├── types/        # Global TypeScript types
+│   │   ├── types/        # Global TypeScript types (incl. RBAC permissions)
+│   │   ├── websocket/    # Self-healing realtime sockets (support + account)
 │   │   └── utils.ts      # Utility functions
 │   ├── i18n/             # Internationalization configuration
 │   │   ├── config.ts     # i18next configuration
@@ -242,9 +245,11 @@ Configuration lives in `lint-staged.config.mjs`, `.husky/pre-commit`, and `.husk
 │   └── instrumentation-client.ts # Sentry init for browser runtime
 ├── tests-e2e/            # Playwright E2E tests
 │   ├── auth/             # Auth-related E2E tests
+│   ├── admin/            # Admin panel + RBAC E2E tests
+│   ├── support/          # Support / ticketing E2E tests
 │   ├── common/           # Common feature E2E tests
 │   ├── dashboard/        # Dashboard E2E tests
-│   └── base-test.ts      # Base test configuration
+│   └── base-test.ts      # Base test config (blocks BE: HTTP + WebSocket mocked)
 ├── public/               # Static assets (images, favicon, etc.)
 ├── .husky/               # Git hooks managed by Husky
 │   └── pre-commit        # Runs lint-staged before every commit
@@ -299,6 +304,35 @@ export function MyComponent() {
 
 ---
 
+## 🔐 Admin Panel & RBAC
+
+The admin surface lives under `/[locale]/admin` behind a sidebar shell and is isolated from the user-facing app — admins/superadmins visiting a user page are redirected into `/admin`.
+
+**Permission hooks (`src/hooks/usePermissions.ts`).** The auth store holds the current user (with `permissions` for admins, delivered by `/users/me`). `usePermissions()` returns `{ isSuperadmin, permissions, has(permission) }`, alongside ergonomic one-liners — `useCanReadUsers`, `useCanWriteUsers`, `useCanDeleteUsers`, `useCanDeleteFiles`, `useCanWriteSupport`, `useCanUpdateSupport`, … plus `useIsRootSuperadmin` for the root-only tier actions — each returning a boolean (superadmins always `true`).
+
+**Three layers of gating:**
+
+1. **Nav** — sidebar items render only for sections the admin can read; superadmins also see _Admins_.
+2. **Route** — each admin page is wrapped so a direct URL without the matching `*:read` permission shows a forbidden state instead of the content.
+3. **Action** — buttons (delete, suspend, reset password, reassign ticket, …) appear only with the matching permission; the superadmin-tier actions (make/demote superadmin, transfer root) show only for the **root** superadmin. Where one is hidden, a small hint makes clear it's intentional and **no request is sent**.
+
+**Live updates.** A per-user account socket (`/users/me/events`) listens for `permissions_updated`; on receipt the client re-fetches `/users/me` so nav and gates reflect new grants immediately — without a re-login.
+
+**Admin management (`/admin/admins`, superadmin-only).** List admin-tier accounts, **create an admin account** (email + name + password + initial grants), edit a permission matrix (grouped by resource, with section search), and **delete an account** — all modal-driven. The **root superadmin** additionally gets **Make superadmin** / **Demote to admin** row actions and a two-step **Transfer root** flow that emails a one-time code (entered via an OTP input) before handing over root.
+
+---
+
+## 🎫 Support (Ticketing) UI
+
+End-to-end support screens for both sides:
+
+- **Users** — open a ticket (with image attachments), browse their tickets, and reply in a live thread (`/support`).
+- **Admins** — a filterable queue, full ticket view, reply, and status/priority/assignment controls gated by `support:write` / `support:update` (`/admin/support`).
+
+Both surfaces subscribe to a multiplexed, self-healing WebSocket so new messages and status changes stream in without a refresh.
+
+---
+
 ## 🤝 Contributing
 
 Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
@@ -327,7 +361,11 @@ Distributed under the MIT License. See the `LICENSE` file at the root of the wor
 - [ ] Start the development server with `pnpm run dev`
 - [ ] Open `http://localhost:3000` in your browser
 - [ ] Review the project structure and familiarize yourself with the codebase
-- [ ] Check the E2E tests in `tests-e2e/` to understand the testing patterns
+- [ ] Sign in as the seeded superadmin (`FIRST_SUPERUSER` from the backend) and open the admin panel at `/admin`
+- [ ] Visit `/admin/admins` to create an admin account and assign permissions via the matrix
+- [ ] Sign in as that permission-limited admin and confirm the nav, routes, and actions gate to their grants
+- [ ] Try the support flow: open a ticket at `/support`, then reply/assign it from `/admin/support`
+- [ ] Check the E2E tests in `tests-e2e/` (incl. `admin/` RBAC + `support/`) to understand the testing patterns
 - [ ] Update the i18n translation files in `src/i18n/locales/` as needed
 
 ---

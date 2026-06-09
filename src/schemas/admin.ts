@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { SystemRole } from "@/lib/types/user";
+import { getEmailSchema, getNameSchema, getPasswordSchema } from "./auth";
 
 import type { TFunction } from "i18next";
 
@@ -28,9 +28,21 @@ export const getAdminUserUpdateSchema = (t: TFunction) =>
       .max(100)
       .or(z.literal("")),
     title: z.string().trim().max(100).optional().or(z.literal("")),
-    role: z.enum(SystemRole),
     is_active: z.boolean(),
     is_verified: z.boolean(),
   });
 
 export type AdminUserUpdateFormValues = z.infer<ReturnType<typeof getAdminUserUpdateSchema>>;
+
+// Creating a brand-new admin account reuses the same field rules as the public
+// register form (email, names ≥2, full password policy) so validation is
+// consistent across the app. Permissions are picked separately via the matrix.
+export const getAdminCreateSchema = (t: TFunction) =>
+  z.object({
+    email: getEmailSchema(t),
+    first_name: getNameSchema(t),
+    last_name: getNameSchema(t),
+    password: getPasswordSchema(t),
+  });
+
+export type AdminCreateFormValues = z.infer<ReturnType<typeof getAdminCreateSchema>>;

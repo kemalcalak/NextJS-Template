@@ -21,11 +21,14 @@ const baseUser: AdminUser = {
   suspended_at: null,
 };
 
+const allCaps = { canResetPassword: true, canSuspend: true, canDelete: true };
+
 const renderZone = (overrides: Partial<React.ComponentProps<typeof UserDangerZone>> = {}) => {
   const props = {
     user: baseUser,
     isSelf: false,
     disabled: false,
+    caps: allCaps,
     onAction: vi.fn(),
     ...overrides,
   };
@@ -36,7 +39,13 @@ const renderZone = (overrides: Partial<React.ComponentProps<typeof UserDangerZon
 describe("UserDangerZone", () => {
   it("shows 'suspend' for active users and 'unsuspend' for suspended ones", () => {
     const { rerender } = render(
-      <UserDangerZone user={baseUser} isSelf={false} disabled={false} onAction={vi.fn()} />,
+      <UserDangerZone
+        user={baseUser}
+        isSelf={false}
+        disabled={false}
+        caps={allCaps}
+        onAction={vi.fn()}
+      />,
     );
     expect(screen.getByRole("button", { name: /admin:userDetail\.suspend/ })).toBeInTheDocument();
     expect(
@@ -48,6 +57,7 @@ describe("UserDangerZone", () => {
         user={{ ...baseUser, is_active: false, suspended_at: "2026-04-20T00:00:00Z" }}
         isSelf={false}
         disabled={false}
+        caps={allCaps}
         onAction={vi.fn()}
       />,
     );

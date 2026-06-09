@@ -1,14 +1,22 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
-import { Activity, Images, LayoutDashboard, ShieldCheck, Ticket, Users } from "lucide-react";
-import Link from "next/link";
+import { ShieldCheck } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 
 import { LoadingScreen } from "@/components/common/LoadingScreen";
 import { Button } from "@/components/ui/button";
+import { useAccountEvents } from "@/hooks/use-account-events";
+import {
+  useCanReadActivities,
+  useCanReadFiles,
+  useCanReadSupport,
+  useCanReadUsers,
+  useIsSuperadmin,
+} from "@/hooks/use-permissions";
+import { useIsMobile } from "@/hooks/useMediaQuery";
 import {
   ROUTES,
   getLocaleFromPath,
@@ -19,6 +27,10 @@ import {
 import { SystemRole } from "@/lib/types/user";
 import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/stores/auth.store";
+
+import { buildAdminNav, findActiveAdminNav } from "./admin-nav";
+import { AdminSidebar } from "./AdminSidebar";
+import { AdminTopbar } from "./AdminTopbar";
 
 interface AdminShellProps {
   children: React.ReactNode;
@@ -33,8 +45,26 @@ export function AdminShell({ children }: AdminShellProps) {
   const isSessionInitialized = useAuthStore((state) => state.isSessionInitialized);
   const pathname = usePathname();
   const router = useRouter();
+  const isMobile = useIsMobile();
+
+  // Live RBAC: refetch /users/me when a superadmin changes this admin's grants.
+  useAccountEvents();
+
+  // Per-section visibility. Superadmins pass every check via their role.
+  const canReadUsers = useCanReadUsers();
+  const canReadFiles = useCanReadFiles();
+  const canReadActivities = useCanReadActivities();
+  const canReadSupport = useCanReadSupport();
+  const isSuperadmin = useIsSuperadmin();
   const currentLocale = getLocaleFromPath(pathname);
   const pathWithoutLocale = getPathWithoutLocale(pathname);
+
+  // Desktop: expanded (w-64) ⇄ collapsed icon-rail (w-16). Mobile: full drawer
+  // (expanded) ⇄ off-canvas (collapsed). Derive the default from the viewport
+  // (collapsed on mobile) and let a manual toggle override it — deriving instead
+  // of syncing state in an effect avoids cascading re-renders.
+  const [userCollapsed, setUserCollapsed] = useState<boolean | null>(null);
+  const collapsed = userCollapsed ?? isMobile;
 
   // Kick non-admin users back to the regular dashboard. We can only run this
   // check once AuthHydrator has populated the store with /users/me — the
@@ -42,7 +72,7 @@ export function AdminShell({ children }: AdminShellProps) {
   useEffect(() => {
     if (!isSessionInitialized) return;
     if (!isAuthenticated) return;
-    if (user && user.role !== SystemRole.ADMIN) {
+    if (user && user.role !== SystemRole.ADMIN && user.role !== SystemRole.SUPERADMIN) {
       router.replace(getLocalizedPath(ROUTES.dashboard, currentLocale));
     }
   }, [isSessionInitialized, isAuthenticated, user, router, currentLocale]);
@@ -51,7 +81,7 @@ export function AdminShell({ children }: AdminShellProps) {
     return <LoadingScreen />;
   }
 
-  if (user.role !== SystemRole.ADMIN) {
+  if (user.role !== SystemRole.ADMIN && user.role !== SystemRole.SUPERADMIN) {
     return (
       <div className="flex min-h-[60vh] items-center justify-center p-8">
         <div className="max-w-md text-center">
@@ -71,72 +101,55 @@ export function AdminShell({ children }: AdminShellProps) {
     );
   }
 
-  const nav = [
-    {
-      key: "dashboard",
-      label: t("shell.nav.dashboard"),
-      href: ROUTES.adminDashboard,
-      icon: LayoutDashboard,
-    },
-    {
-      key: "users",
-      label: t("shell.nav.users"),
-      href: ROUTES.adminUsers,
-      icon: Users,
-    },
-    {
-      key: "files",
-      label: t("shell.nav.files"),
-      href: ROUTES.adminFiles,
-      icon: Images,
-    },
-    {
-      key: "activities",
-      label: t("shell.nav.activities"),
-      href: ROUTES.adminActivities,
-      icon: Activity,
-    },
-    {
-      key: "support",
-      label: t("shell.nav.support"),
-      href: ROUTES.adminSupport,
-      icon: Ticket,
-    },
-  ];
+  const sections = buildAdminNav({
+    canReadUsers,
+    canReadFiles,
+    canReadActivities,
+    canReadSupport,
+    isSuperadmin,
+  });
+  const active = findActiveAdminNav(sections, (href) => matchesRoute(pathWithoutLocale, href));
+
+  const closeOnMobile = () => {
+    if (isMobile) setUserCollapsed(true);
+  };
 
   return (
-    <div className="mx-auto flex w-full max-w-480 flex-col gap-6 p-4 md:flex-row md:p-6 lg:p-8 xl:p-12">
-      <aside className="md:sticky md:top-24 md:h-fit md:w-56 md:shrink-0">
-        <div className="mb-4 flex items-center gap-2 px-2">
-          <ShieldCheck className="h-4 w-4 text-primary" />
-          <span className="text-sm font-semibold tracking-wide uppercase text-muted-foreground">
-            {t("shell.title")}
-          </span>
-        </div>
-        <nav className="flex gap-1 overflow-x-auto rounded-xl border bg-card/50 p-1 md:flex-col md:overflow-visible">
-          {nav.map((item) => {
-            const href = getLocalizedPath(item.href, currentLocale);
-            const active = matchesRoute(pathWithoutLocale, item.href);
-            const Icon = item.icon;
-            return (
-              <Link
-                key={item.key}
-                href={href}
-                className={cn(
-                  "flex shrink-0 items-center gap-2 whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium transition-all",
-                  active
-                    ? "bg-primary/10 text-primary ring-1 ring-primary/30 shadow-[0_0_12px_-2px_var(--primary)] hover:bg-primary/15"
-                    : "text-muted-foreground hover:bg-muted hover:text-foreground",
-                )}
-              >
-                <Icon className="h-4 w-4 shrink-0" />
-                <span>{item.label}</span>
-              </Link>
-            );
-          })}
-        </nav>
+    <div className="flex min-h-screen bg-background">
+      <aside
+        className={cn(
+          "fixed inset-y-0 left-0 z-40 flex flex-col border-r border-border bg-card shadow-xl transition-all md:sticky md:top-0 md:h-screen md:bg-card/40 md:shadow-none",
+          collapsed ? "w-64 -translate-x-full md:w-16 md:translate-x-0" : "w-64 translate-x-0",
+        )}
+      >
+        <AdminSidebar
+          sections={sections}
+          currentLocale={currentLocale}
+          pathWithoutLocale={pathWithoutLocale}
+          user={user}
+          collapsed={collapsed}
+          onNavigate={closeOnMobile}
+        />
       </aside>
-      <main className="min-w-0 flex-1">{children}</main>
+
+      {!collapsed ? (
+        <div
+          className="fixed inset-0 z-30 bg-black/50 md:hidden"
+          onClick={closeOnMobile}
+          aria-hidden="true"
+        />
+      ) : null}
+
+      <div className="flex min-w-0 flex-1 flex-col">
+        <AdminTopbar
+          onToggleSidebar={() => {
+            setUserCollapsed(!collapsed);
+          }}
+          sectionKey={active?.sectionKey ?? null}
+          itemKey={active?.itemKey ?? null}
+        />
+        <main className="min-w-0 flex-1 p-4 md:p-6 lg:p-8">{children}</main>
+      </div>
     </div>
   );
 }

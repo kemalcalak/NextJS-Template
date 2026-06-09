@@ -24,7 +24,14 @@
       "user_suspended": "User suspended. They cannot log in until an admin lifts the suspension.",
       "user_unsuspended": "Suspension lifted. The user can sign in again.",
       "user_deleted": "User permanently deleted.",
-      "password_changed": "User's password has been reset. They'll be notified by email and must use the 'Forgot Password' flow to regain access."
+      "password_changed": "User's password has been reset. They'll be notified by email and must use the 'Forgot Password' flow to regain access.",
+      "created": "Admin account created.",
+      "account_deleted": "Admin account deleted.",
+      "superadmin_promoted": "Admin promoted to superadmin.",
+      "superadmin_demoted": "Superadmin demoted to admin.",
+      "permissions_updated": "Permissions updated.",
+      "root_transfer_initiated": "Verification code sent to your email.",
+      "root_transferred": "Root superadmin transferred."
     },
     "support": {
       "ticket_created": "Your support ticket has been created.",

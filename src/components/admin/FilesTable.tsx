@@ -12,6 +12,7 @@ import type { AdminFileListItem, AdminFileUploader } from "@/lib/types/file";
 interface FilesTableProps {
   rows: AdminFileListItem[];
   isLoading: boolean;
+  canDelete: boolean;
   onPreview: (file: AdminFileListItem) => void;
   onDelete: (file: AdminFileListItem) => void;
 }
@@ -21,7 +22,7 @@ const isImage = (contentType: string) => contentType.startsWith("image/");
 const fullName = (uploader: AdminFileUploader) =>
   `${uploader.first_name ?? ""} ${uploader.last_name ?? ""}`.trim();
 
-export function FilesTable({ rows, isLoading, onPreview, onDelete }: FilesTableProps) {
+export function FilesTable({ rows, isLoading, canDelete, onPreview, onDelete }: FilesTableProps) {
   const { t } = useTranslation("admin");
 
   return (
@@ -103,16 +104,18 @@ export function FilesTable({ rows, isLoading, onPreview, onDelete }: FilesTableP
                     >
                       <Eye className="h-4 w-4" />
                     </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon-sm"
-                      aria-label={t("files.rowActions.delete")}
-                      onClick={() => {
-                        onDelete(file);
-                      }}
-                    >
-                      <Trash2 className="h-4 w-4 text-destructive" />
-                    </Button>
+                    {canDelete ? (
+                      <Button
+                        variant="ghost"
+                        size="icon-sm"
+                        aria-label={t("files.rowActions.delete")}
+                        onClick={() => {
+                          onDelete(file);
+                        }}
+                      >
+                        <Trash2 className="h-4 w-4 text-destructive" />
+                      </Button>
+                    ) : null}
                   </div>
                 </td>
               </tr>

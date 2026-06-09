@@ -20,6 +20,7 @@ import {
   getLocalizedPath,
   getLocaleFromPath,
   getPathWithoutLocale,
+  isAdminPath,
   matchesRoute,
 } from "@/lib/config/routes";
 import { useAuthStore } from "@/stores/auth.store";
@@ -45,18 +46,14 @@ export const AppHeader = () => {
     };
   }, []);
 
-  // The admin login is a dedicated, chrome-free surface — it has its own
-  // header block inside the card and shouldn't compete with the global app
-  // header. Hiding the header here keeps the admin login consistent with the
-  // /admin subdomain layout it's designed to eventually live on.
+  // The entire admin area has its own chrome (AdminShell: sidebar + topbar), so
+  // the public header must never appear on any /admin/* route — including the
+  // admin login, which is a dedicated chrome-free surface.
   // The /account-suspended page is also chrome-free: a suspended user must
   // not have any nav affordance to bounce around the app — only the in-page
   // logout button.
   const pathWithoutLocale = getPathWithoutLocale(pathname);
-  if (
-    matchesRoute(pathWithoutLocale, ROUTES.adminLogin) ||
-    matchesRoute(pathWithoutLocale, ROUTES.accountSuspended)
-  ) {
+  if (isAdminPath(pathWithoutLocale) || matchesRoute(pathWithoutLocale, ROUTES.accountSuspended)) {
     return null;
   }
 

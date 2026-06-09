@@ -40,8 +40,10 @@ for (const locale of LOCALES) {
     test("a non-suspended user visiting /account-suspended is sent to the dashboard", async ({
       page,
     }) => {
-      await injectSession(page, adminUser, locale);
-      await mockMe(page, adminUser);
+      // A regular (non-admin) user: lands on the user dashboard without the
+      // admin-area redirect that would otherwise bounce an admin to /admin.
+      await injectSession(page, regularUser, locale);
+      await mockMe(page, regularUser);
 
       await page.goto(`/${locale}/account-suspended`);
 
