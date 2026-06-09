@@ -6,6 +6,7 @@ import { Form, Input, Modal } from "antd";
 import { useTranslation } from "react-i18next";
 
 import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 import { useCreateAdmin } from "@/hooks/api/use-admin";
 import type { Permission } from "@/lib/types/permissions";
 import { zodFieldRule } from "@/lib/validation/zodToAntdRule";
@@ -20,11 +21,15 @@ interface CreateAdminModalProps {
 }
 
 export function CreateAdminModal({ catalog, open, onClose }: CreateAdminModalProps) {
-  const { t } = useTranslation(["admin", "validation"]);
+  const { t } = useTranslation("admin");
+  // Validation messages live in the `validation` namespace and the shared auth
+  // field schemas reference them unprefixed, so the schema needs a t bound to
+  // that namespace (otherwise the raw keys like "passwordSpecial" show up).
+  const { t: tv } = useTranslation("validation");
   const [form] = Form.useForm<AdminCreateFormValues>();
   const [permissions, setPermissions] = useState<Permission[]>([]);
   const { mutate: createAdmin, isPending } = useCreateAdmin();
-  const schema = getAdminCreateSchema(t);
+  const schema = getAdminCreateSchema(tv);
 
   const close = () => {
     if (isPending) return;
@@ -66,6 +71,9 @@ export function CreateAdminModal({ catalog, open, onClose }: CreateAdminModalPro
       footer={null}
     >
       <Form form={form} layout="vertical" onFinish={onFinish} requiredMark={false} className="mt-4">
+        <p className="mb-3 text-xs font-semibold tracking-wide text-muted-foreground uppercase">
+          {t("admins.create.accountSection")}
+        </p>
         <Form.Item
           name="email"
           label={t("admins.create.emailLabel")}
@@ -106,16 +114,22 @@ export function CreateAdminModal({ catalog, open, onClose }: CreateAdminModalPro
           />
         </Form.Item>
 
-        <Form.Item label={t("admins.create.permissionsLabel")} className="mb-0">
+        {/* Divider + labelled section clearly separates the permission grid from
+            the account fields above. */}
+        <Separator className="my-5" />
+        <p className="mt-3 mb-3 text-xs font-semibold tracking-wide text-muted-foreground uppercase">
+          {t("admins.create.permissionsLabel")}
+        </p>
+        <div className="mt-2">
           <PermissionMatrix
             catalog={catalog}
             value={permissions}
             onChange={setPermissions}
             disabled={isPending}
           />
-        </Form.Item>
+        </div>
 
-        <div className="mt-4 flex justify-end gap-2">
+        <div className="mt-5 flex justify-end gap-2">
           <Button variant="outline" type="button" onClick={close} disabled={isPending}>
             {t("admins.create.cancel")}
           </Button>

@@ -17,6 +17,7 @@ import {
   ROUTES,
   suspendedRoutes,
 } from "@/lib/config/routes";
+import { SystemRole } from "@/lib/types/user";
 import { useAuthStore } from "@/stores/auth.store";
 
 // Module-level guard — survives any React remount, including the one the root
@@ -25,6 +26,21 @@ import { useAuthStore } from "@/stores/auth.store";
 // load, so /users/me fires at most once per browser session until a hard
 // reload. React 19 Strict Mode double-invokes are also naturally absorbed.
 let sessionRequestInFlight = false;
+
+// Admin-tier users belong in the admin shell. Returns the admin dashboard path
+// when an (active) admin/superadmin is on any non-admin route, else null. Kept
+// out of the effect to keep its cyclomatic complexity within budget.
+const adminRedirectTarget = (
+  role: string | undefined,
+  pathWithoutLocale: string,
+  currentLocale: string,
+): string | null => {
+  const isAdminTier = role === SystemRole.ADMIN || role === SystemRole.SUPERADMIN;
+  if (isAdminTier && !isAdminPath(pathWithoutLocale)) {
+    return getLocalizedPath(ROUTES.adminDashboard, currentLocale);
+  }
+  return null;
+};
 
 export function AuthHydrator({ children }: { children: React.ReactNode }) {
   const { user, setUser, setSessionInitialized, isSessionInitialized, isAuthenticated } =
@@ -98,8 +114,20 @@ export function AuthHydrator({ children }: { children: React.ReactNode }) {
     const isPendingDeletion = Boolean(user?.deletion_scheduled_at);
     if (isPendingDeletion && !isPendingDeletionRoute) {
       router.replace(getLocalizedPath(ROUTES.accountDeactivated, currentLocale));
-    } else if (!isPendingDeletion && isPendingDeletionRoute) {
+      return;
+    }
+    if (!isPendingDeletion && isPendingDeletionRoute) {
       router.replace(getLocalizedPath(ROUTES.dashboard, currentLocale));
+      return;
+    }
+
+    // Admins/superadmins live entirely in the admin shell (its own sidebar +
+    // topbar). Once active, bounce them out of every non-admin route —
+    // including the public home — into the admin dashboard. The proxy can't do
+    // this: it only sees the JWT cookie, not the user's role.
+    const adminTarget = adminRedirectTarget(user?.role, pathWithoutLocale, currentLocale);
+    if (adminTarget) {
+      router.replace(adminTarget);
     }
   }, [isSessionInitialized, isAuthenticated, user, pathname, router]);
 

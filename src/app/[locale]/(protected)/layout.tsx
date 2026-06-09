@@ -3,8 +3,6 @@ import { redirect } from "next/navigation";
 
 import { ROUTES, getLocalizedPath } from "@/lib/config/routes";
 
-import { UserAreaGuard } from "./UserAreaGuard";
-
 interface ProtectedLayoutProps {
   children: React.ReactNode;
   params: Promise<{ locale: string }>;
@@ -26,10 +24,5 @@ export default async function ProtectedLayout({ children, params }: ProtectedLay
     redirect(getLocalizedPath(ROUTES.login, locale));
   }
 
-  return (
-    <>
-      <UserAreaGuard />
-      {children}
-    </>
-  );
+  return <>{children}</>;
 }

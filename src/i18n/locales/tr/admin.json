@@ -30,6 +30,7 @@
     "create": {
       "action": "Admin oluştur",
       "title": "Admin hesabı oluştur",
+      "accountSection": "Hesap bilgileri",
       "emailLabel": "E-posta",
       "emailPlaceholder": "admin@ornek.com",
       "firstNameLabel": "Ad",
@@ -98,6 +99,14 @@
   },
   "shell": {
     "title": "Yönetim",
+    "brandSubtitle": "Admin Paneli",
+    "toggleSidebar": "Kenar çubuğunu aç/kapat",
+    "section": {
+      "overview": "Genel Bakış",
+      "management": "Yönetim",
+      "monitoring": "İzleme",
+      "account": "Hesap"
+    },
     "nav": {
       "dashboard": "Panel",
       "users": "Kullanıcılar",

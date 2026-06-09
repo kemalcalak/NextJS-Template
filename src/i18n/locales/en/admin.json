@@ -30,6 +30,7 @@
     "create": {
       "action": "Create admin",
       "title": "Create an admin account",
+      "accountSection": "Account details",
       "emailLabel": "Email",
       "emailPlaceholder": "admin@example.com",
       "firstNameLabel": "First name",
@@ -98,6 +99,14 @@
   },
   "shell": {
     "title": "Administration",
+    "brandSubtitle": "Admin Panel",
+    "toggleSidebar": "Toggle sidebar",
+    "section": {
+      "overview": "Overview",
+      "management": "Management",
+      "monitoring": "Monitoring",
+      "account": "Account"
+    },
     "nav": {
       "dashboard": "Dashboard",
       "users": "Users",

@@ -7,6 +7,7 @@ import { useTranslation } from "react-i18next";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Separator } from "@/components/ui/separator";
 import type { Permission } from "@/lib/types/permissions";
 
 interface PermissionMatrixProps {
@@ -67,7 +68,7 @@ export function PermissionMatrix({ catalog, value, onChange, disabled }: Permiss
   });
 
   return (
-    <div className="space-y-3">
+    <div>
       <Input
         type="search"
         value={query}
@@ -76,54 +77,57 @@ export function PermissionMatrix({ catalog, value, onChange, disabled }: Permiss
           setQuery(event.target.value);
         }}
       />
-      {visibleGroups.length === 0 ? (
-        <p className="py-6 text-center text-sm text-muted-foreground">
-          {t("permissions.noResults")}
-        </p>
-      ) : (
-        visibleGroups.map((group) => {
-          const allSelected = group.permissions.every((permission) => selected.has(permission));
-          return (
-            <div key={group.resource} className="rounded-lg border bg-muted/30 p-3">
-              <div className="mb-2.5 flex items-center justify-between gap-2">
-                <p className="text-xs font-semibold tracking-wide uppercase text-muted-foreground">
-                  {t(`permissions.resource.${group.resource}`)}
-                </p>
-                <Label className="flex cursor-pointer items-center gap-1.5 text-xs font-normal text-muted-foreground">
-                  <Checkbox
-                    checked={allSelected}
-                    disabled={disabled}
-                    onCheckedChange={(checked) => {
-                      toggleAll(group.permissions, checked);
-                    }}
-                  />
-                  {t("permissions.selectAll")}
-                </Label>
+      <Separator className="my-4" />
+      <div className="space-y-3">
+        {visibleGroups.length === 0 ? (
+          <p className="py-6 text-center text-sm text-muted-foreground">
+            {t("permissions.noResults")}
+          </p>
+        ) : (
+          visibleGroups.map((group) => {
+            const allSelected = group.permissions.every((permission) => selected.has(permission));
+            return (
+              <div key={group.resource} className="rounded-lg border bg-muted/30 p-3">
+                <div className="mb-2.5 flex items-center justify-between gap-2">
+                  <p className="text-xs font-semibold tracking-wide uppercase text-muted-foreground">
+                    {t(`permissions.resource.${group.resource}`)}
+                  </p>
+                  <Label className="flex cursor-pointer items-center gap-1.5 text-xs font-normal text-muted-foreground">
+                    <Checkbox
+                      checked={allSelected}
+                      disabled={disabled}
+                      onCheckedChange={(checked) => {
+                        toggleAll(group.permissions, checked);
+                      }}
+                    />
+                    {t("permissions.selectAll")}
+                  </Label>
+                </div>
+                <div className="grid grid-cols-2 gap-1 sm:grid-cols-3">
+                  {group.permissions.map((permission) => {
+                    const [, action = ""] = permission.split(":");
+                    return (
+                      <Label
+                        key={permission}
+                        className="flex cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 text-sm font-normal transition-colors hover:bg-background"
+                      >
+                        <Checkbox
+                          checked={selected.has(permission)}
+                          disabled={disabled}
+                          onCheckedChange={(checked) => {
+                            toggle(permission, checked);
+                          }}
+                        />
+                        {t(`permissions.action.${action}`)}
+                      </Label>
+                    );
+                  })}
+                </div>
               </div>
-              <div className="grid grid-cols-2 gap-1 sm:grid-cols-3">
-                {group.permissions.map((permission) => {
-                  const [, action = ""] = permission.split(":");
-                  return (
-                    <Label
-                      key={permission}
-                      className="flex cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 text-sm font-normal transition-colors hover:bg-background"
-                    >
-                      <Checkbox
-                        checked={selected.has(permission)}
-                        disabled={disabled}
-                        onCheckedChange={(checked) => {
-                          toggle(permission, checked);
-                        }}
-                      />
-                      {t(`permissions.action.${action}`)}
-                    </Label>
-                  );
-                })}
-              </div>
-            </div>
-          );
-        })
-      )}
+            );
+          })
+        )}
+      </div>
     </div>
   );
 }
