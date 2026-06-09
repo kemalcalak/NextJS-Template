@@ -101,6 +101,7 @@
     "title": "Yönetim",
     "brandSubtitle": "Admin Paneli",
     "toggleSidebar": "Kenar çubuğunu aç/kapat",
+    "breadcrumb": "Gezinti yolu",
     "section": {
       "overview": "Genel Bakış",
       "management": "Yönetim",

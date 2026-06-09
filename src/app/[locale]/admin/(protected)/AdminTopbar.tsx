@@ -24,7 +24,7 @@ export function AdminTopbar({ onToggleSidebar, sectionKey, itemKey }: AdminTopba
       >
         <PanelLeft className="h-4 w-4" />
       </Button>
-      <nav className="flex items-center gap-1.5 text-sm" aria-label="Breadcrumb">
+      <nav className="flex items-center gap-1.5 text-sm" aria-label={t("shell.breadcrumb")}>
         <span className="font-medium text-muted-foreground">{t("shell.title")}</span>
         {sectionKey ? (
           <>

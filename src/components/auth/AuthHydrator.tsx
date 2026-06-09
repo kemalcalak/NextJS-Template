@@ -30,13 +30,18 @@ let sessionRequestInFlight = false;
 // Admin-tier users belong in the admin shell. Returns the admin dashboard path
 // when an (active) admin/superadmin is on any non-admin route, else null. Kept
 // out of the effect to keep its cyclomatic complexity within budget.
+//
+// ``/logout`` is exempted: it is a transient, chrome-free screen that clears the
+// session, so admins must be allowed to land on it. Without this, the bounce
+// would fire before the logout mutation's signing-out screen can show.
 const adminRedirectTarget = (
   role: string | undefined,
   pathWithoutLocale: string,
   currentLocale: string,
 ): string | null => {
   const isAdminTier = role === SystemRole.ADMIN || role === SystemRole.SUPERADMIN;
-  if (isAdminTier && !isAdminPath(pathWithoutLocale)) {
+  const isExempt = isAdminPath(pathWithoutLocale) || matchesRoute(pathWithoutLocale, ROUTES.logout);
+  if (isAdminTier && !isExempt) {
     return getLocalizedPath(ROUTES.adminDashboard, currentLocale);
   }
   return null;

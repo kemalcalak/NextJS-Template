@@ -101,6 +101,7 @@
     "title": "Administration",
     "brandSubtitle": "Admin Panel",
     "toggleSidebar": "Toggle sidebar",
+    "breadcrumb": "Breadcrumb",
     "section": {
       "overview": "Overview",
       "management": "Management",
