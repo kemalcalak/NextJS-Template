@@ -11,6 +11,7 @@ import {
   mockAdminUsersList,
   mockMe,
   mockPermissionCatalog,
+  nonRootSuperadminUser,
   regularUser,
   superadminUser,
 } from "./admin-helpers";
@@ -91,6 +92,57 @@ for (const locale of LOCALES) {
 
       const nav = page.locator("nav").first();
       await expect(nav.getByRole("link", { name: s.shell.nav.admins, exact: true })).toBeVisible();
+    });
+
+    test("the root superadmin sees the superadmin-tier actions", async ({ page }) => {
+      await injectSession(page, superadminUser, locale);
+      await mockMe(page, superadminUser);
+      await mockAdminsList(page);
+      await mockPermissionCatalog(page);
+
+      await page.goto(`/${locale}/admin/admins`);
+      // Root-only header action + per-row tier actions are all offered.
+      await expect(page.getByRole("button", { name: s.admins.transferRoot.action })).toBeVisible();
+      await expect(
+        page.getByRole("button", { name: s.admins.promoteSuperadmin.action }),
+      ).toBeVisible();
+      await expect(page.getByRole("button", { name: s.admins.demoteToAdmin.action })).toBeVisible();
+      await expect(
+        page.getByRole("button", { name: s.admins.delete.action }).first(),
+      ).toBeVisible();
+    });
+
+    test("a non-root superadmin does not see the root-only actions", async ({ page }) => {
+      await injectSession(page, nonRootSuperadminUser, locale);
+      await mockMe(page, nonRootSuperadminUser);
+      await mockAdminsList(page);
+      await mockPermissionCatalog(page);
+
+      await page.goto(`/${locale}/admin/admins`);
+      // Still manages admins (create), but the root-only tier actions are gone.
+      await expect(
+        page.getByRole("button", { name: s.admins.create.action }).first(),
+      ).toBeVisible();
+      await expect(page.getByRole("button", { name: s.admins.transferRoot.action })).toHaveCount(0);
+      await expect(
+        page.getByRole("button", { name: s.admins.promoteSuperadmin.action }),
+      ).toHaveCount(0);
+      await expect(page.getByRole("button", { name: s.admins.demoteToAdmin.action })).toHaveCount(
+        0,
+      );
+    });
+
+    test("the create-admin modal opens with the account fields", async ({ page }) => {
+      await injectSession(page, superadminUser, locale);
+      await mockMe(page, superadminUser);
+      await mockAdminsList(page);
+      await mockPermissionCatalog(page);
+
+      await page.goto(`/${locale}/admin/admins`);
+      await page.getByRole("button", { name: s.admins.create.action }).first().click();
+      await expect(page.getByRole("dialog")).toBeVisible();
+      await expect(page.getByText(s.admins.create.emailLabel, { exact: true })).toBeVisible();
+      await expect(page.getByText(s.admins.create.passwordLabel, { exact: true })).toBeVisible();
     });
 
     test("a plain admin cannot open the superadmin-only Admins page", async ({ page }) => {

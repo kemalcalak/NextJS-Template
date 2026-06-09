@@ -33,8 +33,21 @@ export const superadminUser: AdminUser = {
   first_name: "Sue",
   last_name: "Super",
   role: SystemRole.SUPERADMIN,
+  // The seeded root superadmin — unlocks the root-only tier actions.
+  is_root_superadmin: true,
   // Superadmins bypass grants by role; /users/me omits the list for them.
   permissions: undefined,
+};
+
+// A second, non-root superadmin: a superadmin who must NOT see the root-only
+// actions (promote/demote a superadmin, transfer root).
+export const nonRootSuperadminUser: AdminUser = {
+  ...superadminUser,
+  id: "superadmin-2",
+  email: "second-super@test.com",
+  first_name: "Sam",
+  last_name: "Second",
+  is_root_superadmin: false,
 };
 
 // A plain admin holding only the given permissions, for RBAC gating specs.
@@ -185,6 +198,16 @@ export const adminListItems: AdminListItem[] = [
     role: SystemRole.SUPERADMIN,
     is_active: true,
     is_root_superadmin: true,
+    permissions: ALL_PERMISSIONS,
+  },
+  {
+    id: nonRootSuperadminUser.id,
+    email: nonRootSuperadminUser.email,
+    first_name: "Sam",
+    last_name: "Second",
+    role: SystemRole.SUPERADMIN,
+    is_active: true,
+    is_root_superadmin: false,
     permissions: ALL_PERMISSIONS,
   },
   {
