@@ -91,6 +91,11 @@ i18n
     ],
 
     interpolation: {
+      // React escapes every interpolated value at render time, so i18next's own
+      // escaping is redundant — this is the i18next-recommended setting for React.
+      // RULE: never render a t() result as raw HTML (no dangerouslySetInnerHTML,
+      // no non-React DOM sink). Otherwise user input interpolated into a
+      // translation would bypass React's escaping and become XSS.
       escapeValue: false,
       defaultVariables: {
         appName: env.NEXT_PUBLIC_APP_NAME,
