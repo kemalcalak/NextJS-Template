@@ -4,33 +4,10 @@ import { withSentryConfig } from "@sentry/nextjs";
 
 import type { NextConfig } from "next";
 
-const isProd = process.env.NODE_ENV === "production";
-
-// The realtime WebSocket connects directly to the backend origin (not through the
-// Next rewrite proxy), so its ws(s):// scheme must be whitelisted in connect-src
-// — CSP treats ws:// and http:// as distinct and would otherwise block it.
-const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? "";
-const wsUrl = process.env.NEXT_PUBLIC_WS_URL ?? apiUrl.replace(/^http/, "ws");
-
-// Content-Security-Policy kept intentionally conservative. Next itself needs
-// inline scripts/styles to hydrate; relax with nonces later if stricter CSP
-// is required. 'unsafe-eval' is only needed in dev for Turbopack HMR.
-const csp = [
-  "default-src 'self'",
-  `script-src 'self' 'unsafe-inline'${isProd ? "" : " 'unsafe-eval'"}`,
-  "style-src 'self' 'unsafe-inline'",
-  "img-src 'self' data: blob: https://res.cloudinary.com",
-  "font-src 'self' data:",
-  `connect-src 'self' ${apiUrl} ${wsUrl}`.trim(),
-  "frame-ancestors 'none'",
-  "base-uri 'self'",
-  "form-action 'self'",
-]
-  .join("; ")
-  .trim();
-
+// Static security headers applied to every response. The Content-Security-Policy
+// is deliberately NOT here: it carries a per-request nonce and is therefore built
+// dynamically in src/proxy.ts (see buildContentSecurityPolicy).
 const securityHeaders = [
-  { key: "Content-Security-Policy", value: csp },
   { key: "X-Frame-Options", value: "DENY" },
   { key: "X-Content-Type-Options", value: "nosniff" },
   { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },

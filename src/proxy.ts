@@ -57,14 +57,19 @@ function handleLocaleRedirect(request: NextRequest, pathname: string, search: st
   return response;
 }
 
-function handleAuthGuard(request: NextRequest, pathname: string, token: string | undefined) {
+function handleAuthGuard(
+  request: NextRequest,
+  pathname: string,
+  token: string | undefined,
+  requestHeaders: Headers,
+) {
   const currentLocale = getLocaleFromPath(pathname);
   const pathWithoutLocale = getPathWithoutLocale(pathname);
 
   // Home path is always public - explicit early return to avoid any redirect logic
   if (pathWithoutLocale === "/") {
     const localeFromCookie = request.cookies.get("NEXT_LOCALE")?.value;
-    const response = NextResponse.next();
+    const response = NextResponse.next({ request: { headers: requestHeaders } });
     if (localeFromCookie !== currentLocale) {
       response.cookies.set("NEXT_LOCALE", currentLocale, { path: "/", maxAge: 31536000 });
     }
@@ -80,7 +85,7 @@ function handleAuthGuard(request: NextRequest, pathname: string, token: string |
   // If it's a public auth route, always allow
   if (isPublicAuthRoute) {
     const localeFromCookie = request.cookies.get("NEXT_LOCALE")?.value;
-    const response = NextResponse.next();
+    const response = NextResponse.next({ request: { headers: requestHeaders } });
     if (localeFromCookie !== currentLocale) {
       response.cookies.set("NEXT_LOCALE", currentLocale, { path: "/", maxAge: 31536000 });
     }
@@ -103,7 +108,7 @@ function handleAuthGuard(request: NextRequest, pathname: string, token: string |
   // the role and kicks non-admins back to /dashboard.
   const response = redirectTarget
     ? NextResponse.redirect(new URL(getLocalizedPath(redirectTarget, currentLocale), request.url))
-    : NextResponse.next();
+    : NextResponse.next({ request: { headers: requestHeaders } });
 
   // Ensure cookie is set correctly to persist locale choice
   const localeFromCookie = request.cookies.get("NEXT_LOCALE")?.value;
@@ -114,22 +119,59 @@ function handleAuthGuard(request: NextRequest, pathname: string, token: string |
   return response;
 }
 
+// Per-request Content-Security-Policy. The script policy is nonce-based rather
+// than 'unsafe-inline': Next reads this nonce from the request CSP header and
+// stamps it on its own inline/bootstrap scripts, and next-themes receives it via
+// the ThemeProvider `nonce` prop. Styles stay 'unsafe-inline' (Tailwind/AntD
+// emit inline styles that are far costlier to nonce). 'unsafe-eval' is dev-only
+// for Turbopack HMR. The static security headers live in next.config.ts.
+function buildContentSecurityPolicy(nonce: string): string {
+  const isProd = process.env.NODE_ENV === "production";
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? "";
+  const wsUrl = process.env.NEXT_PUBLIC_WS_URL ?? apiUrl.replace(/^http/, "ws");
+
+  return [
+    "default-src 'self'",
+    `script-src 'self' 'nonce-${nonce}'${isProd ? "" : " 'unsafe-eval'"}`,
+    "style-src 'self' 'unsafe-inline'",
+    "img-src 'self' data: blob: https://res.cloudinary.com",
+    "font-src 'self' data:",
+    `connect-src 'self' ${apiUrl} ${wsUrl}`.trim(),
+    "frame-ancestors 'none'",
+    "base-uri 'self'",
+    "form-action 'self'",
+  ]
+    .join("; ")
+    .trim();
+}
+
 export default function proxy(request: NextRequest) {
   const { pathname, search } = request.nextUrl;
   const token = request.cookies.get("access_token")?.value;
+
+  // A fresh, unguessable nonce per request. It rides on the request headers so
+  // Next applies it to its scripts during render, and on the response CSP so the
+  // browser only executes scripts carrying it — neutralising any injected inline
+  // <script>, which cannot know the value.
+  const nonce = btoa(crypto.randomUUID());
+  const csp = buildContentSecurityPolicy(nonce);
+  const requestHeaders = new Headers(request.headers);
+  requestHeaders.set("x-nonce", nonce);
+  requestHeaders.set("Content-Security-Policy", csp);
 
   // 1. Locale Routing Logic
   const pathnameHasLocale = locales.some(
     (locale) => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`,
   );
 
-  // Redirect to localized path if needed
-  if (!pathnameHasLocale) {
-    return handleLocaleRedirect(request, pathname, search);
-  }
+  // Redirect to localized path if needed, otherwise run the auth guard. Either
+  // branch carries the CSP response header set below.
+  const response = pathnameHasLocale
+    ? handleAuthGuard(request, pathname, token, requestHeaders)
+    : handleLocaleRedirect(request, pathname, search);
 
-  // 2. Auth Guard Logic
-  return handleAuthGuard(request, pathname, token);
+  response.headers.set("Content-Security-Policy", csp);
+  return response;
 }
 
 export const config = {

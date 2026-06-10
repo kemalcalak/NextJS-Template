@@ -1,4 +1,5 @@
 import { Geist, Geist_Mono } from "next/font/google";
+import { headers } from "next/headers";
 
 import { AppHeader } from "@/components/common/AppHeader";
 import { buildMetadata, validateLocale } from "@/lib/seo/metadata";
@@ -49,6 +50,10 @@ export default async function RootLayout({
   const resolvedParams = await params;
   const locale = resolvedParams?.locale || "en";
 
+  // Nonce minted per-request in src/proxy.ts; next-themes stamps it on its
+  // pre-hydration inline script so the nonce-based CSP allows it to run.
+  const nonce = (await headers()).get("x-nonce") ?? undefined;
+
   return (
     <html lang={locale} suppressHydrationWarning>
       <head>
@@ -56,7 +61,7 @@ export default async function RootLayout({
         <style dangerouslySetInnerHTML={{ __html: THEME_STYLES }} />
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <ClientSideProviders locale={locale}>
+        <ClientSideProviders locale={locale} nonce={nonce}>
           <div className="relative flex min-h-screen flex-col bg-background">
             <AppHeader />
             <main className="flex-1 flex flex-col">{children}</main>

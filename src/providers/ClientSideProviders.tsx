@@ -23,9 +23,11 @@ const loadingMessages: Record<string, string> = {
 export function ClientSideProviders({
   children,
   locale,
+  nonce,
 }: {
   children: React.ReactNode;
   locale: string;
+  nonce?: string;
 }) {
   // Initial state MUST match on server and client to avoid a hydration
   // mismatch. `i18n.language` diverges across the two (server uses the static
@@ -68,7 +70,7 @@ export function ClientSideProviders({
   const loadingMessage = loadingMessages[locale] || loadingMessages.en;
 
   return (
-    <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+    <ThemeProvider attribute="class" defaultTheme="system" enableSystem nonce={nonce}>
       <AntdProvider locale={locale}>
         {!initialSync ? (
           <LoadingScreen fullScreen message={loadingMessage} />
