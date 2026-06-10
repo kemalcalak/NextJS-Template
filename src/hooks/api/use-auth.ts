@@ -91,10 +91,12 @@ export function useLogoutMutation() {
   const { logout, user } = useAuthStore();
 
   // Pick the login surface that matches who the user *was* — clearing the
-  // store first would erase the role. Admins stay in the admin login flow
-  // (future-proof for the admin.<domain> split), everyone else lands on /login.
+  // store first would erase the role. Admins and superadmins stay in the admin
+  // login flow (future-proof for the admin.<domain> split), everyone else
+  // lands on /login.
   const redirectAfterLogout = () => {
-    const target = user?.role === SystemRole.ADMIN ? ROUTES.adminLogin : ROUTES.login;
+    const isAdminTier = user?.role === SystemRole.ADMIN || user?.role === SystemRole.SUPERADMIN;
+    const target = isAdminTier ? ROUTES.adminLogin : ROUTES.login;
     logout();
     queryClient.clear();
     router.push(getLocalizedPath(target, currentLocale));
@@ -140,7 +142,25 @@ export function useResendVerificationMutation() {
 }
 
 export function useChangePasswordMutation() {
+  const router = useRouter();
+  const pathname = usePathname();
+  const currentLocale = getLocaleFromPath(pathname);
+  const queryClient = useQueryClient();
+  const { logout, user } = useAuthStore();
+
+  // The backend revokes the session and clears the auth cookies on a successful
+  // password change, so drop client state and send the user to the matching
+  // login surface to re-authenticate with their new password.
+  const redirectToLogin = () => {
+    const isAdminTier = user?.role === SystemRole.ADMIN || user?.role === SystemRole.SUPERADMIN;
+    const target = isAdminTier ? ROUTES.adminLogin : ROUTES.login;
+    logout();
+    queryClient.clear();
+    router.push(getLocalizedPath(target, currentLocale));
+  };
+
   return useMutation({
     mutationFn: (payload: ChangePasswordPayload) => authService.changePassword(payload),
+    onSuccess: redirectToLogin,
   });
 }

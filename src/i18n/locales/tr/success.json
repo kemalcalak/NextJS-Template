@@ -11,7 +11,7 @@
       "login": "Başarıyla giriş yapıldı.",
       "password_reset_sent": "Şifre sıfırlama bağlantısı gönderildi.",
       "password_reset_success": "Şifre başarıyla sıfırlandı.",
-      "password_change_success": "Şifre başarıyla değiştirildi.",
+      "password_change_success": "Şifre başarıyla değiştirildi. Lütfen tekrar giriş yapın.",
       "logout_success": "Başarıyla çıkış yapıldı.",
       "register_success": "Başarıyla kayıt oldunuz. Lütfen e-postanızı doğrulayın."
     },

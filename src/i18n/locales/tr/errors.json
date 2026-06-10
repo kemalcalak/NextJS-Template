@@ -21,7 +21,8 @@
       "email_not_verified": "E-posta adresi doğrulanmadı.",
       "invalid_verification_token": "Geçersiz doğrulama token'ı.",
       "invalid_email_domain": "Bu e-posta alan adı posta alamıyor.",
-      "disposable_email_not_allowed": "Geçici e-posta adresleri kabul edilmez."
+      "disposable_email_not_allowed": "Geçici e-posta adresleri kabul edilmez.",
+      "password_weak": "Parola en az bir büyük harf, bir küçük harf, bir rakam ve bir özel karakter içermelidir."
     },
     "auth": {
       "refresh_token_missing": "Yenileme token'ı eksik.",
@@ -33,7 +34,8 @@
       "deletion_expired": "Bu hesabın bekleme süresi dolmuş.",
       "suspended": "Hesabınız yönetici tarafından askıya alındı.",
       "already_suspended": "Bu kullanıcı zaten askıda.",
-      "not_suspended": "Bu kullanıcı askıda değil."
+      "not_suspended": "Bu kullanıcı askıda değil.",
+      "locked": "Çok fazla başarısız giriş denemesi. Hesabınız geçici olarak kilitlendi. Lütfen daha sonra tekrar deneyin."
     },
     "admin": {
       "cannot_modify_self": "Yöneticiler kendi hesaplarını bu panelden değiştiremez.",

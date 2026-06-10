@@ -11,7 +11,7 @@
       "login": "Logged in successfully.",
       "password_reset_sent": "Password reset link sent.",
       "password_reset_success": "Password reset successfully.",
-      "password_change_success": "Password changed successfully.",
+      "password_change_success": "Password changed successfully. Please sign in again.",
       "logout_success": "Logged out successfully.",
       "register_success": "Registered successfully. Please verify your email."
     },

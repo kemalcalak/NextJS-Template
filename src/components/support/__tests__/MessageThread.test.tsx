@@ -53,16 +53,30 @@ describe("MessageThread", () => {
     expect(screen.getByText(/support:detail\.supportTeam/)).toBeInTheDocument();
   });
 
-  it("renders attachment images linked to the file url", () => {
+  it("links attachment images served from the trusted Cloudinary origin", () => {
+    const trustedFile: FilePublic = { ...file, url: "https://res.cloudinary.com/demo/shot.png" };
     render(
-      <MessageThread messages={[msg({ attachments: [{ id: "a-1", file }] })]} viewerRole="user" />,
+      <MessageThread
+        messages={[msg({ attachments: [{ id: "a-1", file: trustedFile }] })]}
+        viewerRole="user"
+      />,
     );
     const link = screen.getByRole("link");
-    expect(link).toHaveAttribute("href", file.url);
+    expect(link).toHaveAttribute("href", trustedFile.url);
     const image = within(link).getByRole("img");
     // next/image rewrites src to the optimizer URL, so assert the original
     // file url survives as the encoded `url` param rather than matching raw.
-    expect(image.getAttribute("src")).toContain(encodeURIComponent(file.url));
+    expect(image.getAttribute("src")).toContain(encodeURIComponent(trustedFile.url));
+  });
+
+  it("renders untrusted attachment urls as a non-clickable preview", () => {
+    // `file.url` is a non-Cloudinary origin, so AttachmentThumb must show the
+    // image without turning it into a navigable link (defense-in-depth).
+    render(
+      <MessageThread messages={[msg({ attachments: [{ id: "a-1", file }] })]} viewerRole="user" />,
+    );
+    expect(screen.queryByRole("link")).toBeNull();
+    expect(screen.getByRole("img")).toBeInTheDocument();
   });
 
   it("reveals the jump-to-latest button only when scrolled up", () => {
