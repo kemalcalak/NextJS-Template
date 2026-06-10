@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 
+import { env } from "@/env";
 import {
   locales,
   defaultLocale,
@@ -126,9 +127,13 @@ function handleAuthGuard(
 // emit inline styles that are far costlier to nonce). 'unsafe-eval' is dev-only
 // for Turbopack HMR. The static security headers live in next.config.ts.
 function buildContentSecurityPolicy(nonce: string): string {
+  // NODE_ENV is a Next/runtime built-in (not an app env var), so it's read from
+  // process.env directly — same as instrumentation.ts. Everything else goes
+  // through @/env so the Zod default for NEXT_PUBLIC_API_URL always applies and
+  // connect-src can never silently collapse to 'self'.
   const isProd = process.env.NODE_ENV === "production";
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? "";
-  const wsUrl = process.env.NEXT_PUBLIC_WS_URL ?? apiUrl.replace(/^http/, "ws");
+  const apiUrl = env.NEXT_PUBLIC_API_URL;
+  const wsUrl = env.NEXT_PUBLIC_WS_URL ?? apiUrl.replace(/^http/, "ws");
 
   return [
     "default-src 'self'",

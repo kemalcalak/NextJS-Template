@@ -20,15 +20,13 @@ const loadingMessages: Record<string, string> = {
   tr: "Yükleniyor...",
 };
 
-export function ClientSideProviders({
-  children,
-  locale,
-  nonce,
-}: {
+interface ClientSideProvidersProps {
   children: React.ReactNode;
   locale: string;
   nonce?: string;
-}) {
+}
+
+export function ClientSideProviders({ children, locale, nonce }: ClientSideProvidersProps) {
   // Initial state MUST match on server and client to avoid a hydration
   // mismatch. `i18n.language` diverges across the two (server uses the static
   // fallback, client's LanguageDetector may read a cookie), so we always start
