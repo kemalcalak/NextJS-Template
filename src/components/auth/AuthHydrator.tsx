@@ -17,7 +17,7 @@ import {
   ROUTES,
   suspendedRoutes,
 } from "@/lib/config/routes";
-import { SystemRole } from "@/lib/types/user";
+import { isAdminTierRole } from "@/lib/types/user";
 import { useAuthStore } from "@/stores/auth.store";
 
 // Module-level guard — survives any React remount, including the one the root
@@ -39,9 +39,8 @@ const adminRedirectTarget = (
   pathWithoutLocale: string,
   currentLocale: string,
 ): string | null => {
-  const isAdminTier = role === SystemRole.ADMIN || role === SystemRole.SUPERADMIN;
   const isExempt = isAdminPath(pathWithoutLocale) || matchesRoute(pathWithoutLocale, ROUTES.logout);
-  if (isAdminTier && !isExempt) {
+  if (isAdminTierRole(role) && !isExempt) {
     return getLocalizedPath(ROUTES.adminDashboard, currentLocale);
   }
   return null;
@@ -141,6 +140,7 @@ export function AuthHydrator({ children }: { children: React.ReactNode }) {
   // suspended users aren't flashed a forbidden page before the guarding
   // effect redirects them.
   const pathWithoutLocale = getPathWithoutLocale(pathname);
+  const currentLocale = getLocaleFromPath(pathname);
   const requiresAuthSession =
     protectedRoutes.some((route) => matchesRoute(pathWithoutLocale, route)) ||
     pendingDeletionRoutes.some((route) => matchesRoute(pathWithoutLocale, route)) ||
@@ -155,7 +155,25 @@ export function AuthHydrator({ children }: { children: React.ReactNode }) {
   );
   const isLockedSuspended = isAuthenticated && Boolean(user?.suspended_at) && !isOnSuspendedRoute;
 
-  if (requiresAuthSession && (!isSessionInitialized || !isAuthenticated || isLockedSuspended)) {
+  // A returning visitor (persisted isAuthenticated flag) may turn out to be an
+  // admin, suspended, or pending-deletion — all of which redirect away from
+  // whatever rendered first. Until /users/me settles, hold EVERY route (public
+  // home included) on the loader so the page can't flash before the bounce.
+  // Anonymous visitors (flag false) never wait.
+  const isHydratingKnownSession = !isSessionInitialized && isAuthenticated;
+
+  // After hydration, an admin-tier user on a non-admin route is about to be
+  // bounced to the admin dashboard by the redirect effect; keep the loader up
+  // while router.replace lands instead of flashing the underlying page.
+  const isAwaitingAdminBounce =
+    isSessionInitialized &&
+    adminRedirectTarget(user?.role, pathWithoutLocale, currentLocale) !== null;
+
+  if (
+    isHydratingKnownSession ||
+    isAwaitingAdminBounce ||
+    (requiresAuthSession && (!isSessionInitialized || !isAuthenticated || isLockedSuspended))
+  ) {
     return <LoadingScreen />;
   }
 

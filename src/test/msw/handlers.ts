@@ -2,7 +2,7 @@ import { http, HttpResponse } from "msw";
 
 import { SystemRole, type User } from "@/lib/types/user";
 
-const createMockUser = (overrides: Partial<User> = {}): User => ({
+export const createMockUser = (overrides: Partial<User> = {}): User => ({
   id: "1",
   email: "john@example.com",
   first_name: "John",

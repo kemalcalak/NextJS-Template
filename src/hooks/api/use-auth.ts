@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter, usePathname } from "next/navigation";
 import { useTranslation } from "react-i18next";
@@ -13,7 +15,7 @@ import type {
   ResetPasswordPayload,
   ChangePasswordPayload,
 } from "@/lib/types/auth";
-import { SystemRole } from "@/lib/types/user";
+import { isAdminTierRole } from "@/lib/types/user";
 import { useAuthStore } from "@/stores/auth.store";
 
 import type { AxiosError } from "axios";
@@ -29,8 +31,15 @@ export function useLoginMutation() {
   const currentLocale = getLocaleFromPath(pathname);
   const queryClient = useQueryClient();
   const { login } = useAuthStore();
+  // router.push resolves asynchronously: react-query flips isPending to false
+  // the moment onSuccess returns, which re-enables the login form for the
+  // second or so the target route takes to render (longer in dev, where it
+  // compiles on first visit). This flag keeps the form in its loading state
+  // until the navigation unmounts the page. Never reset — a redirecting login
+  // surface has no valid interactive state to return to.
+  const [isRedirecting, setIsRedirecting] = useState(false);
 
-  return useMutation({
+  const mutation = useMutation({
     mutationFn: (payload: LoginPayload) => authService.login(payload),
     onSuccess: (data) => {
       // Wipe any cached queries from a prior session before the new user's
@@ -38,11 +47,14 @@ export function useLoginMutation() {
       // account B if both sign in to the same tab without a clean logout.
       queryClient.clear();
       login(data.user);
-      // Admin role wins over deletion-grace: the admin shell is the right
-      // home regardless of which login surface the user came through.
+      // Admin-tier role wins over deletion-grace: the admin shell is the right
+      // home regardless of which login surface the user came through. Covers
+      // SUPERADMIN too — sending them to /dashboard first would trigger the
+      // AuthHydrator bounce and a visible double redirect.
       let target: string = ROUTES.dashboard;
-      if (data.user.role === SystemRole.ADMIN) target = ROUTES.adminDashboard;
+      if (isAdminTierRole(data.user.role)) target = ROUTES.adminDashboard;
       else if (data.user.deletion_scheduled_at) target = ROUTES.accountDeactivated;
+      setIsRedirecting(true);
       router.push(getLocalizedPath(target, currentLocale));
     },
     onError: (
@@ -58,10 +70,13 @@ export function useLoginMutation() {
       // the AuthHydrator recognises as suspended.
       if (error.response?.status === 403 && errorCode === "error.user.email_not_verified") {
         setPendingVerifyEmail(variables.email);
+        setIsRedirecting(true);
         router.push(getLocalizedPath(ROUTES.verifyEmailNotice, currentLocale));
       }
     },
   });
+
+  return { ...mutation, isPending: mutation.isPending || isRedirecting };
 }
 
 export function useRegisterMutation() {
@@ -95,8 +110,7 @@ export function useLogoutMutation() {
   // login flow (future-proof for the admin.<domain> split), everyone else
   // lands on /login.
   const redirectAfterLogout = () => {
-    const isAdminTier = user?.role === SystemRole.ADMIN || user?.role === SystemRole.SUPERADMIN;
-    const target = isAdminTier ? ROUTES.adminLogin : ROUTES.login;
+    const target = isAdminTierRole(user?.role) ? ROUTES.adminLogin : ROUTES.login;
     logout();
     queryClient.clear();
     router.push(getLocalizedPath(target, currentLocale));
@@ -152,8 +166,7 @@ export function useChangePasswordMutation() {
   // password change, so drop client state and send the user to the matching
   // login surface to re-authenticate with their new password.
   const redirectToLogin = () => {
-    const isAdminTier = user?.role === SystemRole.ADMIN || user?.role === SystemRole.SUPERADMIN;
-    const target = isAdminTier ? ROUTES.adminLogin : ROUTES.login;
+    const target = isAdminTierRole(user?.role) ? ROUTES.adminLogin : ROUTES.login;
     logout();
     queryClient.clear();
     router.push(getLocalizedPath(target, currentLocale));
