@@ -1,10 +1,13 @@
 {
   "title": "Notifications",
   "page": {
-    "subtitle": "All your notifications, newest first."
+    "subtitle": "All your notifications, newest first.",
+    "filterAll": "All",
+    "filterUnread": "Unread"
   },
   "bell": "Open notifications",
   "markAllRead": "Mark all as read",
+  "viewAll": "View all",
   "empty": "No notifications yet.",
   "types": {
     "support_ticket_replied": "Your support ticket \"{{subject}}\" has a new reply.",

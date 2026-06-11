@@ -2,6 +2,8 @@
 
 import { useTranslation } from "react-i18next";
 
+import { NotificationsView } from "@/components/notifications/NotificationsView";
+
 export function AdminNotificationsContent() {
   const { t } = useTranslation("notifications");
 
@@ -11,7 +13,7 @@ export function AdminNotificationsContent() {
         <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">{t("title")}</h1>
         <p className="mt-1 text-sm text-muted-foreground">{t("page.subtitle")}</p>
       </div>
-      {/* The paginated inbox list lands here (NotificationsView). */}
+      <NotificationsView />
     </div>
   );
 }

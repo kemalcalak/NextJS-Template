@@ -1,10 +1,13 @@
 {
   "title": "Bildirimler",
   "page": {
-    "subtitle": "Tüm bildirimleriniz, en yenisi üstte."
+    "subtitle": "Tüm bildirimleriniz, en yenisi üstte.",
+    "filterAll": "Tümü",
+    "filterUnread": "Okunmamış"
   },
   "bell": "Bildirimleri aç",
   "markAllRead": "Tümünü okundu işaretle",
+  "viewAll": "Tümünü gör",
   "empty": "Henüz bildirim yok.",
   "types": {
     "support_ticket_replied": "\"{{subject}}\" destek talebinize yeni bir yanıt var.",

@@ -7,6 +7,7 @@ import { Bell, CheckCheck, Inbox } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 
+import { notificationTargetPath, notificationText } from "@/components/common/notification-text";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
@@ -16,46 +17,21 @@ import {
   useUnreadCount,
 } from "@/hooks/api/use-notifications";
 import { useNotificationRealtime } from "@/hooks/use-notification-realtime";
-import { ROUTES, getLocaleFromPath, getLocalizedPath } from "@/lib/config/routes";
+import {
+  ROUTES,
+  getLocaleFromPath,
+  getLocalizedPath,
+  getPathWithoutLocale,
+  isAdminPath,
+} from "@/lib/config/routes";
 import { formatDateTime } from "@/lib/format-date";
 import { type NotificationItem } from "@/lib/types/notification";
 import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/stores/auth.store";
 
-import type { TFunction } from "i18next";
-
 // The panel shows the most recent slice of the inbox; older entries stay
 // reachable via the API's pagination if a full inbox page is added later.
 const PANEL_LIMIT = 10;
-
-const readString = (item: NotificationItem, key: string): string => {
-  const value = item.data[key];
-  return typeof value === "string" ? value : "";
-};
-
-// Map a stored notification (type + data payload) to a translated message.
-// The backend persists no human-readable text, so this is the single place
-// where notification copy is produced.
-const notificationText = (t: TFunction, item: NotificationItem): string => {
-  switch (item.type) {
-    case "support_ticket_replied":
-      return t("notifications:types.support_ticket_replied", {
-        subject: readString(item, "subject"),
-      });
-    case "support_ticket_status_changed": {
-      const status = readString(item, "status");
-      return t("notifications:types.support_ticket_status_changed", {
-        subject: readString(item, "subject"),
-        status: t(`notifications:ticketStatus.${status}`, status),
-      });
-    }
-    case "admin_permissions_changed":
-      return t(
-        `notifications:actions.${readString(item, "action")}`,
-        t("notifications:types.admin_permissions_changed"),
-      );
-  }
-};
 
 const NotificationRow = ({
   item,
@@ -107,14 +83,19 @@ const NotificationBellInner = () => {
   const unreadCount = unread?.unread_count ?? 0;
   const items = list?.data ?? [];
 
+  // Admins are confined to the admin shell, so their ticket links must use
+  // the admin detail route — the user-side one would bounce them straight
+  // back to the admin dashboard.
+  const isAdmin = isAdminPath(getPathWithoutLocale(pathname));
+
   const handleItemClick = (item: NotificationItem) => {
     if (!item.read_at) {
       markRead.mutate(item.id);
     }
-    const ticketId = readString(item, "ticket_id");
-    if (ticketId && item.type !== "admin_permissions_changed") {
+    const target = notificationTargetPath(item, isAdmin);
+    if (target) {
       setOpen(false);
-      router.push(getLocalizedPath(`${ROUTES.support}/${ticketId}`, currentLocale));
+      router.push(getLocalizedPath(target, currentLocale));
     }
   };
 
@@ -160,6 +141,24 @@ const NotificationBellInner = () => {
         )}
       </div>
       <div className="max-h-96 overflow-y-auto">{panelBody}</div>
+      <div className="border-t border-border/60 p-1">
+        <Button
+          variant="ghost"
+          size="sm"
+          className="w-full"
+          onClick={() => {
+            setOpen(false);
+            router.push(
+              getLocalizedPath(
+                isAdmin ? ROUTES.adminNotifications : ROUTES.notifications,
+                currentLocale,
+              ),
+            );
+          }}
+        >
+          {t("notifications:viewAll")}
+        </Button>
+      </div>
     </div>
   );
 
