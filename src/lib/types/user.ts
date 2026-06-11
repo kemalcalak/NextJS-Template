@@ -10,7 +10,7 @@ export enum SystemRole {
 // Admin-tier = anyone who lives in the admin shell. Single source of truth for
 // the "admin OR superadmin" checks scattered across routing/login/logout flows
 // — forgetting SUPERADMIN in one of them causes double-redirect bugs.
-export const isAdminTierRole = (role: SystemRole | string | undefined): boolean =>
+export const isAdminTierRole = (role: SystemRole | undefined): boolean =>
   role === SystemRole.ADMIN || role === SystemRole.SUPERADMIN;
 
 export interface User {

@@ -17,7 +17,7 @@ import {
   ROUTES,
   suspendedRoutes,
 } from "@/lib/config/routes";
-import { isAdminTierRole } from "@/lib/types/user";
+import { isAdminTierRole, type SystemRole } from "@/lib/types/user";
 import { useAuthStore } from "@/stores/auth.store";
 
 // Module-level guard — survives any React remount, including the one the root
@@ -35,7 +35,7 @@ let sessionRequestInFlight = false;
 // session, so admins must be allowed to land on it. Without this, the bounce
 // would fire before the logout mutation's signing-out screen can show.
 const adminRedirectTarget = (
-  role: string | undefined,
+  role: SystemRole | undefined,
   pathWithoutLocale: string,
   currentLocale: string,
 ): string | null => {
