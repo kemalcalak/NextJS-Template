@@ -10,6 +10,7 @@ import { useTranslation } from "react-i18next";
 
 import { AppDrawer } from "@/components/common/AppDrawer";
 import { AuthButtons } from "@/components/common/AuthButtons";
+import { NotificationBell } from "@/components/common/NotificationBell";
 import { Button } from "@/components/ui/button";
 import { env } from "@/env";
 import { useLanguage } from "@/hooks/use-language";
@@ -99,6 +100,8 @@ export const AppHeader = () => {
         </div>
 
         <div className="flex-1" />
+
+        <NotificationBell />
 
         {mounted && isMobile && (
           <AppDrawer

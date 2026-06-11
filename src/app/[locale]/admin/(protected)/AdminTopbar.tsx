@@ -3,6 +3,7 @@
 import { ChevronRight, PanelLeft } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
+import { NotificationBell } from "@/components/common/NotificationBell";
 import { Button } from "@/components/ui/button";
 
 interface AdminTopbarProps {
@@ -39,6 +40,8 @@ export function AdminTopbar({ onToggleSidebar, sectionKey, itemKey }: AdminTopba
           </>
         ) : null}
       </nav>
+      <div className="flex-1" />
+      <NotificationBell />
     </header>
   );
 }
