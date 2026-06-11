@@ -12,6 +12,7 @@ import enCommon from "./locales/en/common.json";
 import enDashboard from "./locales/en/dashboard.json";
 import enErrors from "./locales/en/errors.json";
 import enHome from "./locales/en/home.json";
+import enNotifications from "./locales/en/notifications.json";
 import enProfile from "./locales/en/profile.json";
 import enSeo from "./locales/en/seo.json";
 import enSuccess from "./locales/en/success.json";
@@ -25,6 +26,7 @@ import trCommon from "./locales/tr/common.json";
 import trDashboard from "./locales/tr/dashboard.json";
 import trErrors from "./locales/tr/errors.json";
 import trHome from "./locales/tr/home.json";
+import trNotifications from "./locales/tr/notifications.json";
 import trProfile from "./locales/tr/profile.json";
 import trSeo from "./locales/tr/seo.json";
 import trSuccess from "./locales/tr/success.json";
@@ -45,6 +47,7 @@ const resources = {
     seo: enSeo,
     account: enAccount,
     admin: enAdmin,
+    notifications: enNotifications,
     support: enSupport,
     upload: enUpload,
   },
@@ -60,6 +63,7 @@ const resources = {
     seo: trSeo,
     account: trAccount,
     admin: trAdmin,
+    notifications: trNotifications,
     support: trSupport,
     upload: trUpload,
   },
@@ -86,6 +90,7 @@ i18n
       "seo",
       "account",
       "admin",
+      "notifications",
       "support",
       "upload",
     ],

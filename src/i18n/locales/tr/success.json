@@ -33,6 +33,10 @@
       "root_transfer_initiated": "Doğrulama kodu e-postanıza gönderildi.",
       "root_transferred": "Ana superadminlik devredildi."
     },
+    "notification": {
+      "read": "Bildirim okundu olarak işaretlendi.",
+      "all_read": "Tüm bildirimler okundu olarak işaretlendi."
+    },
     "support": {
       "ticket_created": "Destek talebiniz oluşturuldu.",
       "ticket_closed": "Talep kapatıldı.",
