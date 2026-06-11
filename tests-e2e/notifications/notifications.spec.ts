@@ -1,6 +1,7 @@
 import { test, expect } from "../base-test";
 import { LOCALES, getStrings } from "../i18n-strings";
 import {
+  bellBadge,
   fillTemplate,
   injectSession,
   mockMe,
@@ -19,7 +20,7 @@ type WebSocketRoute = Parameters<Parameters<Page["routeWebSocket"]>[1]>[0];
 for (const locale of LOCALES) {
   const s = getStrings(locale);
   const bell = (page: Page) => page.getByRole("button", { name: s.notifications.bell });
-  const badge = (page: Page) => page.locator(".ant-badge-count");
+  const badge = bellBadge;
 
   test.describe(`Notification bell [${locale}]`, () => {
     test("shows the unread count on the bell badge", async ({ page }) => {

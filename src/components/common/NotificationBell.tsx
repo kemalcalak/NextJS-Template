@@ -3,164 +3,22 @@
 import { useState } from "react";
 
 import { Badge, Dropdown } from "antd";
-import { Bell, CheckCheck, Inbox } from "lucide-react";
-import { usePathname, useRouter } from "next/navigation";
+import { Bell } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
-import { notificationTargetPath, notificationText } from "@/components/common/notification-text";
+import { NotificationPanel } from "@/components/common/NotificationPanel";
 import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
-import {
-  useMarkAllNotificationsRead,
-  useMarkNotificationRead,
-  useNotifications,
-  useUnreadCount,
-} from "@/hooks/api/use-notifications";
+import { useUnreadCount } from "@/hooks/api/use-notifications";
 import { useNotificationRealtime } from "@/hooks/use-notification-realtime";
-import {
-  ROUTES,
-  getLocaleFromPath,
-  getLocalizedPath,
-  getPathWithoutLocale,
-  isAdminPath,
-} from "@/lib/config/routes";
-import { formatDateTime } from "@/lib/format-date";
-import { type NotificationItem } from "@/lib/types/notification";
-import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/stores/auth.store";
-
-// The panel shows the most recent slice of the inbox; older entries stay
-// reachable via the API's pagination if a full inbox page is added later.
-const PANEL_LIMIT = 10;
-
-const NotificationRow = ({
-  item,
-  onClick,
-}: {
-  item: NotificationItem;
-  onClick: (item: NotificationItem) => void;
-}) => {
-  const { t } = useTranslation();
-  return (
-    <button
-      type="button"
-      onClick={() => {
-        onClick(item);
-      }}
-      className="flex w-full items-start gap-2.5 border-b border-border/40 px-3 py-2.5 text-left transition-colors hover:bg-muted last:border-b-0"
-    >
-      <span
-        className={cn(
-          "mt-1.5 h-2 w-2 shrink-0 rounded-full",
-          item.read_at ? "bg-transparent" : "bg-primary",
-        )}
-      />
-      <span className="min-w-0 flex-1">
-        <span className={cn("block text-sm leading-snug", !item.read_at && "font-medium")}>
-          {notificationText(t, item)}
-        </span>
-        <span className="mt-0.5 block text-xs text-muted-foreground">
-          {formatDateTime(item.created_at)}
-        </span>
-      </span>
-    </button>
-  );
-};
 
 const NotificationBellInner = () => {
   useNotificationRealtime();
   const { t } = useTranslation();
-  const router = useRouter();
-  const pathname = usePathname();
-  const currentLocale = getLocaleFromPath(pathname);
   const [open, setOpen] = useState(false);
 
   const { data: unread } = useUnreadCount();
-  const { data: list, isLoading } = useNotifications({ limit: PANEL_LIMIT });
-  const markRead = useMarkNotificationRead();
-  const markAllRead = useMarkAllNotificationsRead();
-
   const unreadCount = unread?.unread_count ?? 0;
-  const items = list?.data ?? [];
-
-  // Admins are confined to the admin shell, so their ticket links must use
-  // the admin detail route — the user-side one would bounce them straight
-  // back to the admin dashboard.
-  const isAdmin = isAdminPath(getPathWithoutLocale(pathname));
-
-  const handleItemClick = (item: NotificationItem) => {
-    if (!item.read_at) {
-      markRead.mutate(item.id);
-    }
-    const target = notificationTargetPath(item, isAdmin);
-    if (target) {
-      setOpen(false);
-      router.push(getLocalizedPath(target, currentLocale));
-    }
-  };
-
-  let panelBody = (
-    <div className="space-y-2 px-3 py-3">
-      <Skeleton className="h-4 w-full" />
-      <Skeleton className="h-4 w-3/4" />
-      <Skeleton className="h-4 w-5/6" />
-    </div>
-  );
-  if (!isLoading) {
-    panelBody =
-      items.length === 0 ? (
-        <div className="flex flex-col items-center gap-2 px-3 py-8 text-muted-foreground">
-          <Inbox className="h-6 w-6" />
-          <span className="text-sm">{t("notifications:empty")}</span>
-        </div>
-      ) : (
-        <>
-          {items.map((item) => (
-            <NotificationRow key={item.id} item={item} onClick={handleItemClick} />
-          ))}
-        </>
-      );
-  }
-
-  const panel = (
-    <div className="w-80 overflow-hidden rounded-lg border border-border bg-background shadow-lg">
-      <div className="flex items-center justify-between border-b border-border/60 px-3 py-2">
-        <span className="text-sm font-semibold">{t("notifications:title")}</span>
-        {unreadCount > 0 && (
-          <Button
-            variant="ghost"
-            size="xs"
-            onClick={() => {
-              markAllRead.mutate();
-            }}
-            loading={markAllRead.isPending}
-          >
-            <CheckCheck className="h-3.5 w-3.5" />
-            {t("notifications:markAllRead")}
-          </Button>
-        )}
-      </div>
-      <div className="max-h-96 overflow-y-auto">{panelBody}</div>
-      <div className="border-t border-border/60 p-1">
-        <Button
-          variant="ghost"
-          size="sm"
-          className="w-full"
-          onClick={() => {
-            setOpen(false);
-            router.push(
-              getLocalizedPath(
-                isAdmin ? ROUTES.adminNotifications : ROUTES.notifications,
-                currentLocale,
-              ),
-            );
-          }}
-        >
-          {t("notifications:viewAll")}
-        </Button>
-      </div>
-    </div>
-  );
 
   return (
     <Dropdown
@@ -168,7 +26,13 @@ const NotificationBellInner = () => {
       onOpenChange={setOpen}
       trigger={["click"]}
       placement="bottomRight"
-      popupRender={() => panel}
+      popupRender={() => (
+        <NotificationPanel
+          onNavigate={() => {
+            setOpen(false);
+          }}
+        />
+      )}
     >
       <span>
         <Button variant="ghost" className="w-9 px-0" aria-label={t("notifications:bell")}>

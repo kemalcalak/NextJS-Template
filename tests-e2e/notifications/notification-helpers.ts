@@ -1,6 +1,6 @@
 import type { NotificationItem } from "@/lib/types/notification";
 
-import type { Page } from "@playwright/test";
+import type { Locator, Page } from "@playwright/test";
 
 // Session + user fixtures are shared with the admin suite to avoid drift.
 export { adminUser, injectSession, mockMe, regularUser } from "../admin/admin-helpers";
@@ -29,6 +29,10 @@ export interface NotificationMockState {
 
 const unreadCount = (state: NotificationMockState): number =>
   state.list.filter((item) => item.read_at === null).length;
+
+// antd's <Badge> exposes its counter only via this library-internal class.
+// Kept here as the single page-object accessor so specs never hardcode it.
+export const bellBadge = (page: Page): Locator => page.locator(".ant-badge-count");
 
 // Substitute {{var}} placeholders the same way i18next renders them, so specs
 // can assert the exact translated copy for a fixture.
