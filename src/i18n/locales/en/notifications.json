@@ -1,5 +1,8 @@
 {
   "title": "Notifications",
+  "page": {
+    "subtitle": "All your notifications, newest first."
+  },
   "bell": "Open notifications",
   "markAllRead": "Mark all as read",
   "empty": "No notifications yet.",

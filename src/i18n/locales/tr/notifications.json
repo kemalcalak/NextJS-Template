@@ -1,5 +1,8 @@
 {
   "title": "Bildirimler",
+  "page": {
+    "subtitle": "Tüm bildirimleriniz, en yenisi üstte."
+  },
   "bell": "Bildirimleri aç",
   "markAllRead": "Tümünü okundu işaretle",
   "empty": "Henüz bildirim yok.",

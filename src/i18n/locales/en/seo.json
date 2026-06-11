@@ -43,6 +43,10 @@
     "title": "Support",
     "description": "Open a support ticket and chat with our team about any issue."
   },
+  "notifications": {
+    "title": "Notifications",
+    "description": "View all your notifications and manage their read status."
+  },
   "adminLogin": {
     "title": "Admin Sign In",
     "description": "Sign in to the administration area to manage users and view activity."
@@ -74,6 +78,10 @@
   "adminSupport": {
     "title": "Support Queue",
     "description": "Review and respond to user support tickets."
+  },
+  "adminNotifications": {
+    "title": "Notifications",
+    "description": "View all your notifications and manage their read status."
   },
   "adminTicketDetail": {
     "title": "Ticket",
