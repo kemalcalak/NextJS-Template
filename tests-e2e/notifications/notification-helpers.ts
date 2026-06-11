@@ -3,7 +3,7 @@ import type { NotificationItem } from "@/lib/types/notification";
 import type { Page } from "@playwright/test";
 
 // Session + user fixtures are shared with the admin suite to avoid drift.
-export { injectSession, mockMe, regularUser } from "../admin/admin-helpers";
+export { adminUser, injectSession, mockMe, regularUser } from "../admin/admin-helpers";
 
 // --- Fixtures ---------------------------------------------------------------
 
@@ -45,11 +45,23 @@ export const mockNotifications = async (
   const state: NotificationMockState = { list: initial };
   const readStamp = "2026-01-02T00:00:00Z";
 
+  // The list endpoint honours skip/limit/unread_only the same way the real
+  // backend does, so filter and pagination specs exercise true behaviour.
   await page.route(/.*\/api\/v1\/notifications(\?.*)?$/, async (route) => {
+    const url = new URL(route.request().url());
+    const skip = Number(url.searchParams.get("skip") ?? "0");
+    const limit = Number(url.searchParams.get("limit") ?? "10");
+    const unreadOnly = url.searchParams.get("unread_only") === "true";
+    const filtered = unreadOnly ? state.list.filter((item) => item.read_at === null) : state.list;
     await route.fulfill({
       status: 200,
       contentType: "application/json",
-      body: JSON.stringify({ data: state.list, total: state.list.length, skip: 0, limit: 10 }),
+      body: JSON.stringify({
+        data: filtered.slice(skip, skip + limit),
+        total: filtered.length,
+        skip,
+        limit,
+      }),
     });
   });
 

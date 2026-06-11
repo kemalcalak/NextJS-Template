@@ -40,7 +40,8 @@
     "home": "Ana Sayfa",
     "dashboard": "Panel",
     "profile": "Profil",
-    "support": "Destek"
+    "support": "Destek",
+    "notifications": "Bildirimler"
   },
   "app_subtitle": "Modern, Tip Güvenli ve Premium Next.js Şablonu"
 }

@@ -115,6 +115,7 @@
       "files": "Files",
       "activities": "Activity log",
       "support": "Support",
+      "notifications": "Notifications",
       "profile": "Profile"
     },
     "signedInAs": "Signed in as",

@@ -1,5 +1,6 @@
 import {
   Activity,
+  Bell,
   CircleUser,
   Images,
   LayoutDashboard,
@@ -62,7 +63,16 @@ export const buildAdminNav = (caps: AdminNavCaps): AdminNavSection[] => {
     },
     {
       key: "account",
-      items: [{ key: "profile", href: ROUTES.adminProfile, icon: CircleUser, show: true }],
+      items: [
+        // Personal inbox — every admin sees their own, so no permission gate.
+        {
+          key: "notifications",
+          href: ROUTES.adminNotifications,
+          icon: Bell,
+          show: true,
+        },
+        { key: "profile", href: ROUTES.adminProfile, icon: CircleUser, show: true },
+      ],
     },
   ];
 

@@ -40,7 +40,8 @@
     "home": "Home",
     "dashboard": "Dashboard",
     "profile": "Profile",
-    "support": "Support"
+    "support": "Support",
+    "notifications": "Notifications"
   },
   "app_subtitle": "Modern, Type-Safe and Premium Next.js Template"
 }
