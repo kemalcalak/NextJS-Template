@@ -29,6 +29,27 @@ export const test = base.extend({
       },
     );
 
+    // The notification bell mounts in the header of every authenticated page,
+    // firing GET /notifications and /notifications/unread-count on load. Left
+    // unmocked they hit the catch-all 401 above, which trips the axios refresh
+    // -> logout cascade and bounces every authenticated spec to /login. Answer
+    // them with an empty, quiet inbox by default; specs that assert on
+    // notifications register their own routes (which take precedence).
+    await page.route(
+      (url) => url.pathname.includes("/api/v1/notifications"),
+      async (route) => {
+        const pathname = new URL(route.request().url()).pathname;
+        const body = pathname.endsWith("/notifications/unread-count")
+          ? { unread_count: 0 }
+          : { data: [], total: 0, skip: 0, limit: 10 };
+        await route.fulfill({
+          status: 200,
+          contentType: "application/json",
+          body: JSON.stringify(body),
+        });
+      },
+    );
+
     // page.route() does not cover WebSockets, so realtime sockets (account
     // events, support feed) would otherwise reach the real backend through the
     // dev proxy. Intercept API WebSockets and answer them locally — the handler
