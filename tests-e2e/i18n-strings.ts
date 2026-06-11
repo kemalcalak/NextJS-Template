@@ -4,6 +4,7 @@ import enAuth from "../src/i18n/locales/en/auth.json";
 import enCommon from "../src/i18n/locales/en/common.json";
 import enDashboard from "../src/i18n/locales/en/dashboard.json";
 import enHome from "../src/i18n/locales/en/home.json";
+import enNotifications from "../src/i18n/locales/en/notifications.json";
 import enProfile from "../src/i18n/locales/en/profile.json";
 import enSeo from "../src/i18n/locales/en/seo.json";
 import enSupport from "../src/i18n/locales/en/support.json";
@@ -14,6 +15,7 @@ import trAuth from "../src/i18n/locales/tr/auth.json";
 import trCommon from "../src/i18n/locales/tr/common.json";
 import trDashboard from "../src/i18n/locales/tr/dashboard.json";
 import trHome from "../src/i18n/locales/tr/home.json";
+import trNotifications from "../src/i18n/locales/tr/notifications.json";
 import trProfile from "../src/i18n/locales/tr/profile.json";
 import trSeo from "../src/i18n/locales/tr/seo.json";
 import trSupport from "../src/i18n/locales/tr/support.json";
@@ -32,6 +34,7 @@ const bundles = {
     common: trCommon,
     dashboard: trDashboard,
     home: trHome,
+    notifications: trNotifications,
     profile: trProfile,
     seo: trSeo,
     support: trSupport,
@@ -44,6 +47,7 @@ const bundles = {
     common: enCommon,
     dashboard: enDashboard,
     home: enHome,
+    notifications: enNotifications,
     profile: enProfile,
     seo: enSeo,
     support: enSupport,
