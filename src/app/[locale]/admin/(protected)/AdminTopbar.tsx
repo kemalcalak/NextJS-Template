@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronRight, PanelLeft } from "lucide-react";
+import { PanelLeft } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 import { NotificationBell } from "@/components/common/NotificationBell";
@@ -8,11 +8,9 @@ import { Button } from "@/components/ui/button";
 
 interface AdminTopbarProps {
   onToggleSidebar: () => void;
-  sectionKey: string | null;
-  itemKey: string | null;
 }
 
-export function AdminTopbar({ onToggleSidebar, sectionKey, itemKey }: AdminTopbarProps) {
+export function AdminTopbar({ onToggleSidebar }: AdminTopbarProps) {
   const { t } = useTranslation("admin");
 
   return (
@@ -25,21 +23,6 @@ export function AdminTopbar({ onToggleSidebar, sectionKey, itemKey }: AdminTopba
       >
         <PanelLeft className="h-4 w-4" />
       </Button>
-      <nav className="flex items-center gap-1.5 text-sm" aria-label={t("shell.breadcrumb")}>
-        <span className="font-medium text-muted-foreground">{t("shell.title")}</span>
-        {sectionKey ? (
-          <>
-            <ChevronRight className="h-3.5 w-3.5 text-muted-foreground/50" />
-            <span className="text-muted-foreground">{t(`shell.section.${sectionKey}`)}</span>
-          </>
-        ) : null}
-        {itemKey ? (
-          <>
-            <ChevronRight className="h-3.5 w-3.5 text-muted-foreground/50" />
-            <span className="font-medium text-foreground">{t(`shell.nav.${itemKey}`)}</span>
-          </>
-        ) : null}
-      </nav>
       <div className="flex-1" />
       <NotificationBell />
     </header>

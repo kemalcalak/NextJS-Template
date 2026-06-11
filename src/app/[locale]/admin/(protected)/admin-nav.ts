@@ -82,15 +82,3 @@ export const buildAdminNav = (caps: AdminNavCaps): AdminNavSection[] => {
     .map((section) => ({ ...section, items: section.items.filter((item) => item.show) }))
     .filter((section) => section.items.length > 0);
 };
-
-// Flattened lookup for the topbar breadcrumb: the active item's section + key.
-export const findActiveAdminNav = (
-  sections: AdminNavSection[],
-  isActive: (href: string) => boolean,
-): { sectionKey: string; itemKey: string } | null => {
-  for (const section of sections) {
-    const item = section.items.find((entry) => isActive(entry.href));
-    if (item) return { sectionKey: section.key, itemKey: item.key };
-  }
-  return null;
-};
