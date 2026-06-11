@@ -38,7 +38,9 @@ for (const locale of LOCALES) {
 
       await page.goto(`/${locale}/admin/dashboard`);
       await expect(page).toHaveURL(new RegExp(`.*/${locale}/admin/dashboard`));
-      await expect(page.getByText(s.shell.title).first()).toBeVisible();
+      // The topbar breadcrumb (which rendered shell.title) was removed; the
+      // sidebar brand subtitle is the stable shell-level marker.
+      await expect(page.getByText(s.shell.brandSubtitle).first()).toBeVisible();
       await expect(page.getByRole("heading", { name: s.dashboard.title })).toBeVisible();
     });
   });
