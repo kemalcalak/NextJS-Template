@@ -88,7 +88,7 @@ function Button({
       <Slot
         data-slot="button"
         className={cn(BUTTON_BASE, VARIANT_CLASSES[variant], SIZE_CLASSES[size], className)}
-        {...(props as React.HTMLAttributes<HTMLElement>)}
+        {...props}
       />
     );
   }

@@ -21,7 +21,8 @@
       "email_not_verified": "Email address is not verified.",
       "invalid_verification_token": "Invalid verification token.",
       "invalid_email_domain": "This email domain cannot receive mail.",
-      "disposable_email_not_allowed": "Disposable email addresses are not allowed."
+      "disposable_email_not_allowed": "Disposable email addresses are not allowed.",
+      "password_weak": "Password must include an uppercase and a lowercase letter, a number, and a special character."
     },
     "auth": {
       "refresh_token_missing": "Refresh token is missing.",
@@ -33,7 +34,8 @@
       "deletion_expired": "This account's grace window has expired.",
       "suspended": "Your account has been suspended by an administrator.",
       "already_suspended": "This user is already suspended.",
-      "not_suspended": "This user is not suspended."
+      "not_suspended": "This user is not suspended.",
+      "locked": "Too many failed login attempts. Your account is temporarily locked. Please try again later."
     },
     "admin": {
       "cannot_modify_self": "Administrators cannot modify their own account from this panel.",

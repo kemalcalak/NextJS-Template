@@ -55,7 +55,7 @@ See `.env.example` for required variables
 - **Styling**: Tailwind utility classes, no separate CSS files
 - **API Calls**: Use `src/lib/api/`, never call fetch/axios directly. Example: `import { apiClient } from '@/lib/api/client'`
 - **State**: Zustand for global state (`src/stores`), React Query for server state
-- **i18n**: Access language with `useLanguage()` hook, translations in `i18n/locales/`
+- **i18n**: Access language with `useLanguage()` hook, translations in `i18n/locales/`. `escapeValue` is off (React escapes at render) — never render a `t()` result as raw HTML (`dangerouslySetInnerHTML` or other non-React DOM sink), or interpolated user input becomes XSS
 - **Path Alias**: `@/` → `src/` (tsconfig.json), use when importing
 - **Commits**: Conventional Commits standard — `feat:`, `fix:`, `chore:`, `docs:`, `refactor:`
 - **New components**: If general-purpose, place in `common/`; if page-specific, place in relevant folder

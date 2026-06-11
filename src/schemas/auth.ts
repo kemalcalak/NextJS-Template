@@ -5,7 +5,7 @@ import type { TFunction } from "i18next";
 export const getPasswordSchema = (t: TFunction) =>
   z
     .string()
-    .min(6, { message: t("passwordMin", { count: 6 }) })
+    .min(8, { message: t("passwordMin", { count: 8 }) })
     .regex(/[A-Z]/, { message: t("passwordUppercase") })
     .regex(/[a-z]/, { message: t("passwordLowercase") })
     .regex(/[0-9]/, { message: t("passwordNumber") })
