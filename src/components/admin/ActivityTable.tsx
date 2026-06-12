@@ -2,6 +2,15 @@
 
 import { useTranslation } from "react-i18next";
 
+import {
+  AdminTable,
+  AdminTableStateRow,
+  AdminTbody,
+  AdminTd,
+  AdminTh,
+  AdminThead,
+  AdminTr,
+} from "@/components/admin/AdminTable";
 import { StatusBadge } from "@/components/admin/StatusBadge";
 import { formatDateTime } from "@/lib/format-date";
 import type {
@@ -9,7 +18,6 @@ import type {
   AdminActivity,
   JsonValue,
 } from "@/lib/types/admin";
-import { cn } from "@/lib/utils";
 
 type ScalarJson = string | number | boolean | null;
 
@@ -97,71 +105,60 @@ export function ActivityTable({
   emptyLabel,
 }: ActivityTableProps) {
   const { t } = useTranslation("admin");
-
-  if (isLoading && rows.length === 0) {
-    return (
-      <div className="rounded-lg border bg-card p-6 text-center text-sm text-muted-foreground">
-        {t("activities.loading")}
-      </div>
-    );
-  }
-
-  if (rows.length === 0) {
-    return (
-      <div className="rounded-lg border bg-card p-6 text-center text-sm text-muted-foreground">
-        {emptyLabel ?? t("activities.empty")}
-      </div>
-    );
-  }
+  const columnCount = showUser ? 7 : 6;
 
   return (
-    <div className="overflow-x-auto rounded-lg border bg-card">
-      <table className="w-full text-left text-sm">
-        <thead className="bg-muted/50 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-          <tr>
-            <th className="px-4 py-3">{t("activities.columns.when")}</th>
-            {showUser ? <th className="px-4 py-3">{t("activities.columns.user")}</th> : null}
-            <th className="px-4 py-3">{t("activities.columns.type")}</th>
-            <th className="px-4 py-3">{t("activities.columns.resource")}</th>
-            <th className="px-4 py-3">{t("activities.columns.status")}</th>
-            <th className="px-4 py-3">{t("activities.columns.statusCode")}</th>
-            <th className="px-4 py-3">{t("activities.columns.details")}</th>
-          </tr>
-        </thead>
-        <tbody className="divide-y divide-border">
-          {rows.map((row) => (
-            <tr key={row.id} className={cn("hover:bg-muted/30 transition-colors")}>
-              <td className="whitespace-nowrap px-4 py-3 text-xs text-muted-foreground">
-                {formatDateTime(row.created_at)}
-              </td>
-              {showUser ? (
-                <td className="px-4 py-3 text-xs text-muted-foreground">{actorLabel(row)}</td>
-              ) : null}
-              <td className="px-4 py-3 font-medium">{t(`activities.type.${row.activity_type}`)}</td>
-              <td className="px-4 py-3 text-muted-foreground">
-                {t(`activities.resource.${row.resource_type}`)}
-              </td>
-              <td className="px-4 py-3">
-                <StatusBadge tone={row.status === "success" ? "success" : "danger"}>
-                  {t(`activities.status.${row.status}`)}
+    <AdminTable className="rounded-2xl border bg-card">
+      <AdminThead>
+        <AdminTh>{t("activities.columns.when")}</AdminTh>
+        {showUser ? <AdminTh>{t("activities.columns.user")}</AdminTh> : null}
+        <AdminTh>{t("activities.columns.type")}</AdminTh>
+        <AdminTh>{t("activities.columns.resource")}</AdminTh>
+        <AdminTh>{t("activities.columns.status")}</AdminTh>
+        <AdminTh>{t("activities.columns.statusCode")}</AdminTh>
+        <AdminTh>{t("activities.columns.details")}</AdminTh>
+      </AdminThead>
+      <AdminTbody>
+        {rows.map((row) => (
+          <AdminTr key={row.id}>
+            <AdminTd className="whitespace-nowrap text-xs text-muted-foreground">
+              {formatDateTime(row.created_at)}
+            </AdminTd>
+            {showUser ? (
+              <AdminTd className="text-xs text-muted-foreground">{actorLabel(row)}</AdminTd>
+            ) : null}
+            <AdminTd className="font-medium">{t(`activities.type.${row.activity_type}`)}</AdminTd>
+            <AdminTd className="text-muted-foreground">
+              {t(`activities.resource.${row.resource_type}`)}
+            </AdminTd>
+            <AdminTd>
+              <StatusBadge tone={row.status === "success" ? "success" : "danger"}>
+                {t(`activities.status.${row.status}`)}
+              </StatusBadge>
+            </AdminTd>
+            <AdminTd>
+              {row.status_code === null ? (
+                <span className="text-muted-foreground/60">—</span>
+              ) : (
+                <StatusBadge tone={statusCodeTone(row.status_code)}>
+                  <span className="font-mono">{row.status_code}</span>
                 </StatusBadge>
-              </td>
-              <td className="px-4 py-3">
-                {row.status_code === null ? (
-                  <span className="text-muted-foreground/60">—</span>
-                ) : (
-                  <StatusBadge tone={statusCodeTone(row.status_code)}>
-                    <span className="font-mono">{row.status_code}</span>
-                  </StatusBadge>
-                )}
-              </td>
-              <td className="px-4 py-3 align-top text-xs text-muted-foreground">
-                <ActivityDetails details={row.details} />
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+              )}
+            </AdminTd>
+            <AdminTd className="align-top text-xs text-muted-foreground">
+              <ActivityDetails details={row.details} />
+            </AdminTd>
+          </AdminTr>
+        ))}
+        {rows.length === 0 ? (
+          <AdminTableStateRow
+            colSpan={columnCount}
+            isLoading={isLoading}
+            loadingLabel={t("activities.loading")}
+            emptyLabel={emptyLabel ?? t("activities.empty")}
+          />
+        ) : null}
+      </AdminTbody>
+    </AdminTable>
   );
 }
