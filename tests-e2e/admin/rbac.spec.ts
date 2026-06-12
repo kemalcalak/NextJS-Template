@@ -88,7 +88,9 @@ for (const locale of LOCALES) {
       await expect(
         page.getByRole("button", { name: s.admins.create.action }).first(),
       ).toBeVisible();
-      await expect(page.getByText("limited@test.com")).toBeVisible();
+      // The name cell renders the email twice for accounts without a name
+      // (title + subtitle), so a bare text locator trips strict mode.
+      await expect(page.getByText("limited@test.com").first()).toBeVisible();
 
       const nav = page.locator("nav").first();
       await expect(nav.getByRole("link", { name: s.shell.nav.admins, exact: true })).toBeVisible();
