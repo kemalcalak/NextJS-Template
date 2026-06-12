@@ -43,11 +43,13 @@ export const ProfileInfoTab = () => {
   };
 
   return (
-    <Card className="border-border/50 bg-card/50 backdrop-blur-sm">
+    <Card className="rounded-3xl border-border/60 bg-card/70 backdrop-blur-md">
       <CardHeader className="flex flex-row items-start justify-between space-y-0">
         <div className="space-y-1">
-          <CardTitle className="text-xl flex items-center gap-2">
-            <User className="h-5 w-5 text-primary" />
+          <CardTitle className="text-xl flex items-center gap-3">
+            <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/12 text-primary">
+              <User className="h-5 w-5" />
+            </span>
             {t("info.title")}
           </CardTitle>
           <CardDescription>{t("info.description")}</CardDescription>
@@ -75,19 +77,19 @@ export const ProfileInfoTab = () => {
         <ProfileFormFields isEditing={isEditing} isLoading={isLoading} t={t} user={user} />
 
         {isEditing && (
-          <div className="px-6 pb-6 flex flex-col sm:flex-row gap-3">
-            <Button type="submit" loading={isLoading} className="flex-1 sm:flex-none min-w-30">
-              {isLoading ? t("info.submitting") : t("info.submit")}
-            </Button>
+          <div className="flex flex-col gap-3 px-6 pb-6 sm:flex-row sm:justify-end">
             <Button
               type="button"
-              variant="ghost"
+              variant="outline"
               onClick={handleCancel}
-              className="flex-1 sm:flex-none gap-2"
+              className="gap-2"
               disabled={isLoading}
             >
               <X className="h-4 w-4" />
               {t("common:buttons.cancel")}
+            </Button>
+            <Button type="submit" loading={isLoading} className="min-w-30">
+              {isLoading ? t("info.submitting") : t("info.submit")}
             </Button>
           </div>
         )}

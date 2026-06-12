@@ -10,6 +10,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { useChangePasswordMutation } from "@/hooks/api/use-auth";
+import { cn } from "@/lib/utils";
 import { zodFieldRule } from "@/lib/validation/zodToAntdRule";
 import {
   getConfirmPasswordSchema,
@@ -24,11 +25,40 @@ interface SecurityTabProps {
   showDangerZone?: boolean;
 }
 
+// 0–4 heuristic score for the strength meter; purely visual feedback, the
+// real policy lives in the zod password schema.
+const getPasswordStrength = (value: string): number => {
+  let score = 0;
+  if (value.length >= 8) score += 1;
+  if (value.length >= 12) score += 1;
+  if (/[a-z]/.test(value) && /[A-Z]/.test(value)) score += 1;
+  if (/\d/.test(value) || /[^a-zA-Z0-9]/.test(value)) score += 1;
+  return Math.min(4, score);
+};
+
+const STRENGTH_LABEL_KEYS = [
+  "security.strengthWeak",
+  "security.strengthWeak",
+  "security.strengthFair",
+  "security.strengthGood",
+  "security.strengthStrong",
+] as const;
+
+const STRENGTH_COLORS = [
+  "bg-destructive",
+  "bg-destructive",
+  "bg-amber-500",
+  "bg-primary/70",
+  "bg-primary",
+] as const;
+
 export const SecurityTab = ({ showDangerZone = true }: SecurityTabProps) => {
   const { t } = useTranslation(["profile", "validation"]);
   const { t: tv } = useTranslation("validation");
   const { mutate: changePassword, isPending: isLoading } = useChangePasswordMutation();
   const [form] = Form.useForm<ChangePasswordFormValues>();
+  const newPassword = Form.useWatch("new_password", form) ?? "";
+  const strength = getPasswordStrength(newPassword);
 
   const onFinish = ({ confirmPassword: _, ...payload }: ChangePasswordFormValues) => {
     changePassword(payload, {
@@ -40,10 +70,12 @@ export const SecurityTab = ({ showDangerZone = true }: SecurityTabProps) => {
 
   return (
     <div className="space-y-6">
-      <Card className="border-border/50 bg-card/50 backdrop-blur-sm">
+      <Card className="rounded-3xl border-border/60 bg-card/70 backdrop-blur-md">
         <CardHeader>
-          <CardTitle className="text-xl flex items-center gap-2">
-            <Shield className="h-5 w-5 text-primary" />
+          <CardTitle className="text-xl flex items-center gap-3">
+            <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/12 text-primary">
+              <Shield className="h-5 w-5" />
+            </span>
             {t("security.title")}
           </CardTitle>
           <CardDescription>{t("security.description")}</CardDescription>
@@ -86,6 +118,28 @@ export const SecurityTab = ({ showDangerZone = true }: SecurityTabProps) => {
                 autoComplete="new-password"
               />
             </Form.Item>
+
+            {newPassword ? (
+              <div className="-mt-2 space-y-1.5 pb-2">
+                <div className="flex gap-1.5">
+                  {[0, 1, 2, 3].map((segment) => (
+                    <span
+                      key={segment}
+                      className={cn(
+                        "h-1.5 flex-1 rounded-full transition-colors duration-300",
+                        segment < strength ? STRENGTH_COLORS[strength] : "bg-border",
+                      )}
+                    />
+                  ))}
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  {t("security.strengthLabel")}:{" "}
+                  <span className="font-medium text-foreground">
+                    {t(STRENGTH_LABEL_KEYS[strength])}
+                  </span>
+                </p>
+              </div>
+            ) : null}
 
             <Form.Item
               name="confirmPassword"

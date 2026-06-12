@@ -53,21 +53,24 @@ export const DangerZone = () => {
   };
 
   return (
-    <Card className="border-destructive/40 bg-destructive/5">
+    <Card className="rounded-3xl border-destructive/40 bg-destructive/5">
       <CardHeader>
-        <CardTitle className="text-xl flex items-center gap-2 text-destructive">
-          <AlertTriangle className="h-5 w-5" />
+        <CardTitle className="text-xl flex items-center gap-3 text-destructive">
+          <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-destructive/10">
+            <AlertTriangle className="h-5 w-5" />
+          </span>
           {t("account:deactivate.title")}
         </CardTitle>
         <CardDescription>{t("account:deactivate.description")}</CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className="flex justify-end">
         <Button
           variant="destructive"
           onClick={() => {
             setOpen(true);
           }}
         >
+          <AlertTriangle className="h-4 w-4" />
           {t("account:deactivate.cta")}
         </Button>
       </CardContent>
