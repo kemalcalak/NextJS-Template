@@ -121,6 +121,22 @@ Object.defineProperty(window, "matchMedia", {
   ),
 });
 
+// Mock IntersectionObserver — jsdom lacks it, and motion's whileInView/useInView
+// (scroll-triggered animations on the home page) require it at mount time.
+class MockIntersectionObserver implements IntersectionObserver {
+  readonly root: Element | Document | null = null;
+  readonly rootMargin: string = "";
+  readonly thresholds: readonly number[] = [];
+  observe = vi.fn();
+  unobserve = vi.fn();
+  disconnect = vi.fn();
+  takeRecords = (): IntersectionObserverEntry[] => [];
+}
+Object.defineProperty(window, "IntersectionObserver", {
+  writable: true,
+  value: MockIntersectionObserver,
+});
+
 // Establish API mocking before all tests.
 beforeAll(() => {
   server.listen({ onUnhandledRequest: "error" });

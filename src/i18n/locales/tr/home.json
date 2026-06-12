@@ -1,15 +1,93 @@
 {
-  "title": "{{appName}}'e Hoş Geldiniz",
-  "subtitle": "Günlük görevlerinizi ve projelerinizi yönetmek için en iyi yer",
+  "badge": "Yeni filizlenen bir topluluk",
+  "title": "{{appName}}'de yerini bul",
+  "subtitle": "İnternetin sıcak bir köşesi — fikirlerini paylaş, sohbetlere katıl, birlikte bir şeyler inşa et",
   "cta": {
     "login": "Hesabınıza giriş yapın",
-    "register": "Yeni hesap oluştur",
+    "register": "Topluluğa katıl",
     "dashboard": "Dashboard'a git"
   },
   "features": {
-    "title": "Özellikler",
-    "item1": "Hızlı ve Güvenli",
-    "item2": "Gerçek zamanlı senkronizasyon",
-    "item3": "Harika Tasarım"
+    "eyebrow": "Neden burası",
+    "title": "Neden katılmalısın?",
+    "subtitle": "İyi bir topluluğun ihtiyacı olan her şey; fazlası değil.",
+    "item1": "Değerli sohbetler",
+    "item1Desc": "Samimi, odaklı ve zamanına değer konular ve tartışmalar.",
+    "item2": "Her zaman senkron",
+    "item2Desc": "Gerçek zamanlı bildirimlerle her cihazda gelişmelerden haberdar ol.",
+    "item3": "Burası senin alanın",
+    "item3Desc": "Profilin, teman — açık ya da koyu, kendini evinde hissedeceğin bir alan.",
+    "item4": "Güvenli bir alan",
+    "item4Desc": "Aktif moderasyon ve net topluluk kuralları her sohbeti saygılı tutar."
+  },
+  "mock": {
+    "channel": "genel",
+    "msg1": "Aramıza hoş geldin! Fırsat bulunca kendini tanıt 👋",
+    "msg2": "Yan projemin ilk betasını yayınladım — geri bildirim beklerim!",
+    "msg3": "Oyun gecesi 9'da başlıyor. Kimler var?",
+    "msg4": "Hafta sonu fotoğraf yürüyüşüne var mısınız? 📷",
+    "msg5": "Bu ayın kitabını bitirdim — o final yok mu!",
+    "typing": "{{name}} yazıyor…"
+  },
+  "marquee": {
+    "tag1": "# teknoloji",
+    "tag2": "# tasarım",
+    "tag3": "# müzik",
+    "tag4": "# oyun",
+    "tag5": "# kitap",
+    "tag6": "# gezi",
+    "tag7": "# yemek",
+    "tag8": "# fotoğraf"
+  },
+  "showcase": {
+    "eyebrow": "Topluluk",
+    "title": "Sohbetlerden bir kesit",
+    "subtitle": "Kaydırmaya devam et — akış seninle birlikte ilerliyor.",
+    "replies": "{{count}} yanıt",
+    "card1Title": "Kendini tanıt",
+    "card1Desc": "Yeni misin? Merhaba de, benzer ilgi alanlarına sahip insanları hemen bul.",
+    "card2Title": "Yan proje köşesi",
+    "card2Desc": "Ne yaptığını göster, geri bildirim al, birlikte çalışacak insanlar bul.",
+    "card3Title": "Oyun gecesi ekibi",
+    "card3Desc": "Haftalık oturumlar, takım kurmalar ve dostça turnuvalar.",
+    "card4Title": "Okuma kulübü",
+    "card4Desc": "Ayda bir kitap, kocaman bir tartışma başlığı, sıfır baskı.",
+    "card5Title": "Şu an ne dinliyorsun?",
+    "card5Desc": "Topluluktan günlük çalma listeleri ve keşfedilmemiş cevherler.",
+    "card6Title": "Gezi notları",
+    "card6Desc": "Yoldaki üyelerden rotalar, ipuçları ve hikâyeler.",
+    "card7Title": "Bu akşamın tarifi",
+    "card7Desc": "Ev yemeği zaferleri, fiyaskolar ve aradaki tüm lezzetler.",
+    "card8Title": "Haftanın fotoğrafı",
+    "card8Desc": "En iyi kareni paylaş, topluluğun favorisine oy ver."
+  },
+  "stats": {
+    "eyebrow": "Rakamlarla",
+    "title": "Topluluk büyüyor",
+    "members": "Üye",
+    "topics": "Konu",
+    "messages": "Mesaj"
+  },
+  "steps": {
+    "eyebrow": "Başlarken",
+    "title": "Nasıl çalışır?",
+    "step1Title": "Hesabını oluştur",
+    "step1Desc": "Saniyeler içinde kaydol — alanın hemen hazır.",
+    "step2Title": "Konularını seç",
+    "step2Desc": "İlgilendiğin sohbetleri ve insanları takip et.",
+    "step3Title": "Sohbete katıl",
+    "step3Desc": "Yanıtla, paylaş ve seni anlayan insanlarla tanış."
+  },
+  "ctaBand": {
+    "title": "Aramıza katılmaya hazır mısın?",
+    "desc": "Katılmak bir dakikadan az sürüyor — en güzel sohbetler daha yeni başlıyor.",
+    "button": "Hemen başla"
+  },
+  "footer": {
+    "tagline": "İnternetin birlikte inşa edilen sıcak bir köşesi.",
+    "exploreTitle": "Keşfet",
+    "accountTitle": "Hesap",
+    "rights": "Tüm hakları saklıdır.",
+    "backToTop": "Yukarı dön"
   }
 }

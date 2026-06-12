@@ -1,15 +1,93 @@
 {
-  "title": "Welcome to {{appName}}",
-  "subtitle": "The best place to manage your daily tasks and projects",
+  "badge": "A community, in the making",
+  "title": "Find your people at {{appName}}",
+  "subtitle": "A warm corner of the internet — share ideas, join conversations, and build something together",
   "cta": {
     "login": "Login to your account",
-    "register": "Create new account",
+    "register": "Join the community",
     "dashboard": "Go to Dashboard"
   },
   "features": {
-    "title": "Features",
-    "item1": "Fast & Secure",
-    "item2": "Real-time sync",
-    "item3": "Beautiful Design"
+    "eyebrow": "Why here",
+    "title": "Why join?",
+    "subtitle": "Everything a good community needs, nothing it doesn't.",
+    "item1": "Conversations that matter",
+    "item1Desc": "Threads and discussions that stay friendly, focused and worth your time.",
+    "item2": "Always in sync",
+    "item2Desc": "Real-time notifications keep you in the loop, on every device.",
+    "item3": "Make it yours",
+    "item3Desc": "Your profile, your theme — a space that feels like home, light or dark.",
+    "item4": "A safe space",
+    "item4Desc": "Active moderation and clear community guidelines keep every conversation respectful."
+  },
+  "mock": {
+    "channel": "general",
+    "msg1": "Welcome aboard! Introduce yourself when you get a minute 👋",
+    "msg2": "Just shipped the first beta of my side project — feedback welcome!",
+    "msg3": "Game night starts at 9. Who's in?",
+    "msg4": "Anyone up for a photo walk this weekend? 📷",
+    "msg5": "Just finished this month's book — that ending!",
+    "typing": "{{name}} is typing…"
+  },
+  "marquee": {
+    "tag1": "# technology",
+    "tag2": "# design",
+    "tag3": "# music",
+    "tag4": "# gaming",
+    "tag5": "# books",
+    "tag6": "# travel",
+    "tag7": "# food",
+    "tag8": "# photography"
+  },
+  "showcase": {
+    "eyebrow": "Community",
+    "title": "A glimpse of the conversations",
+    "subtitle": "Keep scrolling — the feed slides along with you.",
+    "replies": "{{count}} replies",
+    "card1Title": "Introduce yourself",
+    "card1Desc": "New here? Say hi and find people with shared interests right away.",
+    "card2Title": "Side project corner",
+    "card2Desc": "Show what you're building, get feedback, and find collaborators.",
+    "card3Title": "Game night crew",
+    "card3Desc": "Weekly sessions, team-ups and friendly tournaments.",
+    "card4Title": "Reading club",
+    "card4Desc": "One book a month, one big discussion thread, zero pressure.",
+    "card5Title": "What are you listening to?",
+    "card5Desc": "Daily playlists and hidden gems from the community.",
+    "card6Title": "Travel notes",
+    "card6Desc": "Itineraries, tips and stories from members on the road.",
+    "card7Title": "Tonight's recipe",
+    "card7Desc": "Home cooking wins, fails and everything delicious in between.",
+    "card8Title": "Photo of the week",
+    "card8Desc": "Share your best shot and vote for the community favourite."
+  },
+  "stats": {
+    "eyebrow": "In numbers",
+    "title": "The community is growing",
+    "members": "Members",
+    "topics": "Topics",
+    "messages": "Messages"
+  },
+  "steps": {
+    "eyebrow": "Getting started",
+    "title": "How it works",
+    "step1Title": "Create your account",
+    "step1Desc": "Sign up in seconds — your space is ready right away.",
+    "step2Title": "Pick your topics",
+    "step2Desc": "Follow the conversations and people you care about.",
+    "step3Title": "Join the conversation",
+    "step3Desc": "Reply, share, and meet people who get it."
+  },
+  "ctaBand": {
+    "title": "Ready to pull up a chair?",
+    "desc": "It takes less than a minute to join — and the best conversations are just getting started.",
+    "button": "Get started now"
+  },
+  "footer": {
+    "tagline": "A warm corner of the internet, built together.",
+    "exploreTitle": "Explore",
+    "accountTitle": "Account",
+    "rights": "All rights reserved.",
+    "backToTop": "Back to top"
   }
 }
