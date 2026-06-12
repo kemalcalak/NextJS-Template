@@ -23,6 +23,17 @@
     "managePermissions": "İzinleri yönet",
     "permissionCount": "İzinler: {{count}}",
     "empty": "Henüz admin yok.",
+    "loading": "Adminler yükleniyor...",
+    "columns": {
+      "admin": "Admin",
+      "role": "Rol",
+      "permissions": "İzinler",
+      "created": "Oluşturulma",
+      "actions": "İşlemler"
+    },
+    "rowActions": {
+      "menu": "Satır işlemleri"
+    },
     "modal": {
       "title": "İzinler · {{email}}",
       "cancel": "İptal"

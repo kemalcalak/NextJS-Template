@@ -23,6 +23,17 @@
     "managePermissions": "Manage permissions",
     "permissionCount": "Permissions: {{count}}",
     "empty": "No admins yet.",
+    "loading": "Loading admins...",
+    "columns": {
+      "admin": "Admin",
+      "role": "Role",
+      "permissions": "Permissions",
+      "created": "Created",
+      "actions": "Actions"
+    },
+    "rowActions": {
+      "menu": "Row actions"
+    },
     "modal": {
       "title": "Permissions · {{email}}",
       "cancel": "Cancel"

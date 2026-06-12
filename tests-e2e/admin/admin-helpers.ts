@@ -199,6 +199,7 @@ export const adminListItems: AdminListItem[] = [
     is_active: true,
     is_root_superadmin: true,
     permissions: ALL_PERMISSIONS,
+    created_at: "2026-01-01T00:00:00Z",
   },
   {
     id: nonRootSuperadminUser.id,
@@ -209,6 +210,7 @@ export const adminListItems: AdminListItem[] = [
     is_active: true,
     is_root_superadmin: false,
     permissions: ALL_PERMISSIONS,
+    created_at: "2026-01-02T00:00:00Z",
   },
   {
     id: "limited-admin-1",
@@ -219,6 +221,7 @@ export const adminListItems: AdminListItem[] = [
     is_active: true,
     is_root_superadmin: false,
     permissions: [Permission.UsersRead],
+    created_at: "2026-01-03T00:00:00Z",
   },
 ];
 
@@ -241,10 +244,20 @@ export const mockAdminsList = async (
       await route.fallback();
       return;
     }
+    const url = new URL(route.request().url());
+    const skip = Number(url.searchParams.get("skip") ?? "0");
+    const limit = Number(url.searchParams.get("limit") ?? "50");
+    const role = url.searchParams.get("role") as SystemRole | null;
+    const filtered = role ? admins.filter((admin) => admin.role === role) : admins;
     await route.fulfill({
       status: 200,
       contentType: "application/json",
-      body: JSON.stringify({ data: admins, total: admins.length }),
+      body: JSON.stringify({
+        data: filtered.slice(skip, skip + limit),
+        total: filtered.length,
+        skip,
+        limit,
+      }),
     });
   });
 };

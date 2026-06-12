@@ -2,30 +2,15 @@
 
 import { useRef } from "react";
 
-import { motion, useScroll, useTransform } from "motion/react";
+import { motion, useScroll, useTransform, type MotionValue } from "motion/react";
 import { useTranslation } from "react-i18next";
 
 import { SectionHeader } from "@/components/common/SectionHeader";
-import { EASE_OUT, slideInLeft, slideInRight } from "@/lib/motion/variants";
-
-import type { Variants } from "motion/react";
 
 interface StepDef {
   titleKey: string;
   descKey: string;
 }
-
-// Inherits hidden/visible from the step row's whileInView, so the badge pops
-// exactly when its row reveals — no separate viewport observer (a threshold
-// of 1 can silently never fire on subpixel layouts).
-const badgePop: Variants = {
-  hidden: { scale: 0.4, opacity: 0 },
-  visible: {
-    scale: [0.4, 1.18, 1],
-    opacity: 1,
-    transition: { duration: 0.55, ease: EASE_OUT, delay: 0.15 },
-  },
-};
 
 const STEPS: StepDef[] = [
   { titleKey: "steps.step1Title", descKey: "steps.step1Desc" },
@@ -33,9 +18,62 @@ const STEPS: StepDef[] = [
   { titleKey: "steps.step3Title", descKey: "steps.step3Desc" },
 ];
 
+// Each step owns a slice of the section's scroll progress. Slices overlap
+// (stride < window) so one step is still settling while the next begins —
+// the same continuous feel as the spine fill it rides alongside.
+const STEP_WINDOW = 0.38;
+const STEP_STRIDE = (1 - STEP_WINDOW) / (STEPS.length - 1);
+
+interface StepRowProps {
+  titleKey: string;
+  descKey: string;
+  index: number;
+  progress: MotionValue<number>;
+}
+
+// A single step whose slide-in and badge pop are scrubbed by scroll progress
+// (not one-shot reveals), so scrolling back up rewinds the animation in sync
+// with the spine.
+function StepRow({ titleKey, descKey, index, progress }: StepRowProps) {
+  const { t } = useTranslation("home");
+  const fromLeft = index % 2 === 0;
+  const start = index * STEP_STRIDE;
+  const end = start + STEP_WINDOW;
+
+  const opacity = useTransform(progress, [start, end], [0, 1]);
+  const x = useTransform(progress, [start, end], [fromLeft ? -40 : 40, 0]);
+  // Overshoot near the end of the slice for the pop, then settle to 1.
+  const badgeScale = useTransform(
+    progress,
+    [start, start + STEP_WINDOW * 0.7, end],
+    [0.4, 1.18, 1],
+  );
+
+  return (
+    <motion.div
+      style={{ opacity, x }}
+      className={`relative flex items-start gap-5 pl-14 sm:w-1/2 sm:pl-0 ${
+        fromLeft ? "sm:mr-auto sm:flex-row-reverse sm:pr-10 sm:text-right" : "sm:ml-auto sm:pl-10"
+      }`}
+    >
+      <motion.span
+        style={{ scale: badgeScale }}
+        className="absolute left-2.5 top-0 flex h-8 w-8 items-center justify-center rounded-full bg-primary font-display text-sm font-semibold text-primary-foreground shadow-md shadow-primary/30 sm:static sm:shrink-0"
+      >
+        {index + 1}
+      </motion.span>
+      <div>
+        <h3 className="text-xl font-semibold">{t(titleKey)}</h3>
+        <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{t(descKey)}</p>
+      </div>
+    </motion.div>
+  );
+}
+
 // Steps alternate sliding in from the left and right along a center spine
-// that fills with the accent color as you scroll past; each number badge
-// pops when its step arrives.
+// that fills with the accent color as you scroll past. The whole section is
+// scroll-scrubbed: spine, slides, and badge pops all track scroll position
+// and play in reverse on the way back up.
 export function HomeSteps() {
   const { t } = useTranslation("home");
 
@@ -60,34 +98,15 @@ export function HomeSteps() {
             className="absolute inset-y-0 left-6 w-px origin-top bg-gradient-to-b from-primary via-primary/70 to-primary/30 sm:left-1/2"
           />
 
-          {STEPS.map(({ titleKey, descKey }, index) => {
-            const fromLeft = index % 2 === 0;
-            return (
-              <motion.div
-                key={titleKey}
-                variants={fromLeft ? slideInLeft : slideInRight}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true, amount: 0.5 }}
-                className={`relative flex items-start gap-5 pl-14 sm:w-1/2 sm:pl-0 ${
-                  fromLeft
-                    ? "sm:mr-auto sm:flex-row-reverse sm:pr-10 sm:text-right"
-                    : "sm:ml-auto sm:pl-10"
-                }`}
-              >
-                <motion.span
-                  variants={badgePop}
-                  className="absolute left-2.5 top-0 flex h-8 w-8 items-center justify-center rounded-full bg-primary font-display text-sm font-semibold text-primary-foreground shadow-md shadow-primary/30 sm:static sm:shrink-0"
-                >
-                  {index + 1}
-                </motion.span>
-                <div>
-                  <h3 className="text-xl font-semibold">{t(titleKey)}</h3>
-                  <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{t(descKey)}</p>
-                </div>
-              </motion.div>
-            );
-          })}
+          {STEPS.map(({ titleKey, descKey }, index) => (
+            <StepRow
+              key={titleKey}
+              titleKey={titleKey}
+              descKey={descKey}
+              index={index}
+              progress={scrollYProgress}
+            />
+          ))}
         </div>
       </div>
     </section>

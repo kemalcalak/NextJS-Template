@@ -1,12 +1,13 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
+import { useState } from "react";
 
 import { useTranslation } from "react-i18next";
 
+import { AdminPagination } from "@/components/admin/Pagination";
+import { DEFAULT_PAGE_SIZE } from "@/components/admin/pagination-config";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
 import { useAdmins, usePermissionCatalog } from "@/hooks/api/use-admin";
 import { useIsRootSuperadmin, useIsSuperadmin } from "@/hooks/use-permissions";
 import type { AdminListItem } from "@/lib/types/admin";
@@ -14,72 +15,49 @@ import { SystemRole } from "@/lib/types/user";
 
 import { AdminForbidden } from "../AdminForbidden";
 import { AdminActionConfirm, type AdminActionState } from "./AdminActionConfirm";
-import { AdminRow } from "./AdminRow";
+import { AdminsTable } from "./AdminsTable";
 import { CreateAdminModal } from "./CreateAdminModal";
 import { EditPermissionsModal } from "./EditPermissionsModal";
 import { TransferRootModal } from "./TransferRootModal";
+
+// Root transfer targets must cover every superadmin, not just the visible
+// page, so they ride a separate role-filtered query at the API's max limit.
+const TRANSFER_TARGETS_LIMIT = 200;
 
 export function AdminsContent() {
   const { t } = useTranslation("admin");
   const isSuperadmin = useIsSuperadmin();
   const isRoot = useIsRootSuperadmin();
-  const adminsQuery = useAdmins(isSuperadmin);
-  const catalogQuery = usePermissionCatalog(isSuperadmin);
 
+  const [skip, setSkip] = useState(0);
+  const [pageSize, setPageSize] = useState<number>(DEFAULT_PAGE_SIZE);
   const [editing, setEditing] = useState<AdminListItem | null>(null);
   const [action, setAction] = useState<AdminActionState | null>(null);
   const [createOpen, setCreateOpen] = useState(false);
   const [transferOpen, setTransferOpen] = useState(false);
 
+  const adminsQuery = useAdmins({ skip, limit: pageSize }, isSuperadmin);
+  const catalogQuery = usePermissionCatalog(isSuperadmin);
+  const superadminsQuery = useAdmins(
+    { role: SystemRole.SUPERADMIN, limit: TRANSFER_TARGETS_LIMIT },
+    isSuperadmin && isRoot,
+  );
+
   if (!isSuperadmin) return <AdminForbidden />;
 
   const catalog = catalogQuery.data?.permissions ?? [];
-  const admins = adminsQuery.data?.data ?? [];
+  const data = adminsQuery.data;
   const isLoading = adminsQuery.isLoading || catalogQuery.isLoading;
-  // Root can only be transferred to another (non-root) superadmin.
-  const transferTargets = admins.filter(
-    (entry) => entry.role === SystemRole.SUPERADMIN && !entry.is_root_superadmin,
-  );
-
-  let listContent: ReactNode;
-  if (isLoading) {
-    listContent = (
-      <div className="space-y-3">
-        <Skeleton className="h-20 w-full" />
-        <Skeleton className="h-20 w-full" />
-      </div>
-    );
-  } else if (admins.length === 0) {
-    listContent = (
-      <Card>
-        <CardContent className="p-6 text-center text-sm text-muted-foreground">
-          {t("admins.empty")}
-        </CardContent>
-      </Card>
-    );
-  } else {
-    listContent = (
-      <div className="space-y-3">
-        {admins.map((admin) => (
-          <AdminRow
-            key={admin.id}
-            admin={admin}
-            isViewerRoot={isRoot}
-            onManage={setEditing}
-            onDelete={(target) => {
-              setAction({ kind: "delete", admin: target });
-            }}
-            onPromote={(target) => {
-              setAction({ kind: "promote", admin: target });
-            }}
-            onDemoteSuperadmin={(target) => {
-              setAction({ kind: "demote", admin: target });
-            }}
-          />
-        ))}
-      </div>
-    );
+  // If the current page falls out of range (e.g. the last admin on the last
+  // page was deleted), snap back to the last non-empty page. Render-phase
+  // state adjustment so the out-of-range page never paints.
+  if (data && skip > 0 && skip >= data.total) {
+    setSkip(Math.max(0, (Math.ceil(data.total / pageSize) - 1) * pageSize));
   }
+  // Root can only be transferred to another (non-root) superadmin.
+  const transferTargets = (superadminsQuery.data?.data ?? []).filter(
+    (entry) => !entry.is_root_superadmin,
+  );
 
   return (
     <div className="space-y-6">
@@ -109,7 +87,43 @@ export function AdminsContent() {
         </div>
       </div>
 
-      {listContent}
+      <Card className="border-border/50 bg-card/60">
+        <CardContent className="p-0">
+          <AdminsTable
+            rows={data?.data ?? []}
+            isLoading={isLoading && !data}
+            isViewerRoot={isRoot}
+            onManage={setEditing}
+            onDelete={(target) => {
+              setAction({ kind: "delete", admin: target });
+            }}
+            onPromote={(target) => {
+              setAction({ kind: "promote", admin: target });
+            }}
+            onDemoteSuperadmin={(target) => {
+              setAction({ kind: "demote", admin: target });
+            }}
+          />
+          {data ? (
+            <div
+              className="px-4 pb-4 pt-0"
+              aria-live="polite"
+              aria-busy={adminsQuery.isFetching ? "true" : "false"}
+            >
+              <AdminPagination
+                total={data.total}
+                skip={skip}
+                limit={pageSize}
+                onChange={setSkip}
+                onPageSizeChange={(next) => {
+                  setPageSize(next);
+                  setSkip(0);
+                }}
+              />
+            </div>
+          ) : null}
+        </CardContent>
+      </Card>
 
       <EditPermissionsModal
         admin={editing}
