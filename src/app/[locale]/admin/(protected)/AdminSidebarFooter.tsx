@@ -60,7 +60,7 @@ export function AdminSidebarFooter({ user, currentLocale, collapsed }: AdminSide
         {resolvedTheme === "dark" ? (
           <Sun className="h-3.5 w-3.5 text-orange-500" />
         ) : (
-          <Moon className="h-3.5 w-3.5 text-blue-500" />
+          <Moon className="h-3.5 w-3.5 text-primary" />
         )}
       </span>
     </Button>
@@ -82,7 +82,7 @@ export function AdminSidebarFooter({ user, currentLocale, collapsed }: AdminSide
 
   const logoutBox = (
     <span className="flex rounded-lg border border-border/50 bg-background p-1.5 shadow-sm">
-      <LogOut className="h-3.5 w-3.5 text-red-500" />
+      <LogOut className="h-3.5 w-3.5 text-destructive" />
     </span>
   );
 
@@ -91,12 +91,14 @@ export function AdminSidebarFooter({ user, currentLocale, collapsed }: AdminSide
   };
 
   const avatar = (
-    <Avatar className="h-8 w-8">
-      {user.avatar_file?.url && <AvatarImage src={user.avatar_file.url} alt={user.email} />}
-      <AvatarFallback className="text-xs uppercase">
-        {(user.first_name?.[0] ?? user.email[0]).toUpperCase()}
-      </AvatarFallback>
-    </Avatar>
+    <span className="shrink-0 rounded-full bg-gradient-to-br from-primary to-primary/40 p-0.5">
+      <Avatar className="h-8 w-8 border-2 border-background">
+        {user.avatar_file?.url && <AvatarImage src={user.avatar_file.url} alt={user.email} />}
+        <AvatarFallback className="text-xs uppercase">
+          {(user.first_name?.[0] ?? user.email[0]).toUpperCase()}
+        </AvatarFallback>
+      </Avatar>
+    </span>
   );
 
   if (collapsed) {
@@ -141,7 +143,7 @@ export function AdminSidebarFooter({ user, currentLocale, collapsed }: AdminSide
       />
       <Button
         variant="destructive"
-        className="h-11 w-full justify-start rounded-xl bg-red-50 px-3 font-medium text-red-600 hover:bg-red-100 dark:bg-red-950/30 dark:text-red-400"
+        className="h-11 w-full justify-start rounded-xl bg-destructive/10 px-3 font-medium text-destructive hover:bg-destructive/15"
         onClick={goLogout}
       >
         <LogOut className="mr-3 h-4 w-4" />

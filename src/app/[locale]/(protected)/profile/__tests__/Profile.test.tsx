@@ -70,17 +70,17 @@ describe("Profile Page", () => {
   it("renders profile information tab items correctly", () => {
     renderWithProviders(<ProfileContent />);
 
-    expect(screen.getByText(/^profile:title$/i)).toBeInTheDocument();
+    // The identity band replaces the old static page title.
+    expect(screen.getByRole("heading", { name: "John Doe" })).toBeInTheDocument();
     expect(screen.getByText(/^profile:info\.title$/i)).toBeInTheDocument();
 
-    // Check inputs by label to be more specific
-    const firstNameInput = screen.getByLabelText(/profile:info\.firstName/i);
-    const lastNameInput = screen.getByLabelText(/profile:info\.lastName/i);
-    const titleInput = screen.getByLabelText(/profile:info\.titleLabel/i);
-
-    expect(firstNameInput).toHaveValue("John");
-    expect(lastNameInput).toHaveValue("Doe");
-    expect(titleInput).toHaveValue("Software Engineer");
+    // Default view is read mode: values render as info rows, not inputs.
+    expect(screen.getByText(/^profile:info\.firstName$/i)).toBeInTheDocument();
+    expect(screen.getByText("John")).toBeInTheDocument();
+    expect(screen.getByText("Doe")).toBeInTheDocument();
+    // Email and title appear in both the identity band and the info rows.
+    expect(screen.getAllByText("john@example.com").length).toBeGreaterThan(0);
+    expect(screen.getAllByText("Software Engineer").length).toBeGreaterThan(0);
   });
 
   it("switches to security tab correctly", async () => {

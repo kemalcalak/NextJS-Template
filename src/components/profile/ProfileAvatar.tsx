@@ -26,15 +26,17 @@ export const ProfileAvatar = () => {
   };
 
   return (
-    <Card className="border-border/50 bg-card/50 backdrop-blur-sm">
+    <Card className="rounded-3xl border-border/60 bg-card/70 backdrop-blur-md">
       <CardHeader className="space-y-1">
-        <CardTitle className="text-xl flex items-center gap-2">
-          <ImageIcon className="h-5 w-5 text-primary" />
+        <CardTitle className="text-xl flex items-center gap-3">
+          <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/12 text-primary">
+            <ImageIcon className="h-5 w-5" />
+          </span>
           {t("avatar.title")}
         </CardTitle>
         <CardDescription>{t("avatar.description")}</CardDescription>
       </CardHeader>
-      <div className="px-6 pb-6 flex justify-center">
+      <div className="flex justify-center px-6 pb-6">
         <AvatarUpload value={user?.avatar_file ?? null} onChange={handleChange} />
       </div>
     </Card>

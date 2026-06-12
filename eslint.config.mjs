@@ -210,7 +210,7 @@ export default defineConfig([
       "require-await": "warn",
       camelcase: [
         "warn",
-        { properties: "never", ignoreDestructuring: true, allow: ["Geist_Mono"] },
+        { properties: "never", ignoreDestructuring: true, allow: ["Geist_Mono", "Albert_Sans"] },
       ],
     },
   },

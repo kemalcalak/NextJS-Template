@@ -1,23 +1,19 @@
 "use client";
 
-import { Badge, Drawer } from "antd";
-import {
-  Menu,
-  User as UserIcon,
-  LogOut,
-  LayoutDashboard,
-  Home,
-  LifeBuoy,
-  Bell,
-  ShieldCheck,
-} from "lucide-react";
+import { Drawer } from "antd";
+import { Menu, LogOut, Home, Info } from "lucide-react";
+import { motion } from "motion/react";
 import { useRouter, usePathname } from "next/navigation";
 import { useTranslation } from "react-i18next";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { drawerItem, drawerList } from "@/components/common/app-drawer-motion";
+import {
+  AuthedNavLinks,
+  DrawerTitle,
+  NavLink,
+  UserProfile,
+} from "@/components/common/AppDrawerNav";
 import { Button } from "@/components/ui/button";
-import { env } from "@/env";
-import { useUnreadCount } from "@/hooks/api/use-notifications";
 import { useLanguage } from "@/hooks/use-language";
 import {
   getLocaleFromPath,
@@ -26,9 +22,7 @@ import {
   getLocalizedPath,
   matchesRoute,
 } from "@/lib/config/routes";
-import { SystemRole } from "@/lib/types/user";
-import { cn } from "@/lib/utils";
-import { useAuthStore, type User } from "@/stores/auth.store";
+import { useAuthStore } from "@/stores/auth.store";
 
 import { SettingsSection } from "./AppDrawerSettings";
 
@@ -38,109 +32,6 @@ interface AppDrawerProps {
   isMobileMenuOpen: boolean;
   setIsMobileMenuOpen: (open: boolean) => void;
 }
-
-interface UserProfileProps {
-  user: NonNullable<User>;
-}
-
-const UserProfile = ({ user }: UserProfileProps) => (
-  <div className="flex items-center gap-4 p-4 rounded-xl bg-muted/50 border">
-    <Avatar className="h-12 w-12 border shadow-sm">
-      {user.avatar_file?.url && <AvatarImage src={user.avatar_file.url} alt={user.email} />}
-      <AvatarFallback className="bg-primary/10 text-primary">
-        {user.first_name?.charAt(0).toUpperCase() || <UserIcon className="h-5 w-5" />}
-      </AvatarFallback>
-    </Avatar>
-    <div className="flex flex-col flex-1 overflow-hidden">
-      <p className="text-base font-bold truncate">
-        {user.first_name} {user.last_name}
-      </p>
-    </div>
-  </div>
-);
-
-interface NavLinkProps {
-  href: string;
-  icon: React.ElementType;
-  label: string;
-  active: boolean;
-  onClick: (href: string) => void;
-  badge?: number;
-}
-
-const NavLink = ({ href, icon: Icon, label, active, onClick, badge = 0 }: NavLinkProps) => (
-  <Button
-    variant={active ? "secondary" : "ghost"}
-    className={cn(
-      "w-full justify-start h-11 rounded-xl font-medium transition-all px-4",
-      active && "bg-primary/10! text-primary! hover:bg-primary/15!",
-    )}
-    onClick={() => {
-      onClick(href);
-    }}
-  >
-    <span className="flex w-full items-center">
-      <Icon className={cn("mr-3 h-4 w-4", active ? "text-primary" : "text-muted-foreground")} />
-      {label}
-      {badge > 0 && <Badge count={badge} size="small" className="ml-auto" />}
-    </span>
-  </Button>
-);
-
-// Nav links shown only to authenticated users. Extracted so the AppDrawer
-// component itself stays under the max-lines-per-function budget.
-interface AuthedNavLinksProps {
-  user: NonNullable<User>;
-  isActive: (path: string) => boolean;
-  navigate: (href: string) => void;
-}
-
-const AuthedNavLinks = ({ user, isActive, navigate }: AuthedNavLinksProps) => {
-  const { t } = useTranslation();
-  const { data: unread } = useUnreadCount();
-  return (
-    <>
-      {user.role === SystemRole.ADMIN && (
-        <NavLink
-          href={ROUTES.adminDashboard}
-          icon={ShieldCheck}
-          label={t("admin:shell.title", "Administration")}
-          active={isActive(ROUTES.adminDashboard)}
-          onClick={navigate}
-        />
-      )}
-      <NavLink
-        href={ROUTES.dashboard}
-        icon={LayoutDashboard}
-        label={t("common:nav.dashboard")}
-        active={isActive(ROUTES.dashboard)}
-        onClick={navigate}
-      />
-      <NavLink
-        href={ROUTES.notifications}
-        icon={Bell}
-        label={t("common:nav.notifications")}
-        active={isActive(ROUTES.notifications)}
-        onClick={navigate}
-        badge={unread?.unread_count ?? 0}
-      />
-      <NavLink
-        href={ROUTES.profile}
-        icon={UserIcon}
-        label={t("common:nav.profile")}
-        active={isActive(ROUTES.profile)}
-        onClick={navigate}
-      />
-      <NavLink
-        href={ROUTES.support}
-        icon={LifeBuoy}
-        label={t("common:nav.support")}
-        active={isActive(ROUTES.support)}
-        onClick={navigate}
-      />
-    </>
-  );
-};
 
 export const AppDrawer = ({
   theme,
@@ -192,25 +83,41 @@ export const AppDrawer = ({
         }}
         placement="left"
         closable={false}
+        // Remount the body each open so the staggered entrance replays.
+        destroyOnHidden
         styles={{
-          wrapper: { width: "85vw", maxWidth: "24rem" },
+          // 100dvh tracks the *visible* mobile viewport (URL bar collapsed or
+          // not); plain 100% resolves against the layout viewport and lets the
+          // bottom actions slide off-screen behind the browser chrome.
+          wrapper: { width: "85vw", maxWidth: "24rem", height: "100dvh" },
           section: { background: "var(--background)" },
           body: { padding: 0 },
           header: {
-            padding: "2rem 1.5rem 1.5rem",
+            padding: "1.5rem 1.5rem 1.25rem",
             background: "var(--background)",
             borderBottom: "1px solid var(--border)",
           },
         }}
         title={
-          <span className="text-2xl font-bold tracking-tight text-primary">
-            {env.NEXT_PUBLIC_APP_NAME}
-          </span>
+          <DrawerTitle
+            onClose={() => {
+              setIsMobileMenuOpen(false);
+            }}
+          />
         }
         classNames={{ wrapper: "max-w-sm" }}
       >
-        <div className="flex h-full flex-col gap-6 p-6 overflow-y-auto bg-background text-foreground">
-          {user && <UserProfile user={user} />}
+        <motion.div
+          variants={drawerList}
+          initial="hidden"
+          animate="visible"
+          className="flex h-full flex-col gap-6 p-6 overflow-y-auto bg-background text-foreground"
+        >
+          {user && (
+            <motion.div variants={drawerItem}>
+              <UserProfile user={user} />
+            </motion.div>
+          )}
 
           <div className="flex flex-col gap-3">
             <NavLink
@@ -220,10 +127,20 @@ export const AppDrawer = ({
               active={isActive(ROUTES.home)}
               onClick={navigate}
             />
+            <NavLink
+              href={ROUTES.about}
+              icon={Info}
+              label={t("common:nav.about")}
+              active={isActive(ROUTES.about)}
+              onClick={navigate}
+            />
             {user && <AuthedNavLinks user={user} isActive={isActive} navigate={navigate} />}
           </div>
 
-          <div className="mt-auto pt-6 border-t flex flex-col gap-6 pb-6">
+          <motion.div
+            variants={drawerItem}
+            className="mt-auto pt-6 border-t flex flex-col gap-6 pb-6"
+          >
             <SettingsSection
               theme={theme}
               toggleTheme={toggleTheme}
@@ -232,7 +149,7 @@ export const AppDrawer = ({
             {!user ? (
               <div className="flex gap-3 w-full">
                 <Button
-                  className="flex-1 h-11 text-base rounded-xl"
+                  className="flex-1 h-11 text-base rounded-xl shadow-md shadow-primary/25"
                   onClick={() => {
                     navigate(ROUTES.login);
                   }}
@@ -252,7 +169,7 @@ export const AppDrawer = ({
             ) : (
               <Button
                 variant="destructive"
-                className="w-full justify-start h-11 rounded-xl bg-red-50 text-red-600 hover:bg-red-100 font-medium px-3 dark:bg-red-950/30 dark:text-red-400"
+                className="w-full justify-start h-11 rounded-xl bg-destructive/10 text-destructive hover:bg-destructive/15 font-medium px-3"
                 onClick={() => {
                   navigate(ROUTES.logout);
                 }}
@@ -261,8 +178,8 @@ export const AppDrawer = ({
                 {t("auth:logout.logoutButton")}
               </Button>
             )}
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </Drawer>
     </>
   );

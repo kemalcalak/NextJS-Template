@@ -1,6 +1,7 @@
 {
   "title": "Profile Settings",
   "subtitle": "Manage your account settings and preferences",
+  "memberSince": "Member since {{date}}",
   "tabs": {
     "info": "Profile Information",
     "security": "Security"
@@ -22,6 +23,11 @@
     "currentPassword": "Current Password",
     "newPassword": "New Password",
     "confirmPassword": "Confirm New Password",
+    "strengthLabel": "Password strength",
+    "strengthWeak": "Weak",
+    "strengthFair": "Fair",
+    "strengthGood": "Good",
+    "strengthStrong": "Strong",
     "submit": "Update Password",
     "submitting": "Updating..."
   },

@@ -121,7 +121,9 @@ for (const locale of LOCALES) {
         page.getByRole("banner").getByRole("link", { name: s.auth.login.submitButton }),
       ).not.toBeVisible();
 
-      const avatarBtn = page.locator("button.rounded-full").first();
+      // The control capsule's theme/language buttons are also rounded-full,
+      // so target the avatar trigger by its accessible name.
+      const avatarBtn = page.getByRole("button", { name: s.common.ui.userMenu });
       await expect(avatarBtn).toBeVisible();
 
       await avatarBtn.click();

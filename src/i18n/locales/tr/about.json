@@ -1,0 +1,23 @@
+{
+  "badge": "Hakkımızda",
+  "title": "Özenle inşa edildi, büyümek için tasarlandı",
+  "subtitle": "Bu projenin arkasındaki misyonu, hikâyeyi ve değerleri tanıyın.",
+  "story": {
+    "eyebrow": "Hikâyemiz",
+    "title": "Bu proje neden var?",
+    "p1": "Her ürün basit bir soruyla başlar: bunu nasıl daha iyi yapabiliriz? Biz de aynı soruyla yola çıktık ve hızlı, güvenli ve keyifli bir deneyim inşa etmeye koyulduk.",
+    "p2": "Bugün onu adım adım geliştirmeye devam ediyoruz — geri bildirimleri dinleyerek, detaylara emek vererek ve özenle yayınlayarak. Bu sayfa, nasıl düşündüğümüze ve yaptığımız işi neden yaptığımıza açılan küçük bir pencere."
+  },
+  "values": {
+    "eyebrow": "Değerlerimiz",
+    "title": "Neye önem veriyoruz?",
+    "item1": "Kalite",
+    "item1Desc": "Az şeyi olağanüstü iyi yapmayı tercih ederiz — her detay yerini hak etmek zorunda.",
+    "item2": "Güvenlik",
+    "item2Desc": "Verileriniz bir varlık değil, bir sorumluluktur. Onu sonradan değil, tasarımdan itibaren koruruz.",
+    "item3": "Hız",
+    "item3Desc": "Hızlı sayfalar, hızlı yanıtlar, hızlı iterasyonlar — önce zamanınıza saygı gelir.",
+    "item4": "Şeffaflık",
+    "item4Desc": "Net iletişim, dürüst yol haritaları ve küçük puntolu sürprizler yok."
+  }
+}

@@ -11,7 +11,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
   // sync with the actual app router paths).
   // Excluded: token-based auth flows (reset-password, verify-email, verify-email-notice)
   // Excluded: protected pages (dashboard, profile, admin) - handled by robots.txt
-  const staticRoutes = [ROUTES.home, ROUTES.login, ROUTES.register, ROUTES.forgotPassword];
+  const staticRoutes = [
+    ROUTES.home,
+    ROUTES.about,
+    ROUTES.login,
+    ROUTES.register,
+    ROUTES.forgotPassword,
+  ];
 
   const locales = LANGUAGES; // ["en", "tr"]
 

@@ -1,6 +1,7 @@
 {
   "title": "Profil Ayarları",
   "subtitle": "Hesap ayarlarınızı ve tercihlerinizi yönetin",
+  "memberSince": "{{date}} tarihinden beri üye",
   "tabs": {
     "info": "Profil Bilgileri",
     "security": "Güvenlik"
@@ -22,6 +23,11 @@
     "currentPassword": "Mevcut Şifre",
     "newPassword": "Yeni Şifre",
     "confirmPassword": "Yeni Şifreyi Onayla",
+    "strengthLabel": "Şifre gücü",
+    "strengthWeak": "Zayıf",
+    "strengthFair": "Orta",
+    "strengthGood": "İyi",
+    "strengthStrong": "Güçlü",
     "submit": "Şifreyi Güncelle",
     "submitting": "Güncelleniyor..."
   },

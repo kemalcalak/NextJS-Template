@@ -88,8 +88,9 @@ describe("Home Page", () => {
 
     renderWithProviders(<HomeContent />);
 
-    const dashboardBtn = screen.getByRole("button", { name: /home:cta\.dashboard/i });
-    expect(dashboardBtn).toBeInTheDocument();
+    // Hero and the closing CTA band both surface the dashboard action.
+    const dashboardBtns = screen.getAllByRole("button", { name: /home:cta\.dashboard/i });
+    expect(dashboardBtns.length).toBeGreaterThan(0);
     expect(screen.queryByRole("button", { name: /home:cta\.login/i })).not.toBeInTheDocument();
     expect(screen.queryByRole("button", { name: /home:cta\.register/i })).not.toBeInTheDocument();
   });

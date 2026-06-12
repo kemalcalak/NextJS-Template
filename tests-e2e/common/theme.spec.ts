@@ -4,8 +4,11 @@ test.describe("Theme and Dark Mode Persistence", () => {
   test("should toggle dark mode via the header toggle", async ({ page }) => {
     await page.goto("/tr");
 
-    // The button has "Temayı Değiştir" or "Toggle theme"
-    const themeBtn = page.getByRole("button", { name: /Temayı Değiştir|Toggle theme/i });
+    // The button has "Temayı Değiştir" or "Toggle theme". The footer ships its
+    // own toggle too, so scope to the header (banner) explicitly.
+    const themeBtn = page
+      .getByRole("banner")
+      .getByRole("button", { name: /Temayı Değiştir|Toggle theme/i });
     await expect(themeBtn).toBeVisible();
 
     // Default could be anything, so we just toggle it

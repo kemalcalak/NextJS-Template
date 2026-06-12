@@ -97,7 +97,10 @@ export function AdminPagination({
             value={draft}
             inputMode="numeric"
             aria-label={t("users.pagination.goToPage")}
-            className="w-16 text-center"
+            className="text-center"
+            // antd Input ships width:100% that is injected after Tailwind and
+            // overrides w-16; inline style wins regardless of CSS order.
+            style={{ width: "4rem" }}
             onChange={(event) => {
               setDraft(event.target.value);
             }}

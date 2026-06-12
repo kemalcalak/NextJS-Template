@@ -20,7 +20,7 @@ import { zodFieldRule } from "@/lib/validation/zodToAntdRule";
 import { getConfirmPasswordSchema, getPasswordSchema, type ResetFormValues } from "@/schemas/auth";
 
 const SuccessState = ({ t, locale }: { t: (key: string) => string; locale: string }) => (
-  <div className="flex min-h-screen items-center justify-center bg-background p-4 sm:p-8">
+  <div className="mesh-glow texture-grain flex min-h-screen items-center justify-center overflow-hidden bg-background p-4 sm:p-8">
     <div className="mx-auto w-full max-w-md space-y-6 text-center">
       <ShieldCheck className="mx-auto h-12 w-12 text-green-500" />
       <h1 className="text-2xl font-bold tracking-tight">{t("resetPassword.successTitle")}</h1>
@@ -33,7 +33,7 @@ const SuccessState = ({ t, locale }: { t: (key: string) => string; locale: strin
 );
 
 const InvalidLinkState = ({ t, locale }: { t: (key: string) => string; locale: string }) => (
-  <div className="flex min-h-screen items-center justify-center bg-background p-4 sm:p-8">
+  <div className="mesh-glow texture-grain flex min-h-screen items-center justify-center overflow-hidden bg-background p-4 sm:p-8">
     <div className="mx-auto w-full max-w-md space-y-6 text-center">
       <XCircle className="mx-auto h-12 w-12 text-destructive" />
       <h1 className="text-2xl font-bold tracking-tight">{t("resetPassword.invalidLinkTitle")}</h1>
@@ -89,7 +89,7 @@ export function ResetPasswordContent() {
   if (success) return <SuccessState t={t} locale={currentLocale} />;
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background p-4 sm:p-8">
+    <div className="mesh-glow texture-grain flex min-h-screen items-center justify-center overflow-hidden bg-background p-4 sm:p-8">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}

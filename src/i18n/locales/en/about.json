@@ -1,0 +1,23 @@
+{
+  "badge": "About us",
+  "title": "Built with care, made to grow",
+  "subtitle": "Get to know the mission, the story and the values behind this project.",
+  "story": {
+    "eyebrow": "Our story",
+    "title": "Why does this project exist?",
+    "p1": "Every product starts with a simple question: how can we make this better? We started with the same question and set out to build a fast, secure and enjoyable experience.",
+    "p2": "Today we keep improving it step by step — listening to feedback, sweating the details and shipping with care. This page is a small window into how we think and why we do what we do."
+  },
+  "values": {
+    "eyebrow": "Our values",
+    "title": "What we care about",
+    "item1": "Quality",
+    "item1Desc": "We'd rather do fewer things exceptionally well — every detail has to earn its place.",
+    "item2": "Security",
+    "item2Desc": "Your data is a responsibility, not an asset. We protect it by design, not as an afterthought.",
+    "item3": "Speed",
+    "item3Desc": "Fast pages, fast answers, fast iterations — respecting your time comes first.",
+    "item4": "Transparency",
+    "item4Desc": "Clear communication, honest roadmaps and no fine-print surprises."
+  }
+}

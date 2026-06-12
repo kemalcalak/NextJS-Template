@@ -6,6 +6,15 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslation } from "react-i18next";
 
+import {
+  AdminTable,
+  AdminTableStateRow,
+  AdminTbody,
+  AdminTd,
+  AdminTh,
+  AdminThead,
+  AdminTr,
+} from "@/components/admin/AdminTable";
 import { StatusBadge, UserStatusBadge } from "@/components/admin/StatusBadge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -110,101 +119,98 @@ export function UsersTable({ rows, isLoading, currentUserId, caps, onAction }: U
   const hasRowActions = caps.canSuspend || caps.canResetPassword || caps.canDelete;
 
   return (
-    <div className="overflow-x-auto">
-      <table className="w-full text-left text-sm">
-        <thead className="bg-muted/50 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-          <tr>
-            <th className="px-4 py-3 text-start">{t("users.columns.user")}</th>
-            <th className="px-4 py-3 text-center">{t("users.columns.role")}</th>
-            <th className="px-4 py-3 text-center">{t("users.columns.status")}</th>
-            <th className="px-4 py-3 text-center">{t("users.columns.verified")}</th>
-            <th className="px-4 py-3 text-center">{t("users.columns.created")}</th>
-            <th className="px-4 py-3 text-right">{t("users.columns.actions")}</th>
-          </tr>
-        </thead>
-        <tbody className="divide-y divide-border">
-          {rows.map((user) => {
-            const isSelf = currentUserId === user.id;
-            return (
-              <tr key={user.id} className="hover:bg-muted/30 transition-colors">
-                <td className="px-4 py-3 text-start">
-                  <Link
-                    href={getLocalizedPath(`${ROUTES.adminUsers}/${user.id}`, currentLocale)}
-                    className="flex items-center gap-3 group"
-                  >
-                    <Avatar className="size-9">
-                      {user.avatar_file?.url && (
-                        <AvatarImage src={user.avatar_file.url} alt={user.email} />
-                      )}
-                      <AvatarFallback className="text-xs uppercase">
-                        {(user.first_name?.[0] ?? user.email[0]).toUpperCase()}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="min-w-0">
-                      <p className="truncate text-sm font-medium group-hover:text-primary">
-                        {user.first_name || user.last_name
-                          ? `${user.first_name ?? ""} ${user.last_name ?? ""}`.trim()
-                          : user.email}
-                      </p>
-                      <p className="truncate text-xs text-muted-foreground">{user.email}</p>
-                    </div>
-                  </Link>
-                </td>
-                <td className="px-4 py-3 text-center">
-                  <StatusBadge tone={ROLE_TONE[user.role]}>
-                    {t(`users.role.${user.role}` as const)}
-                  </StatusBadge>
-                </td>
-                <td className="px-4 py-3 text-center">
-                  <UserStatusBadge user={user} />
-                </td>
-                <td className="px-4 py-3 text-center text-xs text-muted-foreground">
-                  {user.is_verified ? "✓" : "—"}
-                </td>
-                <td className="whitespace-nowrap px-4 py-3 text-center text-xs text-muted-foreground">
-                  {formatDate(user.created_at)}
-                </td>
-                <td className="px-4 py-3 text-right">
-                  <div className="flex items-center justify-end gap-1">
-                    <Button asChild variant="ghost" size="icon-sm">
-                      <Link
-                        href={getLocalizedPath(`${ROUTES.adminUsers}/${user.id}`, currentLocale)}
-                        aria-label={t("users.rowActions.open")}
-                      >
-                        <ChevronRight className="h-4 w-4" />
-                      </Link>
-                    </Button>
-                    {hasRowActions ? (
-                      <Dropdown
-                        menu={{ items: buildRowMenu({ user, isSelf, onAction, t, caps }) }}
-                        trigger={["click"]}
-                        placement="bottomRight"
-                      >
-                        <span>
-                          <Button
-                            variant="ghost"
-                            size="icon-sm"
-                            aria-label={t("users.rowActions.menu")}
-                          >
-                            <MoreHorizontal className="h-4 w-4" />
-                          </Button>
-                        </span>
-                      </Dropdown>
-                    ) : null}
+    <AdminTable>
+      <AdminThead>
+        <AdminTh className="text-start">{t("users.columns.user")}</AdminTh>
+        <AdminTh className="text-center">{t("users.columns.role")}</AdminTh>
+        <AdminTh className="text-center">{t("users.columns.status")}</AdminTh>
+        <AdminTh className="text-center">{t("users.columns.verified")}</AdminTh>
+        <AdminTh className="text-center">{t("users.columns.created")}</AdminTh>
+        <AdminTh className="text-right">{t("users.columns.actions")}</AdminTh>
+      </AdminThead>
+      <AdminTbody>
+        {rows.map((user) => {
+          const isSelf = currentUserId === user.id;
+          return (
+            <AdminTr key={user.id}>
+              <AdminTd className="text-start">
+                <Link
+                  href={getLocalizedPath(`${ROUTES.adminUsers}/${user.id}`, currentLocale)}
+                  className="flex items-center gap-3 group"
+                >
+                  <Avatar className="size-9">
+                    {user.avatar_file?.url && (
+                      <AvatarImage src={user.avatar_file.url} alt={user.email} />
+                    )}
+                    <AvatarFallback className="text-xs uppercase">
+                      {(user.first_name?.[0] ?? user.email[0]).toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="min-w-0">
+                    <p className="truncate text-sm font-medium group-hover:text-primary">
+                      {user.first_name || user.last_name
+                        ? `${user.first_name ?? ""} ${user.last_name ?? ""}`.trim()
+                        : user.email}
+                    </p>
+                    <p className="truncate text-xs text-muted-foreground">{user.email}</p>
                   </div>
-                </td>
-              </tr>
-            );
-          })}
-          {rows.length === 0 ? (
-            <tr>
-              <td colSpan={6} className="px-4 py-12 text-center text-sm text-muted-foreground">
-                {isLoading ? t("users.loading") : t("users.empty")}
-              </td>
-            </tr>
-          ) : null}
-        </tbody>
-      </table>
-    </div>
+                </Link>
+              </AdminTd>
+              <AdminTd className="text-center">
+                <StatusBadge tone={ROLE_TONE[user.role]}>
+                  {t(`users.role.${user.role}` as const)}
+                </StatusBadge>
+              </AdminTd>
+              <AdminTd className="text-center">
+                <UserStatusBadge user={user} />
+              </AdminTd>
+              <AdminTd className="text-center text-xs text-muted-foreground">
+                {user.is_verified ? "✓" : "—"}
+              </AdminTd>
+              <AdminTd className="whitespace-nowrap text-center text-xs text-muted-foreground">
+                {formatDate(user.created_at)}
+              </AdminTd>
+              <AdminTd className="text-right">
+                <div className="flex items-center justify-end gap-1">
+                  <Button asChild variant="ghost" size="icon-sm">
+                    <Link
+                      href={getLocalizedPath(`${ROUTES.adminUsers}/${user.id}`, currentLocale)}
+                      aria-label={t("users.rowActions.open")}
+                    >
+                      <ChevronRight className="h-4 w-4" />
+                    </Link>
+                  </Button>
+                  {hasRowActions ? (
+                    <Dropdown
+                      menu={{ items: buildRowMenu({ user, isSelf, onAction, t, caps }) }}
+                      trigger={["click"]}
+                      placement="bottomRight"
+                    >
+                      <span>
+                        <Button
+                          variant="ghost"
+                          size="icon-sm"
+                          aria-label={t("users.rowActions.menu")}
+                        >
+                          <MoreHorizontal className="h-4 w-4" />
+                        </Button>
+                      </span>
+                    </Dropdown>
+                  ) : null}
+                </div>
+              </AdminTd>
+            </AdminTr>
+          );
+        })}
+        {rows.length === 0 ? (
+          <AdminTableStateRow
+            colSpan={6}
+            isLoading={isLoading}
+            loadingLabel={t("users.loading")}
+            emptyLabel={t("users.empty")}
+          />
+        ) : null}
+      </AdminTbody>
+    </AdminTable>
   );
 }

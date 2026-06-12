@@ -1,12 +1,13 @@
 "use client";
 
 import { Tooltip } from "antd";
-import { ShieldCheck } from "lucide-react";
+import { motion } from "motion/react";
 import Link from "next/link";
 import { useTranslation } from "react-i18next";
 
 import { env } from "@/env";
 import { getLocalizedPath, matchesRoute } from "@/lib/config/routes";
+import { SPRING_SOFT } from "@/lib/motion/variants";
 import { cn } from "@/lib/utils";
 import type { User } from "@/stores/auth.store";
 
@@ -43,15 +44,15 @@ export function AdminSidebar({
           collapsed ? "justify-center px-2" : "px-4",
         )}
       >
-        {/* Logo slot — swap this placeholder for the site logo (e.g. an
-            <Image src={...} />) when one is available. */}
-        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/15 text-primary">
-          <ShieldCheck className="h-5 w-5" />
+        {/* Logo slot — swap the initial for the real logo mark when ready */}
+        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-primary/70 font-display text-sm font-semibold text-primary-foreground shadow-md shadow-primary/25">
+          {env.NEXT_PUBLIC_APP_NAME.charAt(0).toUpperCase()}
         </span>
         {collapsed ? null : (
           <div className="min-w-0">
             <p className="truncate text-sm font-semibold leading-tight">
               {env.NEXT_PUBLIC_APP_NAME}
+              <span className="text-primary">.</span>
             </p>
             <p className="truncate text-xs text-muted-foreground">{t("shell.brandSubtitle")}</p>
           </div>
@@ -78,15 +79,23 @@ export function AdminSidebar({
                     aria-label={collapsed ? label : undefined}
                     aria-current={active ? "page" : undefined}
                     className={cn(
-                      "relative flex items-center rounded-lg py-2 text-sm font-medium transition-colors",
+                      "relative isolate flex items-center rounded-lg py-2 text-sm font-medium transition-colors",
                       collapsed ? "justify-center px-0" : "gap-2.5 px-3",
                       active
-                        ? "bg-primary/10 font-semibold text-primary"
+                        ? "font-semibold text-primary"
                         : "text-muted-foreground hover:bg-muted hover:text-foreground",
                     )}
                   >
                     {active ? (
-                      <span className="absolute top-1/2 left-0 h-5 w-1 -translate-y-1/2 rounded-r-full bg-primary" />
+                      <>
+                        {/* Shared layoutId — the highlight glides between items */}
+                        <motion.span
+                          layoutId="admin-nav-active"
+                          transition={SPRING_SOFT}
+                          className="absolute inset-0 -z-10 rounded-lg bg-primary/10"
+                        />
+                        <span className="absolute top-1/2 left-0 h-5 w-1 -translate-y-1/2 rounded-r-full bg-primary" />
+                      </>
                     ) : null}
                     <Icon className="h-4 w-4 shrink-0" />
                     {collapsed ? null : <span className="truncate">{label}</span>}

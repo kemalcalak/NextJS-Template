@@ -53,12 +53,15 @@ export function AntdProvider({ children, locale }: AntdProviderProps) {
         algorithm: isDark ? theme.darkAlgorithm : theme.defaultAlgorithm,
         token: {
           colorPrimary: tokens.primary,
+          // antd's reset paints every <a> with colorLink (default blue);
+          // bind it to the theme primary so links follow light/dark.
+          colorLink: tokens.primary,
           colorError: tokens.error,
           // Elevated overlays (dropdowns, modals, notifications, popovers) so
           // they match the app's surface color instead of antd's default.
           colorBgElevated: tokens.bgElevated,
-          borderRadius: 10,
-          fontFamily: "var(--font-geist-sans)",
+          borderRadius: 14,
+          fontFamily: "var(--font-sans)",
         },
       }}
     >

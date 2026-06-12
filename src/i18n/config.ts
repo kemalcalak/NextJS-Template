@@ -5,6 +5,7 @@ import { initReactI18next } from "react-i18next";
 import { env } from "@/env";
 import { defaultLocale, locales } from "@/lib/config/routes";
 
+import enAbout from "./locales/en/about.json";
 import enAccount from "./locales/en/account.json";
 import enAdmin from "./locales/en/admin.json";
 import enAuth from "./locales/en/auth.json";
@@ -19,6 +20,7 @@ import enSuccess from "./locales/en/success.json";
 import enSupport from "./locales/en/support.json";
 import enUpload from "./locales/en/upload.json";
 import enValidation from "./locales/en/validation.json";
+import trAbout from "./locales/tr/about.json";
 import trAccount from "./locales/tr/account.json";
 import trAdmin from "./locales/tr/admin.json";
 import trAuth from "./locales/tr/auth.json";
@@ -42,6 +44,7 @@ const resources = {
     errors: enErrors,
     success: enSuccess,
     home: enHome,
+    about: enAbout,
     dashboard: enDashboard,
     profile: enProfile,
     seo: enSeo,
@@ -58,6 +61,7 @@ const resources = {
     errors: trErrors,
     success: trSuccess,
     home: trHome,
+    about: trAbout,
     dashboard: trDashboard,
     profile: trProfile,
     seo: trSeo,
@@ -85,6 +89,7 @@ i18n
       "errors",
       "success",
       "home",
+      "about",
       "dashboard",
       "profile",
       "seo",

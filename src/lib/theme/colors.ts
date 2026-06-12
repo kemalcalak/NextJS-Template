@@ -21,57 +21,60 @@ export interface ThemeColors {
   ring: string;
 }
 
+// "Derin Su" palette — calm, modern, trustworthy. Light is ice white + deep
+// petrol ink with a petrol-teal accent; dark is night petrol with the same
+// identity shifted to a vivid turquoise for contrast.
 export const lightColors: ThemeColors = {
-  background: "oklch(1 0 0)",
-  foreground: "oklch(0.32 0.087 246)",
-  card: "oklch(1 0 0)",
-  cardForeground: "oklch(0.32 0.087 246)",
-  primary: "oklch(0.32 0.087 246)",
-  primaryForeground: "oklch(1 0 0)",
-  secondary: "oklch(0.95 0.003 247)",
-  secondaryForeground: "oklch(0.32 0.087 246)",
-  muted: "oklch(0.965 0.003 247)",
-  mutedForeground: "oklch(0.625 0.006 247)",
-  destructive: "oklch(0.6 0.21 27)",
+  background: "oklch(0.98 0.005 220)",
+  foreground: "oklch(0.26 0.04 220)",
+  card: "oklch(0.995 0.003 220)",
+  cardForeground: "oklch(0.26 0.04 220)",
+  primary: "oklch(0.5 0.1 205)",
+  primaryForeground: "oklch(0.98 0.005 220)",
+  secondary: "oklch(0.93 0.015 210)",
+  secondaryForeground: "oklch(0.26 0.04 220)",
+  muted: "oklch(0.945 0.012 212)",
+  mutedForeground: "oklch(0.5 0.035 215)",
+  destructive: "oklch(0.55 0.2 27)",
   destructiveForeground: "oklch(0.985 0 0)",
-  border: "oklch(0.9 0.005 247)",
-  input: "oklch(0.9 0.005 247)",
-  ring: "oklch(0.32 0.087 246)",
+  border: "oklch(0.885 0.012 212)",
+  input: "oklch(0.885 0.012 212)",
+  ring: "oklch(0.5 0.1 205)",
 };
 
 export const darkColors: ThemeColors = {
-  background: "oklch(0.18 0.045 246)",
-  foreground: "oklch(0.95 0.003 247)",
-  card: "oklch(0.23 0.05 246)",
-  cardForeground: "oklch(0.95 0.003 247)",
-  primary: "oklch(0.77 0.075 87)",
-  primaryForeground: "oklch(0.18 0.045 246)",
-  secondary: "oklch(0.28 0.045 246)",
-  secondaryForeground: "oklch(0.95 0.003 247)",
-  muted: "oklch(0.28 0.045 246)",
-  mutedForeground: "oklch(0.72 0.005 247)",
-  destructive: "oklch(0.55 0.2 27)",
+  background: "oklch(0.2 0.03 220)",
+  foreground: "oklch(0.94 0.01 210)",
+  card: "oklch(0.245 0.032 218)",
+  cardForeground: "oklch(0.94 0.01 210)",
+  primary: "oklch(0.78 0.12 195)",
+  primaryForeground: "oklch(0.2 0.05 215)",
+  secondary: "oklch(0.3 0.03 218)",
+  secondaryForeground: "oklch(0.94 0.01 210)",
+  muted: "oklch(0.28 0.03 218)",
+  mutedForeground: "oklch(0.7 0.025 210)",
+  destructive: "oklch(0.6 0.19 30)",
   destructiveForeground: "oklch(0.985 0 0)",
-  border: "oklch(0.32 0.05 246)",
-  input: "oklch(0.32 0.05 246)",
-  ring: "oklch(0.77 0.075 87)",
+  border: "oklch(0.33 0.032 218)",
+  input: "oklch(0.33 0.032 218)",
+  ring: "oklch(0.78 0.12 195)",
 };
 
 // Hex equivalents used as antd ConfigProvider tokens, since antd's algorithmic
 // shade derivation (colorPrimaryHover, etc.) needs a parseable color value
 // rather than a CSS variable reference.
 export const lightAntdTokens = {
-  primary: "#1c2e4a",
-  error: "#c8442a",
+  primary: "#0f6c84",
+  error: "#c0392b",
   // Elevated overlay surface (dropdowns, modals, notifications) — hex of the
   // `card` oklch above so antd overlays match the app theme.
-  bgElevated: "#ffffff",
+  bgElevated: "#fcfdfe",
 } as const;
 
 export const darkAntdTokens = {
-  primary: "#d4b06a",
-  error: "#d97757",
-  bgElevated: "#051f33",
+  primary: "#45c5d6",
+  error: "#d96c52",
+  bgElevated: "#1a2b33",
 } as const;
 
 const camelToKebab = (key: string): string => key.replace(/[A-Z]/g, (m) => `-${m.toLowerCase()}`);
