@@ -147,9 +147,16 @@ beforeAll(() => {
 afterEach(async () => {
   server.resetHandlers();
   cleanup();
-  await new Promise<void>((resolve) => {
-    setImmediate(resolve);
-  });
+  // React 19's scheduler chunks work across chained setImmediate callbacks
+  // (each round can queue the next). A single round only drains callbacks
+  // queued *before* it, so scheduler continuations from the unmount above
+  // could fire after vitest tears the jsdom window down and crash with
+  // "window is not defined". Drain several rounds to exhaust the chain.
+  for (let round = 0; round < 5; round++) {
+    await new Promise<void>((resolve) => {
+      setImmediate(resolve);
+    });
+  }
 });
 
 // Clean up after the tests are finished.

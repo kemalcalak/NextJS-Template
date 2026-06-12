@@ -48,6 +48,12 @@ export function AdminsContent() {
   const catalog = catalogQuery.data?.permissions ?? [];
   const data = adminsQuery.data;
   const isLoading = adminsQuery.isLoading || catalogQuery.isLoading;
+  // If the current page falls out of range (e.g. the last admin on the last
+  // page was deleted), snap back to the last non-empty page. Render-phase
+  // state adjustment so the out-of-range page never paints.
+  if (data && skip > 0 && skip >= data.total) {
+    setSkip(Math.max(0, (Math.ceil(data.total / pageSize) - 1) * pageSize));
+  }
   // Root can only be transferred to another (non-root) superadmin.
   const transferTargets = (superadminsQuery.data?.data ?? []).filter(
     (entry) => !entry.is_root_superadmin,
@@ -106,8 +112,8 @@ export function AdminsContent() {
             >
               <AdminPagination
                 total={data.total}
-                skip={data.skip}
-                limit={data.limit}
+                skip={skip}
+                limit={pageSize}
                 onChange={setSkip}
                 onPageSizeChange={(next) => {
                   setPageSize(next);
