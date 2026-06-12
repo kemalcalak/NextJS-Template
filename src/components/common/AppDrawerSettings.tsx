@@ -51,7 +51,7 @@ export const SettingsSection = ({ theme, toggleTheme, changeLanguage }: Settings
             {mounted && theme === "dark" ? (
               <Sun className="h-3.5 w-3.5 text-orange-500" />
             ) : (
-              <Moon className="h-3.5 w-3.5 text-blue-500" />
+              <Moon className="h-3.5 w-3.5 text-primary" />
             )}
           </div>
           <div className="flex flex-col min-w-0">

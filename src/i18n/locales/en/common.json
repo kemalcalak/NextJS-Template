@@ -34,10 +34,12 @@
     "toggleTheme": "Toggle Theme",
     "toggleLanguage": "Toggle Language",
     "userFallback": "User",
+    "close": "Close",
     "drawerDescription": "Navigation menu for mobile devices. Use tab key to navigate through links."
   },
   "nav": {
     "home": "Home",
+    "about": "About",
     "dashboard": "Dashboard",
     "profile": "Profile",
     "support": "Support",

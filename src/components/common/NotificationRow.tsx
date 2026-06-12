@@ -1,9 +1,11 @@
 "use client";
 
+import { motion } from "motion/react";
 import { useTranslation } from "react-i18next";
 
 import { notificationText } from "@/components/common/notification-text";
 import { formatDateTime } from "@/lib/format-date";
+import { EASE_OUT } from "@/lib/motion/variants";
 import { type NotificationItem } from "@/lib/types/notification";
 import { cn } from "@/lib/utils";
 
@@ -15,7 +17,10 @@ interface NotificationRowProps {
 export const NotificationRow = ({ item, onClick }: NotificationRowProps) => {
   const { t } = useTranslation();
   return (
-    <button
+    <motion.button
+      initial={{ opacity: 0, x: 8 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ duration: 0.3, ease: EASE_OUT }}
       type="button"
       onClick={() => {
         onClick(item);
@@ -25,7 +30,7 @@ export const NotificationRow = ({ item, onClick }: NotificationRowProps) => {
       <span
         className={cn(
           "mt-1.5 h-2 w-2 shrink-0 rounded-full",
-          item.read_at ? "bg-transparent" : "bg-primary",
+          item.read_at ? "bg-transparent" : "bg-primary animate-pulse",
         )}
       />
       <span className="min-w-0 flex-1">
@@ -36,6 +41,6 @@ export const NotificationRow = ({ item, onClick }: NotificationRowProps) => {
           {formatDateTime(item.created_at)}
         </span>
       </span>
-    </button>
+    </motion.button>
   );
 };

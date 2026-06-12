@@ -35,7 +35,11 @@ const NotificationBellInner = () => {
       )}
     >
       <span>
-        <Button variant="ghost" className="w-9 px-0" aria-label={t("notifications:bell")}>
+        <Button
+          variant="ghost"
+          className="h-7 w-7 rounded-full px-0"
+          aria-label={t("notifications:bell")}
+        >
           <Badge count={unreadCount} size="small" offset={[2, -2]}>
             <Bell className="h-4 w-4" />
           </Badge>

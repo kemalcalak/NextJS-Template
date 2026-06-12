@@ -72,8 +72,10 @@ export const NotificationPanel = ({ onNavigate }: NotificationPanelProps) => {
   if (!isLoading) {
     panelBody =
       items.length === 0 ? (
-        <div className="flex flex-col items-center gap-2 px-3 py-8 text-muted-foreground">
-          <Inbox className="h-6 w-6" />
+        <div className="flex flex-col items-center gap-3 px-3 py-10 text-muted-foreground">
+          <span className="flex h-12 w-12 items-center justify-center rounded-full bg-muted">
+            <Inbox className="h-5 w-5" />
+          </span>
           <span className="text-sm">{t("notifications:empty")}</span>
         </div>
       ) : (
@@ -86,9 +88,16 @@ export const NotificationPanel = ({ onNavigate }: NotificationPanelProps) => {
   }
 
   return (
-    <div className="w-80 overflow-hidden rounded-lg border border-border bg-background shadow-lg">
-      <div className="flex items-center justify-between border-b border-border/60 px-3 py-2">
-        <span className="text-sm font-semibold">{t("notifications:title")}</span>
+    <div className="w-[min(21rem,calc(100vw_-_2rem))] overflow-hidden rounded-2xl border border-border/70 bg-card/95 shadow-xl shadow-black/10 backdrop-blur-xl">
+      <div className="flex items-center justify-between border-b border-border/60 px-4 py-3">
+        <span className="flex items-center gap-2 text-sm font-semibold">
+          {t("notifications:title")}
+          {unreadCount > 0 && (
+            <span className="rounded-full bg-primary/10 px-2 py-0.5 text-xs font-semibold text-primary">
+              {unreadCount}
+            </span>
+          )}
+        </span>
         {unreadCount > 0 && (
           <Button
             variant="ghost"
@@ -104,11 +113,12 @@ export const NotificationPanel = ({ onNavigate }: NotificationPanelProps) => {
         )}
       </div>
       <div className="max-h-96 overflow-y-auto">{panelBody}</div>
-      <div className="border-t border-border/60 p-1">
-        <Button
-          variant="ghost"
-          size="sm"
-          className="w-full"
+      <div className="border-t border-border/60 p-1.5">
+        {/* Plain button on purpose: the shared Button maps ghost → antd's
+            text type, whose hover paints a gray capsule that clashes with
+            the panel; this matches the dropdown menu-item language instead. */}
+        <button
+          type="button"
           onClick={() => {
             onNavigate();
             router.push(
@@ -118,9 +128,10 @@ export const NotificationPanel = ({ onNavigate }: NotificationPanelProps) => {
               ),
             );
           }}
+          className="flex w-full items-center justify-center rounded-xl px-3 py-2 text-sm font-medium text-primary transition-colors hover:bg-primary/10"
         >
           {t("notifications:viewAll")}
-        </Button>
+        </button>
       </div>
     </div>
   );

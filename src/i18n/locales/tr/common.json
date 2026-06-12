@@ -34,10 +34,12 @@
     "toggleTheme": "Temayı Değiştir",
     "toggleLanguage": "Dili Değiştir",
     "userFallback": "Kullanıcı",
+    "close": "Kapat",
     "drawerDescription": "Mobil cihazlar için navigasyon menüsü. Bağlantılar arasında gezinmek için tab tuşunu kullanın."
   },
   "nav": {
     "home": "Ana Sayfa",
+    "about": "Hakkında",
     "dashboard": "Panel",
     "profile": "Profil",
     "support": "Destek",
