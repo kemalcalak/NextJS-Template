@@ -228,6 +228,22 @@
     "activityEmpty": "No recent activity.",
     "dangerTitle": "Danger zone",
     "dangerDescription": "These actions are audited and can't be undone by the target user.",
+    "sessions": {
+      "title": "Active sessions",
+      "description": "Devices currently signed in to this account.",
+      "deviceLabel": "{{browser}} — {{os}}",
+      "unknownDevice": "Unknown device",
+      "lastActive": "Last active: {{date}}",
+      "revokeAll": "Terminate all sessions",
+      "loadMore": "Show more",
+      "empty": "No active sessions.",
+      "confirm": {
+        "title": "Terminate all sessions?",
+        "description": "The user will be signed out of every device immediately and will need to log in again. This action is audited.",
+        "confirm": "Terminate All",
+        "cancel": "Cancel"
+      }
+    },
     "fields": {
       "firstName": "First name",
       "lastName": "Last name",

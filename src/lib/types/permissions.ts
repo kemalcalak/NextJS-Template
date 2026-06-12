@@ -8,6 +8,7 @@ export enum Permission {
   UsersDelete = "users:delete",
   UsersSuspend = "users:suspend",
   UsersPasswordReset = "users:password_reset",
+  UsersSessions = "users:sessions",
   FilesRead = "files:read",
   FilesDelete = "files:delete",
   SupportRead = "support:read",

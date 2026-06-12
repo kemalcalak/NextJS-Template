@@ -12,6 +12,7 @@ import type {
   RootTransferConfirmPayload,
   RootTransferRequestPayload,
 } from "@/lib/types/admin";
+import type { SessionListParams } from "@/lib/types/session";
 import { useAuthStore } from "@/stores/auth.store";
 
 // Each resource type owns a distinct top-level segment so prefix-invalidation
@@ -24,6 +25,9 @@ export const adminKeys = {
   user: (id: string) => ["admin", "user", id] as const,
   userActivities: (userId: string, opts?: { skip?: number; limit?: number }) =>
     ["admin", "userActivities", userId, opts ?? {}] as const,
+  userSessionsPrefix: (userId: string) => ["admin", "userSessions", userId] as const,
+  userSessions: (userId: string, params?: SessionListParams) =>
+    ["admin", "userSessions", userId, params ?? {}] as const,
   activitiesListPrefix: ["admin", "activitiesList"] as const,
   activitiesList: (params?: AdminActivityListParams) =>
     ["admin", "activitiesList", params ?? {}] as const,
@@ -140,6 +144,33 @@ export const useAdminUserActivities = (
     enabled: Boolean(userId),
     placeholderData: keepPreviousData,
   });
+
+export const useAdminUserSessions = (
+  userId: string | undefined,
+  params?: SessionListParams,
+  enabled = true,
+) =>
+  useQuery({
+    queryKey: userId
+      ? adminKeys.userSessions(userId, params)
+      : ["admin", "userSessions", "invalid"],
+    queryFn: () => {
+      if (!userId) throw new Error("User ID is required");
+      return adminApi.listUserSessions(userId, params);
+    },
+    enabled: Boolean(userId) && enabled,
+    placeholderData: keepPreviousData,
+  });
+
+export const useRevokeAdminUserSessions = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (userId: string) => adminApi.revokeUserSessions(userId),
+    onSuccess: (_data, userId) => {
+      queryClient.invalidateQueries({ queryKey: adminKeys.userSessionsPrefix(userId) });
+    },
+  });
+};
 
 // --- Admin / RBAC management (superadmin only) -----------------------------
 

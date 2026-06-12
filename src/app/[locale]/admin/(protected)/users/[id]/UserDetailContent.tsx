@@ -16,12 +16,14 @@ import { UserAvatarCard } from "@/components/admin/UserAvatarCard";
 import { UserDangerZone } from "@/components/admin/UserDangerZone";
 import { UserEditForm } from "@/components/admin/UserEditForm";
 import { UserOverviewCard } from "@/components/admin/UserOverviewCard";
+import { UserSessionsCard } from "@/components/admin/UserSessionsCard";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAdminUser, useAdminUserActivities, useUpdateAdminUser } from "@/hooks/api/use-admin";
 import { useUserActions, type UserActionKind } from "@/hooks/api/use-user-actions";
 import {
   useCanDeleteUsers,
+  useCanManageUserSessions,
   useCanResetUserPassword,
   useCanSuspendUsers,
   useCanWriteUsers,
@@ -46,6 +48,7 @@ export function UserDetailContent({ userId }: { userId: string }) {
   const { run, isLoading: isActionLoading } = useUserActions();
 
   const canWrite = useCanWriteUsers();
+  const canManageSessions = useCanManageUserSessions();
   const dangerCaps = {
     canResetPassword: useCanResetUserPassword(),
     canSuspend: useCanSuspendUsers(),
@@ -145,6 +148,8 @@ export function UserDetailContent({ userId }: { userId: string }) {
           <UserOverviewCard user={user} />
         </div>
       </div>
+
+      {canManageSessions ? <UserSessionsCard userId={user.id} /> : null}
 
       <UserDangerZone
         user={user}
