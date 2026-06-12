@@ -55,6 +55,9 @@
       "not_found": "Bildirim bulunamadı.",
       "access_denied": "Bu bildirime erişiminiz yok."
     },
+    "session": {
+      "not_found": "Oturum bulunamadı."
+    },
     "support": {
       "ticket_not_found": "Talep bulunamadı.",
       "ticket_access_denied": "Bu talebe erişiminiz yok.",

@@ -105,6 +105,7 @@
       "delete": "Delete",
       "suspend": "Suspend",
       "password_reset": "Reset password",
+      "sessions": "Manage sessions",
       "update": "Assign"
     }
   },
@@ -226,6 +227,7 @@
     "activityTitle": "Recent activity",
     "activityDescription": "Audit events recorded for this user.",
     "activityEmpty": "No recent activity.",
+    "activityLoadMore": "Show more",
     "dangerTitle": "Danger zone",
     "dangerDescription": "These actions are audited and can't be undone by the target user.",
     "sessions": {

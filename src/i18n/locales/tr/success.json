@@ -37,6 +37,11 @@
       "read": "Bildirim okundu olarak işaretlendi.",
       "all_read": "Tüm bildirimler okundu olarak işaretlendi."
     },
+    "session": {
+      "revoked": "Oturum sonlandırıldı.",
+      "others_revoked": "Diğer tüm cihazlardan çıkış yapıldı.",
+      "admin_revoked": "Kullanıcının tüm oturumları sonlandırıldı."
+    },
     "support": {
       "ticket_created": "Destek talebiniz oluşturuldu.",
       "ticket_closed": "Talep kapatıldı.",
