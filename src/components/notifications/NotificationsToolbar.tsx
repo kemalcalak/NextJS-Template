@@ -32,6 +32,7 @@ export const NotificationsToolbar = ({
   return (
     <div className="flex flex-col gap-3 border-b p-4 sm:flex-row sm:items-center sm:justify-between">
       <Segmented
+        className="self-start"
         options={filterOptions}
         value={filter}
         onChange={(value) => {

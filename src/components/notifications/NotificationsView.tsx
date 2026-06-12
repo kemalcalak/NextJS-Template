@@ -55,6 +55,7 @@ export function NotificationsView() {
 
   const unreadCount = unread?.unread_count ?? 0;
   const items = data?.data ?? [];
+  const totalPages = data ? Math.ceil(data.total / data.limit) : 0;
 
   const handleItemClick = (item: NotificationItem) => {
     if (!item.read_at) {
@@ -103,7 +104,7 @@ export function NotificationsView() {
 
         {body}
 
-        {data ? (
+        {data && totalPages > 1 ? (
           <div
             className="px-4 pb-4 pt-2"
             aria-live="polite"
