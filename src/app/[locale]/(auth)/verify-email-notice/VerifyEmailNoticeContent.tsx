@@ -58,7 +58,7 @@ export function VerifyEmailNoticeContent() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background p-4 sm:p-8">
+    <div className="mesh-glow texture-grain flex min-h-screen items-center justify-center overflow-hidden bg-background p-4 sm:p-8">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -72,7 +72,7 @@ export function VerifyEmailNoticeContent() {
           icon={Mail}
         />
 
-        <Card className="border-border/50 bg-card/50 backdrop-blur-sm">
+        <Card className="rounded-3xl border-border/60 bg-card/70 shadow-xl shadow-primary/5 backdrop-blur-md">
           <CardHeader className="space-y-1">
             <CardTitle className="text-2xl">{t("verifyEmail.cardTitle")}</CardTitle>
             <CardDescription>{t("verifyEmail.cardDescription")}</CardDescription>

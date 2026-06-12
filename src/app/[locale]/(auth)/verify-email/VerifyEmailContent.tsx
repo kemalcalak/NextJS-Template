@@ -49,7 +49,7 @@ export function VerifyEmailContent() {
   }, [token]);
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background p-4 sm:p-8">
+    <div className="mesh-glow texture-grain flex min-h-screen items-center justify-center overflow-hidden bg-background p-4 sm:p-8">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -58,10 +58,10 @@ export function VerifyEmailContent() {
       >
         <div className="mb-8 text-center">
           <motion.div
-            initial={{ scale: 0.5, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-            className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-primary text-primary-foreground"
+            initial={{ scale: 0.5, opacity: 0, rotate: -8 }}
+            animate={{ scale: 1, opacity: 1, rotate: 0 }}
+            transition={{ delay: 0.15, type: "spring", stiffness: 260, damping: 24 }}
+            className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-primary/75 text-primary-foreground shadow-lg shadow-primary/30"
           >
             <MailCheck className="h-6 w-6" />
           </motion.div>

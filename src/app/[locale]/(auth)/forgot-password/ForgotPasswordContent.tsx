@@ -48,7 +48,7 @@ export function ForgotPasswordContent() {
 
   if (success) {
     return (
-      <div className="flex h-[calc(100vh-80px)] items-center justify-center p-4">
+      <div className="mesh-glow texture-grain flex h-[calc(100vh-80px)] items-center justify-center overflow-hidden p-4">
         <div className="mx-auto w-full max-w-md space-y-6 text-center">
           <MailCheck className="mx-auto h-12 w-12 text-primary" />
           <h1 className="text-2xl font-bold tracking-tight">{t("forgotPassword.successTitle")}</h1>
@@ -68,7 +68,7 @@ export function ForgotPasswordContent() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background p-4 sm:p-8">
+    <div className="mesh-glow texture-grain flex min-h-screen items-center justify-center overflow-hidden bg-background p-4 sm:p-8">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
