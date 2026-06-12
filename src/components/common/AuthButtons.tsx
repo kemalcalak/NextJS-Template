@@ -174,6 +174,7 @@ export const AuthButtons = ({ user, onNavigate }: AuthButtonsProps) => {
       <span>
         <Button
           variant="ghost"
+          aria-label={t("common:ui.userMenu", "User menu")}
           className="relative h-10 w-10 rounded-full p-0 transition-transform duration-200 hover:scale-105"
         >
           {/* Gradient ring around the avatar signals it's interactive */}

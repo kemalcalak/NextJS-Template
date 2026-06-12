@@ -49,16 +49,20 @@ for (const locale of LOCALES) {
       await setupAuthenticatedState(page, locale);
       await page.goto(`/${locale}/profile`);
 
-      await expect(page.locator("input#first_name")).toHaveValue("John");
-      await expect(page.locator("input#last_name")).toHaveValue("Doe");
-      await expect(page.locator("input#email")).toHaveValue("john@example.com");
+      // Default view is read mode: values render as info rows, not inputs.
+      await expect(page.getByText("John", { exact: true })).toBeVisible();
+      await expect(page.getByText("Doe", { exact: true })).toBeVisible();
+      // Email shows in both the identity band and the email info row.
+      await expect(page.getByText("john@example.com").first()).toBeVisible();
     });
 
     test("should toggle edit mode and show save/cancel buttons", async ({ page }) => {
       await setupAuthenticatedState(page, locale);
       await page.goto(`/${locale}/profile`);
 
-      await expect(page.locator("input#first_name")).toBeDisabled();
+      // Read mode renders no editable inputs until Edit is clicked.
+      await expect(page.getByText("John", { exact: true })).toBeVisible();
+      await expect(page.locator("input#first_name")).toHaveCount(0);
 
       await page.getByRole("button", { name: s.common.buttons.edit }).click();
 
@@ -112,7 +116,9 @@ for (const locale of LOCALES) {
           .or(page.locator("text=updated successfully"))
           .first(),
       ).toBeVisible();
-      await expect(page.locator("input#first_name")).toHaveValue("Johnny");
+      // A successful save flips the form back to read mode.
+      await expect(page.getByText("Johnny", { exact: true }).first()).toBeVisible();
+      await expect(page.locator("input#first_name")).toHaveCount(0);
     });
 
     test("should show validation errors on profile info form", async ({ page }) => {

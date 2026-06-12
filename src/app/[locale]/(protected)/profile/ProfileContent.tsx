@@ -47,13 +47,18 @@ export function ProfileContent({ showDangerZone = true }: ProfileContentProps) {
         </motion.div>
 
         {/* Segmented control: the active pill slides between tabs */}
-        <div className="inline-flex items-center gap-1 rounded-full border border-border/60 bg-muted/50 p-1">
+        <div
+          role="tablist"
+          className="inline-flex items-center gap-1 rounded-full border border-border/60 bg-muted/50 p-1"
+        >
           {TABS.map(({ key, icon: Icon, labelKey }) => {
             const active = activeTab === key;
             return (
               <button
                 key={key}
                 type="button"
+                role="tab"
+                aria-selected={active}
                 onClick={() => {
                   setActiveTab(key);
                 }}
