@@ -134,11 +134,20 @@ export interface AdminListItem {
   is_active: boolean;
   is_root_superadmin: boolean;
   permissions: Permission[];
+  created_at: string;
 }
 
 export interface AdminListResponse {
   data: AdminListItem[];
   total: number;
+  skip: number;
+  limit: number;
+}
+
+export interface AdminListParams {
+  skip?: number;
+  limit?: number;
+  role?: SystemRole;
 }
 
 // Create a brand-new admin account (replaces the old promote-an-existing-user

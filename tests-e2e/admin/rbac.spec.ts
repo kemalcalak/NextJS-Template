@@ -101,14 +101,27 @@ for (const locale of LOCALES) {
       await mockPermissionCatalog(page);
 
       await page.goto(`/${locale}/admin/admins`);
-      // Root-only header action + per-row tier actions are all offered.
+      // Root-only header action is offered.
       await expect(page.getByRole("button", { name: s.admins.transferRoot.action })).toBeVisible();
+
+      // The plain-admin row menu offers promote + delete (root-tier actions).
+      await page
+        .getByRole("row", { name: /limited@test\.com/ })
+        .getByRole("button", { name: s.admins.rowActions.menu })
+        .click();
       await expect(
-        page.getByRole("button", { name: s.admins.promoteSuperadmin.action }),
+        page.getByRole("menuitem", { name: s.admins.promoteSuperadmin.action }),
       ).toBeVisible();
-      await expect(page.getByRole("button", { name: s.admins.demoteToAdmin.action })).toBeVisible();
+      await expect(page.getByRole("menuitem", { name: s.admins.delete.action })).toBeVisible();
+      await page.keyboard.press("Escape");
+
+      // The non-root superadmin row offers the demote action.
+      await page
+        .getByRole("row", { name: /second-super@test\.com/ })
+        .getByRole("button", { name: s.admins.rowActions.menu })
+        .click();
       await expect(
-        page.getByRole("button", { name: s.admins.delete.action }).first(),
+        page.getByRole("menuitem", { name: s.admins.demoteToAdmin.action }),
       ).toBeVisible();
     });
 
@@ -124,12 +137,24 @@ for (const locale of LOCALES) {
         page.getByRole("button", { name: s.admins.create.action }).first(),
       ).toBeVisible();
       await expect(page.getByRole("button", { name: s.admins.transferRoot.action })).toHaveCount(0);
+
+      // The plain-admin row menu has no promote item for a non-root viewer.
+      await page
+        .getByRole("row", { name: /limited@test\.com/ })
+        .getByRole("button", { name: s.admins.rowActions.menu })
+        .click();
+      await expect(page.getByRole("menuitem", { name: s.admins.managePermissions })).toBeVisible();
       await expect(
-        page.getByRole("button", { name: s.admins.promoteSuperadmin.action }),
+        page.getByRole("menuitem", { name: s.admins.promoteSuperadmin.action }),
       ).toHaveCount(0);
-      await expect(page.getByRole("button", { name: s.admins.demoteToAdmin.action })).toHaveCount(
-        0,
-      );
+      await page.keyboard.press("Escape");
+
+      // Superadmin rows expose no row menu at all to a non-root viewer.
+      await expect(
+        page
+          .getByRole("row", { name: /second-super@test\.com/ })
+          .getByRole("button", { name: s.admins.rowActions.menu }),
+      ).toHaveCount(0);
     });
 
     test("the create-admin modal opens with the account fields", async ({ page }) => {

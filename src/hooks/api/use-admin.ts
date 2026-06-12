@@ -5,6 +5,7 @@ import { authService } from "@/lib/api/endpoints/auth";
 import type {
   AdminActivityListParams,
   AdminCreatePayload,
+  AdminListParams,
   AdminPermissionsUpdatePayload,
   AdminUserListParams,
   AdminUserUpdatePayload,
@@ -27,7 +28,8 @@ export const adminKeys = {
   activitiesList: (params?: AdminActivityListParams) =>
     ["admin", "activitiesList", params ?? {}] as const,
   stats: ["admin", "stats"] as const,
-  admins: ["admin", "admins"] as const,
+  adminsPrefix: ["admin", "admins"] as const,
+  admins: (params?: AdminListParams) => ["admin", "admins", params ?? {}] as const,
   permissionCatalog: ["admin", "permissionCatalog"] as const,
 };
 
@@ -141,11 +143,12 @@ export const useAdminUserActivities = (
 
 // --- Admin / RBAC management (superadmin only) -----------------------------
 
-export const useAdmins = (enabled = true) =>
+export const useAdmins = (params?: AdminListParams, enabled = true) =>
   useQuery({
-    queryKey: adminKeys.admins,
-    queryFn: () => adminApi.listAdmins(),
+    queryKey: adminKeys.admins(params),
+    queryFn: () => adminApi.listAdmins(params),
     enabled,
+    placeholderData: keepPreviousData,
   });
 
 export const usePermissionCatalog = (enabled = true) =>
@@ -164,7 +167,7 @@ export const useSetAdminPermissions = () => {
     mutationFn: ({ id, payload }: { id: string; payload: AdminPermissionsUpdatePayload }) =>
       adminApi.setAdminPermissions(id, payload),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: adminKeys.admins });
+      queryClient.invalidateQueries({ queryKey: adminKeys.adminsPrefix });
     },
   });
 };
@@ -174,7 +177,7 @@ export const useCreateAdmin = () => {
   return useMutation({
     mutationFn: (payload: AdminCreatePayload) => adminApi.createAdmin(payload),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: adminKeys.admins });
+      queryClient.invalidateQueries({ queryKey: adminKeys.adminsPrefix });
       invalidateUserSurfaces(queryClient);
     },
   });
@@ -185,7 +188,7 @@ export const useDeleteAdmin = () => {
   return useMutation({
     mutationFn: (id: string) => adminApi.deleteAdmin(id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: adminKeys.admins });
+      queryClient.invalidateQueries({ queryKey: adminKeys.adminsPrefix });
       invalidateUserSurfaces(queryClient);
     },
   });
@@ -196,7 +199,7 @@ export const usePromoteSuperadmin = () => {
   return useMutation({
     mutationFn: (id: string) => adminApi.promoteSuperadmin(id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: adminKeys.admins });
+      queryClient.invalidateQueries({ queryKey: adminKeys.adminsPrefix });
       invalidateUserSurfaces(queryClient);
     },
   });
@@ -207,7 +210,7 @@ export const useDemoteSuperadmin = () => {
   return useMutation({
     mutationFn: (id: string) => adminApi.demoteSuperadmin(id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: adminKeys.admins });
+      queryClient.invalidateQueries({ queryKey: adminKeys.adminsPrefix });
       invalidateUserSurfaces(queryClient);
     },
   });
@@ -225,7 +228,7 @@ export const useConfirmTransferRoot = () => {
   return useMutation({
     mutationFn: (payload: RootTransferConfirmPayload) => adminApi.confirmTransferRoot(payload),
     onSuccess: async () => {
-      queryClient.invalidateQueries({ queryKey: adminKeys.admins });
+      queryClient.invalidateQueries({ queryKey: adminKeys.adminsPrefix });
       // The confirming root just lost root status; refresh /me so the store and
       // every gate update immediately. The WS event does this too — this keeps
       // it deterministic even when the socket is unavailable.

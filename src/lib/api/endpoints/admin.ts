@@ -3,6 +3,7 @@ import type {
   AdminActivityListParams,
   AdminActivityListResponse,
   AdminCreatePayload,
+  AdminListParams,
   AdminListResponse,
   AdminMutationResponse,
   AdminPermissionsUpdatePayload,
@@ -80,8 +81,10 @@ export const adminApi = {
 
   // --- Admin / RBAC management (superadmin only) ---------------------------
 
-  listAdmins: (): Promise<AdminListResponse> =>
-    api.get<AdminListResponse, AdminListResponse>("/admin/admins"),
+  listAdmins: (params?: AdminListParams): Promise<AdminListResponse> =>
+    api.get<AdminListResponse, AdminListResponse>("/admin/admins", {
+      params: pruneParams(params),
+    }),
 
   getPermissionCatalog: (): Promise<PermissionCatalogResponse> =>
     api.get<PermissionCatalogResponse, PermissionCatalogResponse>("/admin/admins/permissions"),
