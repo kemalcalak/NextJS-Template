@@ -4,6 +4,7 @@ export const defaultLocale: Locale = "en";
 
 export const ROUTES = {
   home: "/",
+  about: "/about",
   login: "/login",
   register: "/register",
   forgotPassword: "/forgot-password",

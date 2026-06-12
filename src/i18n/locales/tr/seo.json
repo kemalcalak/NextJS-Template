@@ -3,6 +3,10 @@
     "title": "Günlük Görevlerinizi Yönetin",
     "description": "Günlük görevlerinizi ve projelerinizi yönetmek için en iyi platform. Hızlı, güvenli ve şık."
   },
+  "about": {
+    "title": "Hakkımızda",
+    "description": "Biz kimiz, bu proje neden var ve hangi değerlerle inşa ediyoruz."
+  },
   "login": {
     "title": "Giriş Yap",
     "description": "Dashboard'unuza ve projelerinize erişmek için NextJS Template hesabınıza giriş yapın."

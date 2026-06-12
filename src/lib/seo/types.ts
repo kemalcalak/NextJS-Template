@@ -2,6 +2,7 @@ export type SeoLocale = "en" | "tr";
 
 export type SeoPageKey =
   | "home"
+  | "about"
   | "login"
   | "register"
   | "forgotPassword"

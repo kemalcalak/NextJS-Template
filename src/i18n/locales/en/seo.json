@@ -3,6 +3,10 @@
     "title": "Manage Your Daily Tasks",
     "description": "The best platform to manage your daily tasks and projects. Fast, secure, and stylish."
   },
+  "about": {
+    "title": "About Us",
+    "description": "Who we are, why this project exists, and the values we build with."
+  },
   "login": {
     "title": "Login",
     "description": "Login to your NextJS Template account to access your dashboard and projects."
