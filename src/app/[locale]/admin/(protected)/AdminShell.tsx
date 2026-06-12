@@ -22,13 +22,12 @@ import {
   getLocaleFromPath,
   getLocalizedPath,
   getPathWithoutLocale,
-  matchesRoute,
 } from "@/lib/config/routes";
 import { SystemRole } from "@/lib/types/user";
 import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/stores/auth.store";
 
-import { buildAdminNav, findActiveAdminNav } from "./admin-nav";
+import { buildAdminNav } from "./admin-nav";
 import { AdminSidebar } from "./AdminSidebar";
 import { AdminTopbar } from "./AdminTopbar";
 
@@ -108,7 +107,6 @@ export function AdminShell({ children }: AdminShellProps) {
     canReadSupport,
     isSuperadmin,
   });
-  const active = findActiveAdminNav(sections, (href) => matchesRoute(pathWithoutLocale, href));
 
   const closeOnMobile = () => {
     if (isMobile) setUserCollapsed(true);
@@ -145,8 +143,6 @@ export function AdminShell({ children }: AdminShellProps) {
           onToggleSidebar={() => {
             setUserCollapsed(!collapsed);
           }}
-          sectionKey={active?.sectionKey ?? null}
-          itemKey={active?.itemKey ?? null}
         />
         <main className="min-w-0 flex-1 p-4 md:p-6 lg:p-8">{children}</main>
       </div>

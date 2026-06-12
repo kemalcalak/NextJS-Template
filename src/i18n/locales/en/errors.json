@@ -51,6 +51,10 @@
       "cannot_transfer_to_self": "You cannot transfer root status to yourself.",
       "superadmin_role_immutable": "A superadmin's role cannot be changed."
     },
+    "notification": {
+      "not_found": "Notification not found.",
+      "access_denied": "You don't have access to this notification."
+    },
     "support": {
       "ticket_not_found": "Ticket not found.",
       "ticket_access_denied": "You don't have access to this ticket.",

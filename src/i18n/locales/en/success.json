@@ -33,6 +33,10 @@
       "root_transfer_initiated": "Verification code sent to your email.",
       "root_transferred": "Root superadmin transferred."
     },
+    "notification": {
+      "read": "Notification marked as read.",
+      "all_read": "All notifications marked as read."
+    },
     "support": {
       "ticket_created": "Your support ticket has been created.",
       "ticket_closed": "Ticket closed.",

@@ -1,0 +1,29 @@
+{
+  "title": "Bildirimler",
+  "page": {
+    "subtitle": "Tüm bildirimleriniz, en yenisi üstte.",
+    "filterAll": "Tümü",
+    "filterUnread": "Okunmamış"
+  },
+  "bell": "Bildirimleri aç",
+  "markAllRead": "Tümünü okundu işaretle",
+  "viewAll": "Tümünü gör",
+  "empty": "Henüz bildirim yok.",
+  "types": {
+    "support_ticket_replied": "\"{{subject}}\" destek talebinize yeni bir yanıt var.",
+    "support_ticket_status_changed": "\"{{subject}}\" talebinizin yeni durumu: {{status}}.",
+    "admin_permissions_changed": "Yönetici yetkileriniz değişti."
+  },
+  "ticketStatus": {
+    "open": "Açık",
+    "pending": "Beklemede",
+    "answered": "Yanıtlandı",
+    "closed": "Kapalı"
+  },
+  "actions": {
+    "set_admin_permissions": "Yönetici yetkileriniz güncellendi.",
+    "promoted_to_superadmin": "Superadmin rolüne yükseltildiniz.",
+    "demoted_superadmin_to_admin": "Admin rolüne düşürüldünüz.",
+    "root_transferred": "Ana superadminlik devredildi."
+  }
+}

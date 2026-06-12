@@ -51,6 +51,10 @@
       "cannot_transfer_to_self": "Root yetkisini kendinize devredemezsiniz.",
       "superadmin_role_immutable": "Bir superadmin'in rolü değiştirilemez."
     },
+    "notification": {
+      "not_found": "Bildirim bulunamadı.",
+      "access_denied": "Bu bildirime erişiminiz yok."
+    },
     "support": {
       "ticket_not_found": "Talep bulunamadı.",
       "ticket_access_denied": "Bu talebe erişiminiz yok.",

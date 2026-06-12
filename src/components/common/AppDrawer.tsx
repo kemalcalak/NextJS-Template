@@ -1,6 +1,6 @@
 "use client";
 
-import { Drawer } from "antd";
+import { Badge, Drawer } from "antd";
 import {
   Menu,
   User as UserIcon,
@@ -8,6 +8,7 @@ import {
   LayoutDashboard,
   Home,
   LifeBuoy,
+  Bell,
   ShieldCheck,
 } from "lucide-react";
 import { useRouter, usePathname } from "next/navigation";
@@ -16,6 +17,7 @@ import { useTranslation } from "react-i18next";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { env } from "@/env";
+import { useUnreadCount } from "@/hooks/api/use-notifications";
 import { useLanguage } from "@/hooks/use-language";
 import {
   getLocaleFromPath,
@@ -63,9 +65,10 @@ interface NavLinkProps {
   label: string;
   active: boolean;
   onClick: (href: string) => void;
+  badge?: number;
 }
 
-const NavLink = ({ href, icon: Icon, label, active, onClick }: NavLinkProps) => (
+const NavLink = ({ href, icon: Icon, label, active, onClick, badge = 0 }: NavLinkProps) => (
   <Button
     variant={active ? "secondary" : "ghost"}
     className={cn(
@@ -79,6 +82,7 @@ const NavLink = ({ href, icon: Icon, label, active, onClick }: NavLinkProps) => 
     <span className="flex w-full items-center">
       <Icon className={cn("mr-3 h-4 w-4", active ? "text-primary" : "text-muted-foreground")} />
       {label}
+      {badge > 0 && <Badge count={badge} size="small" className="ml-auto" />}
     </span>
   </Button>
 );
@@ -93,6 +97,7 @@ interface AuthedNavLinksProps {
 
 const AuthedNavLinks = ({ user, isActive, navigate }: AuthedNavLinksProps) => {
   const { t } = useTranslation();
+  const { data: unread } = useUnreadCount();
   return (
     <>
       {user.role === SystemRole.ADMIN && (
@@ -110,6 +115,14 @@ const AuthedNavLinks = ({ user, isActive, navigate }: AuthedNavLinksProps) => {
         label={t("common:nav.dashboard")}
         active={isActive(ROUTES.dashboard)}
         onClick={navigate}
+      />
+      <NavLink
+        href={ROUTES.notifications}
+        icon={Bell}
+        label={t("common:nav.notifications")}
+        active={isActive(ROUTES.notifications)}
+        onClick={navigate}
+        badge={unread?.unread_count ?? 0}
       />
       <NavLink
         href={ROUTES.profile}

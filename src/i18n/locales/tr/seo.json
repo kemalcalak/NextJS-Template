@@ -43,6 +43,10 @@
     "title": "Destek",
     "description": "Destek talebi açın ve her konuda ekibimizle yazışın."
   },
+  "notifications": {
+    "title": "Bildirimler",
+    "description": "Tüm bildirimlerinizi görüntüleyin ve okunma durumlarını yönetin."
+  },
   "adminLogin": {
     "title": "Yönetici Girişi",
     "description": "Kullanıcıları yönetmek ve aktiviteleri görüntülemek için yönetim paneline giriş yapın."
@@ -74,6 +78,10 @@
   "adminSupport": {
     "title": "Destek Kuyruğu",
     "description": "Kullanıcı destek taleplerini inceleyin ve yanıtlayın."
+  },
+  "adminNotifications": {
+    "title": "Bildirimler",
+    "description": "Tüm bildirimlerinizi görüntüleyin ve okunma durumlarını yönetin."
   },
   "adminTicketDetail": {
     "title": "Talep",

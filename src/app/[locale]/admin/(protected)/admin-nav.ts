@@ -1,5 +1,6 @@
 import {
   Activity,
+  Bell,
   CircleUser,
   Images,
   LayoutDashboard,
@@ -62,7 +63,16 @@ export const buildAdminNav = (caps: AdminNavCaps): AdminNavSection[] => {
     },
     {
       key: "account",
-      items: [{ key: "profile", href: ROUTES.adminProfile, icon: CircleUser, show: true }],
+      items: [
+        // Personal inbox — every admin sees their own, so no permission gate.
+        {
+          key: "notifications",
+          href: ROUTES.adminNotifications,
+          icon: Bell,
+          show: true,
+        },
+        { key: "profile", href: ROUTES.adminProfile, icon: CircleUser, show: true },
+      ],
     },
   ];
 
@@ -71,16 +81,4 @@ export const buildAdminNav = (caps: AdminNavCaps): AdminNavSection[] => {
   return sections
     .map((section) => ({ ...section, items: section.items.filter((item) => item.show) }))
     .filter((section) => section.items.length > 0);
-};
-
-// Flattened lookup for the topbar breadcrumb: the active item's section + key.
-export const findActiveAdminNav = (
-  sections: AdminNavSection[],
-  isActive: (href: string) => boolean,
-): { sectionKey: string; itemKey: string } | null => {
-  for (const section of sections) {
-    const item = section.items.find((entry) => isActive(entry.href));
-    if (item) return { sectionKey: section.key, itemKey: item.key };
-  }
-  return null;
 };

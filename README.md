@@ -63,6 +63,7 @@ The API proxy is pre-configured in `next.config.ts` to forward requests from you
 - **Protected Routes:** Built-in auth flow with protected route segments using Next.js conventions.
 - **RBAC / Permission-aware Admin Panel:** A sidebar-shell admin area (`/admin`) with `user` / `admin` / `superadmin` roles, isolated from the user-facing app. A central `usePermissions()` hook (plus per-permission helpers like `useCanDeleteUsers`) drives **nav, route, and action gating** from the `permissions` on `/users/me`; superadmins pass everything by role and get a searchable **permission-matrix** to **create/delete admin accounts** and assign grants — while the **root superadmin** additionally promotes/demotes superadmins and hands over root via **email OTP**. Permission changes apply **instantly** over a WebSocket — no re-login. See [Admin Panel & RBAC](#-admin-panel--rbac).
 - **Support / Ticketing UI + Realtime:** User and admin ticketing screens (open, reply with attachments, status/priority, assignment) with live thread & queue updates over a self-healing WebSocket. See [Support UI](#-support-ticketing-ui).
+- **Notification Center:** A header bell (unread badge + dropdown panel) on both the user header and the admin topbar, plus a full paginated inbox (`/notifications`, `/admin/notifications`) with an **All / Unread** filter and mark-(all-)read. Updates **live** over a self-healing WebSocket — a pushed event invalidates the React Query caches so the badge and lists refresh without a reload. Notification copy is rendered from a `type` + `data` payload via i18n (en/tr), and the inbox is reachable on mobile from the drawer / admin sidebar. See [Notification Center](#-notification-center).
 
 ---
 
@@ -220,7 +221,7 @@ Configuration lives in `lint-staged.config.mjs`, `.husky/pre-commit`, and `.husk
 │   │   ├── config/       # App configuration constants
 │   │   ├── seo/          # SEO utilities
 │   │   ├── types/        # Global TypeScript types (incl. RBAC permissions)
-│   │   ├── websocket/    # Self-healing realtime sockets (support + account)
+│   │   ├── websocket/    # Self-healing realtime sockets (support, account, notifications)
 │   │   └── utils.ts      # Utility functions
 │   ├── i18n/             # Internationalization configuration
 │   │   ├── config.ts     # i18next configuration
@@ -333,6 +334,17 @@ Both surfaces subscribe to a multiplexed, self-healing WebSocket so new messages
 
 ---
 
+## 🔔 Notification Center
+
+A persistent, in-app notification surface wired to the backend's `notifications` feed.
+
+- **Bell + dropdown** — a header bell with an unread badge on both the user header (`AppHeader`) and the admin topbar; the dropdown lists the latest entries with mark-(all-)read and a **View all** link. On mobile it's reachable from the app drawer and the admin sidebar nav.
+- **Full inbox** — a paginated page at `/notifications` (and `/admin/notifications`) with an **All / Unread** filter and bulk mark-as-read, both sharing one `NotificationsView`.
+- **Live** — `useNotificationRealtime()` holds a self-healing socket (`/notifications/ws`); a pushed `notification_created` event invalidates the notification React Query caches so the badge and lists refetch without a reload.
+- **Localized copy** — messages are produced from a stored `type` + `data` payload through i18n (`notifications` namespace, en/tr); the backend persists no human-readable text.
+
+---
+
 ## 🤝 Contributing
 
 Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
@@ -365,6 +377,7 @@ Distributed under the MIT License. See the `LICENSE` file at the root of the wor
 - [ ] Visit `/admin/admins` to create an admin account and assign permissions via the matrix
 - [ ] Sign in as that permission-limited admin and confirm the nav, routes, and actions gate to their grants
 - [ ] Try the support flow: open a ticket at `/support`, then reply/assign it from `/admin/support`
+- [ ] Open the notification bell (header / admin topbar) or the full inbox at `/notifications` and watch the badge update live as the backend emits events
 - [ ] Check the E2E tests in `tests-e2e/` (incl. `admin/` RBAC + `support/`) to understand the testing patterns
 - [ ] Update the i18n translation files in `src/i18n/locales/` as needed
 

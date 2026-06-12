@@ -12,6 +12,7 @@ export type SeoPageKey =
   | "dashboard"
   | "profile"
   | "support"
+  | "notifications"
   | "adminLogin"
   | "adminDashboard"
   | "adminUsers"
@@ -20,6 +21,7 @@ export type SeoPageKey =
   | "adminFiles"
   | "adminActivities"
   | "adminSupport"
+  | "adminNotifications"
   | "adminTicketDetail"
   | "notFound"
   | "error";
