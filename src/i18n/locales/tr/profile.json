@@ -31,6 +31,31 @@
     "submit": "Şifreyi Güncelle",
     "submitting": "Güncelleniyor..."
   },
+  "sessions": {
+    "title": "Aktif Oturumlar",
+    "description": "Hesabına giriş yapılmış cihazları görüntüle ve yönet",
+    "currentBadge": "Bu cihaz",
+    "unknownDevice": "Bilinmeyen cihaz",
+    "deviceLabel": "{{browser}} — {{os}}",
+    "signedIn": "Giriş: {{date}}",
+    "lastActive": "Son aktivite: {{date}}",
+    "revoke": "Sonlandır",
+    "revokeOthers": "Diğer tüm cihazlardan çıkış yap",
+    "loadMore": "Daha fazla göster",
+    "empty": "Aktif oturum bulunamadı",
+    "confirmRevoke": {
+      "title": "Oturumu sonlandır",
+      "description": "Bu cihaz hesabından anında çıkış yapacak. Devam etmek istiyor musun?",
+      "confirm": "Oturumu Sonlandır",
+      "cancel": "Vazgeç"
+    },
+    "confirmRevokeOthers": {
+      "title": "Diğer cihazlardan çıkış yap",
+      "description": "Bu cihaz dışındaki tüm oturumlar anında sonlandırılacak. Devam etmek istiyor musun?",
+      "confirm": "Hepsini Sonlandır",
+      "cancel": "Vazgeç"
+    }
+  },
   "avatar": {
     "title": "Profil Fotoğrafı",
     "description": "Hesabını kişiselleştirmek için bir fotoğraf yükle"

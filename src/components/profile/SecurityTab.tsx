@@ -5,6 +5,7 @@ import { Lock, Shield, CheckCircle2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 import { DangerZone } from "@/components/profile/DangerZone";
+import { SessionsSection } from "@/components/profile/SessionsSection";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -172,6 +173,8 @@ export const SecurityTab = ({ showDangerZone = true }: SecurityTabProps) => {
           </Form>
         </CardContent>
       </Card>
+
+      <SessionsSection />
 
       {showDangerZone ? <DangerZone /> : null}
     </div>
