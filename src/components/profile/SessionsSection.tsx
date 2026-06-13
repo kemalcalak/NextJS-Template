@@ -2,10 +2,10 @@
 
 import { useState, type ReactNode } from "react";
 
-import { Modal } from "antd";
 import { LogOut, MonitorSmartphone, Smartphone } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
+import { ConfirmDialog } from "@/components/admin/ConfirmDialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -18,7 +18,11 @@ const PAGE_SIZE = 10;
 
 const MOBILE_OS = new Set(["iOS", "iPadOS", "Android"]);
 
-const DeviceIcon = ({ os }: { os: string | null }) => {
+interface DeviceIconProps {
+  os: string | null;
+}
+
+const DeviceIcon = ({ os }: DeviceIconProps) => {
   const Icon = os && MOBILE_OS.has(os) ? Smartphone : MonitorSmartphone;
   return (
     <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/12 text-primary">
@@ -26,49 +30,6 @@ const DeviceIcon = ({ os }: { os: string | null }) => {
     </span>
   );
 };
-
-interface ConfirmRevokeModalProps {
-  open: boolean;
-  busy: boolean;
-  title: string;
-  description: string;
-  confirmLabel: string;
-  cancelLabel: string;
-  onCancel: () => void;
-  onConfirm: () => void;
-}
-
-const ConfirmRevokeModal = ({
-  open,
-  busy,
-  title,
-  description,
-  confirmLabel,
-  cancelLabel,
-  onCancel,
-  onConfirm,
-}: ConfirmRevokeModalProps) => (
-  <Modal
-    open={open}
-    onCancel={() => {
-      if (!busy) onCancel();
-    }}
-    title={title}
-    footer={null}
-    destroyOnHidden
-    centered
-  >
-    <p className="mb-4 text-sm text-muted-foreground">{description}</p>
-    <div className="flex justify-end gap-2">
-      <Button variant="outline" disabled={busy} onClick={onCancel}>
-        {cancelLabel}
-      </Button>
-      <Button variant="destructive" loading={busy} onClick={onConfirm}>
-        {confirmLabel}
-      </Button>
-    </div>
-  </Modal>
-);
 
 interface SessionRowProps {
   session: SessionItem;
@@ -229,30 +190,32 @@ export const SessionsSection = () => {
         ) : null}
       </CardContent>
 
-      <ConfirmRevokeModal
+      <ConfirmDialog
         open={confirmTarget !== null}
-        busy={isRevoking}
+        onOpenChange={(open) => {
+          if (!open) setConfirmTarget(null);
+        }}
         title={t("sessions.confirmRevoke.title")}
         description={t("sessions.confirmRevoke.description")}
         confirmLabel={t("sessions.confirmRevoke.confirm")}
         cancelLabel={t("sessions.confirmRevoke.cancel")}
-        onCancel={() => {
-          setConfirmTarget(null);
-        }}
         onConfirm={handleRevoke}
+        isLoading={isRevoking}
+        destructive
       />
 
-      <ConfirmRevokeModal
+      <ConfirmDialog
         open={confirmOthersOpen}
-        busy={isRevokingOthers}
+        onOpenChange={(open) => {
+          if (!open) setConfirmOthersOpen(false);
+        }}
         title={t("sessions.confirmRevokeOthers.title")}
         description={t("sessions.confirmRevokeOthers.description")}
         confirmLabel={t("sessions.confirmRevokeOthers.confirm")}
         cancelLabel={t("sessions.confirmRevokeOthers.cancel")}
-        onCancel={() => {
-          setConfirmOthersOpen(false);
-        }}
         onConfirm={handleRevokeOthers}
+        isLoading={isRevokingOthers}
+        destructive
       />
     </Card>
   );

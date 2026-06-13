@@ -11,7 +11,11 @@ import { useAdminUserActivities } from "@/hooks/api/use-admin";
 
 const PAGE_SIZE = 20;
 
-export function UserActivityCard({ userId }: { userId: string }) {
+interface UserActivityCardProps {
+  userId: string;
+}
+
+export function UserActivityCard({ userId }: UserActivityCardProps) {
   const { t } = useTranslation("admin");
   // "Show more" grows the window instead of paginating, mirroring the
   // sessions card — context stays on screen while older entries append.

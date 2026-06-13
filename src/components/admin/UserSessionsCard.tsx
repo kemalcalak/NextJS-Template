@@ -2,10 +2,10 @@
 
 import { useState, type ReactNode } from "react";
 
-import { Modal } from "antd";
 import { LogOut, MonitorSmartphone, Smartphone } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
+import { ConfirmDialog } from "@/components/admin/ConfirmDialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -17,7 +17,11 @@ const PAGE_SIZE = 10;
 
 const MOBILE_OS = new Set(["iOS", "iPadOS", "Android"]);
 
-const DeviceIcon = ({ os }: { os: string | null }) => {
+interface DeviceIconProps {
+  os: string | null;
+}
+
+const DeviceIcon = ({ os }: DeviceIconProps) => {
   const Icon = os && MOBILE_OS.has(os) ? Smartphone : MonitorSmartphone;
   return (
     <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
@@ -26,7 +30,11 @@ const DeviceIcon = ({ os }: { os: string | null }) => {
   );
 };
 
-const SessionRow = ({ session }: { session: SessionItem }) => {
+interface SessionRowProps {
+  session: SessionItem;
+}
+
+const SessionRow = ({ session }: SessionRowProps) => {
   const { t } = useTranslation("admin");
 
   const deviceLabel =
@@ -47,7 +55,11 @@ const SessionRow = ({ session }: { session: SessionItem }) => {
   );
 };
 
-export function UserSessionsCard({ userId }: { userId: string }) {
+interface UserSessionsCardProps {
+  userId: string;
+}
+
+export function UserSessionsCard({ userId }: UserSessionsCardProps) {
   const { t } = useTranslation("admin");
   const [limit, setLimit] = useState(PAGE_SIZE);
   const { data, isLoading } = useAdminUserSessions(userId, { limit });
@@ -124,34 +136,19 @@ export function UserSessionsCard({ userId }: { userId: string }) {
         ) : null}
       </CardContent>
 
-      <Modal
+      <ConfirmDialog
         open={confirmOpen}
-        onCancel={() => {
-          if (!isPending) setConfirmOpen(false);
+        onOpenChange={(open) => {
+          if (!open) setConfirmOpen(false);
         }}
         title={t("userDetail.sessions.confirm.title")}
-        footer={null}
-        destroyOnHidden
-        centered
-      >
-        <p className="mb-4 text-sm text-muted-foreground">
-          {t("userDetail.sessions.confirm.description")}
-        </p>
-        <div className="flex justify-end gap-2">
-          <Button
-            variant="outline"
-            disabled={isPending}
-            onClick={() => {
-              setConfirmOpen(false);
-            }}
-          >
-            {t("userDetail.sessions.confirm.cancel")}
-          </Button>
-          <Button variant="destructive" loading={isPending} onClick={handleRevokeAll}>
-            {t("userDetail.sessions.confirm.confirm")}
-          </Button>
-        </div>
-      </Modal>
+        description={t("userDetail.sessions.confirm.description")}
+        confirmLabel={t("userDetail.sessions.confirm.confirm")}
+        cancelLabel={t("userDetail.sessions.confirm.cancel")}
+        onConfirm={handleRevokeAll}
+        isLoading={isPending}
+        destructive
+      />
     </Card>
   );
 }
