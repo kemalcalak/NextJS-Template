@@ -50,6 +50,28 @@ export const test = base.extend({
       },
     );
 
+    // The sessions card mounts on the admin user-detail page and the profile
+    // security tab, firing GET .../sessions on load. Like the notification
+    // bell above, an unmocked call hits the catch-all 401 and trips the
+    // logout cascade, bouncing the page to /login. Answer GETs with an empty
+    // session list by default; specs that assert on sessions (or test revoke,
+    // which is a DELETE) register their own routes, which take precedence.
+    // Non-GET methods fall through so those spec handlers — or the 401 — apply.
+    await page.route(
+      (url) => url.pathname.includes("/api/v1/") && url.pathname.endsWith("/sessions"),
+      async (route) => {
+        if (route.request().method() !== "GET") {
+          await route.fallback();
+          return;
+        }
+        await route.fulfill({
+          status: 200,
+          contentType: "application/json",
+          body: JSON.stringify({ data: [], total: 0, skip: 0, limit: 50 }),
+        });
+      },
+    );
+
     // page.route() does not cover WebSockets, so realtime sockets (account
     // events, support feed) would otherwise reach the real backend through the
     // dev proxy. Intercept API WebSockets and answer them locally — the handler
