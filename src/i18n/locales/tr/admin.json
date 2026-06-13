@@ -105,6 +105,7 @@
       "delete": "Sil",
       "suspend": "Askıya al",
       "password_reset": "Şifre sıfırla",
+      "sessions": "Oturumları yönet",
       "update": "Ata"
     }
   },
@@ -226,8 +227,25 @@
     "activityTitle": "Son aktiviteler",
     "activityDescription": "Bu kullanıcıya ait denetim olayları.",
     "activityEmpty": "Son aktivite yok.",
+    "activityLoadMore": "Daha fazla göster",
     "dangerTitle": "Tehlikeli işlemler",
     "dangerDescription": "Bu işlemler denetlenir ve kullanıcı tarafından geri alınamaz.",
+    "sessions": {
+      "title": "Aktif oturumlar",
+      "description": "Bu kullanıcının giriş yapılmış cihazları.",
+      "deviceLabel": "{{browser}} — {{os}}",
+      "unknownDevice": "Bilinmeyen cihaz",
+      "lastActive": "Son aktivite: {{date}}",
+      "revokeAll": "Tüm oturumları sonlandır",
+      "loadMore": "Daha fazla göster",
+      "empty": "Aktif oturum yok.",
+      "confirm": {
+        "title": "Tüm oturumlar sonlandırılsın mı?",
+        "description": "Kullanıcı tüm cihazlarından anında çıkış yapacak ve yeniden giriş yapması gerekecek. Bu işlem denetlenir.",
+        "confirm": "Hepsini Sonlandır",
+        "cancel": "Vazgeç"
+      }
+    },
     "fields": {
       "firstName": "Ad",
       "lastName": "Soyad",

@@ -8,20 +8,22 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 
-import { ActivityTable } from "@/components/admin/ActivityTable";
 import { PermissionNote } from "@/components/admin/PermissionNote";
 import { StatusBadge, UserStatusBadge } from "@/components/admin/StatusBadge";
 import { UserActionDialogs } from "@/components/admin/UserActionDialogs";
+import { UserActivityCard } from "@/components/admin/UserActivityCard";
 import { UserAvatarCard } from "@/components/admin/UserAvatarCard";
 import { UserDangerZone } from "@/components/admin/UserDangerZone";
 import { UserEditForm } from "@/components/admin/UserEditForm";
 import { UserOverviewCard } from "@/components/admin/UserOverviewCard";
+import { UserSessionsCard } from "@/components/admin/UserSessionsCard";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { useAdminUser, useAdminUserActivities, useUpdateAdminUser } from "@/hooks/api/use-admin";
+import { useAdminUser, useUpdateAdminUser } from "@/hooks/api/use-admin";
 import { useUserActions, type UserActionKind } from "@/hooks/api/use-user-actions";
 import {
   useCanDeleteUsers,
+  useCanManageUserSessions,
   useCanResetUserPassword,
   useCanSuspendUsers,
   useCanWriteUsers,
@@ -39,13 +41,11 @@ export function UserDetailContent({ userId }: { userId: string }) {
   const currentUserId = useAuthStore((state) => state.user?.id ?? null);
 
   const { data: user, isLoading } = useAdminUser(userId);
-  const { data: activities, isLoading: activitiesLoading } = useAdminUserActivities(userId, {
-    limit: 20,
-  });
   const update = useUpdateAdminUser();
   const { run, isLoading: isActionLoading } = useUserActions();
 
   const canWrite = useCanWriteUsers();
+  const canManageSessions = useCanManageUserSessions();
   const dangerCaps = {
     canResetPassword: useCanResetUserPassword(),
     canSuspend: useCanSuspendUsers(),
@@ -146,6 +146,8 @@ export function UserDetailContent({ userId }: { userId: string }) {
         </div>
       </div>
 
+      {canManageSessions ? <UserSessionsCard userId={user.id} /> : null}
+
       <UserDangerZone
         user={user}
         isSelf={isSelf}
@@ -154,20 +156,7 @@ export function UserDetailContent({ userId }: { userId: string }) {
         onAction={setAction}
       />
 
-      <Card className="border-border/50 bg-card/60">
-        <CardHeader>
-          <CardTitle className="text-base">{t("userDetail.activityTitle")}</CardTitle>
-          <CardDescription>{t("userDetail.activityDescription")}</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <ActivityTable
-            rows={activities?.data ?? []}
-            isLoading={activitiesLoading}
-            showUser={false}
-            emptyLabel={t("userDetail.activityEmpty")}
-          />
-        </CardContent>
-      </Card>
+      <UserActivityCard userId={user.id} />
 
       <UserActionDialogs
         action={action}

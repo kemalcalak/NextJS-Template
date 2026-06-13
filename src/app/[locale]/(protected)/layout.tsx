@@ -1,6 +1,7 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
+import { AccountEventsBridge } from "@/components/common/AccountEventsBridge";
 import { ROUTES, getLocalizedPath } from "@/lib/config/routes";
 
 interface ProtectedLayoutProps {
@@ -24,5 +25,10 @@ export default async function ProtectedLayout({ children, params }: ProtectedLay
     redirect(getLocalizedPath(ROUTES.login, locale));
   }
 
-  return <>{children}</>;
+  return (
+    <>
+      <AccountEventsBridge />
+      {children}
+    </>
+  );
 }

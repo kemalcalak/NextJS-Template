@@ -37,6 +37,11 @@
       "read": "Notification marked as read.",
       "all_read": "All notifications marked as read."
     },
+    "session": {
+      "revoked": "Session revoked.",
+      "others_revoked": "Signed out of all other devices.",
+      "admin_revoked": "All of the user's sessions have been terminated."
+    },
     "support": {
       "ticket_created": "Your support ticket has been created.",
       "ticket_closed": "Ticket closed.",

@@ -18,6 +18,11 @@ import type {
   RootTransferRequestPayload,
 } from "@/lib/types/admin";
 import type { MessageResponse } from "@/lib/types/auth";
+import type {
+  SessionListParams,
+  SessionListResponse,
+  SessionsRevokedResponse,
+} from "@/lib/types/session";
 
 // Drop undefined / empty-string keys so axios doesn't serialize them onto the
 // URL. Generic over the caller's param type so we don't have to widen admin
@@ -68,6 +73,14 @@ export const adminApi = {
       `/admin/users/${userId}/activities`,
       { params: pruneParams(params) },
     ),
+
+  listUserSessions: (userId: string, params?: SessionListParams): Promise<SessionListResponse> =>
+    api.get<SessionListResponse, SessionListResponse>(`/admin/users/${userId}/sessions`, {
+      params: pruneParams(params),
+    }),
+
+  revokeUserSessions: (userId: string): Promise<SessionsRevokedResponse> =>
+    api.delete<SessionsRevokedResponse, SessionsRevokedResponse>(`/admin/users/${userId}/sessions`),
 
   // Filters + pagination ride the POST body (the audit log query grew enough
   // filters that a body is cleaner than a long query string).
