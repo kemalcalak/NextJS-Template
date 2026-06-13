@@ -64,6 +64,7 @@ The API proxy is pre-configured in `next.config.ts` to forward requests from you
 - **RBAC / Permission-aware Admin Panel:** A sidebar-shell admin area (`/admin`) with `user` / `admin` / `superadmin` roles, isolated from the user-facing app. A central `usePermissions()` hook (plus per-permission helpers like `useCanDeleteUsers`) drives **nav, route, and action gating** from the `permissions` on `/users/me`; superadmins pass everything by role and get a searchable **permission-matrix** to **create/delete admin accounts** and assign grants — while the **root superadmin** additionally promotes/demotes superadmins and hands over root via **email OTP**. Permission changes apply **instantly** over a WebSocket — no re-login. See [Admin Panel & RBAC](#-admin-panel--rbac).
 - **Support / Ticketing UI + Realtime:** User and admin ticketing screens (open, reply with attachments, status/priority, assignment) with live thread & queue updates over a self-healing WebSocket. See [Support UI](#-support-ticketing-ui).
 - **Notification Center:** A header bell (unread badge + dropdown panel) on both the user header and the admin topbar, plus a full paginated inbox (`/notifications`, `/admin/notifications`) with an **All / Unread** filter and mark-(all-)read. Updates **live** over a self-healing WebSocket — a pushed event invalidates the React Query caches so the badge and lists refresh without a reload. Notification copy is rendered from a `type` + `data` payload via i18n (en/tr), and the inbox is reachable on mobile from the drawer / admin sidebar. See [Notification Center](#-notification-center).
+- **Active Sessions / Device Management:** A **Security** tab on the profile lists the devices signed in to the account (browser/OS + last active, current device flagged) and revokes any one — or **all other devices** in one click. Admins get the same list plus a **terminate-all** action on the user detail page, gated by the `users:sessions` permission. Revocation is **live**: an `account` WebSocket `sessions_revoked` event re-validates the device, dropping a kicked tab straight to login without a reload. See [Active Sessions](#-active-sessions).
 
 ---
 
@@ -345,6 +346,17 @@ A persistent, in-app notification surface wired to the backend's `notifications`
 
 ---
 
+## 🔒 Active Sessions
+
+A device-management surface over the backend's `user_session` feed, so a user sees where they're signed in and can sign out remotely.
+
+- **Profile security tab** — `SessionsSection` (under the profile **Security** tab) lists active sessions via `useSessions()`, each showing a parsed browser/OS label and last-active time, with the calling device flagged **This device**. A per-row **Revoke** (with confirm dialog) signs out one device; **Sign out all other devices** clears the rest while keeping the current one. The stored IP stays server-side — it's never sent to the client.
+- **Admin user detail** — `UserSessionsCard` renders the same list plus a **Terminate all sessions** action on `/admin/users/[id]`, shown only when the admin holds the `users:sessions` permission (`useCanManageUserSessions()`).
+- **Live logout** — `useAccountEvents()` (mounted app-wide via `AccountEventsBridge`) holds the self-healing `account` socket; a `sessions_revoked` frame re-validates the device by refetching `/users/me`. If this device was the one revoked the request 401s and the axios layer drops it to login at once; otherwise the sessions list cache is refreshed so the UI reflects the change live.
+- **Localized** — all copy lives under the `profile` / `admin` i18n namespaces (en/tr); session toasts resolve from the backend `success.session.*` / `error.session.*` keys.
+
+---
+
 ## 🤝 Contributing
 
 Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
@@ -378,6 +390,7 @@ Distributed under the MIT License. See the `LICENSE` file at the root of the wor
 - [ ] Sign in as that permission-limited admin and confirm the nav, routes, and actions gate to their grants
 - [ ] Try the support flow: open a ticket at `/support`, then reply/assign it from `/admin/support`
 - [ ] Open the notification bell (header / admin topbar) or the full inbox at `/notifications` and watch the badge update live as the backend emits events
+- [ ] Open the profile **Security** tab to view active sessions; sign in from a second browser and revoke it (or terminate it from `/admin/users/[id]` with the `users:sessions` grant) and watch that tab drop to login live
 - [ ] Check the E2E tests in `tests-e2e/` (incl. `admin/` RBAC + `support/`) to understand the testing patterns
 - [ ] Update the i18n translation files in `src/i18n/locales/` as needed
 
