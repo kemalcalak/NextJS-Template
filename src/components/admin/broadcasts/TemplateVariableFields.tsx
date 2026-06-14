@@ -13,12 +13,12 @@ import {
 
 const LANGUAGES: AnnouncementLanguage[] = ["tr", "en"];
 
-interface Props {
+interface TemplateVariableFieldsProps {
   template: BroadcastTemplate;
   disabled?: boolean;
 }
 
-export function TemplateVariableFields({ template, disabled }: Props) {
+export function TemplateVariableFields({ template, disabled }: TemplateVariableFieldsProps) {
   const { t } = useTranslation("broadcasts");
   const label = (name: string) => t(`admin.vars.${name}`, { defaultValue: name });
   const datetimeRule = zodFieldRule(getDatetimeFieldSchema(t));

@@ -40,3 +40,32 @@ export const getTextVarSchema = (t: TFunction) =>
     .trim()
     .min(1, { message: t("validation:required") })
     .max(ANNOUNCEMENT_TITLE_MAX);
+
+// A template must be chosen before sending (template mode); the value is the
+// catalog key string.
+export const getTemplateKeySchema = (t: TFunction) =>
+  z
+    .string()
+    .trim()
+    .min(1, { message: t("validation:required") });
+
+// When the audience is "by role", a role must be selected; the value is a
+// SystemRole string.
+export const getRoleFilterSchema = (t: TFunction) =>
+  z
+    .string()
+    .trim()
+    .min(1, { message: t("validation:required") });
+
+// Narrowing schemas for an announcement notification's stored payload, which
+// arrives as untrusted JsonValue. A variable is either a datetime ISO string or
+// a per-language text map; translations are a per-language {title, body} map.
+// Used to safeParse the payload instead of force-casting it.
+const announcementVariableValueSchema = z.union([z.string(), z.record(z.string(), z.string())]);
+
+export const announcementVariablesSchema = z.record(z.string(), announcementVariableValueSchema);
+
+export const announcementTranslationsSchema = z.record(
+  z.string(),
+  z.object({ title: z.string().optional(), body: z.string().optional() }),
+);

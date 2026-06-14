@@ -1,8 +1,12 @@
 import i18n from "@/i18n/config";
-import { announcementBody, type AnnouncementFields } from "@/lib/announcement-render";
+import { announcementBody } from "@/lib/announcement-render";
 import { ROUTES } from "@/lib/config/routes";
 import type { AnnouncementLanguage } from "@/lib/types/announcement";
 import type { NotificationItem } from "@/lib/types/notification";
+import {
+  announcementTranslationsSchema,
+  announcementVariablesSchema,
+} from "@/schemas/announcement";
 
 import type { TFunction } from "i18next";
 
@@ -35,11 +39,15 @@ export const notificationText = (t: TFunction, item: NotificationItem): string =
       );
     case "admin_announcement": {
       const lang = (i18n.language.split("-")[0] ?? "en") as AnnouncementLanguage;
+      // The payload is untrusted JsonValue — narrow it with Zod instead of
+      // casting; a malformed shape falls back to undefined (renders empty).
+      const variables = announcementVariablesSchema.safeParse(item.data.variables);
+      const translations = announcementTranslationsSchema.safeParse(item.data.translations);
       return announcementBody(t, lang, {
         kind: readNotificationString(item, "kind") || "custom",
         template_key: readNotificationString(item, "template_key") || null,
-        variables: item.data.variables as AnnouncementFields["variables"],
-        translations: item.data.translations as AnnouncementFields["translations"],
+        variables: variables.success ? variables.data : undefined,
+        translations: translations.success ? translations.data : undefined,
       });
     }
   }

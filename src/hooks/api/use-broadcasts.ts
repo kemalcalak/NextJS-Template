@@ -38,6 +38,9 @@ export const useSendBroadcast = () => {
     mutationFn: (payload: BroadcastCreate) => broadcastsApi.send(payload),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: broadcastKeys.all });
+      // Distinct prefix from `all` — refresh the banner so a show_banner send
+      // appears immediately instead of waiting for the WS event / staleTime.
+      queryClient.invalidateQueries({ queryKey: broadcastKeys.activeAnnouncement });
     },
   });
 };

@@ -13,11 +13,11 @@ import {
 
 const LANGUAGES: AnnouncementLanguage[] = ["tr", "en"];
 
-interface Props {
+interface CustomLanguageFieldsProps {
   disabled?: boolean;
 }
 
-export function CustomLanguageFields({ disabled }: Props) {
+export function CustomLanguageFields({ disabled }: CustomLanguageFieldsProps) {
   const { t } = useTranslation("broadcasts");
   const schema = getAnnouncementContentSchema(t);
 

@@ -32,14 +32,14 @@ const LEVEL_STYLE: Record<AnnouncementLevel, string> = {
 // in, sliding back up on dismiss. Lower stiffness = slower; mass adds weight.
 const STRIP_SPRING: Transition = { type: "spring", stiffness: 170, damping: 20, mass: 1.1 };
 
-interface StripProps {
+interface BannerStripProps {
   level: AnnouncementLevel;
   title: string;
   body: string;
   onDismiss: () => void;
 }
 
-function BannerStrip({ level, title, body, onDismiss }: StripProps) {
+function BannerStrip({ level, title, body, onDismiss }: BannerStripProps) {
   const { t } = useTranslation("broadcasts");
   const reduce = useReducedMotion();
   const [detailOpen, setDetailOpen] = useState(false);
@@ -94,12 +94,12 @@ function BannerStrip({ level, title, body, onDismiss }: StripProps) {
   );
 }
 
-interface SheetProps extends StripProps {
+interface BannerSheetProps extends BannerStripProps {
   open: boolean;
   onClosed: () => void;
 }
 
-function BannerSheet({ open, level, title, body, onDismiss, onClosed }: SheetProps) {
+function BannerSheet({ open, level, title, body, onDismiss, onClosed }: BannerSheetProps) {
   const { t } = useTranslation("broadcasts");
   return (
     <Drawer

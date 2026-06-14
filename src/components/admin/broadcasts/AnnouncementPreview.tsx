@@ -14,7 +14,7 @@ import type {
   BroadcastTemplate,
 } from "@/lib/types/announcement";
 
-interface Props {
+interface AnnouncementPreviewProps {
   kind: AnnouncementKind;
   level: AnnouncementLevel;
   template?: BroadcastTemplate;
@@ -28,7 +28,13 @@ const LEVEL_ACCENT: Record<AnnouncementLevel, string> = {
   critical: "border-l-destructive",
 };
 
-export function AnnouncementPreview({ kind, level, template, variables, translations }: Props) {
+export function AnnouncementPreview({
+  kind,
+  level,
+  template,
+  variables,
+  translations,
+}: AnnouncementPreviewProps) {
   const { t, i18n } = useTranslation("broadcasts");
   const lang = (i18n.language.split("-")[0] ?? "en") as AnnouncementLanguage;
 

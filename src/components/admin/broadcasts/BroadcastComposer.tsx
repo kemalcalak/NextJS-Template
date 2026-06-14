@@ -20,6 +20,8 @@ import type {
   BroadcastTemplate,
 } from "@/lib/types/announcement";
 import { SystemRole } from "@/lib/types/user";
+import { zodFieldRule } from "@/lib/validation/zodToAntdRule";
+import { getRoleFilterSchema, getTemplateKeySchema } from "@/schemas/announcement";
 
 interface FormValues {
   kind: AnnouncementKind;
@@ -133,7 +135,7 @@ export function BroadcastComposer() {
                 <Form.Item
                   name="template_key"
                   label={t("admin.form.templateLabel")}
-                  rules={[{ required: true, message: t("validation:required") }]}
+                  rules={[zodFieldRule(getTemplateKeySchema(t))]}
                 >
                   <Select
                     placeholder={t("admin.form.templatePlaceholder")}
@@ -164,7 +166,7 @@ export function BroadcastComposer() {
               <Form.Item
                 name="role_filter"
                 label={t("admin.form.roleLabel")}
-                rules={[{ required: true, message: t("validation:required") }]}
+                rules={[zodFieldRule(getRoleFilterSchema(t))]}
               >
                 <Select options={roleOptions} />
               </Form.Item>
