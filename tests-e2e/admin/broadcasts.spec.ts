@@ -41,19 +41,6 @@ const TEMPLATE_CATALOG = {
   ],
 };
 
-// The AnnouncementBanner mounts app-wide (including admin pages) and fetches the
-// active banner; left unmocked it hits the catch-all 401 and trips the logout
-// redirect. Answer it with "no active banner" so the admin page stays put.
-const mockActiveAnnouncement = async (page: Page): Promise<void> => {
-  await page.route(/.*\/api\/v1\/announcements\/active$/, async (route) => {
-    await route.fulfill({
-      status: 200,
-      contentType: "application/json",
-      body: JSON.stringify({ announcement: null }),
-    });
-  });
-};
-
 const mockBroadcastTemplates = async (page: Page): Promise<void> => {
   await page.route(/.*\/api\/v1\/admin\/broadcast-templates$/, async (route) => {
     await route.fulfill({
@@ -112,7 +99,6 @@ for (const locale of LOCALES) {
     test("renders the compose form and history for a permitted admin", async ({ page }) => {
       await injectSession(page, adminUser, locale);
       await mockMe(page, adminUser);
-      await mockActiveAnnouncement(page);
       await mockBroadcastTemplates(page);
       await mockBroadcastsEndpoint(page, { body: null });
 
@@ -126,7 +112,6 @@ for (const locale of LOCALES) {
       const captured: { body: unknown } = { body: null };
       await injectSession(page, adminUser, locale);
       await mockMe(page, adminUser);
-      await mockActiveAnnouncement(page);
       await mockBroadcastTemplates(page);
       await mockBroadcastsEndpoint(page, captured);
 
@@ -149,7 +134,6 @@ for (const locale of LOCALES) {
       const limited = makeAdmin([]);
       await injectSession(page, limited, locale);
       await mockMe(page, limited);
-      await mockActiveAnnouncement(page);
 
       await page.goto(`/${locale}/admin/broadcasts`);
 
