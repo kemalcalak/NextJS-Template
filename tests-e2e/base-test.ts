@@ -72,6 +72,27 @@ export const test = base.extend({
       },
     );
 
+    // The AnnouncementBanner mounts in the global layout, so EVERY authenticated
+    // page fires GET /announcements/active on load. Unmocked, it hits the
+    // catch-all 401 and trips the logout cascade, bouncing the page to /login —
+    // which would fail authenticated specs suite-wide. Answer GETs with "no
+    // active banner" by default; specs that assert on a banner register their
+    // own route (which takes precedence). Non-GET methods fall through.
+    await page.route(
+      (url) => url.pathname.endsWith("/api/v1/announcements/active"),
+      async (route) => {
+        if (route.request().method() !== "GET") {
+          await route.fallback();
+          return;
+        }
+        await route.fulfill({
+          status: 200,
+          contentType: "application/json",
+          body: JSON.stringify({ announcement: null }),
+        });
+      },
+    );
+
     // page.route() does not cover WebSockets, so realtime sockets (account
     // events, support feed) would otherwise reach the real backend through the
     // dev proxy. Intercept API WebSockets and answer them locally — the handler

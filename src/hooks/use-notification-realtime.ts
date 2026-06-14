@@ -4,6 +4,7 @@ import { useEffect } from "react";
 
 import { useQueryClient } from "@tanstack/react-query";
 
+import { broadcastKeys } from "@/hooks/api/use-broadcasts";
 import { notificationKeys } from "@/hooks/api/use-notifications";
 import { createNotificationSocket } from "@/lib/websocket/notification-socket";
 import { useAuthStore } from "@/stores/auth.store";
@@ -22,8 +23,12 @@ export const useNotificationRealtime = (): void => {
   useEffect(() => {
     if (!isAuthenticated) return;
 
-    const socket = createNotificationSocket(() => {
+    const socket = createNotificationSocket((event) => {
       void queryClient.invalidateQueries({ queryKey: notificationKeys.all });
+      // A broadcast also refreshes the active banner so it appears live.
+      if (event.notification.type === "admin_announcement") {
+        void queryClient.invalidateQueries({ queryKey: broadcastKeys.activeAnnouncement });
+      }
     });
 
     return () => {

@@ -9,6 +9,7 @@ import enAbout from "./locales/en/about.json";
 import enAccount from "./locales/en/account.json";
 import enAdmin from "./locales/en/admin.json";
 import enAuth from "./locales/en/auth.json";
+import enBroadcasts from "./locales/en/broadcasts.json";
 import enCommon from "./locales/en/common.json";
 import enDashboard from "./locales/en/dashboard.json";
 import enErrors from "./locales/en/errors.json";
@@ -24,6 +25,7 @@ import trAbout from "./locales/tr/about.json";
 import trAccount from "./locales/tr/account.json";
 import trAdmin from "./locales/tr/admin.json";
 import trAuth from "./locales/tr/auth.json";
+import trBroadcasts from "./locales/tr/broadcasts.json";
 import trCommon from "./locales/tr/common.json";
 import trDashboard from "./locales/tr/dashboard.json";
 import trErrors from "./locales/tr/errors.json";
@@ -53,6 +55,7 @@ const resources = {
     notifications: enNotifications,
     support: enSupport,
     upload: enUpload,
+    broadcasts: enBroadcasts,
   },
   tr: {
     common: trCommon,
@@ -70,6 +73,7 @@ const resources = {
     notifications: trNotifications,
     support: trSupport,
     upload: trUpload,
+    broadcasts: trBroadcasts,
   },
 };
 
@@ -98,6 +102,7 @@ i18n
       "notifications",
       "support",
       "upload",
+      "broadcasts",
     ],
 
     interpolation: {

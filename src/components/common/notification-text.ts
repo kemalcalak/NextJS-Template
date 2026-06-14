@@ -1,5 +1,12 @@
+import i18n from "@/i18n/config";
+import { announcementBody } from "@/lib/announcement-render";
 import { ROUTES } from "@/lib/config/routes";
+import type { AnnouncementLanguage } from "@/lib/types/announcement";
 import type { NotificationItem } from "@/lib/types/notification";
+import {
+  announcementTranslationsSchema,
+  announcementVariablesSchema,
+} from "@/schemas/announcement";
 
 import type { TFunction } from "i18next";
 
@@ -30,6 +37,19 @@ export const notificationText = (t: TFunction, item: NotificationItem): string =
         `notifications:actions.${readNotificationString(item, "action")}`,
         t("notifications:types.admin_permissions_changed"),
       );
+    case "admin_announcement": {
+      const lang = (i18n.language.split("-")[0] ?? "en") as AnnouncementLanguage;
+      // The payload is untrusted JsonValue — narrow it with Zod instead of
+      // casting; a malformed shape falls back to undefined (renders empty).
+      const variables = announcementVariablesSchema.safeParse(item.data.variables);
+      const translations = announcementTranslationsSchema.safeParse(item.data.translations);
+      return announcementBody(t, lang, {
+        kind: readNotificationString(item, "kind") || "custom",
+        template_key: readNotificationString(item, "template_key") || null,
+        variables: variables.success ? variables.data : undefined,
+        translations: translations.success ? translations.data : undefined,
+      });
+    }
   }
 };
 
@@ -38,6 +58,7 @@ export const notificationText = (t: TFunction, item: NotificationItem): string =
 // non-admin route), so their ticket links must use the admin detail page.
 export const notificationTargetPath = (item: NotificationItem, isAdmin: boolean): string | null => {
   const ticketId = readNotificationString(item, "ticket_id");
-  if (!ticketId || item.type === "admin_permissions_changed") return null;
+  if (!ticketId || item.type === "admin_permissions_changed" || item.type === "admin_announcement")
+    return null;
   return `${isAdmin ? ROUTES.adminSupport : ROUTES.support}/${ticketId}`;
 };
