@@ -24,7 +24,7 @@ interface Props {
 
 const LEVEL_ACCENT: Record<AnnouncementLevel, string> = {
   info: "border-l-primary",
-  warning: "border-l-amber-500",
+  warning: "border-l-yellow-500",
   critical: "border-l-destructive",
 };
 
