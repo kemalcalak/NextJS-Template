@@ -24,3 +24,19 @@ export const getAnnouncementContentSchema = (t: TFunction) =>
   });
 
 export type AnnouncementContentValues = z.infer<ReturnType<typeof getAnnouncementContentSchema>>;
+
+// Per-variable field schemas for the template compose form (Zod everywhere).
+// A datetime variable holds a `datetime-local` string; a text variable holds a
+// short free-text value per language.
+export const getDatetimeFieldSchema = (t: TFunction) =>
+  z
+    .string()
+    .trim()
+    .min(1, { message: t("validation:required") });
+
+export const getTextVarSchema = (t: TFunction) =>
+  z
+    .string()
+    .trim()
+    .min(1, { message: t("validation:required") })
+    .max(ANNOUNCEMENT_TITLE_MAX);
