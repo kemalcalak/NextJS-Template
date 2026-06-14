@@ -24,6 +24,7 @@ const notificationItemSchema = z.object({
     "support_ticket_replied",
     "support_ticket_status_changed",
     "admin_permissions_changed",
+    "admin_announcement",
   ]),
   data: z.record(z.string(), jsonValueSchema),
   read_at: z.string().nullable(),

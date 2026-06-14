@@ -1,6 +1,7 @@
 import { Albert_Sans, Fraunces, Geist_Mono } from "next/font/google";
 import { headers } from "next/headers";
 
+import { AnnouncementBanner } from "@/components/common/AnnouncementBanner";
 import { AppHeader } from "@/components/common/AppHeader";
 import { buildMetadata, validateLocale } from "@/lib/seo/metadata";
 import { buildThemeStyleSheet } from "@/lib/theme/colors";
@@ -73,6 +74,7 @@ export default async function RootLayout({
       >
         <ClientSideProviders locale={locale} nonce={nonce}>
           <div className="relative flex min-h-screen flex-col bg-background">
+            <AnnouncementBanner />
             <AppHeader />
             <main className="flex-1 flex flex-col">{children}</main>
           </div>

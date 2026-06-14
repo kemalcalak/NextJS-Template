@@ -24,10 +24,11 @@ export const useBroadcastTemplates = () =>
     staleTime: 1000 * 60 * 60, // catalog is static — cache for an hour
   });
 
-export const useActiveAnnouncement = () =>
+export const useActiveAnnouncement = (enabled = true) =>
   useQuery({
     queryKey: broadcastKeys.activeAnnouncement,
     queryFn: () => broadcastsApi.active(),
+    enabled,
   });
 
 // Success toast is driven by the backend `message` via the axios interceptor.
