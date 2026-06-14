@@ -21,6 +21,8 @@
     "title": "Duyurular",
     "subtitle": "Kullanıcılarınıza duyuru oluşturun ve gönderin.",
     "compose": "Yeni duyuru",
+    "previewLabel": "Önizleme",
+    "previewEmpty": "Önizleme için formu doldurun.",
     "form": {
       "modeLabel": "Tür",
       "modeTemplate": "Şablon",

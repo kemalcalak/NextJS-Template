@@ -21,6 +21,8 @@
     "title": "Announcements",
     "subtitle": "Compose and send an announcement to your users.",
     "compose": "New announcement",
+    "previewLabel": "Preview",
+    "previewEmpty": "Fill in the form to see a preview.",
     "form": {
       "modeLabel": "Type",
       "modeTemplate": "Template",
