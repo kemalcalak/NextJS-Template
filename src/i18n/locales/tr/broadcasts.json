@@ -1,0 +1,62 @@
+{
+  "templates": {
+    "maintenance": {
+      "title": "Planlı Bakım",
+      "body": "Sistem {{starts_at}} – {{ends_at}} arasında bakımda olacak; kısa kesintiler yaşanabilir."
+    },
+    "welcome": {
+      "title": "Hoş Geldiniz",
+      "body": "Aramıza hoş geldiniz! Hesabınız hazır; dilediğiniz zaman profilinizi tamamlayabilirsiniz."
+    },
+    "new_feature": {
+      "title": "Yeni Özellik",
+      "body": "Yeni bir özellik yayında: {{feature}}. Hemen göz atın!"
+    },
+    "security_notice": {
+      "title": "Güvenlik Bildirimi",
+      "body": "Hesabınızın güvenliği için şifrenizi gözden geçirmenizi ve güçlü bir şifre kullanmanızı öneririz."
+    }
+  },
+  "admin": {
+    "title": "Duyurular",
+    "subtitle": "Kullanıcılarınıza duyuru oluşturun ve gönderin.",
+    "compose": "Yeni duyuru",
+    "form": {
+      "modeLabel": "Tür",
+      "modeTemplate": "Şablon",
+      "modeCustom": "Özel",
+      "templateLabel": "Şablon",
+      "templatePlaceholder": "Bir şablon seçin",
+      "titleLabel": "Başlık",
+      "bodyLabel": "Mesaj",
+      "levelLabel": "Önem",
+      "audienceLabel": "Hedef kitle",
+      "roleLabel": "Rol",
+      "showBanner": "Üst banner olarak da göster",
+      "sendEmail": "E-posta olarak da gönder",
+      "submit": "Duyuruyu gönder",
+      "cancel": "İptal",
+      "level": { "info": "Bilgi", "warning": "Uyarı", "critical": "Kritik" },
+      "audience": { "all": "Tüm kullanıcılar", "active": "Aktif kullanıcılar", "role": "Role göre" }
+    },
+    "vars": {
+      "starts_at": "Başlangıç",
+      "ends_at": "Bitiş",
+      "feature": "Özellik adı"
+    },
+    "history": {
+      "title": "Gönderilen duyurular",
+      "empty": "Henüz duyuru gönderilmedi.",
+      "recipients_one": "{{count}} alıcı",
+      "recipients_other": "{{count}} alıcı",
+      "sentBy": "{{name}} tarafından",
+      "emailed": "E-posta gönderildi"
+    },
+    "result_one": "Duyuru {{count}} kullanıcıya gönderildi.",
+    "result_other": "Duyuru {{count}} kullanıcıya gönderildi."
+  },
+  "banner": {
+    "details": "Detay",
+    "dismiss": "Kapat"
+  }
+}
