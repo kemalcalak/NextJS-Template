@@ -13,5 +13,6 @@
   "deactivateAcknowledgeRequired": "Sonucu anladığınızı onaylamanız gerekir.",
   "subjectMin": "Konu en az {{count}} karakter olmalıdır",
   "bodyMin": "Mesaj en az {{count}} karakter olmalıdır",
-  "messageRequired": "Mesaj boş olamaz"
+  "messageRequired": "Mesaj boş olamaz",
+  "titleRequired": "Başlık gerekli"
 }
