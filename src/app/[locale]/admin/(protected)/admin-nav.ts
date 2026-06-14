@@ -4,6 +4,7 @@ import {
   CircleUser,
   Images,
   LayoutDashboard,
+  Megaphone,
   Ticket,
   UserCog,
   Users,
@@ -32,6 +33,7 @@ export interface AdminNavCaps {
   canReadFiles: boolean;
   canReadActivities: boolean;
   canReadSupport: boolean;
+  canReadBroadcasts: boolean;
   isSuperadmin: boolean;
 }
 
@@ -47,6 +49,12 @@ export const buildAdminNav = (caps: AdminNavCaps): AdminNavSection[] => {
         { key: "users", href: ROUTES.adminUsers, icon: Users, show: caps.canReadUsers },
         { key: "admins", href: ROUTES.adminAdmins, icon: UserCog, show: caps.isSuperadmin },
         { key: "files", href: ROUTES.adminFiles, icon: Images, show: caps.canReadFiles },
+        {
+          key: "broadcasts",
+          href: ROUTES.adminBroadcasts,
+          icon: Megaphone,
+          show: caps.canReadBroadcasts,
+        },
       ],
     },
     {

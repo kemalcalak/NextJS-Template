@@ -61,3 +61,6 @@ export const useCanUpdateSupport = (): boolean => usePermissions().has(Permissio
 
 export const useCanReadActivities = (): boolean => usePermissions().has(Permission.ActivitiesRead);
 export const useCanReadStats = (): boolean => usePermissions().has(Permission.StatsRead);
+
+export const useCanReadBroadcasts = (): boolean => usePermissions().has(Permission.BroadcastRead);
+export const useCanWriteBroadcasts = (): boolean => usePermissions().has(Permission.BroadcastWrite);

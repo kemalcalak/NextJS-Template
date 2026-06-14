@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { useAccountEvents } from "@/hooks/use-account-events";
 import {
   useCanReadActivities,
+  useCanReadBroadcasts,
   useCanReadFiles,
   useCanReadSupport,
   useCanReadUsers,
@@ -54,6 +55,7 @@ export function AdminShell({ children }: AdminShellProps) {
   const canReadFiles = useCanReadFiles();
   const canReadActivities = useCanReadActivities();
   const canReadSupport = useCanReadSupport();
+  const canReadBroadcasts = useCanReadBroadcasts();
   const isSuperadmin = useIsSuperadmin();
   const currentLocale = getLocaleFromPath(pathname);
   const pathWithoutLocale = getPathWithoutLocale(pathname);
@@ -105,6 +107,7 @@ export function AdminShell({ children }: AdminShellProps) {
     canReadFiles,
     canReadActivities,
     canReadSupport,
+    canReadBroadcasts,
     isSuperadmin,
   });
 

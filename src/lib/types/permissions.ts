@@ -16,4 +16,6 @@ export enum Permission {
   SupportUpdate = "support:update",
   ActivitiesRead = "activities:read",
   StatsRead = "stats:read",
+  BroadcastRead = "broadcast:read",
+  BroadcastWrite = "broadcast:write",
 }
