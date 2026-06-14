@@ -14,5 +14,6 @@
   "subjectMin": "Konu en az {{count}} karakter olmalıdır",
   "bodyMin": "Mesaj en az {{count}} karakter olmalıdır",
   "messageRequired": "Mesaj boş olamaz",
-  "titleRequired": "Başlık gerekli"
+  "titleRequired": "Başlık gerekli",
+  "required": "Bu alan gerekli"
 }

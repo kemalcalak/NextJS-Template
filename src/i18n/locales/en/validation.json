@@ -14,5 +14,6 @@
   "subjectMin": "Subject must be at least {{count}} characters",
   "bodyMin": "Message must be at least {{count}} characters",
   "messageRequired": "Message cannot be empty",
-  "titleRequired": "Title is required"
+  "titleRequired": "Title is required",
+  "required": "This field is required"
 }

@@ -1,0 +1,59 @@
+"use client";
+
+import { Form, Input, Tabs } from "antd";
+import { useTranslation } from "react-i18next";
+
+import type { AnnouncementLanguage, BroadcastTemplate } from "@/lib/types/announcement";
+import { ANNOUNCEMENT_TITLE_MAX } from "@/schemas/announcement";
+
+const LANGUAGES: AnnouncementLanguage[] = ["tr", "en"];
+
+interface Props {
+  template: BroadcastTemplate;
+  disabled?: boolean;
+}
+
+export function TemplateVariableFields({ template, disabled }: Props) {
+  const { t } = useTranslation("broadcasts");
+  const label = (name: string) => t(`admin.vars.${name}`, { defaultValue: name });
+  const required = { required: true, message: t("validation:required") };
+
+  const datetimeVars = template.variables.filter((v) => v.type === "datetime");
+  const textVars = template.variables.filter((v) => v.type === "text");
+
+  return (
+    <>
+      {datetimeVars.map((variable) => (
+        <Form.Item
+          key={variable.name}
+          name={["variables", variable.name]}
+          label={label(variable.name)}
+          rules={[required]}
+        >
+          {/* datetime-local: Ant-styled wrapper, native value, no dayjs. The
+              composer converts the local string to a UTC ISO at submit. */}
+          <Input type="datetime-local" disabled={disabled} />
+        </Form.Item>
+      ))}
+
+      {textVars.length > 0 ? (
+        <Tabs
+          items={LANGUAGES.map((lang) => ({
+            key: lang,
+            label: lang.toUpperCase(),
+            children: textVars.map((variable) => (
+              <Form.Item
+                key={variable.name}
+                name={["variables", variable.name, lang]}
+                label={label(variable.name)}
+                rules={[required]}
+              >
+                <Input maxLength={ANNOUNCEMENT_TITLE_MAX} showCount disabled={disabled} />
+              </Form.Item>
+            )),
+          }))}
+        />
+      ) : null}
+    </>
+  );
+}
