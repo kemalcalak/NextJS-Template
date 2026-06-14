@@ -6,7 +6,8 @@ import type { JsonValue } from "@/lib/types/admin";
 export type NotificationType =
   | "support_ticket_replied"
   | "support_ticket_status_changed"
-  | "admin_permissions_changed";
+  | "admin_permissions_changed"
+  | "admin_announcement";
 
 export type NotificationEventType = "notification_created";
 

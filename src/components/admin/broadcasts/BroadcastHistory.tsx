@@ -9,6 +9,7 @@ import { DEFAULT_PAGE_SIZE } from "@/components/admin/pagination-config";
 import { StatusBadge } from "@/components/admin/StatusBadge";
 import { Card, CardContent } from "@/components/ui/card";
 import { useBroadcasts } from "@/hooks/api/use-broadcasts";
+import { announcementTitle } from "@/lib/announcement-render";
 import { formatDateTime } from "@/lib/format-date";
 import type {
   AnnouncementLanguage,
@@ -16,27 +17,11 @@ import type {
   AnnouncementRead,
 } from "@/lib/types/announcement";
 
-import type { TFunction } from "i18next";
-
 const LEVEL_TONE: Record<AnnouncementLevel, "info" | "warning" | "danger"> = {
   info: "info",
   warning: "warning",
   critical: "danger",
 };
-
-// Title from FE i18n for templates (see AnnouncementPreview sync note), from
-// stored translations for custom announcements.
-function announcementTitle(
-  t: TFunction,
-  lang: AnnouncementLanguage,
-  item: AnnouncementRead,
-): string {
-  if (item.kind === "template" && item.template_key) {
-    return t(`templates.${item.template_key}.title`);
-  }
-  const tr = item.translations;
-  return tr?.[lang]?.title ?? tr?.en?.title ?? tr?.tr?.title ?? "—";
-}
 
 function creatorName(item: AnnouncementRead): string | null {
   if (!item.creator) return null;

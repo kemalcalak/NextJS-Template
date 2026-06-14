@@ -1,4 +1,7 @@
+import i18n from "@/i18n/config";
+import { announcementBody, type AnnouncementFields } from "@/lib/announcement-render";
 import { ROUTES } from "@/lib/config/routes";
+import type { AnnouncementLanguage } from "@/lib/types/announcement";
 import type { NotificationItem } from "@/lib/types/notification";
 
 import type { TFunction } from "i18next";
@@ -30,6 +33,15 @@ export const notificationText = (t: TFunction, item: NotificationItem): string =
         `notifications:actions.${readNotificationString(item, "action")}`,
         t("notifications:types.admin_permissions_changed"),
       );
+    case "admin_announcement": {
+      const lang = (i18n.language.split("-")[0] ?? "en") as AnnouncementLanguage;
+      return announcementBody(t, lang, {
+        kind: readNotificationString(item, "kind") || "custom",
+        template_key: readNotificationString(item, "template_key") || null,
+        variables: item.data.variables as AnnouncementFields["variables"],
+        translations: item.data.translations as AnnouncementFields["translations"],
+      });
+    }
   }
 };
 
@@ -38,6 +50,7 @@ export const notificationText = (t: TFunction, item: NotificationItem): string =
 // non-admin route), so their ticket links must use the admin detail page.
 export const notificationTargetPath = (item: NotificationItem, isAdmin: boolean): string | null => {
   const ticketId = readNotificationString(item, "ticket_id");
-  if (!ticketId || item.type === "admin_permissions_changed") return null;
+  if (!ticketId || item.type === "admin_permissions_changed" || item.type === "admin_announcement")
+    return null;
   return `${isAdmin ? ROUTES.adminSupport : ROUTES.support}/${ticketId}`;
 };
