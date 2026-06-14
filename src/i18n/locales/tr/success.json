@@ -48,6 +48,9 @@
       "message_sent": "Mesaj gönderildi.",
       "admin_ticket_updated": "Talep güncellendi.",
       "admin_ticket_replied": "Yanıt gönderildi."
+    },
+    "announcement": {
+      "sent": "Duyuru gönderildi."
     }
   }
 }

@@ -48,6 +48,9 @@
       "message_sent": "Message sent.",
       "admin_ticket_updated": "Ticket updated.",
       "admin_ticket_replied": "Reply sent."
+    },
+    "announcement": {
+      "sent": "Announcement sent."
     }
   }
 }

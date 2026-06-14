@@ -87,6 +87,10 @@
     "title": "Notifications",
     "description": "View all your notifications and manage their read status."
   },
+  "adminBroadcasts": {
+    "title": "Announcements",
+    "description": "Compose and send announcements to your users."
+  },
   "adminTicketDetail": {
     "title": "Ticket",
     "description": "View a support ticket, reply, and update its status."

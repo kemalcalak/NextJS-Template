@@ -23,6 +23,7 @@ export type SeoPageKey =
   | "adminActivities"
   | "adminSupport"
   | "adminNotifications"
+  | "adminBroadcasts"
   | "adminTicketDetail"
   | "notFound"
   | "error";

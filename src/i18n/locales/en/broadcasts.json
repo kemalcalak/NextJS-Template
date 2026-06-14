@@ -49,13 +49,9 @@
     "history": {
       "title": "Sent announcements",
       "empty": "No announcements sent yet.",
-      "recipients_one": "{{count}} recipient",
-      "recipients_other": "{{count}} recipients",
       "sentBy": "by {{name}}",
       "emailed": "Emailed"
-    },
-    "result_one": "Announcement sent to {{count}} user.",
-    "result_other": "Announcement sent to {{count}} users."
+    }
   },
   "banner": {
     "details": "Details",

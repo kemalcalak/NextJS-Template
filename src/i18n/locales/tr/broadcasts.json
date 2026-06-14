@@ -49,13 +49,9 @@
     "history": {
       "title": "Gönderilen duyurular",
       "empty": "Henüz duyuru gönderilmedi.",
-      "recipients_one": "{{count}} alıcı",
-      "recipients_other": "{{count}} alıcı",
       "sentBy": "{{name}} tarafından",
       "emailed": "E-posta gönderildi"
-    },
-    "result_one": "Duyuru {{count}} kullanıcıya gönderildi.",
-    "result_other": "Duyuru {{count}} kullanıcıya gönderildi."
+    }
   },
   "banner": {
     "details": "Detay",

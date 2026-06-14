@@ -87,6 +87,10 @@
     "title": "Bildirimler",
     "description": "Tüm bildirimlerinizi görüntüleyin ve okunma durumlarını yönetin."
   },
+  "adminBroadcasts": {
+    "title": "Duyurular",
+    "description": "Kullanıcılarınıza duyuru oluşturun ve gönderin."
+  },
   "adminTicketDetail": {
     "title": "Talep",
     "description": "Bir destek talebini görüntüleyin, yanıtlayın ve durumunu güncelleyin."
