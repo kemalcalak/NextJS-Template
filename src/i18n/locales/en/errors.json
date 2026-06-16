@@ -26,7 +26,8 @@
     },
     "auth": {
       "refresh_token_missing": "Refresh token is missing.",
-      "invalid_current_password": "Current password is incorrect."
+      "invalid_current_password": "Current password is incorrect.",
+      "registration_disabled": "Registration is currently disabled."
     },
     "account": {
       "already_deactivated": "Your account is already scheduled for deletion.",
@@ -65,7 +66,15 @@
       "attachment_not_found": "An attached file could not be found.",
       "attachment_not_owned": "You can only attach files you uploaded yourself.",
       "attachment_wrong_category": "That file can't be used as a support attachment.",
-      "invalid_assigned_admin": "Tickets can only be assigned to an administrator."
+      "invalid_assigned_admin": "Tickets can only be assigned to an administrator.",
+      "disabled": "Support is temporarily unavailable."
+    },
+    "system": {
+      "maintenance": "The system is under maintenance. Please check back soon."
+    },
+    "settings": {
+      "not_found": "Setting not found.",
+      "invalid_value": "Invalid value for this setting."
     }
   }
 }

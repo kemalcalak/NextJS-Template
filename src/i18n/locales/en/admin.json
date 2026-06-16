@@ -129,6 +129,7 @@
       "support": "Support",
       "notifications": "Notifications",
       "broadcasts": "Announcements",
+      "system-settings": "System Settings",
       "profile": "Profile"
     },
     "signedInAs": "Signed in as",

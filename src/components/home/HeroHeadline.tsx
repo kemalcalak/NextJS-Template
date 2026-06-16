@@ -2,29 +2,31 @@
 
 import { motion } from "motion/react";
 
-import { env } from "@/env";
 import { EASE_OUT, wordRise, wordStagger } from "@/lib/motion/variants";
 import { cn } from "@/lib/utils";
 
-// Word containing the app name gets the gradient + hand-drawn underline.
-function isAccentWord(word: string): boolean {
-  return word.toLocaleLowerCase().includes(env.NEXT_PUBLIC_APP_NAME.toLocaleLowerCase());
+// Word containing the site name gets the gradient + hand-drawn underline.
+function isAccentWord(word: string, appName: string): boolean {
+  if (!appName) return false;
+  return word.toLocaleLowerCase().includes(appName.toLocaleLowerCase());
 }
 
 interface HeroHeadlineProps {
   title: string;
+  // Site name (from branding) used to highlight the matching word in the title.
+  appName: string;
 }
 
 // Word-by-word masked rise; the accent word is gradient-filled and underlined
 // by a self-drawing stroke once the words have settled.
-export function HeroHeadline({ title }: HeroHeadlineProps) {
+export function HeroHeadline({ title, appName }: HeroHeadlineProps) {
   return (
     <motion.h1
       variants={wordStagger}
       className="text-balance text-5xl sm:text-6xl md:text-7xl font-semibold tracking-tight text-foreground"
     >
       {title.split(" ").map((word, index, words) => {
-        const accent = isAccentWord(word);
+        const accent = isAccentWord(word, appName);
         return (
           <span
             // eslint-disable-next-line react/no-array-index-key -- words can repeat; order is stable

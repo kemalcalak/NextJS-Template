@@ -93,6 +93,37 @@ export const test = base.extend({
       },
     );
 
+    // The MaintenanceGate and branding (useBranding) call GET /settings/public
+    // on EVERY page — the gate wraps the whole app and the header/sidebar logo +
+    // name read from it. Unmocked it hits the catch-all 401, the gate stalls on
+    // its first-load splash, and branding/register-link specs break suite-wide.
+    // Answer with a healthy, non-maintenance config (registration on) by default;
+    // specs that assert on settings register their own route (precedence).
+    await page.route(
+      (url) => url.pathname.endsWith("/api/v1/settings/public"),
+      async (route) => {
+        if (route.request().method() !== "GET") {
+          await route.fallback();
+          return;
+        }
+        await route.fulfill({
+          status: 200,
+          contentType: "application/json",
+          body: JSON.stringify({
+            data: {
+              maintenance_mode: false,
+              registration_enabled: true,
+              support_enabled: true,
+              site_name: "Test App",
+              logo_url: "",
+              support_email: "support@test.com",
+              default_locale: "en",
+            },
+          }),
+        });
+      },
+    );
+
     // page.route() does not cover WebSockets, so realtime sockets (account
     // events, support feed) would otherwise reach the real backend through the
     // dev proxy. Intercept API WebSockets and answer them locally — the handler

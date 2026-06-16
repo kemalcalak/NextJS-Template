@@ -33,6 +33,24 @@ export const handlers = [
     return HttpResponse.json(createMockUser());
   }),
 
+  // Public settings — useBranding / MaintenanceGate / register-toggle call this
+  // on every page. Default to a healthy, non-maintenance config (registration
+  // on) so component trees don't trip the unhandled-request error → error toast,
+  // which would pollute the DOM. Specs needing other values override per test.
+  http.get("*/api/v1/settings/public", () => {
+    return HttpResponse.json({
+      data: {
+        maintenance_mode: false,
+        registration_enabled: true,
+        support_enabled: true,
+        site_name: "Test App",
+        logo_url: "",
+        support_email: "support@test.com",
+        default_locale: "en",
+      },
+    });
+  }),
+
   http.post("*/api/v1/auth/login", () => {
     return HttpResponse.json(
       {

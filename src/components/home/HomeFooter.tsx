@@ -8,7 +8,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslation } from "react-i18next";
 
-import { env } from "@/env";
+import { useBranding } from "@/hooks/use-branding";
 import { useLanguage } from "@/hooks/use-language";
 import { useTheme } from "@/hooks/use-theme";
 import { getLocaleFromPath, ROUTES, getLocalizedPath } from "@/lib/config/routes";
@@ -87,6 +87,7 @@ function BackToTop({ label }: { label: string }) {
 // A gradient hairline and grain texture tie it to the rest of the theme.
 export function HomeFooter() {
   const { t } = useTranslation(["home", "common", "auth"]);
+  const { siteName } = useBranding();
   const { user } = useAuthStore();
   const pathname = usePathname();
   const currentLocale = getLocaleFromPath(pathname);
@@ -141,7 +142,7 @@ export function HomeFooter() {
         <div className="grid grid-cols-2 gap-10 text-center sm:grid-cols-[2fr_1fr_1fr] sm:text-left">
           <div className="col-span-2 mx-auto max-w-sm sm:col-span-1 sm:mx-0 sm:pr-8">
             <p className="font-display text-2xl font-semibold tracking-tight">
-              {env.NEXT_PUBLIC_APP_NAME}
+              {siteName}
               <span className="text-primary">.</span>
             </p>
             <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
@@ -165,7 +166,7 @@ export function HomeFooter() {
 
         <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-border/60 pt-6 text-xs text-muted-foreground sm:flex-row">
           <p>
-            © {year} {env.NEXT_PUBLIC_APP_NAME} — {t("home:footer.rights")}
+            © {year} {siteName} — {t("home:footer.rights")}
           </p>
 
           {/* Tool strip: theme + language */}

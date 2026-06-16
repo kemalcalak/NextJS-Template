@@ -91,6 +91,10 @@
     "title": "Duyurular",
     "description": "Kullanıcılarınıza duyuru oluşturun ve gönderin."
   },
+  "adminSystemSettings": {
+    "title": "Sistem Ayarları",
+    "description": "Site genelindeki ayarları, markalamayı ve özellik anahtarlarını yönetin."
+  },
   "adminTicketDetail": {
     "title": "Talep",
     "description": "Bir destek talebini görüntüleyin, yanıtlayın ve durumunu güncelleyin."

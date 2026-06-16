@@ -1,0 +1,63 @@
+{
+  "title": "Sistem Ayarları",
+  "subtitle": "Site geneli davranışı, markalamayı ve özellik anahtarlarını yapılandırın.",
+  "save": "Değişiklikleri kaydet",
+  "saving": "Kaydediliyor…",
+  "noChanges": "Kaydedilecek değişiklik yok",
+  "loading": "Ayarlar yükleniyor…",
+  "categories": {
+    "system": "Sistem",
+    "auth": "Kimlik Doğrulama",
+    "uploads": "Yüklemeler",
+    "support": "Destek",
+    "branding": "Markalama"
+  },
+  "logo": {
+    "upload": "Logo yükle",
+    "replace": "Logoyu değiştir",
+    "empty": "Logo ayarlanmadı",
+    "uploading": "Yükleniyor…"
+  },
+  "maintenance": {
+    "title": "Birazdan döneceğiz",
+    "description": "Planlı bakım çalışması yapıyoruz. Lütfen kısa süre sonra tekrar deneyin."
+  },
+  "locales": {
+    "tr": "Türkçe",
+    "en": "İngilizce"
+  },
+  "fields": {
+    "maintenance_mode": {
+      "label": "Bakım modu",
+      "description": "Açıkken yalnızca adminler uygulamaya erişebilir; diğer herkes bakım ekranını görür."
+    },
+    "registration_enabled": {
+      "label": "Kayıt açık",
+      "description": "Kapalıyken yeni hesap kaydı reddedilir."
+    },
+    "max_upload_size_mb": {
+      "label": "Maks. yükleme boyutu (MB)",
+      "description": "İzin verilen maksimum dosya yükleme boyutu (megabayt)."
+    },
+    "support_enabled": {
+      "label": "Destek açık",
+      "description": "Kapalıyken kullanıcılar yeni destek talebi açamaz."
+    },
+    "site_name": {
+      "label": "Site adı",
+      "description": "Uygulama genelinde ve e-postalarda gösterilen ürün adı."
+    },
+    "logo_url": {
+      "label": "Logo",
+      "description": "Site logosu. Depolamaya yüklenir; URL'i burada saklanır."
+    },
+    "support_email": {
+      "label": "Destek e-postası",
+      "description": "Kullanıcılara gösterilen iletişim e-postası."
+    },
+    "default_locale": {
+      "label": "Varsayılan dil",
+      "description": "Yeni kullanıcılar için varsayılan dil."
+    }
+  }
+}

@@ -11,8 +11,9 @@ import { useTranslation } from "react-i18next";
 
 import { AppDrawer } from "@/components/common/AppDrawer";
 import { AuthButtons } from "@/components/common/AuthButtons";
+import { BrandLogo } from "@/components/common/BrandLogo";
 import { NotificationBell } from "@/components/common/NotificationBell";
-import { env } from "@/env";
+import { useBranding } from "@/hooks/use-branding";
 import { useLanguage } from "@/hooks/use-language";
 import { useTheme } from "@/hooks/use-theme";
 import { useIsMobile } from "@/hooks/useMediaQuery";
@@ -133,6 +134,7 @@ const HeaderNav = ({ pathWithoutLocale, currentLocale }: HeaderNavProps) => {
 
 export const AppHeader = () => {
   const { t } = useTranslation();
+  const { siteName } = useBranding();
   const user = useAuthStore((state) => state.user);
   const { theme, setTheme, resolvedTheme } = useTheme();
   const pathname = usePathname();
@@ -204,12 +206,9 @@ export const AppHeader = () => {
             href={getLocalizedPath(ROUTES.home, currentLocale)}
             className="group flex items-center gap-2.5 transition-opacity hover:opacity-90"
           >
-            {/* Logo slot — swap the initial for the real logo mark when ready */}
-            <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-primary/70 font-display text-sm font-semibold text-primary-foreground shadow-md shadow-primary/25 transition-transform duration-300 group-hover:scale-105">
-              {env.NEXT_PUBLIC_APP_NAME.charAt(0).toUpperCase()}
-            </span>
+            <BrandLogo className="h-8 w-8 rounded-xl text-sm transition-transform duration-300 group-hover:scale-105" />
             <h2 className="text-lg font-semibold tracking-tight cursor-pointer">
-              {env.NEXT_PUBLIC_APP_NAME}
+              {siteName}
               <span className="inline-block text-primary transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:scale-125">
                 .
               </span>

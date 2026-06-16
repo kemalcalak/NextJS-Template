@@ -1,9 +1,10 @@
-import { render, screen } from "@testing-library/react";
+import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
 
 import { AuthButtons } from "@/components/common/AuthButtons";
 import { SystemRole, type User } from "@/lib/types/user";
+import { renderWithProviders } from "@/test/test-utils";
 
 const mockUser = (overrides: Partial<User> = {}): User => ({
   id: "1",
@@ -24,14 +25,14 @@ const mockUser = (overrides: Partial<User> = {}): User => ({
 
 describe("AuthButtons", () => {
   it("shows login and register links when unauthenticated", () => {
-    render(<AuthButtons user={null} />);
+    renderWithProviders(<AuthButtons user={null} />);
     expect(screen.getByRole("link", { name: /auth:login\.submitButton/i })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /auth:register\.submitButton/i })).toBeInTheDocument();
   });
 
   it("exposes a Support entry in the user dropdown (desktop parity with the mobile drawer)", async () => {
     const user = userEvent.setup();
-    render(<AuthButtons user={mockUser()} />);
+    renderWithProviders(<AuthButtons user={mockUser()} />);
 
     // Open the avatar dropdown (the only button in the authenticated view).
     await user.click(screen.getByRole("button"));

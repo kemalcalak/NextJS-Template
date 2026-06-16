@@ -104,6 +104,41 @@ vi.mock("react-i18next", () => ({
     init: vi.fn(),
   },
 }));
+// Branding, the maintenance gate, and the registration toggle read the public
+// settings via usePublicSettings on (almost) every page. Mock it globally with
+// a static, healthy config so component trees don't each spin up a real React
+// Query fetch — that added async work to dozens of component specs (slowing the
+// suite) and surfaced an error toast that polluted the DOM. Specs that assert on
+// settings override this per file. Other exports (admin list/update hooks) stay
+// real via importOriginal.
+vi.mock("@/hooks/api/use-system-settings", () => ({
+  systemSettingsKeys: {
+    all: ["systemSettings"],
+    list: ["systemSettings", "list"],
+    public: ["systemSettings", "public"],
+  },
+  usePublicSettings: () => ({
+    data: {
+      data: {
+        maintenance_mode: false,
+        registration_enabled: true,
+        support_enabled: true,
+        site_name: "Test App",
+        logo_url: "",
+        support_email: "support@test.com",
+        default_locale: "en",
+      },
+    },
+    isLoading: false,
+  }),
+  useSystemSettings: () => ({ data: undefined, isLoading: false }),
+  useUpdateSystemSetting: () => ({
+    mutate: () => undefined,
+    mutateAsync: () => Promise.resolve(undefined),
+    isPending: false,
+  }),
+}));
+
 // Mock window.matchMedia
 Object.defineProperty(window, "matchMedia", {
   writable: true,

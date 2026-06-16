@@ -51,6 +51,9 @@
     },
     "announcement": {
       "sent": "Duyuru gönderildi."
+    },
+    "settings": {
+      "updated": "Ayarlar kaydedildi."
     }
   }
 }

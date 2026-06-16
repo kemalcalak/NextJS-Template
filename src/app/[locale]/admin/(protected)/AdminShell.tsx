@@ -14,6 +14,7 @@ import {
   useCanReadBroadcasts,
   useCanReadFiles,
   useCanReadSupport,
+  useCanReadSystemSettings,
   useCanReadUsers,
   useIsSuperadmin,
 } from "@/hooks/use-permissions";
@@ -56,6 +57,7 @@ export function AdminShell({ children }: AdminShellProps) {
   const canReadActivities = useCanReadActivities();
   const canReadSupport = useCanReadSupport();
   const canReadBroadcasts = useCanReadBroadcasts();
+  const canReadSystemSettings = useCanReadSystemSettings();
   const isSuperadmin = useIsSuperadmin();
   const currentLocale = getLocaleFromPath(pathname);
   const pathWithoutLocale = getPathWithoutLocale(pathname);
@@ -108,6 +110,7 @@ export function AdminShell({ children }: AdminShellProps) {
     canReadActivities,
     canReadSupport,
     canReadBroadcasts,
+    canReadSystemSettings,
     isSuperadmin,
   });
 

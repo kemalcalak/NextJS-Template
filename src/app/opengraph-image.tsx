@@ -1,8 +1,8 @@
 /* eslint-disable react-refresh/only-export-components */
 import { ImageResponse } from "next/og";
 
-import { env } from "@/env";
 import { getServerTranslations } from "@/i18n/server";
+import { getServerSiteName } from "@/lib/server/site-name";
 
 export const runtime = "edge";
 
@@ -17,11 +17,11 @@ export const contentType = "image/png";
 /**
  * OG Image Generator
  */
-export default function Image({ params }: { params: { locale: string } }) {
+export default async function Image({ params }: { params: { locale: string } }) {
   // Use server-side translation helper instead of manual JSON import
   const { t } = getServerTranslations(params.locale);
   const subtitle = t("app_subtitle", "Modern, Type-Safe and Premium Next.js Template");
-  const appName = env.NEXT_PUBLIC_APP_NAME;
+  const appName = await getServerSiteName();
 
   return new ImageResponse(
     <div

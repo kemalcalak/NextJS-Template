@@ -5,6 +5,7 @@ import {
   Images,
   LayoutDashboard,
   Megaphone,
+  Settings,
   Ticket,
   UserCog,
   Users,
@@ -34,6 +35,7 @@ export interface AdminNavCaps {
   canReadActivities: boolean;
   canReadSupport: boolean;
   canReadBroadcasts: boolean;
+  canReadSystemSettings: boolean;
   isSuperadmin: boolean;
 }
 
@@ -54,6 +56,12 @@ export const buildAdminNav = (caps: AdminNavCaps): AdminNavSection[] => {
           href: ROUTES.adminBroadcasts,
           icon: Megaphone,
           show: caps.canReadBroadcasts,
+        },
+        {
+          key: "system-settings",
+          href: ROUTES.adminSystemSettings,
+          icon: Settings,
+          show: caps.canReadSystemSettings,
         },
       ],
     },

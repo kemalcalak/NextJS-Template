@@ -26,7 +26,8 @@
     },
     "auth": {
       "refresh_token_missing": "Yenileme token'ı eksik.",
-      "invalid_current_password": "Mevcut şifre yanlış."
+      "invalid_current_password": "Mevcut şifre yanlış.",
+      "registration_disabled": "Kayıt işlemi şu anda kapalı."
     },
     "account": {
       "already_deactivated": "Hesabınız zaten silinmek üzere planlanmış.",
@@ -65,7 +66,15 @@
       "attachment_not_found": "Eklenen bir dosya bulunamadı.",
       "attachment_not_owned": "Yalnızca kendi yüklediğiniz dosyaları ekleyebilirsiniz.",
       "attachment_wrong_category": "Bu dosya destek eki olarak kullanılamaz.",
-      "invalid_assigned_admin": "Talepler yalnızca bir yöneticiye atanabilir."
+      "invalid_assigned_admin": "Talepler yalnızca bir yöneticiye atanabilir.",
+      "disabled": "Destek şu anda kullanılamıyor."
+    },
+    "system": {
+      "maintenance": "Sistem bakımda. Lütfen kısa süre sonra tekrar deneyin."
+    },
+    "settings": {
+      "not_found": "Ayar bulunamadı.",
+      "invalid_value": "Bu ayar için geçersiz değer."
     }
   }
 }

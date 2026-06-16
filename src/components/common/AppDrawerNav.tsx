@@ -6,10 +6,11 @@ import { motion } from "motion/react";
 import { useTranslation } from "react-i18next";
 
 import { drawerItem } from "@/components/common/app-drawer-motion";
+import { BrandLogo } from "@/components/common/BrandLogo";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { env } from "@/env";
 import { useUnreadCount } from "@/hooks/api/use-notifications";
+import { useBranding } from "@/hooks/use-branding";
 import { ROUTES } from "@/lib/config/routes";
 import { SystemRole } from "@/lib/types/user";
 import { cn } from "@/lib/utils";
@@ -21,15 +22,13 @@ interface DrawerTitleProps {
 
 export const DrawerTitle = ({ onClose }: DrawerTitleProps) => {
   const { t } = useTranslation();
+  const { siteName } = useBranding();
   return (
     <div className="flex items-center justify-between">
       <span className="flex items-center gap-2.5">
-        {/* Logo slot — swap the initial for the real logo mark when ready */}
-        <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-primary/70 font-display text-sm font-semibold text-primary-foreground shadow-md shadow-primary/25">
-          {env.NEXT_PUBLIC_APP_NAME.charAt(0).toUpperCase()}
-        </span>
+        <BrandLogo className="h-8 w-8 rounded-xl text-sm" />
         <span className="text-xl font-semibold tracking-tight">
-          {env.NEXT_PUBLIC_APP_NAME}
+          {siteName}
           <span className="text-primary">.</span>
         </span>
       </span>

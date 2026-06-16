@@ -7,6 +7,7 @@ import { usePathname } from "next/navigation";
 import { AuthHydrator } from "@/components/auth/AuthHydrator";
 import { ErrorBoundary } from "@/components/common/ErrorBoundary";
 import { LoadingScreen } from "@/components/common/LoadingScreen";
+import { MaintenanceGate } from "@/components/common/MaintenanceGate";
 import i18n from "@/i18n/config";
 import { getLocaleFromPath } from "@/lib/config/routes";
 
@@ -76,7 +77,9 @@ export function ClientSideProviders({ children, locale, nonce }: ClientSideProvi
           <QueryProvider>
             <AuthHydrator>
               <SupportRealtimeBridge />
-              <ErrorBoundary>{children}</ErrorBoundary>
+              <ErrorBoundary>
+                <MaintenanceGate>{children}</MaintenanceGate>
+              </ErrorBoundary>
             </AuthHydrator>
           </QueryProvider>
         )}
