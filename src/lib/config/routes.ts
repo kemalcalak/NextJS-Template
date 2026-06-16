@@ -27,6 +27,7 @@ export const ROUTES = {
   adminSupport: "/admin/support",
   adminNotifications: "/admin/notifications",
   adminBroadcasts: "/admin/broadcasts",
+  adminSystemSettings: "/admin/system-settings",
   adminProfile: "/admin/profile",
 } as const;
 
@@ -53,6 +54,7 @@ export const protectedRoutes = [
   ROUTES.adminSupport,
   ROUTES.adminNotifications,
   ROUTES.adminBroadcasts,
+  ROUTES.adminSystemSettings,
   ROUTES.adminProfile,
   ROUTES.accountSuspended,
 ];
@@ -101,6 +103,7 @@ export const adminRoutes = [
   ROUTES.adminSupport,
   ROUTES.adminNotifications,
   ROUTES.adminBroadcasts,
+  ROUTES.adminSystemSettings,
   ROUTES.adminProfile,
 ];
 

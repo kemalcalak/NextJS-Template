@@ -64,3 +64,8 @@ export const useCanReadStats = (): boolean => usePermissions().has(Permission.St
 
 export const useCanReadBroadcasts = (): boolean => usePermissions().has(Permission.BroadcastRead);
 export const useCanWriteBroadcasts = (): boolean => usePermissions().has(Permission.BroadcastWrite);
+
+export const useCanReadSystemSettings = (): boolean =>
+  usePermissions().has(Permission.SystemSettingsRead);
+export const useCanWriteSystemSettings = (): boolean =>
+  usePermissions().has(Permission.SystemSettingsWrite);

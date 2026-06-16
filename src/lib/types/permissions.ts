@@ -18,4 +18,6 @@ export enum Permission {
   StatsRead = "stats:read",
   BroadcastRead = "broadcast:read",
   BroadcastWrite = "broadcast:write",
+  SystemSettingsRead = "system_settings:read",
+  SystemSettingsWrite = "system_settings:write",
 }
