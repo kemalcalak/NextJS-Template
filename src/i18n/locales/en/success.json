@@ -51,6 +51,9 @@
     },
     "announcement": {
       "sent": "Announcement sent."
+    },
+    "settings": {
+      "updated": "Settings saved."
     }
   }
 }
