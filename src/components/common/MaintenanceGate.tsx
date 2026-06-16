@@ -18,7 +18,11 @@ import { useAuthStore } from "@/stores/auth.store";
  * settings cannot be read, the app renders normally — the backend still enforces
  * the real lock.
  */
-export function MaintenanceGate({ children }: { children: React.ReactNode }) {
+interface MaintenanceGateProps {
+  children: React.ReactNode;
+}
+
+export function MaintenanceGate({ children }: MaintenanceGateProps) {
   const pathname = usePathname();
   const { data, isLoading } = usePublicSettings();
   const user = useAuthStore((state) => state.user);

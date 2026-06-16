@@ -22,6 +22,10 @@
     "title": "Birazdan döneceğiz",
     "description": "Planlı bakım çalışması yapıyoruz. Lütfen kısa süre sonra tekrar deneyin."
   },
+  "locales": {
+    "tr": "Türkçe",
+    "en": "İngilizce"
+  },
   "fields": {
     "maintenance_mode": {
       "label": "Bakım modu",

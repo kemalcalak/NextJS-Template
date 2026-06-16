@@ -19,7 +19,8 @@ describe("BrandLogo", () => {
     renderWithProviders(<BrandLogo className="h-8 w-8" />);
 
     const img = screen.getByRole("img", { name: "Acme" });
-    expect(img).toHaveAttribute("src", "https://cdn.example.com/logo.png");
+    // next/image rewrites src to its optimizer URL; the original is encoded in it.
+    expect(img.getAttribute("src")).toContain("cdn.example.com");
     expect(img.className).toContain("object-contain");
   });
 

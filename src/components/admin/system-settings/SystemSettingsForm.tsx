@@ -81,8 +81,8 @@ export function SystemSettingsForm({
           disabled={disabled}
           className="w-48"
           options={[
-            { value: "tr", label: "Türkçe" },
-            { value: "en", label: "English" },
+            { value: "tr", label: t("locales.tr") },
+            { value: "en", label: t("locales.en") },
           ]}
         />
       );

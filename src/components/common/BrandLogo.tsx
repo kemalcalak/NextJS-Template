@@ -1,5 +1,7 @@
 "use client";
 
+import Image from "next/image";
+
 import { useBranding } from "@/hooks/use-branding";
 import { cn } from "@/lib/utils";
 
@@ -18,9 +20,12 @@ export function BrandLogo({ className }: BrandLogoProps) {
 
   if (!logoUrl) return null;
 
+  // ``fill`` needs a positioned, sized box; the caller's className provides the
+  // dimensions. ``object-contain`` keeps the (often rectangular, transparent)
+  // logo uncropped. ``sizes`` is small since the mark is only a header/sidebar icon.
   return (
-    <span className={cn("flex shrink-0 items-center justify-center", className)}>
-      <img src={logoUrl} alt={siteName} className="h-full w-full object-contain" />
+    <span className={cn("relative shrink-0", className)}>
+      <Image src={logoUrl} alt={siteName} fill sizes="48px" className="object-contain" />
     </span>
   );
 }

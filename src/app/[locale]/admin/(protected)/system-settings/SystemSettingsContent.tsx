@@ -35,8 +35,13 @@ export function SystemSettingsContent() {
   // PATCH only the changed keys, then drop the draft so the refetched server
   // values become the source of truth again. Toasts come from the interceptor.
   const onSave = async () => {
-    await Promise.all(dirtyKeys.map((key) => update.mutateAsync({ key, value: draft[key] })));
-    setDraft({});
+    try {
+      await Promise.all(dirtyKeys.map((key) => update.mutateAsync({ key, value: draft[key] })));
+      setDraft({});
+    } catch {
+      // Failures already surface as toasts via the axios interceptor; keep the
+      // draft so the admin can retry without re-entering their changes.
+    }
   };
 
   // The logo persists immediately after upload: the file is already stored on

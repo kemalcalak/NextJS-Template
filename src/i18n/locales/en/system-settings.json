@@ -22,6 +22,10 @@
     "title": "We'll be right back",
     "description": "We're performing scheduled maintenance. Please check back soon."
   },
+  "locales": {
+    "tr": "Turkish",
+    "en": "English"
+  },
   "fields": {
     "maintenance_mode": {
       "label": "Maintenance mode",
