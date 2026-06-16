@@ -91,6 +91,10 @@
     "title": "Announcements",
     "description": "Compose and send announcements to your users."
   },
+  "adminSystemSettings": {
+    "title": "System Settings",
+    "description": "Configure site-wide settings, branding, and feature toggles."
+  },
   "adminTicketDetail": {
     "title": "Ticket",
     "description": "View a support ticket, reply, and update its status."

@@ -9,7 +9,7 @@ import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { useUploadFile } from "@/hooks/api/use-files";
 import { toast } from "@/lib/toast";
-import { FILE_CATEGORY, type FilePublic } from "@/lib/types/file";
+import { FILE_CATEGORY, type FileCategory, type FilePublic } from "@/lib/types/file";
 import { cn } from "@/lib/utils";
 
 import {
@@ -20,12 +20,21 @@ import {
 } from "./file-upload-utils";
 
 interface AvatarUploadProps {
-  value?: FilePublic | null;
+  // Current image. Accepts any object exposing a ``url`` (e.g. a ``FilePublic``
+  // or a bare ``{ url }`` built from a stored URL string), so callers that only
+  // persist the URL — like a site-logo setting — can reuse this component.
+  value?: { url: string } | null;
   onChange?: (file: FilePublic | null) => void;
+  // Cloudinary bucket the upload is tagged with. Defaults to the avatar folder.
+  category?: FileCategory;
   allowedTypes?: readonly string[];
   maxSizeBytes?: number;
   disabled?: boolean;
   className?: string;
+  // "circle" + "cover" is the avatar default. A logo (often transparent and
+  // rectangular) should use "square" + "contain" so it is never cropped.
+  shape?: "circle" | "square";
+  fit?: "cover" | "contain";
 }
 
 interface AvatarActionsProps {
@@ -95,10 +104,13 @@ function AvatarActions({
 export function AvatarUpload({
   value,
   onChange,
+  category = FILE_CATEGORY.USER_PROFILE_PHOTO,
   allowedTypes = DEFAULT_IMAGE_TYPES,
   maxSizeBytes = DEFAULT_MAX_UPLOAD_SIZE,
   disabled = false,
   className,
+  shape = "circle",
+  fit = "cover",
 }: AvatarUploadProps) {
   const { t } = useTranslation("upload");
   const inputRef = useRef<HTMLInputElement>(null);
@@ -113,6 +125,8 @@ export function AvatarUpload({
 
   const interactive = !disabled && !upload.isPending;
   const displayUrl = pendingUrl ?? value?.url ?? null;
+  const radius = shape === "circle" ? "rounded-full" : "rounded-md";
+  const objectFit = fit === "contain" ? "object-contain" : "object-cover";
 
   // Revoke the local preview URL when it changes or on unmount to avoid leaks.
   useEffect(() => {
@@ -146,11 +160,10 @@ export function AvatarUpload({
   const handleSave = () => {
     if (!pendingFile) return;
     setProgress(0);
-    // Every avatar is tagged as a profile photo so it buckets into the
-    // user_profile_photo Cloudinary folder and stays filterable in the files
-    // table. Enforced here so no caller can forget the category.
+    // Tag the upload with the caller's category (defaults to the avatar folder)
+    // so it buckets correctly on Cloudinary and stays filterable in the files table.
     upload.mutate(
-      { file: pendingFile, category: FILE_CATEGORY.USER_PROFILE_PHOTO, onProgress: setProgress },
+      { file: pendingFile, category, onProgress: setProgress },
       {
         onSuccess: (uploaded) => {
           clearPending();
@@ -174,17 +187,27 @@ export function AvatarUpload({
             }}
             disabled={upload.isPending}
             aria-label={t("preview")}
-            className="size-28 overflow-hidden rounded-full border border-border"
+            className={cn("size-28 overflow-hidden border border-border", radius)}
           >
-            <img src={displayUrl} alt="" className="size-full object-cover" />
+            <img src={displayUrl} alt="" className={cn("size-full", objectFit)} />
           </button>
         ) : (
-          <div className="flex size-28 items-center justify-center rounded-full border border-border bg-muted">
+          <div
+            className={cn(
+              "flex size-28 items-center justify-center border border-border bg-muted",
+              radius,
+            )}
+          >
             <ImageIcon className="size-9 text-muted-foreground" />
           </div>
         )}
         {upload.isPending && (
-          <div className="absolute inset-0 flex flex-col items-center justify-center gap-1 rounded-full bg-black/50 text-xs font-medium text-white">
+          <div
+            className={cn(
+              "absolute inset-0 flex flex-col items-center justify-center gap-1 bg-black/50 text-xs font-medium text-white",
+              radius,
+            )}
+          >
             <Loader2 className="size-5 animate-spin" />
             {progress > 0 ? `${progress}%` : null}
           </div>

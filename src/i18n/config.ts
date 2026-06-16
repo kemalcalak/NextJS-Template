@@ -19,6 +19,7 @@ import enProfile from "./locales/en/profile.json";
 import enSeo from "./locales/en/seo.json";
 import enSuccess from "./locales/en/success.json";
 import enSupport from "./locales/en/support.json";
+import enSystemSettings from "./locales/en/system-settings.json";
 import enUpload from "./locales/en/upload.json";
 import enValidation from "./locales/en/validation.json";
 import trAbout from "./locales/tr/about.json";
@@ -35,6 +36,7 @@ import trProfile from "./locales/tr/profile.json";
 import trSeo from "./locales/tr/seo.json";
 import trSuccess from "./locales/tr/success.json";
 import trSupport from "./locales/tr/support.json";
+import trSystemSettings from "./locales/tr/system-settings.json";
 import trUpload from "./locales/tr/upload.json";
 import trValidation from "./locales/tr/validation.json";
 
@@ -56,6 +58,7 @@ const resources = {
     support: enSupport,
     upload: enUpload,
     broadcasts: enBroadcasts,
+    systemSettings: enSystemSettings,
   },
   tr: {
     common: trCommon,
@@ -74,6 +77,7 @@ const resources = {
     support: trSupport,
     upload: trUpload,
     broadcasts: trBroadcasts,
+    systemSettings: trSystemSettings,
   },
 };
 
@@ -103,6 +107,7 @@ i18n
       "support",
       "upload",
       "broadcasts",
+      "systemSettings",
     ],
 
     interpolation: {

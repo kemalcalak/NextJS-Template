@@ -24,6 +24,7 @@ export type SeoPageKey =
   | "adminSupport"
   | "adminNotifications"
   | "adminBroadcasts"
+  | "adminSystemSettings"
   | "adminTicketDetail"
   | "notFound"
   | "error";

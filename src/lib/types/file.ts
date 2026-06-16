@@ -6,6 +6,7 @@ export const FILE_CATEGORY = {
   GENERAL: "general",
   USER_PROFILE_PHOTO: "user_profile_photo",
   SUPPORT_ATTACHMENT: "support_attachment",
+  BRANDING_LOGO: "branding_logo",
 } as const;
 
 export type FileCategory = (typeof FILE_CATEGORY)[keyof typeof FILE_CATEGORY];
