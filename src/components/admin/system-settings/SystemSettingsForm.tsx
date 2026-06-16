@@ -17,6 +17,8 @@ interface SystemSettingsFormProps {
   loading: boolean;
   draft: Record<string, SettingValue>;
   onChange: (key: string, value: SettingValue) => void;
+  // Logo persists immediately on upload (separate from the draft/Save flow).
+  onLogoSave: (url: string) => void;
   canWrite: boolean;
   dirty: boolean;
   saving: boolean;
@@ -28,6 +30,7 @@ export function SystemSettingsForm({
   loading,
   draft,
   onChange,
+  onLogoSave,
   canWrite,
   dirty,
   saving,
@@ -59,7 +62,7 @@ export function SystemSettingsForm({
         <AvatarUpload
           value={url ? { url } : null}
           onChange={(file) => {
-            onChange(setting.key, file?.url ?? "");
+            onLogoSave(file?.url ?? "");
           }}
           category={FILE_CATEGORY.BRANDING_LOGO}
           shape="square"

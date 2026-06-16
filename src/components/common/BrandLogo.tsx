@@ -9,31 +9,18 @@ interface BrandLogoProps {
 }
 
 /**
- * The brand mark: the uploaded logo when set, otherwise the first-letter badge.
- *
- * The logo is rendered ``object-contain`` (never cropped) since it is a
- * transparent, often rectangular image; only the badge fallback gets the
- * gradient fill.
+ * The brand mark: the backend ``logo_url`` rendered ``object-contain`` (never
+ * cropped — it is a transparent, often rectangular image). Renders nothing when
+ * no logo is set; there is no letter-badge fallback.
  */
 export function BrandLogo({ className }: BrandLogoProps) {
   const { siteName, logoUrl } = useBranding();
 
-  if (logoUrl) {
-    return (
-      <span className={cn("flex shrink-0 items-center justify-center overflow-hidden", className)}>
-        <img src={logoUrl} alt={siteName} className="h-full w-full object-contain" />
-      </span>
-    );
-  }
+  if (!logoUrl) return null;
 
   return (
-    <span
-      className={cn(
-        "flex shrink-0 items-center justify-center bg-gradient-to-br from-primary to-primary/70 font-display font-semibold text-primary-foreground shadow-md shadow-primary/25",
-        className,
-      )}
-    >
-      {siteName.charAt(0).toUpperCase()}
+    <span className={cn("flex shrink-0 items-center justify-center", className)}>
+      <img src={logoUrl} alt={siteName} className="h-full w-full object-contain" />
     </span>
   );
 }

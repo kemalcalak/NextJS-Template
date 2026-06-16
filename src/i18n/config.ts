@@ -2,7 +2,6 @@ import i18n from "i18next";
 import LanguageDetector from "i18next-browser-languagedetector";
 import { initReactI18next } from "react-i18next";
 
-import { env } from "@/env";
 import { defaultLocale, locales } from "@/lib/config/routes";
 
 import enAbout from "./locales/en/about.json";
@@ -117,9 +116,6 @@ i18n
       // no non-React DOM sink). Otherwise user input interpolated into a
       // translation would bypass React's escaping and become XSS.
       escapeValue: false,
-      defaultVariables: {
-        appName: env.NEXT_PUBLIC_APP_NAME,
-      },
     },
 
     react: {

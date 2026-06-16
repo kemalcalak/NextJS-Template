@@ -1,4 +1,3 @@
-import { env } from "@/env";
 import { usePublicSettings } from "@/hooks/api/use-system-settings";
 
 interface Branding {
@@ -7,14 +6,13 @@ interface Branding {
 }
 
 /**
- * Resolve site branding from the public settings, falling back to the build-time
- * app name while the settings load (or if they are unset). The logo is a URL
- * stored on Cloudinary; an empty string means "no logo — use the letter badge".
+ * Resolve site branding from the public settings. The site name and logo come
+ * solely from the backend ``site_name`` / ``logo_url`` settings (empty while the
+ * settings load or if unset); an empty ``logoUrl`` means "no logo".
  */
 export function useBranding(): Branding {
   const { data } = usePublicSettings();
-  const siteName =
-    (typeof data?.data.site_name === "string" && data.data.site_name) || env.NEXT_PUBLIC_APP_NAME;
+  const siteName = typeof data?.data.site_name === "string" ? data.data.site_name : "";
   const logoUrl = typeof data?.data.logo_url === "string" ? data.data.logo_url : "";
   return { siteName, logoUrl };
 }

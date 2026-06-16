@@ -39,6 +39,13 @@ export function SystemSettingsContent() {
     setDraft({});
   };
 
+  // The logo persists immediately after upload: the file is already stored on
+  // Cloudinary + the files table, so we PATCH logo_url straight away rather than
+  // staging it in the draft for a separate save. Invalidation refreshes branding.
+  const onLogoSave = (url: string) => {
+    update.mutate({ key: "logo_url", value: url });
+  };
+
   if (!canRead) return <AdminForbidden />;
 
   return (
@@ -52,6 +59,7 @@ export function SystemSettingsContent() {
         loading={isLoading}
         draft={draft}
         onChange={setField}
+        onLogoSave={onLogoSave}
         canWrite={canWrite}
         dirty={dirtyKeys.length > 0}
         saving={update.isPending}

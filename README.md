@@ -65,6 +65,7 @@ The API proxy is pre-configured in `next.config.ts` to forward requests from you
 - **Support / Ticketing UI + Realtime:** User and admin ticketing screens (open, reply with attachments, status/priority, assignment) with live thread & queue updates over a self-healing WebSocket. See [Support UI](#-support-ticketing-ui).
 - **Notification Center:** A header bell (unread badge + dropdown panel) on both the user header and the admin topbar, plus a full paginated inbox (`/notifications`, `/admin/notifications`) with an **All / Unread** filter and mark-(all-)read. Updates **live** over a self-healing WebSocket — a pushed event invalidates the React Query caches so the badge and lists refresh without a reload. Notification copy is rendered from a `type` + `data` payload via i18n (en/tr), and the inbox is reachable on mobile from the drawer / admin sidebar. See [Notification Center](#-notification-center).
 - **Announcements / Broadcast:** An admin compose page (`/admin/broadcasts`) to send announcements — **template** or **custom** mode with per-language (tr/en) title/body, live character counters, a **live preview**, audience / importance selectors, and optional banner / email toggles — plus a sent-history list. Recipients see it in the notification center and, when flagged, as a **top banner** (desktop strip + detail modal, mobile bottom-sheet, springy enter/exit) rendered in their active locale, refreshed **live** over the notification WebSocket and dismissible (persisted in `localStorage`); animations respect `prefers-reduced-motion`. Gated by `broadcast:read` / `broadcast:write`.
+- **System Settings:** An admin page (`/admin/system-settings`) to edit site-wide settings grouped by category, with a typed control per setting (switch / number / select) and a **logo upload** that persists immediately. Branding is consumed app-wide — the **site name & logo** in the header, sidebar and login come from the backend `site_name` / `logo_url` (no env var), and a **maintenance gate** shows non-admins a full-screen maintenance notice (with a first-load splash) while admins keep working; the register link/route is hidden & guarded when registration is off. Public settings are read once (cached) from `/settings/public`. Gated by `system_settings:read` / `system_settings:write`. See [System Settings](#-system-settings).
 - **Active Sessions / Device Management:** A **Security** tab on the profile lists the devices signed in to the account (browser/OS + last active, current device flagged) and revokes any one — or **all other devices** in one click. Admins get the same list plus a **terminate-all** action on the user detail page, gated by the `users:sessions` permission. Revocation is **live**: an `account` WebSocket `sessions_revoked` event re-validates the device, dropping a kicked tab straight to login without a reload. See [Active Sessions](#-active-sessions).
 
 ---
@@ -105,7 +106,7 @@ Create a `.env.local` file (or copy from `.env.example`) and configure your API 
 ```env
 NEXT_PUBLIC_API_URL=http://localhost:8000
 NEXT_PUBLIC_API_PREFIX=/api/v1
-NEXT_PUBLIC_APP_NAME=MyApp
+NEXT_PUBLIC_APP_URL=http://localhost:3000
 
 # Sentry (leave empty to disable error tracking)
 NEXT_PUBLIC_SENTRY_DSN=
@@ -122,7 +123,10 @@ SENTRY_AUTH_TOKEN=
 
 - `NEXT_PUBLIC_API_URL`: Base URL of your FastAPI backend server
 - `NEXT_PUBLIC_API_PREFIX`: API version prefix (commonly `/api/v1`)
-- `NEXT_PUBLIC_APP_NAME`: Application name displayed throughout the UI
+- `NEXT_PUBLIC_APP_URL`: Public origin of this app, used for `metadataBase` / absolute SEO URLs
+- `NEXT_PUBLIC_WS_URL` _(optional)_: Explicit WebSocket origin; derived from `NEXT_PUBLIC_API_URL` when unset
+
+> The application **name and logo** shown across the UI come from the admin **System Settings** (`site_name` / `logo_url`), served by the backend `/settings/public` endpoint — not from an env var. SSR/SEO surfaces (page title, OpenGraph image) read the same setting server-side.
 
 **Optional — Sentry (leave empty to disable):**
 
@@ -344,6 +348,17 @@ A persistent, in-app notification surface wired to the backend's `notifications`
 - **Full inbox** — a paginated page at `/notifications` (and `/admin/notifications`) with an **All / Unread** filter and bulk mark-as-read, both sharing one `NotificationsView`.
 - **Live** — `useNotificationRealtime()` holds a self-healing socket (`/notifications/ws`); a pushed `notification_created` event invalidates the notification React Query caches so the badge and lists refetch without a reload.
 - **Localized copy** — messages are produced from a stored `type` + `data` payload through i18n (`notifications` namespace, en/tr); the backend persists no human-readable text.
+
+---
+
+## ⚙️ System Settings
+
+An admin surface for the backend's runtime settings, plus the app-wide consumption of the public ones.
+
+- **Admin editor** — `/admin/system-settings` (`SystemSettingsContent` + `SystemSettingsForm`) lists every setting grouped by category in cards, rendering a typed control per `value_type` (antd `Switch` / `InputNumber` / `Input`, a `Select` for the locale). Non-logo settings stage into a draft and persist together via **Save changes** (PATCH per changed key); the **logo** uploads through the shared `AvatarUpload` (Cloudinary + files table) and persists **immediately**. Gated by `useCanReadSystemSettings()` / `useCanWriteSystemSettings()`.
+- **Branding** — `useBranding()` reads `site_name` / `logo_url` from the cached `/settings/public`; the `BrandLogo` mark and site name in the header, sidebar, drawer and login come from there (no env var). SSR/SEO surfaces (root `<title>`, OpenGraph image) read the same setting server-side via `getServerSiteName()`.
+- **Maintenance gate** — `MaintenanceGate` (mounted in the client providers) shows non-admins a full-screen `MaintenanceScreen` while `maintenance_mode` is on; admins pass through, auth routes stay reachable, and a first-load splash avoids a flash. The maintenance message is i18n (en/tr).
+- **Registration toggle** — when `registration_enabled` is off, the register link is hidden (login page + header) and the `/register` route redirects to login.
 
 ---
 

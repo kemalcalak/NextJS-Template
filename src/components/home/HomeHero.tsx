@@ -10,6 +10,7 @@ import { useTranslation } from "react-i18next";
 import { HeroFeedMock } from "@/components/home/HeroFeedMock";
 import { HeroHeadline } from "@/components/home/HeroHeadline";
 import { Button } from "@/components/ui/button";
+import { useBranding } from "@/hooks/use-branding";
 import { getLocaleFromPath, ROUTES, getLocalizedPath } from "@/lib/config/routes";
 import { fadeUp, scaleIn, staggerContainer } from "@/lib/motion/variants";
 import { useAuthStore } from "@/stores/auth.store";
@@ -19,6 +20,7 @@ import { useAuthStore } from "@/stores/auth.store";
 // feed preview that straightens out of its 3D tilt as you scroll.
 export function HomeHero() {
   const { t } = useTranslation("home");
+  const { siteName } = useBranding();
   const { user } = useAuthStore();
   const pathname = usePathname();
   const currentLocale = getLocaleFromPath(pathname);
@@ -91,7 +93,7 @@ export function HomeHero() {
           </span>
         </motion.div>
 
-        <HeroHeadline title={t("title")} />
+        <HeroHeadline title={t("title", { appName: siteName })} appName={siteName} />
 
         <motion.p
           variants={fadeUp}

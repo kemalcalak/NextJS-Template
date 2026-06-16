@@ -46,7 +46,10 @@ See `.env.example` for required variables
 
 - `NEXT_PUBLIC_API_URL` — Backend API base URL (default: `http://localhost:8000`)
 - `NEXT_PUBLIC_API_PREFIX` — API path prefix (default: `/api/v1`)
-- `NEXT_PUBLIC_APP_NAME` — Application name
+- `NEXT_PUBLIC_APP_URL` — Public origin of this app (default: `http://localhost:3000`), used for `metadataBase`
+- `NEXT_PUBLIC_WS_URL` _(optional)_ — Explicit WebSocket origin; derived from `NEXT_PUBLIC_API_URL` if unset
+
+> App name & logo come from the admin System Settings (`site_name` / `logo_url`) via `/settings/public`, not an env var — including SSR/SEO surfaces (title, OG image) which read it server-side.
 
 ## Code Style
 
