@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useLoginMutation } from "@/hooks/api/use-auth";
+import { usePublicSettings } from "@/hooks/api/use-system-settings";
 import { getLocaleFromPath, ROUTES, getLocalizedPath } from "@/lib/config/routes";
 import { zodFieldRule } from "@/lib/validation/zodToAntdRule";
 import { getEmailSchema, getRequiredPasswordSchema, type LoginFormValues } from "@/schemas/auth";
@@ -24,6 +25,8 @@ export function LoginContent() {
   const pathname = usePathname();
   const currentLocale = getLocaleFromPath(pathname);
   const { mutate: login, isPending: isLoading } = useLoginMutation();
+  const { data: publicSettings } = usePublicSettings();
+  const canRegister = publicSettings?.data.registration_enabled !== false;
 
   const onFinish = (values: LoginFormValues) => {
     login(values);
@@ -82,15 +85,17 @@ export function LoginContent() {
                 <Button className="w-full" type="submit" loading={isLoading}>
                   {isLoading ? t("login.submitting") : t("login.submitButton")}
                 </Button>
-                <div className="text-center text-sm">
-                  {t("login.noAccount")}{" "}
-                  <Link
-                    href={getLocalizedPath(ROUTES.register, currentLocale)}
-                    className="font-medium text-primary hover:underline transition-all"
-                  >
-                    {t("login.register")}
-                  </Link>
-                </div>
+                {canRegister && (
+                  <div className="text-center text-sm">
+                    {t("login.noAccount")}{" "}
+                    <Link
+                      href={getLocalizedPath(ROUTES.register, currentLocale)}
+                      className="font-medium text-primary hover:underline transition-all"
+                    >
+                      {t("login.register")}
+                    </Link>
+                  </div>
+                )}
               </div>
             </Form>
           </CardContent>

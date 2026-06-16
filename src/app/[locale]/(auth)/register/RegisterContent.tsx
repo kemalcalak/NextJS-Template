@@ -1,10 +1,12 @@
 "use client";
 
+import { useEffect } from "react";
+
 import { Form } from "antd";
 import { UserPlus } from "lucide-react";
 import { motion } from "motion/react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 
 import { AuthEmailField } from "@/components/auth/AuthEmailField";
@@ -14,6 +16,7 @@ import { AuthPasswordField } from "@/components/auth/AuthPasswordField";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useRegisterMutation } from "@/hooks/api/use-auth";
+import { usePublicSettings } from "@/hooks/api/use-system-settings";
 import { getLocaleFromPath, ROUTES, getLocalizedPath } from "@/lib/config/routes";
 import { zodFieldRule } from "@/lib/validation/zodToAntdRule";
 import {
@@ -28,11 +31,26 @@ export function RegisterContent() {
   const { t: tv } = useTranslation("validation");
   const pathname = usePathname();
   const currentLocale = getLocaleFromPath(pathname);
+  const router = useRouter();
   const { mutate: registerUser, isPending: isLoading } = useRegisterMutation();
+  const { data: publicSettings } = usePublicSettings();
+  const registrationDisabled = publicSettings?.data.registration_enabled === false;
+
+  // Route guard: registration can be turned off at runtime. Once the public
+  // settings confirm it is disabled, send visitors to login so the page is not
+  // usable by direct navigation (the backend also rejects the API with 403).
+  useEffect(() => {
+    if (registrationDisabled) {
+      router.replace(getLocalizedPath(ROUTES.login, currentLocale));
+    }
+  }, [registrationDisabled, router, currentLocale]);
 
   const onFinish = ({ confirmPassword: _, ...payload }: RegisterFormValues) => {
     registerUser(payload);
   };
+
+  // Avoid flashing the form while the redirect above is in flight.
+  if (registrationDisabled) return null;
 
   return (
     <div className="mesh-glow texture-grain flex min-h-screen items-center justify-center overflow-hidden bg-background p-4 sm:p-8">

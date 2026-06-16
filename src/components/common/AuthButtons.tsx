@@ -17,6 +17,7 @@ import { useTranslation } from "react-i18next";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import { usePublicSettings } from "@/hooks/api/use-system-settings";
 import { getLocaleFromPath, ROUTES, getLocalizedPath } from "@/lib/config/routes";
 import { SystemRole } from "@/lib/types/user";
 import { cn } from "@/lib/utils";
@@ -58,6 +59,8 @@ export const AuthButtons = ({ user, onNavigate }: AuthButtonsProps) => {
   const pathname = usePathname();
   const currentLocale = getLocaleFromPath(pathname);
   const router = useRouter();
+  const { data: publicSettings } = usePublicSettings();
+  const canRegister = publicSettings?.data.registration_enabled !== false;
   const [open, setOpen] = useState(false);
 
   const navigate = (path: string) => {
@@ -79,16 +82,18 @@ export const AuthButtons = ({ user, onNavigate }: AuthButtonsProps) => {
             {t("auth:login.submitButton", "Login")}
           </Link>
         </Button>
-        <Button asChild className="shadow-md shadow-primary/25">
-          <Link
-            href={getLocalizedPath(ROUTES.register, currentLocale)}
-            onClick={() => {
-              onNavigate?.();
-            }}
-          >
-            {t("auth:register.submitButton", "Register")}
-          </Link>
-        </Button>
+        {canRegister && (
+          <Button asChild className="shadow-md shadow-primary/25">
+            <Link
+              href={getLocalizedPath(ROUTES.register, currentLocale)}
+              onClick={() => {
+                onNavigate?.();
+              }}
+            >
+              {t("auth:register.submitButton", "Register")}
+            </Link>
+          </Button>
+        )}
       </div>
     );
   }

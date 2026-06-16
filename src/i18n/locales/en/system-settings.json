@@ -18,14 +18,14 @@
     "empty": "No logo set",
     "uploading": "Uploading…"
   },
+  "maintenance": {
+    "title": "We'll be right back",
+    "description": "We're performing scheduled maintenance. Please check back soon."
+  },
   "fields": {
     "maintenance_mode": {
       "label": "Maintenance mode",
       "description": "When on, only admins can reach the app; everyone else sees the maintenance screen."
-    },
-    "maintenance_message": {
-      "label": "Maintenance message",
-      "description": "Message shown on the maintenance screen."
     },
     "registration_enabled": {
       "label": "Registration enabled",

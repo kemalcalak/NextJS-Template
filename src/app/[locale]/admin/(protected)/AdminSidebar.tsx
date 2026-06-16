@@ -5,7 +5,8 @@ import { motion } from "motion/react";
 import Link from "next/link";
 import { useTranslation } from "react-i18next";
 
-import { env } from "@/env";
+import { BrandLogo } from "@/components/common/BrandLogo";
+import { useBranding } from "@/hooks/use-branding";
 import { getLocalizedPath, matchesRoute } from "@/lib/config/routes";
 import { SPRING_SOFT } from "@/lib/motion/variants";
 import { cn } from "@/lib/utils";
@@ -35,6 +36,7 @@ export function AdminSidebar({
   onNavigate,
 }: AdminSidebarProps) {
   const { t } = useTranslation("admin");
+  const { siteName } = useBranding();
 
   return (
     <div className="flex h-full flex-col">
@@ -44,14 +46,11 @@ export function AdminSidebar({
           collapsed ? "justify-center px-2" : "px-4",
         )}
       >
-        {/* Logo slot — swap the initial for the real logo mark when ready */}
-        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-primary/70 font-display text-sm font-semibold text-primary-foreground shadow-md shadow-primary/25">
-          {env.NEXT_PUBLIC_APP_NAME.charAt(0).toUpperCase()}
-        </span>
+        <BrandLogo className="h-9 w-9 rounded-xl text-sm" />
         {collapsed ? null : (
           <div className="min-w-0">
             <p className="truncate text-sm font-semibold leading-tight">
-              {env.NEXT_PUBLIC_APP_NAME}
+              {siteName}
               <span className="text-primary">.</span>
             </p>
             <p className="truncate text-xs text-muted-foreground">{t("shell.brandSubtitle")}</p>

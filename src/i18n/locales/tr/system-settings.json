@@ -18,14 +18,14 @@
     "empty": "Logo ayarlanmadı",
     "uploading": "Yükleniyor…"
   },
+  "maintenance": {
+    "title": "Birazdan döneceğiz",
+    "description": "Planlı bakım çalışması yapıyoruz. Lütfen kısa süre sonra tekrar deneyin."
+  },
   "fields": {
     "maintenance_mode": {
       "label": "Bakım modu",
       "description": "Açıkken yalnızca adminler uygulamaya erişebilir; diğer herkes bakım ekranını görür."
-    },
-    "maintenance_message": {
-      "label": "Bakım mesajı",
-      "description": "Bakım ekranında gösterilen mesaj."
     },
     "registration_enabled": {
       "label": "Kayıt açık",
