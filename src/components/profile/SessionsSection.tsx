@@ -5,7 +5,7 @@ import { useState, type ReactNode } from "react";
 import { LogOut, MonitorSmartphone, Smartphone } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
-import { ConfirmDialog } from "@/components/admin/ConfirmDialog";
+import { ConfirmDialog } from "@/components/admin/shared/ConfirmDialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";

@@ -2,7 +2,7 @@ import { Albert_Sans, Fraunces, Geist_Mono } from "next/font/google";
 import { headers } from "next/headers";
 
 import { AnnouncementBanner } from "@/components/common/AnnouncementBanner";
-import { AppHeader } from "@/components/common/AppHeader";
+import { AppHeader } from "@/components/layout/AppHeader";
 import { buildMetadata, validateLocale } from "@/lib/seo/metadata";
 import { buildThemeStyleSheet } from "@/lib/theme/colors";
 import { ClientSideProviders } from "@/providers/ClientSideProviders";

@@ -2,7 +2,7 @@
 
 import { useTranslation } from "react-i18next";
 
-import { StatusBadge } from "@/components/admin/StatusBadge";
+import { StatusBadge } from "@/components/admin/shared/StatusBadge";
 import type { TicketPriority, TicketStatus } from "@/lib/types/support";
 
 // `as const` keeps the values as literal tones so they satisfy StatusBadge's

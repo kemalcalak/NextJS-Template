@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 
 import { useTranslation } from "react-i18next";
 
-import { LoadingScreen } from "@/components/common/LoadingScreen";
+import { LoadingScreen } from "@/components/feedback/LoadingScreen";
 import { useLogoutMutation } from "@/hooks/api/use-auth";
 
 export default function Logout() {

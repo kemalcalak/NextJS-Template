@@ -4,16 +4,16 @@ import { useMemo, useState } from "react";
 
 import { useTranslation } from "react-i18next";
 
-import { AdminPagination } from "@/components/admin/Pagination";
-import { DEFAULT_PAGE_SIZE } from "@/components/admin/pagination-config";
-import { UserActionDialogs } from "@/components/admin/UserActionDialogs";
+import { AdminPagination } from "@/components/admin/shared/Pagination";
+import { DEFAULT_PAGE_SIZE } from "@/components/admin/shared/pagination-config";
+import { UserActionDialogs } from "@/components/admin/users/UserActionDialogs";
 import {
   UsersFilters,
   type UsersRoleFilter,
   type UsersStatusFilter,
   type UsersVerifiedFilter,
-} from "@/components/admin/UsersFilters";
-import { UsersTable } from "@/components/admin/UsersTable";
+} from "@/components/admin/users/UsersFilters";
+import { UsersTable } from "@/components/admin/users/UsersTable";
 import { Card, CardContent } from "@/components/ui/card";
 import { useAdminUsers } from "@/hooks/api/use-admin";
 import { useUserActions, type UserActionKind } from "@/hooks/api/use-user-actions";

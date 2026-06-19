@@ -3,7 +3,7 @@
 import { PanelLeft } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
-import { NotificationBell } from "@/components/common/NotificationBell";
+import { NotificationBell } from "@/components/notifications/NotificationBell";
 import { Button } from "@/components/ui/button";
 
 interface AdminTopbarProps {

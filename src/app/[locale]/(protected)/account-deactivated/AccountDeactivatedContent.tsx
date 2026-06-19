@@ -6,7 +6,7 @@ import { AlertTriangle, LogOut, ShieldCheck } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 
-import { LoadingScreen } from "@/components/common/LoadingScreen";
+import { LoadingScreen } from "@/components/feedback/LoadingScreen";
 import { Button } from "@/components/ui/button";
 import {
   Card,

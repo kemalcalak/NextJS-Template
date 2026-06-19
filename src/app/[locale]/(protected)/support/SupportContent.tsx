@@ -6,8 +6,8 @@ import { Segmented } from "antd";
 import { Plus, Search } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
-import { AdminPagination } from "@/components/admin/Pagination";
-import { DEFAULT_PAGE_SIZE } from "@/components/admin/pagination-config";
+import { AdminPagination } from "@/components/admin/shared/Pagination";
+import { DEFAULT_PAGE_SIZE } from "@/components/admin/shared/pagination-config";
 import { NewTicketModal } from "@/components/support/NewTicketModal";
 import { TicketList } from "@/components/support/TicketList";
 import { Button } from "@/components/ui/button";

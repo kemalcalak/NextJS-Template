@@ -5,7 +5,7 @@ import { LogOut, Moon, Sun } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 
-import { SettingsSection } from "@/components/common/AppDrawerSettings";
+import { SettingsSection } from "@/components/layout/AppDrawerSettings";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/hooks/use-language";

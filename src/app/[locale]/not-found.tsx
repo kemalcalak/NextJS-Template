@@ -1,4 +1,4 @@
-import { NotFound } from "@/components/common/NotFound";
+import { NotFound } from "@/components/feedback/NotFound";
 
 export default function GlobalNotFound() {
   return (

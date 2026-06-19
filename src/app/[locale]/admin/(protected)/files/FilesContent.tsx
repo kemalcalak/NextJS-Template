@@ -5,11 +5,11 @@ import { useMemo, useState } from "react";
 import { Image } from "antd";
 import { useTranslation } from "react-i18next";
 
-import { ConfirmDialog } from "@/components/admin/ConfirmDialog";
-import { FilesFilters } from "@/components/admin/FilesFilters";
-import { FilesTable } from "@/components/admin/FilesTable";
-import { AdminPagination } from "@/components/admin/Pagination";
-import { DEFAULT_PAGE_SIZE } from "@/components/admin/pagination-config";
+import { FilesFilters } from "@/components/admin/files/FilesFilters";
+import { FilesTable } from "@/components/admin/files/FilesTable";
+import { ConfirmDialog } from "@/components/admin/shared/ConfirmDialog";
+import { AdminPagination } from "@/components/admin/shared/Pagination";
+import { DEFAULT_PAGE_SIZE } from "@/components/admin/shared/pagination-config";
 import { Card, CardContent } from "@/components/ui/card";
 import { useAdminFiles, useDeleteAdminFile } from "@/hooks/api/use-files";
 import { useDebounce } from "@/hooks/use-debounce";
