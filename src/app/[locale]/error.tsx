@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 
-import { ErrorPage } from "@/components/common/ErrorPage";
+import { ErrorPage } from "@/components/feedback/ErrorPage";
 
 export default function GlobalError({
   error,

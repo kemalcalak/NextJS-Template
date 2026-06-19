@@ -2,8 +2,8 @@
 
 import { usePathname } from "next/navigation";
 
-import { LoadingScreen } from "@/components/common/LoadingScreen";
-import { MaintenanceScreen } from "@/components/common/MaintenanceScreen";
+import { LoadingScreen } from "@/components/feedback/LoadingScreen";
+import { MaintenanceScreen } from "@/components/feedback/MaintenanceScreen";
 import { usePublicSettings } from "@/hooks/api/use-system-settings";
 import { authRoutes, getPathWithoutLocale, matchesRoute } from "@/lib/config/routes";
 import { isAdminTierRole } from "@/lib/types/user";

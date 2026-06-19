@@ -2,7 +2,7 @@
 
 import { useTranslation } from "react-i18next";
 
-import { MorphingSquare } from "@/components/common/MorphingSquare";
+import { MorphingSquare } from "@/components/feedback/MorphingSquare";
 import { cn } from "@/lib/utils";
 
 export function LoadingScreen({

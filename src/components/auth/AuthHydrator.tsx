@@ -4,7 +4,7 @@ import { useEffect } from "react";
 
 import { usePathname, useRouter } from "next/navigation";
 
-import { LoadingScreen } from "@/components/common/LoadingScreen";
+import { LoadingScreen } from "@/components/feedback/LoadingScreen";
 import { authService } from "@/lib/api/endpoints/auth";
 import {
   getLocaleFromPath,

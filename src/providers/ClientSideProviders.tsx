@@ -5,9 +5,9 @@ import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 
 import { AuthHydrator } from "@/components/auth/AuthHydrator";
-import { ErrorBoundary } from "@/components/common/ErrorBoundary";
-import { LoadingScreen } from "@/components/common/LoadingScreen";
-import { MaintenanceGate } from "@/components/common/MaintenanceGate";
+import { ErrorBoundary } from "@/components/feedback/ErrorBoundary";
+import { LoadingScreen } from "@/components/feedback/LoadingScreen";
+import { MaintenanceGate } from "@/components/feedback/MaintenanceGate";
 import i18n from "@/i18n/config";
 import { getLocaleFromPath } from "@/lib/config/routes";
 

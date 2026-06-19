@@ -8,7 +8,7 @@ import Link from "next/link";
 import { useSearchParams, usePathname } from "next/navigation";
 import { useTranslation } from "react-i18next";
 
-import { LoadingScreen } from "@/components/common/LoadingScreen";
+import { LoadingScreen } from "@/components/feedback/LoadingScreen";
 import { Button } from "@/components/ui/button";
 import { useVerifyEmailMutation } from "@/hooks/api/use-auth";
 import { getLocaleFromPath, ROUTES, getLocalizedPath } from "@/lib/config/routes";
