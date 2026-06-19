@@ -3,7 +3,7 @@
 import { motion } from "motion/react";
 import { useTranslation } from "react-i18next";
 
-import { notificationText } from "@/components/common/notification-text";
+import { notificationText } from "@/components/notifications/notification-text";
 import { formatDateTime } from "@/lib/format-date";
 import { EASE_OUT } from "@/lib/motion/variants";
 import { type NotificationItem } from "@/lib/types/notification";

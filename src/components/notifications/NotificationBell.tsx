@@ -6,7 +6,7 @@ import { Badge, Dropdown } from "antd";
 import { Bell } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
-import { NotificationPanel } from "@/components/common/NotificationPanel";
+import { NotificationPanel } from "@/components/notifications/NotificationPanel";
 import { Button } from "@/components/ui/button";
 import { useUnreadCount } from "@/hooks/api/use-notifications";
 import { useNotificationRealtime } from "@/hooks/use-notification-realtime";

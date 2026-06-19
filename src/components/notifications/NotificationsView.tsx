@@ -8,8 +8,8 @@ import { useTranslation } from "react-i18next";
 
 import { AdminPagination } from "@/components/admin/shared/Pagination";
 import { DEFAULT_PAGE_SIZE } from "@/components/admin/shared/pagination-config";
-import { notificationTargetPath } from "@/components/notifications/notification-text";
 import { InboxRow } from "@/components/notifications/InboxRow";
+import { notificationTargetPath } from "@/components/notifications/notification-text";
 import {
   NotificationsToolbar,
   type ReadFilter,

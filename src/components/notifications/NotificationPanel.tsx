@@ -4,8 +4,8 @@ import { CheckCheck, Inbox } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 
-import { notificationTargetPath } from "@/components/common/notification-text";
-import { NotificationRow } from "@/components/common/NotificationRow";
+import { notificationTargetPath } from "@/components/notifications/notification-text";
+import { NotificationRow } from "@/components/notifications/NotificationRow";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
