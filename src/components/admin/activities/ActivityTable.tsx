@@ -10,8 +10,8 @@ import {
   AdminTh,
   AdminThead,
   AdminTr,
-} from "@/components/admin/AdminTable";
-import { StatusBadge } from "@/components/admin/StatusBadge";
+} from "@/components/admin/shared/AdminTable";
+import { StatusBadge } from "@/components/admin/shared/StatusBadge";
 import { formatDateTime } from "@/lib/format-date";
 import type {
   ActivityDetails as ActivityDetailsValue,

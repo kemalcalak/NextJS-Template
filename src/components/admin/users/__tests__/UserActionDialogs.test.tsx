@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
 
-import { UserActionDialogs } from "@/components/admin/UserActionDialogs";
+import { UserActionDialogs } from "@/components/admin/users/UserActionDialogs";
 
 describe("UserActionDialogs", () => {
   it("renders nothing visible when action is null", () => {

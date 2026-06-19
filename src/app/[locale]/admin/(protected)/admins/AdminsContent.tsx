@@ -4,8 +4,8 @@ import { useState } from "react";
 
 import { useTranslation } from "react-i18next";
 
-import { AdminPagination } from "@/components/admin/Pagination";
-import { DEFAULT_PAGE_SIZE } from "@/components/admin/pagination-config";
+import { AdminPagination } from "@/components/admin/shared/Pagination";
+import { DEFAULT_PAGE_SIZE } from "@/components/admin/shared/pagination-config";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useAdmins, usePermissionCatalog } from "@/hooks/api/use-admin";

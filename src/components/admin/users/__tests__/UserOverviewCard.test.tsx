@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { describe, it, expect } from "vitest";
 
-import { UserOverviewCard } from "@/components/admin/UserOverviewCard";
+import { UserOverviewCard } from "@/components/admin/users/UserOverviewCard";
 import type { AdminUser } from "@/lib/types/admin";
 import { SystemRole } from "@/lib/types/user";
 

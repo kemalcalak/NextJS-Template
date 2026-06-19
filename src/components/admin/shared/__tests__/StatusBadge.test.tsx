@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { describe, it, expect } from "vitest";
 
-import { StatusBadge, UserStatusBadge } from "@/components/admin/StatusBadge";
+import { StatusBadge, UserStatusBadge } from "@/components/admin/shared/StatusBadge";
 import type { AdminUser } from "@/lib/types/admin";
 import { SystemRole } from "@/lib/types/user";
 

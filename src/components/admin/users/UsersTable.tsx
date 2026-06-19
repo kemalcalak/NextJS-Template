@@ -14,8 +14,8 @@ import {
   AdminTh,
   AdminThead,
   AdminTr,
-} from "@/components/admin/AdminTable";
-import { StatusBadge, UserStatusBadge } from "@/components/admin/StatusBadge";
+} from "@/components/admin/shared/AdminTable";
+import { StatusBadge, UserStatusBadge } from "@/components/admin/shared/StatusBadge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import type { UserActionKind } from "@/hooks/api/use-user-actions";

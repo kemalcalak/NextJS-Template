@@ -6,9 +6,9 @@ import { Inbox } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 
-import { AdminPagination } from "@/components/admin/Pagination";
-import { DEFAULT_PAGE_SIZE } from "@/components/admin/pagination-config";
-import { notificationTargetPath } from "@/components/common/notification-text";
+import { AdminPagination } from "@/components/admin/shared/Pagination";
+import { DEFAULT_PAGE_SIZE } from "@/components/admin/shared/pagination-config";
+import { notificationTargetPath } from "@/components/notifications/notification-text";
 import { InboxRow } from "@/components/notifications/InboxRow";
 import {
   NotificationsToolbar,

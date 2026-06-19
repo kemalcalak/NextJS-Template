@@ -11,8 +11,8 @@ import {
   AdminTh,
   AdminThead,
   AdminTr,
-} from "@/components/admin/AdminTable";
-import { StatusBadge } from "@/components/admin/StatusBadge";
+} from "@/components/admin/shared/AdminTable";
+import { StatusBadge } from "@/components/admin/shared/StatusBadge";
 import { formatBytes } from "@/components/common/file-upload/file-upload-utils";
 import { Button } from "@/components/ui/button";
 import { formatDate } from "@/lib/format-date";

@@ -6,9 +6,9 @@ import { Select } from "antd";
 import { RefreshCw, Search, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
-import { ActivityTable } from "@/components/admin/ActivityTable";
-import { AdminPagination } from "@/components/admin/Pagination";
-import { DEFAULT_PAGE_SIZE } from "@/components/admin/pagination-config";
+import { ActivityTable } from "@/components/admin/activities/ActivityTable";
+import { AdminPagination } from "@/components/admin/shared/Pagination";
+import { DEFAULT_PAGE_SIZE } from "@/components/admin/shared/pagination-config";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";

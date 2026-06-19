@@ -2,7 +2,7 @@
 
 import { useTranslation } from "react-i18next";
 
-import { ConfirmDialog } from "@/components/admin/ConfirmDialog";
+import { ConfirmDialog } from "@/components/admin/shared/ConfirmDialog";
 import type { UserActionKind } from "@/hooks/api/use-user-actions";
 
 export type { UserActionKind };

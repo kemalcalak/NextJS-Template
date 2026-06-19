@@ -4,7 +4,7 @@ import { useState } from "react";
 
 import { useTranslation } from "react-i18next";
 
-import { ConfirmDialog } from "@/components/admin/ConfirmDialog";
+import { ConfirmDialog } from "@/components/admin/shared/ConfirmDialog";
 import { AvatarUpload } from "@/components/common/file-upload";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useUpdateAdminUser } from "@/hooks/api/use-admin";

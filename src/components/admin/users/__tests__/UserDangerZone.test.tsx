@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
 
-import { UserDangerZone } from "@/components/admin/UserDangerZone";
+import { UserDangerZone } from "@/components/admin/users/UserDangerZone";
 import type { AdminUser } from "@/lib/types/admin";
 import { SystemRole } from "@/lib/types/user";
 

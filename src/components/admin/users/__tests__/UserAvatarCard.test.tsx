@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { http, HttpResponse } from "msw";
 import { describe, it, expect } from "vitest";
 
-import { UserAvatarCard } from "@/components/admin/UserAvatarCard";
+import { UserAvatarCard } from "@/components/admin/users/UserAvatarCard";
 import type { AdminUser } from "@/lib/types/admin";
 import type { FilePublic } from "@/lib/types/file";
 import { SystemRole } from "@/lib/types/user";

@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { describe, it, expect } from "vitest";
 
-import { ActivityTable } from "@/components/admin/ActivityTable";
+import { ActivityTable } from "@/components/admin/activities/ActivityTable";
 import type { AdminActivity } from "@/lib/types/admin";
 
 const makeRow = (overrides: Partial<AdminActivity> = {}): AdminActivity => ({

@@ -6,7 +6,7 @@ import { Form } from "antd";
 import { Save } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
-import { UserEditFormFields } from "@/components/admin/UserEditFormFields";
+import { UserEditFormFields } from "@/components/admin/users/UserEditFormFields";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import type { AdminUser, AdminUserUpdatePayload } from "@/lib/types/admin";

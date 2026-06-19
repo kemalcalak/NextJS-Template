@@ -2,7 +2,7 @@ import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, it, expect, vi } from "vitest";
 
-import { FilesFilters } from "@/components/admin/FilesFilters";
+import { FilesFilters } from "@/components/admin/files/FilesFilters";
 import { renderWithProviders } from "@/test/test-utils";
 
 const makeProps = (overrides = {}) => ({

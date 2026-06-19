@@ -11,7 +11,7 @@ import {
   type UsersRoleFilter,
   type UsersStatusFilter,
   type UsersVerifiedFilter,
-} from "@/components/admin/users-filters-config";
+} from "@/components/admin/users/users-filters-config";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";

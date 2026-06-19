@@ -4,7 +4,7 @@ import { useState } from "react";
 
 import { useTranslation } from "react-i18next";
 
-import { ActivityTable } from "@/components/admin/ActivityTable";
+import { ActivityTable } from "@/components/admin/activities/ActivityTable";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAdminUserActivities } from "@/hooks/api/use-admin";

@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
 
-import { UsersFilters } from "@/components/admin/UsersFilters";
+import { UsersFilters } from "@/components/admin/users/UsersFilters";
 
 const buildProps = (overrides: Partial<React.ComponentProps<typeof UsersFilters>> = {}) => ({
   search: "",

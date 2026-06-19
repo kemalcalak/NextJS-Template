@@ -4,14 +4,14 @@ import { useMemo, useState } from "react";
 
 import { useTranslation } from "react-i18next";
 
-import { AdminPagination } from "@/components/admin/Pagination";
-import { DEFAULT_PAGE_SIZE } from "@/components/admin/pagination-config";
+import { AdminPagination } from "@/components/admin/shared/Pagination";
+import { DEFAULT_PAGE_SIZE } from "@/components/admin/shared/pagination-config";
 import {
   type TicketPriorityFilter,
   type TicketStatusFilter,
-} from "@/components/admin/support-tickets-filters-config";
-import { SupportTicketsFilters } from "@/components/admin/SupportTicketsFilters";
-import { SupportTicketsTable } from "@/components/admin/SupportTicketsTable";
+} from "@/components/admin/support/support-tickets-filters-config";
+import { SupportTicketsFilters } from "@/components/admin/support/SupportTicketsFilters";
+import { SupportTicketsTable } from "@/components/admin/support/SupportTicketsTable";
 import { Card, CardContent } from "@/components/ui/card";
 import { useAdminTickets } from "@/hooks/api/use-support";
 import { useDebounce } from "@/hooks/use-debounce";

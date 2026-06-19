@@ -4,9 +4,9 @@ import { useState } from "react";
 
 import { useTranslation } from "react-i18next";
 
-import { AdminPagination } from "@/components/admin/Pagination";
-import { DEFAULT_PAGE_SIZE } from "@/components/admin/pagination-config";
-import { StatusBadge } from "@/components/admin/StatusBadge";
+import { AdminPagination } from "@/components/admin/shared/Pagination";
+import { DEFAULT_PAGE_SIZE } from "@/components/admin/shared/pagination-config";
+import { StatusBadge } from "@/components/admin/shared/StatusBadge";
 import { Card, CardContent } from "@/components/ui/card";
 import { useBroadcasts } from "@/hooks/api/use-broadcasts";
 import { announcementTitle } from "@/lib/announcement-render";

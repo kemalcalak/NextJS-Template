@@ -6,7 +6,7 @@ import { Select } from "antd";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
-import { PAGE_SIZE_OPTIONS } from "@/components/admin/pagination-config";
+import { PAGE_SIZE_OPTIONS } from "@/components/admin/shared/pagination-config";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 

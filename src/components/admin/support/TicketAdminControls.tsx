@@ -5,7 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Form, Select } from "antd";
 import { useTranslation } from "react-i18next";
 
-import { PermissionNote } from "@/components/admin/PermissionNote";
+import { PermissionNote } from "@/components/admin/shared/PermissionNote";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAdminUsers } from "@/hooks/api/use-admin";

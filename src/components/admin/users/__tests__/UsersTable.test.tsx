@@ -2,7 +2,7 @@ import { screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, it, expect, vi } from "vitest";
 
-import { UsersTable } from "@/components/admin/UsersTable";
+import { UsersTable } from "@/components/admin/users/UsersTable";
 import type { AdminUser } from "@/lib/types/admin";
 import { SystemRole } from "@/lib/types/user";
 import { renderWithProviders } from "@/test/test-utils";

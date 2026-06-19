@@ -2,7 +2,7 @@
 
 import { useTranslation } from "react-i18next";
 
-import { ConfirmDialog } from "@/components/admin/ConfirmDialog";
+import { ConfirmDialog } from "@/components/admin/shared/ConfirmDialog";
 import { useDeleteAdmin, useDemoteSuperadmin, usePromoteSuperadmin } from "@/hooks/api/use-admin";
 import type { AdminListItem } from "@/lib/types/admin";
 

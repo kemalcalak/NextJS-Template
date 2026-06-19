@@ -1,7 +1,7 @@
 import { fireEvent, screen } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
 
-import { AdminPagination } from "@/components/admin/Pagination";
+import { AdminPagination } from "@/components/admin/shared/Pagination";
 import { renderWithProviders } from "@/test/test-utils";
 
 describe("AdminPagination", () => {

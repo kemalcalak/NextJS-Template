@@ -13,7 +13,7 @@ import {
   AdminTh,
   AdminThead,
   AdminTr,
-} from "@/components/admin/AdminTable";
+} from "@/components/admin/shared/AdminTable";
 import { TicketPriorityBadge, TicketStatusBadge } from "@/components/support/TicketStatusBadge";
 import { getLocaleFromPath, getLocalizedPath, ROUTES } from "@/lib/config/routes";
 import { formatDate } from "@/lib/format-date";

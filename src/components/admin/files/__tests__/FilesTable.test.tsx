@@ -2,7 +2,7 @@ import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, it, expect, vi } from "vitest";
 
-import { FilesTable } from "@/components/admin/FilesTable";
+import { FilesTable } from "@/components/admin/files/FilesTable";
 import type { AdminFileListItem } from "@/lib/types/file";
 import { renderWithProviders } from "@/test/test-utils";
 

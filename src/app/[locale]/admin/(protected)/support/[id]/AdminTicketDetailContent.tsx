@@ -8,8 +8,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslation } from "react-i18next";
 
-import { PermissionNote } from "@/components/admin/PermissionNote";
-import { TicketAdminControls } from "@/components/admin/TicketAdminControls";
+import { PermissionNote } from "@/components/admin/shared/PermissionNote";
+import { TicketAdminControls } from "@/components/admin/support/TicketAdminControls";
 import { MessageThread } from "@/components/support/MessageThread";
 import { ReplyBox } from "@/components/support/ReplyBox";
 import { TicketPriorityBadge, TicketStatusBadge } from "@/components/support/TicketStatusBadge";
