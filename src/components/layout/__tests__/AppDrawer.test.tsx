@@ -1,7 +1,7 @@
 import { screen, fireEvent, waitFor } from "@testing-library/react";
 import { vi, describe, it, expect, beforeEach } from "vitest";
 
-import { AppDrawer } from "@/components/common/AppDrawer";
+import { AppDrawer } from "@/components/layout/AppDrawer";
 import { getLocalizedPath, ROUTES } from "@/lib/config/routes";
 import { SystemRole, type User } from "@/lib/types/user";
 import { useAuthStore } from "@/stores/auth.store";

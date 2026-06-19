@@ -6,13 +6,13 @@ import { motion } from "motion/react";
 import { useRouter, usePathname } from "next/navigation";
 import { useTranslation } from "react-i18next";
 
-import { drawerItem, drawerList } from "@/components/common/app-drawer-motion";
+import { drawerItem, drawerList } from "@/components/layout/app-drawer-motion";
 import {
   AuthedNavLinks,
   DrawerTitle,
   NavLink,
   UserProfile,
-} from "@/components/common/AppDrawerNav";
+} from "@/components/layout/AppDrawerNav";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/hooks/use-language";
 import {

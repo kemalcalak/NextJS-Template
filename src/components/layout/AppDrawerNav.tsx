@@ -5,8 +5,8 @@ import { Bell, LayoutDashboard, LifeBuoy, ShieldCheck, User as UserIcon, X } fro
 import { motion } from "motion/react";
 import { useTranslation } from "react-i18next";
 
-import { drawerItem } from "@/components/common/app-drawer-motion";
 import { BrandLogo } from "@/components/common/BrandLogo";
+import { drawerItem } from "@/components/layout/app-drawer-motion";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { useUnreadCount } from "@/hooks/api/use-notifications";

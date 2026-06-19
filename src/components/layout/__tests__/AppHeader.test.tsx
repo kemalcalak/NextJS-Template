@@ -1,7 +1,7 @@
 import { screen } from "@testing-library/react";
 import { vi, describe, it, expect, beforeEach } from "vitest";
 
-import { AppHeader } from "@/components/common/AppHeader";
+import { AppHeader } from "@/components/layout/AppHeader";
 import { getLocalizedPath, ROUTES } from "@/lib/config/routes";
 import { SystemRole, type User } from "@/lib/types/user";
 import { useAuthStore } from "@/stores/auth.store";

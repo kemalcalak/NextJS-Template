@@ -9,9 +9,9 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslation } from "react-i18next";
 
-import { AppDrawer } from "@/components/common/AppDrawer";
 import { AuthButtons } from "@/components/common/AuthButtons";
 import { BrandLogo } from "@/components/common/BrandLogo";
+import { AppDrawer } from "@/components/layout/AppDrawer";
 import { NotificationBell } from "@/components/notifications/NotificationBell";
 import { useBranding } from "@/hooks/use-branding";
 import { useLanguage } from "@/hooks/use-language";

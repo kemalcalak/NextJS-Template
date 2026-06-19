@@ -1,4 +1,4 @@
-import { PageTransition } from "@/components/common/PageTransition";
+import { PageTransition } from "@/components/layout/PageTransition";
 
 // Next.js requires a default export for template files; it remounts per
 // navigation, driving the page-entrance animation.
